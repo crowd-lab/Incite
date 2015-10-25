@@ -81,6 +81,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			//$records = get_records('Item', array('type' => 21), 20);  //21: Image
 			$records[] = $this->_helper->db->find(15);
 			$records[] = $this->_helper->db->find(18);
+			$records[] = $this->_helper->db->find(20);
 			$records[] = $this->_helper->db->find(77);
 
 			//check if there is really exacit one image file for each item
@@ -116,7 +117,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			//$records = get_records('Item', array('type' => 21), 20);  //21: Image
 			$records[] = $this->_helper->db->find(15);
 			$records[] = $this->_helper->db->find(18);
-			$records[] = $this->_helper->db->find(77);
+			$records[] = $this->_helper->db->find(22);
+			$records[] = $this->_helper->db->find(24);
 
 			//check if there is really exacit one image file for each item
 			if ($records != null) {
