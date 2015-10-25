@@ -92,55 +92,20 @@ $db = get_db();
                         <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
                 </form>
             </p>
+<?php foreach ($this->Connections as $connection): ?>
     <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+        <a href="<?php echo 'connect/'.$connection->id; ?>" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+             <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
         </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
+        <h4 style="text-align: center;"><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></h4>
+        <p style="text-align: center;"> <?php echo metadata($connection, array('Dublin Core', 'Description')); ?> </p>
         <div class="progress">
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
                 <span class="sr-only">60% Complete</span>
             </div>
         </div>
     </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                <span class="sr-only">60% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                <span class="sr-only">60% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                <span class="sr-only">60% Complete</span>
-            </div>
-        </div>
-    </div>
-
+<?php endforeach; ?>
 
         <div class="col-lg-4">
              <form class="form-wrapper" >
