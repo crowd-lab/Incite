@@ -16,6 +16,7 @@ $db = get_db();
 
     <title>Mapping the 4th Static Page</title>
 	<?php echo js_tag('jquery'); ?>
+	<?php echo js_tag('bootstrap.min'); ?>
     <?php echo head_css(); ?>
 
     <!-- Bootstrap Core CSS -->
@@ -118,7 +119,7 @@ $db = get_db();
         </div>
         <div class="container">
             <div class="col-md-8">
-                <img src="<?php print_r($this->transcription->getFile()->getProperty('uri')); ?>" alt="Mountain View" style="max-width:604px;max-height:800px;">
+                <img src="<?php print_r($this->transcription->getFile()->getProperty('uri')); ?>" alt="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>" style="max-width:604px;max-height:800px;">
 				            </div>
             <div class="col-md-4">
                 <br>
@@ -128,9 +129,11 @@ $db = get_db();
                 <div class="col-md-6">
                     <button type="button" class="btn btn-default">Revise</button>
                 </div>
-                <textarea name="paragraph_text" cols="70" rows="20">Transcription</textarea>
-                <textarea name="paragraph_text" cols="70" rows="10">Summary</textarea>
-                <button type="button" class="btn btn-default">Done</button>
+				<form method="post">
+					<textarea name="transcription" cols="70" rows="20">Transcription</textarea>
+					<textarea name="summary" cols="70" rows="10">Summary</textarea>
+					<button type="submit" class="btn btn-default">Done</button>
+				</form>
             </div> 
         </div>
 
