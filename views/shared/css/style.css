@@ -1,0 +1,53 @@
+
+
+#large-btn {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #000000;
+  font-size: 37px;
+  background: #ffffff;
+  padding: 10px 20px 10px 20px;
+  border: solid #000000 2px;
+  text-decoration: none;
+}
+
+#large-btn:hover {
+  background: #ffffff;
+  background-image: -webkit-linear-gradient(top, #ff6600, #ff6600);
+  background-image: -moz-linear-gradient(top, #ff6600, #ff6600);
+  background-image: -ms-linear-gradient(top, #ff6600, #ff6600);
+  background-image: -o-linear-gradient(top, #ff6600, #ff6600);
+  background-image: linear-gradient(to bottom, #ff6600, #ff6600);
+  text-decoration: none;
+}
+
+#search {
+	width: 50em; 
+}
+
+#search1 {
+  width: 30em; 
+}
+.two-col {
+    overflow: hidden;/* Makes this div contain its floats */
+}
+
+.two-col .col1,
+.two-col .col2 {
+    width 49%;
+}
+
+.two-col .col1 {
+    float: left;
+
+}
+
+.two-col .col2 {
+    float: right;
+}
+
+.two-col label {
+    display: block;
+}

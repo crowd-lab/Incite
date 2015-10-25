@@ -1,0 +1,7 @@
+
+
+* Update actions other than show and transcribe
+
+* Update the case when there is no resources with given ID for show and transcribe
+
+* Use slug instead of numeric ID
