@@ -1,7 +1,14 @@
 
 
-* Update actions other than show and transcribe
+Database:
+	* transcribe is ready to save transcription and summary to database
 
-* Update the case when there is no resources with given ID for show and transcribe
 
-* Use slug instead of numeric ID
+
+Other:
+
+	* Update actions other than show and transcribe
+
+	* Update the case when there is no resources with given ID for show and transcribe
+
+	* Use slug instead of numeric ID

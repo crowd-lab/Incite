@@ -57,11 +57,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function transcribeAction()
     {
 
-        //echo '<div style="color:red">Welcome to Transcribe!</div>';
+		if ($this->getRequest()->isPost()) {
+			//save transcription and summary to database
+		} 
+
 		$this->_helper->db->setDefaultModelName('Item');
 		if ($this->_hasParam('id')) {
 			$record = $this->_helper->db->find($this->_getParam('id'));
 			if ($record != null) {
+				if ($record->getFile() == null) {
+					//no image to transcribe
+					echo 'no image';
+				}
 				$this->_helper->viewRenderer('transcribeid');
 				$this->view->transcription = $record;
 			} else {
