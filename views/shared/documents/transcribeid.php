@@ -119,7 +119,7 @@ $db = get_db();
         </div>
         <div class="container">
             <div class="col-md-8">
-                <img src="<?php print_r($this->transcription->getFile()->getProperty('uri')); ?>" alt="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>" style="max-width:604px;max-height:800px;">
+                <img src="<?php echo $this->transcription->getFile()->getProperty('uri'); ?>" alt="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>" style="max-width:604px;max-height:800px;">
 				            </div>
             <div class="col-md-4">
                 <br>

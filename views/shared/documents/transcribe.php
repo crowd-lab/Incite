@@ -91,8 +91,8 @@ $db = get_db();
             </p>
 <?php foreach ($this->Transcriptions as $transcription): ?>
     <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+        <a href="<?php echo 'transcribe/'.$transcription->id; ?>" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+             <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
         </a>
         <h4 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h4>
         <p style="text-align: center;"> <?php echo metadata($transcription, array('Dublin Core', 'Description')); ?> </p>

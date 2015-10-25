@@ -12,3 +12,5 @@ Other:
 	* Update the case when there is no resources with given ID for show and transcribe
 
 	* Use slug instead of numeric ID
+
+	* If the user is not logged in, there will be error and should try to handle it.

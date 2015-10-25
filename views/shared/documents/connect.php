@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <?php
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
 $db = get_db();
 
 ?>
-
 <head>
 
     <meta charset="utf-8">
@@ -14,12 +14,14 @@ $db = get_db();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Mapping the 4th Static Page</title>
+    <title>Mapping the 4th</title>
 	<?php echo js_tag('jquery'); ?>
 	<?php echo js_tag('bootstrap.min'); ?>
     <?php echo head_css(); ?>
 
     <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/style.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <style>
@@ -51,7 +53,7 @@ $db = get_db();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Browse Collections</a>
+                <a class="navbar-brand" href="index.html">Discover</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -63,9 +65,11 @@ $db = get_db();
                         <a href="tag.html">Tag</a>
                     </li>
                     <li>
+                        <a href="connect.html">Connect</a>
+                    </li>
+                    <li>
                         <a href="discuss.html">Discuss</a>
                     </li>
-
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -75,110 +79,122 @@ $db = get_db();
 
     <!-- Page Content -->
     <div class="container">
-        <div class="second header">
-            <!-- Primary Navbar -->
-            <div class="navbar navbar-inverse" style="margin-right:-40px;">
-              <div class="container">
-                <div class="navbar-header">
-                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                  </button>
-                  <a class="navbar-brand" href="#">Document name</a>
-                </div>
-                <div class="nav navbar-nav navbar-right"> 
-                    <ul class="nav navbar-nav">
-                        <li ><a href="transcription_document.html">Transcribe</a></li>
-                        <li class="active"><a href="#about">Tag</a></li>
-                        <li><a href="#contact">Menu Item 2</a></li>
-                        <li><a href="#about">Menu Item 3</a></li>
-                    </ul>
-                </div> 
-              </div>
-            </div>
-        </div>
 
         <div class="row">
-            <div class="col-md-8">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="60"
-                    aria-valuemin="0" aria-valuemax="100" style="width:60%">
-                    60%
-                </div>
-            </div>
-            </div>
-            <div class="col-md-4">
-                <button type="button" class="btn btn-default">Subscribe</button>
-                <button type="button" class="btn btn-default">Guide</button>
-            </div>
+             
         </div>
-        <div class="container">
-            <div class="col-md-8">
-                <textarea name="transcribe_text" cols="97" rows="40" id="transcribe_copy">Transcription</textarea>
-                <img id="document_img" src="copy.jpg" alt="Mountain View" style="width:604px;height:800px;">
+        <!-- /.row -->
 
-                <br>
-                <button type="button" class="btn btn-default" id="show">Document</button>
-                <button type="button" class="btn btn-default" id="hide">Transcription</button>
+        <div class="row">
+            <h1 style="text-align:center;">Your Contributions</h1>
+            <p style="margin-left:0.5em;  display:inline-block;">Sort by: <a href="">completion</a>-<a href="">types</a>-<a href="">time</a>-<a href="">last updated</a> 
+                <form style=" display:inline-block; margin-left:27em;" action="">
+                        <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
+                </form>
+            </p>
+    <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+        </a>
+        <h4 style="text-align: center;">Hello World</h4>
+        <p style="text-align: center;"> this is placeholder text for a description </p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                <span class="sr-only">60% Complete</span>
             </div>
-            <div class="col-md-4">
-      
-            <h2>Does this document talk about Nationalism?</h2>
-            <button type="button" class="btn btn-default" id="">Yes</button>
-            <button type="button" class="btn btn-default" id="">No</button>
-            <p>It mentions Declaration and so do the following three documents.</p>
-
-        <div class="">
-            <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-                 <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-            </a>
-            <h4 style="">Hello World</h4>
-        </div>
-
-        <div class="">
-            <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-                 <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-            </a>
-            <h4 style="">Hello World</h4>
-        </div>
-
-        <div class="">
-            <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-                 <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-            </a>
-            <h4 style="">Hello World</h4>
         </div>
     </div>
-            </div> 
+    <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+        </a>
+        <h4 style="text-align: center;">Hello World</h4>
+        <p style="text-align: center;"> this is placeholder text for a description </p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                <span class="sr-only">60% Complete</span>
+            </div>
         </div>
+    </div>
+    <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+        </a>
+        <h4 style="text-align: center;">Hello World</h4>
+        <p style="text-align: center;"> this is placeholder text for a description </p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                <span class="sr-only">60% Complete</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+        </a>
+        <h4 style="text-align: center;">Hello World</h4>
+        <p style="text-align: center;"> this is placeholder text for a description </p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                <span class="sr-only">60% Complete</span>
+            </div>
+        </div>
+    </div>
 
 
+        <div class="col-lg-4">
+             <form class="form-wrapper" >
+                    <input type="text" style="margin-bottom: 10px;" id="search1" placeholder="Keywords" required>
+            </form>
+            <form class="form-wrapper" >
+                    <input type="text" style="margin-bottom: 10px;" id="search1" placeholder="Locations" required>
+            </form>
+            <div class="two-col">
+                <div class="col1">
+                   <form class="form-wrapper" >
+                        <input type="text" id="company" placeholder="Date 1"/> 
+                   </form>
+                </div>
+              <div class="col2">
+                   <form class="form-wrapper" >
+                        <input type="text" id="company" placeholder="Date 2"/>
+                   </form>
+              </div>
 
-
-  
+              <div style="margin-top: 5em;">
+                <p>Here's what other people are working on: </p>
+              </div>
+              <ul style="list-style-type:none">
+                <li>
+                    <p>1) User1 just found a diary from Emma LeConte in 1840! </p> 
+                </li>
+                <li>
+                    <p>2) User2 is decoding a mysterious historical document allegedly from South.  </p> 
+                </li>
+                <li>
+                    <p>3) User3 found a new document talking about Nationalism. </p> 
+                </li>
+                <li>
+                    <p>4) User4 is figuring out what the 3 documents have in common.</p> 
+                </li>
+              </ul>
+        </div>
+            
 </div>
 
     </div>
     <!-- /.container -->
 
     <!-- jQuery Version 1.11.1 -->
+    <script src="js/jquery.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script>
+        <script>
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
-        $("#transcribe_copy").hide();
-    $("#hide").click(function(){
-        $("#document_img").hide();
-        $("#transcribe_copy").show();
-    });
-    $("#show").click(function(){
-        $("#document_img").show();
-        $("#transcribe_copy").hide();
-    });
 });
 </script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
 
 </body>
 
