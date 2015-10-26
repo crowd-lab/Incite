@@ -31,7 +31,7 @@ function getSummarizedText($documentID, $transcriptionID) {
 function getTranscriptionText($transcriptionID) {
     $text = "";
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT transcribed_text FROM omeka_incite_transcriptions WHERE document_id = ? AND id = ?");
+    $stmt = $db->prepare("SELECT transcribed_text FROM omeka_incite_transcriptions WHERE id = ?");
     $stmt->bind_param("i", $transcriptionID);
     $stmt->bind_result($text);
     $stmt->execute();
