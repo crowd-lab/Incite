@@ -112,6 +112,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 					//no image to transcribe
 					echo 'no image';
 				}
+				$transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
+				$this->view->transcription = "No transcription";
+				if ($transcription != null) {
+					$this->view->transcription = getTranscriptionText($transcription[0]);
+				}
 				$this->_helper->viewRenderer('tagid');
 				$this->view->tag = $record;
 			} else {

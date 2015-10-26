@@ -50,7 +50,7 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="container">
             <div class="col-md-8">
-                <textarea name="transcribe_text" cols="97" rows="40" id="transcribe_copy">Transcription</textarea>
+                <textarea name="transcribe_text" cols="97" rows="40" id="transcribe_copy"><?php print_r($this->transcription); ?></textarea>
                 <img id="document_img" src="<?php echo $this->tag->getFile()->getProperty('uri'); ?>" alt="Mountain View" style="max-width:604px;max-height:800px;">
 
                 <br>
