@@ -116,6 +116,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 				$this->view->transcription = "No transcription";
 				if ($transcription != null) {
 					$this->view->transcription = getTranscriptionText($transcription[0]);
+				} else {
 				}
 				$this->_helper->viewRenderer('tagid');
 				$this->view->tag = $record;
@@ -152,6 +153,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 				if ($record->getFile() == null) {
 					//no image to transcribe
 					echo 'no image';
+				}
+				$transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
+				$this->view->transcription = "No transcription";
+				if ($transcription != null) {
+					$this->view->transcription = getTranscriptionText($transcription[0]);
+				} else {
+					
 				}
 				$this->_helper->viewRenderer('connectid');
 				$this->view->connection = $record;
