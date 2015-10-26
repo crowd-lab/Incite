@@ -59,6 +59,9 @@
                     <li>
                         <a href="/m4j/incite/documents/connect">Connect</a>
                     </li>
+                    <li>
+                        <a href="/m4j/incite/discussions">Discuss</a>
+                    </li>
 					<!-- discussion
                     <li> 
                         <a href="./discussions">Discuss</a>
