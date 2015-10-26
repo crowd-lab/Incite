@@ -42,18 +42,17 @@ function getTranscriptionText($transcriptionID) {
 }
 
 function getIsAnyTranscriptionApproved($documentID) {
-    $id = Array();
     $db = DB_Connect::connectDB();
+    $result = Array();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_transcriptions WHERE document_id = ? AND is_approved = 1");
     $stmt->bind_param("i", $documentID);
-    $stmt->bind_result($result);
+    $stmt->bind_result($id);
     $stmt->execute();
-    while ($data = $result->fetch_assoc()) {
-        $id[] = $data;
+    while ($stmt->fetch())
+    {
+        $result[] = $id;
     }
-    $stmt->close();
-    $db->close();
-    return $id;
+    return $result;
 }
 
 function getApprovalTranscriptionTimestamp($transcriptionID) {
