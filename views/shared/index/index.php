@@ -4,76 +4,9 @@
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
 $db = get_db();
 
+include(dirname(__FILE__).'/../common/header.php');
 ?>
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <?php echo js_tag('jquery'); ?>
-    <?php echo head_css(); ?>
-    <title>Mapping the 4th Static Page</title>
-
-    <!-- Bootstrap Core CSS -->
-
-    <!-- Custom CSS -->
-    <style>
-    body {
-        padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
-    </style>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="./documents/discover">Discover</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="transcribe.html">Transcribe</a>
-                    </li>
-                    <li>
-                        <a href="tag.html">Tag</a>
-                    </li>
-                    <li>
-                        <a href="connect.html">Connect</a>
-                    </li>
-                    <li>
-                        <a href="discuss.html">Discuss</a>
-                    </li>
-
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
 
     <!-- Page Content -->
     <div class="container">
@@ -332,7 +265,7 @@ $db = get_db();
 
 <?php 
 
-print_r(metadata($this->Item, array('Dublin Core', 'Subject'), array('all' => true))); 
+//print_r(metadata($this->Item, array('Dublin Core', 'Subject'), array('all' => true))); 
 //echo $this->Item;
 
 ?>

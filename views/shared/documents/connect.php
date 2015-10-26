@@ -5,77 +5,8 @@
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
 $db = get_db();
 
+include(dirname(__FILE__).'/../common/header.php');
 ?>
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Mapping the 4th</title>
-	<?php echo js_tag('jquery'); ?>
-	<?php echo js_tag('bootstrap.min'); ?>
-    <?php echo head_css(); ?>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../css/style.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <style>
-    body {
-        padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
-    </style>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">Discover</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="transcribe.html">Transcribe</a>
-                    </li>
-                    <li>
-                        <a href="tag.html">Tag</a>
-                    </li>
-                    <li>
-                        <a href="connect.html">Connect</a>
-                    </li>
-                    <li>
-                        <a href="discuss.html">Discuss</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
 
     <!-- Page Content -->
     <div class="container">
@@ -92,55 +23,20 @@ $db = get_db();
                         <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
                 </form>
             </p>
+<?php foreach ($this->Connections as $connection): ?>
     <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+        <a href="<?php echo 'connect/'.$connection->id; ?>" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+             <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
         </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
+        <h4 style="text-align: center;"><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></h4>
+        <p style="text-align: center;"> <?php echo metadata($connection, array('Dublin Core', 'Description')); ?> </p>
         <div class="progress">
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
                 <span class="sr-only">60% Complete</span>
             </div>
         </div>
     </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                <span class="sr-only">60% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                <span class="sr-only">60% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                <span class="sr-only">60% Complete</span>
-            </div>
-        </div>
-    </div>
-
+<?php endforeach; ?>
 
         <div class="col-lg-4">
              <form class="form-wrapper" >

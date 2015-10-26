@@ -13,11 +13,12 @@ class Incite_IndexController extends Omeka_Controller_AbstractActionController
 {
     public function init()
     {
-                        echo '<div style="color:red">Index Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
+       //echo '<div style="color:red">Index Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
     }
 
     public function indexAction()
     {
+/*
                         echo '<div style="color:black">Welcome to Homepage (index)!</div>';
     $this->_helper->db->setDefaultModelName('Item');
     //$tags = $this->_helper->db->findById(225, 'Item')->getTags();
@@ -28,6 +29,7 @@ class Incite_IndexController extends Omeka_Controller_AbstractActionController
 
     //print_r($record);
     $this->view->assign(array('Item' => $record));
+*/
     }
 
     public function discoverAction()
