@@ -1,21 +1,28 @@
 
-10/26/2015:
+10/27/2015:
 
 Database:
 	* Test all functions, especially tag, connect and discuss
 	* Refactoring (lower priority)
 
 Webpage templates:
-
 	* Discussion: 
 		** Add a page for creating a new discussion
 		** Add discussion part to pages of documents
-	* Modify the design/layout based on actual data and previous discussion
+	* Modify the design/layout based on actual data and previous discussion/comments
+	* Webpages for administration such as marking some transcriptions as approved
+
+Computation:
+	* Named Entity Recognition
+
+Design:
+	* Categories for entities
 
 Other:
-
-	* Update actions other than show and transcribe
-	* Discuss pages are still generic and need actual data (also the show and add actions are still empty)
-	* Update the case when there is no resources with given ID for show and transcribe
-	* Use slug instead of numeric ID
-	* If the user is not logged in, there will be error and should try to handle it.
+	* General
+		** Update actions other than show and transcribe
+		** Update the case when there is no resources with given ID for show and transcribe
+		** Use slug instead of numeric ID
+		** If the user is not logged in, there will be error and should try to handle it.
+	* Discuss 
+		** pages are still generic and need actual data (also the show and add actions are still empty)
