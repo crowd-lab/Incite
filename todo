@@ -1,5 +1,5 @@
 
-10/27/2015:
+10/28/2015:
 
 Database:
 	* Test all functions, especially tag, connect and discuss
@@ -11,12 +11,15 @@ Webpage templates:
 		** Add discussion part to pages of documents
 	* Modify the design/layout based on actual data and previous discussion/comments
 	* Webpages for administration such as marking some transcriptions as approved
+	* Unify all browsing pages to "discover" page before user history is considered
+	* Add homepage (introduction, tutorial and transition to discover page)
 
 Computation:
 	* Named Entity Recognition
 
 Design:
 	* Categories for entities
+		** Distinguish primary and secondary categories as well as additional ones
 
 Other:
 	* General
