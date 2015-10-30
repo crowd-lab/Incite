@@ -58,6 +58,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <button type="button" class="btn btn-default" id="hide">Transcription</button>
             </div>
             <div class="col-md-4">
+<!--
                 <p>Are these the same as the following entities? </p>
                 <form role="form">
                     <label class="radio-inline">
@@ -73,37 +74,34 @@ include(dirname(__FILE__).'/../common/header.php');
                       <input type="radio" name="optradio">No
                     </label>
                 </form>
-                <p>Types</p>
-                <form role="form">
+-->
+
+            	<form role="form" method="post">
+					<p>Please type the tag name in the following text box:</p>
+						  <input type="text" name="tag_text">
+					<br />
+					<p>Please choose what type the tag is:</p>
                     <label class="radio-inline">
-                      <input type="radio" name="optradio">People
+                      <input type="radio" name="tag_category" value="People">People
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" name="optradio">Orgs
+                      <input type="radio" name="tag_category" value="Places">Places
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" name="optradio">Places
+                      <input type="radio" name="tag_category" value="Organizations">Organizations
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" name="optradio">Events
+                      <input type="radio" name="tag_category" value="Events">Events
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" name="optradio">Time
+                      <input type="radio" name="tag_category" value="Ideas">Ideas
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" name="optradio">Others
+                      <input type="radio" name="tag_category" value="Time">Time/Date
                     </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="optradio">Battlefields
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="optradio">Camp
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="optradio">City
-                    </label>
+                	<textarea name="tag_description" cols="60" rows="15" id="tag_description">Details</textarea>
+                	<button type="submit" class="btn btn-default">Submit</button>
                 </form>
-                <textarea name="transcribe_text" cols="60" rows="15" id="transcribe_copy">Details</textarea>
             </div> 
         </div>
 

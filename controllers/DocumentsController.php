@@ -104,6 +104,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function tagAction()
     {
         // echo '<div style="color:blue">Welcome to Tag!</div>';
+		if ($this->getRequest()->isPost()) {
+			//save transcription and summary to database
+                    if ($this->_hasParam('id'))
+                    {
+                        //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
+						//data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
+						//ready to insert tag into database
+                    }
+                    
+		} 
+
 		$this->_helper->db->setDefaultModelName('Item');
 		if ($this->_hasParam('id')) {
 			$record = $this->_helper->db->find($this->_getParam('id'));
