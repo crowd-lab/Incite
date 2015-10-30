@@ -59,7 +59,7 @@ function getPlaceOnCoordinates($longitude, $latitude, $precision)
     $longitudeLowerBound = $longitude - ($longitude * $precision)/100;
     $longitudeUpperBound = $longitude + ($longitude * $precision)/100;
     $latitudeLowerBound = $latitude - ($latitude * $precision)/100;
-    $latitudeUpperBound = $latitude + ($latitude * precision)/100;
+    $latitudeUpperBound = $latitude + ($latitude * $precision)/100;
     
     $result = Array();
     $db = DB_Connect::connectDB();
