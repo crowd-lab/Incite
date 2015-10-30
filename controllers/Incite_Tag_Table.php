@@ -5,8 +5,11 @@ require_once("DB_Connect.php");
 function createTag($userID, $tag_text, $category_name, $description, $documentID)
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?");
-    $stmt->bind_param("isss", $userID, $tag_text, $category_name, $description);
+    if (!$stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?)"))
+    {
+        echo $stmt->errno;
+    }
+    $stmt->bind_param('isss', $userID, $tag_text, $category_name, $description);
     $stmt->execute();
     $tagID = $stmt->insert_id;
     $stmt->close();

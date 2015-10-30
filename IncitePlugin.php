@@ -117,7 +117,6 @@ SQL
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
         `tag_text`              varchar(30) NOT NULL,
-        `category_id`           int(11) NOT NULL,
         `created_timestamp`     timestamp NOT NULL,
         `category_name`         varchar(30) NOT NULL,
         `description`           varchar(300) NOT NULL,
