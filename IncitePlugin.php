@@ -32,6 +32,12 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 SQL
         );
+    
+        get_db()->query(<<<SQL
+        INSERT INTO {$db->prefix}incite_category_table
+        VALUES (1, '{$db->prefix}incite_people_category'), (2, '{$db->prefix}omeka_incite_place_category');
+SQL
+        );
 
         get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents (
@@ -107,7 +113,8 @@ SQL
         `id`            int(11) NOT NULL AUTO_INCREMENT,
         `city`          varchar(30) NOT NULL,
         `state`         varchar(15) NOT NULL,
-        `coordinates`   varchar(30) NOT NULL,
+        `longitude`     double NOT NULL,
+        `latitude`      double NOT NULL,
         
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
@@ -164,6 +171,7 @@ SQL
         `is_approved`           int(11) NOT NULL,
         `created_timestamp`     timestamp NOT NULL,
         `approved_timestamp`    timestamp NOT NULL,
+        `specific_category_row` int(11) NOT NULL,
   
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
