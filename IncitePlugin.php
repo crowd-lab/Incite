@@ -49,7 +49,7 @@ SQL
 SQL
         );
         get_db()->query(<<<SQL
-    CREATE TABLE IF NOT EXISTS ($db->prefix}incite_documents_tags_conjunction (
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_tags_conjunction (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `document_id` int(11) NOT NULL,
         `tag_id` int(11) NOT NULL,
