@@ -182,18 +182,6 @@ SQL
 SQL
         );
         get_db()->query(<<<SQL
-      DROP TABLE IF EXISTS {$this->_db->prefix}incite_object_category
-SQL
-        );
-        get_db()->query(<<<SQL
-      DROP TABLE IF EXISTS {$this->_db->prefix}incite_people_category
-SQL
-        );
-        get_db()->query(<<<SQL
-      DROP TABLE IF EXISTS {$this->_db->prefix}incite_place_category
-SQL
-        );
-        get_db()->query(<<<SQL
       DROP TABLE IF EXISTS {$this->_db->prefix}incite_questions
 SQL
         );
@@ -217,6 +205,11 @@ SQL
       DROP TABLE IF EXISTS {$this->_db->prefix}incite_users
 SQL
         );
+      
+      get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_tags_conjunction
+SQL
+              );
     }
 
     /**
