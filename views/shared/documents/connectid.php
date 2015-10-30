@@ -59,31 +59,20 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
             <div class="col-md-4">
       
-            <h2>Does this document talk about Nationalism?</h2>
-            <button type="button" class="btn btn-default" id="">Yes</button>
-            <button type="button" class="btn btn-default" id="">No</button>
-            <p>It mentions Declaration and so do the following three documents.</p>
-
+            <h2>Does this document talk about <?php echo $this->subject; ?>(definition: <?php echo $this->subject_definition; ?>)?</h2>
+			<form action="post">
+				<button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
+				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>
+			</form>
+            <p>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following three documents.</p>
+<?php foreach($this->related_documents as $document): ?>
         <div class="">
             <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-                 <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
+                 <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
             </a>
-            <h4 style="">Hello World</h4>
+            <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
         </div>
-
-        <div class="">
-            <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-                 <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-            </a>
-            <h4 style="">Hello World</h4>
-        </div>
-
-        <div class="">
-            <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-                 <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-            </a>
-            <h4 style="">Hello World</h4>
-        </div>
+<?php endforeach; ?>
     </div>
             </div> 
         </div>
