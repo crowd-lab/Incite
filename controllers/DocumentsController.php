@@ -106,7 +106,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     {
         // echo '<div style="color:blue">Welcome to Tag!</div>';
 		if ($this->getRequest()->isPost()) {
-			//save transcription and summary to database
+			//save a tag to database
                     if ($this->_hasParam('id'))
                     {
                         //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
@@ -162,6 +162,24 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     {
         //echo '<div style="color:green">Welcome to Connect!</div>';
 		$this->_helper->db->setDefaultModelName('Item');
+
+		//Choosing a subject to test with some fake data to test view
+		$this->view->subject = 'Nationalism';
+		$this->view->subject_definition = 'Wiki it!';
+		$this->view->entities = array('liberty', 'independence');
+		$this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77));
+
+		if ($this->getRequest()->isPost()) {
+			//save a connection to database
+                    if ($this->_hasParam('id'))
+                    {
+                        //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
+						//data from post: $_POST['connection'] //either true or false
+						//ready to connect subject to a document
+                    }
+                    
+		} 
+
 		if ($this->_hasParam('id')) {
 			$record = $this->_helper->db->find($this->_getParam('id'));
 			if ($record != null) {
