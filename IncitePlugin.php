@@ -23,29 +23,11 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
     public function hookInstall() {
         $db = get_db();
         $db->query(<<<SQL
-    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_category_table (
-        `id`                      int(11) NOT NULL AUTO_INCREMENT,
-        `category_table_name`     varchar(30) NOT NULL,
-  
-        PRIMARY KEY (`id`)
-   
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-SQL
-        );
-    
-        get_db()->query(<<<SQL
-        INSERT INTO {$db->prefix}incite_category_table
-        VALUES (1, '{$db->prefix}incite_people_category'), (2, '{$db->prefix}omeka_incite_place_category');
-SQL
-        );
-
-        get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `item_id`               int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `tags_ignored`          int(11) NOT NULL,
-        `tags`                  int(11) NOT NULL,
         `is_locked`             int(11) NOT NULL,
         `document_difficulty`   int(11) NOT NULL,
         `question_id`           int(11) NOT NULL,
@@ -66,6 +48,16 @@ SQL
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 SQL
         );
+        get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS `($db->prefix}incite_documents_tags_conjunction` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `document_id` int(11) NOT NULL,
+        `tag_id` int(11) NOT NULL,
+                
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;       
+SQL
+        );
 
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_group_members (
@@ -78,49 +70,7 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 SQL
         );
-
-        get_db()->query(<<<SQL
-   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_object_category (
-        `id`                    int(11) NOT NULL AUTO_INCREMENT,
-        `object_name`           varchar(30) NOT NULL,
-        `signficance`           varchar(100) NOT NULL,
-        `location_found`        varchar(30) NOT NULL,
-        `last_known_location`   varchar(30) NOT NULL,
-        `date_found`            varchar(20) NOT NULL,
-        
-        PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-SQL
-        );
-
-        get_db()->query(<<<SQL
-   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_people_category (
-        `id`            int(11) NOT NULL AUTO_INCREMENT,
-        `name`          varchar(30) NOT NULL,
-        `birth_date`    varchar(20) NOT NULL,
-        `death_date`    varchar(20) NOT NULL,
-        `occupation`    varchar(30) NOT NULL,
-        `known_for`     varchar(100) NOT NULL, 
-        `is_famous`     int(11) NOT NULL,
-        
-        PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-SQL
-        );
-
-        get_db()->query(<<<SQL
-   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_place_category (
-        `id`            int(11) NOT NULL AUTO_INCREMENT,
-        `city`          varchar(30) NOT NULL,
-        `state`         varchar(15) NOT NULL,
-        `longitude`     double NOT NULL,
-        `latitude`      double NOT NULL,
-        
-        PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-SQL
-        );
-
+   
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_questions (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
@@ -168,10 +118,9 @@ SQL
         `user_id`               int(11) NOT NULL,
         `tag_text`              varchar(30) NOT NULL,
         `category_id`           int(11) NOT NULL,
-        `is_approved`           int(11) NOT NULL,
         `created_timestamp`     timestamp NOT NULL,
-        `approved_timestamp`    timestamp NOT NULL,
-        `specific_category_row` int(11) NOT NULL,
+        `category_name`         varchar(30) NOT NULL,
+        `description`           varchar(300) NOT NULL,
   
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;

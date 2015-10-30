@@ -15,6 +15,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     {
                         //echo '<div style="color:red">Documents Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
         require_once("Incite_Transcription_Table.php");
+        require_once("Incite_Tag_Table.php");
         
     }
 
@@ -111,6 +112,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
 						//data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
 						//ready to insert tag into database
+                        //createTag($userID, $tag_text, $category_name, $description, $documentID)
+                        $userID = -1;
+                        createTag($userID, $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description'], $this->_getParam('id'));
                     }
                     
 		} 
