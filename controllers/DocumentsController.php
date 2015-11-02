@@ -16,6 +16,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         //echo '<div style="color:red">Documents Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
         require_once("Incite_Transcription_Table.php");
         require_once("Incite_Tag_Table.php");
+        require_once("Incite_Subject_Concept_Table.php");
         
     }
 
@@ -162,10 +163,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     {
         //echo '<div style="color:green">Welcome to Connect!</div>';
 		$this->_helper->db->setDefaultModelName('Item');
-
+                $subjectConceptArray = getAllSubjectConcepts();
+                $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
+                $subjectName = getSubjectConceptOnId($randomSubjectInt);
+                $subjectDef = getDefinition($subjectName);
 		//Choosing a subject to test with some fake data to test view
-		$this->view->subject = 'Nationalism';
-		$this->view->subject_definition = 'patriotic feeling, principles, or efforts';
+		$this->view->subject = $subjectName;
+		$this->view->subject_definition = $subjectDef;
 		$this->view->entities = array('liberty', 'independence');
 		$this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77));
 
@@ -176,6 +180,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
 						//data from post: $_POST['connection'] //either true or false
 						//ready to connect subject to a document
+                        $userID = -1;
+                        addConceptToDocument($randomSubjectInt, $this->_getParam('id'), $userID);
                     }
                     
 		} 
