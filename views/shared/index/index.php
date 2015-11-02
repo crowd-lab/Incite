@@ -22,9 +22,20 @@ include(dirname(__FILE__).'/../common/header.php');
                 <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
             </div> 
         </div>
+        <div class="row"> 
+            <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
+                <h2>How You Can Help</h2>
+                <p class="lead">There are three main tasks you can choose to contribute.</p>
+
+                <p style="margin-bottom: 20px;">There are three main tasks you can choose to contribute.</p>
+                <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
+            </div> 
+        </div>
 
 <style>
-body { padding-top: 60px; }
+body { padding-top: 60px; 
+	   padding-bottom: 60px;
+}
 #myCarousel .nav a small {
     display:block;
 }
@@ -85,6 +96,16 @@ body { padding-top: 60px; }
 
 
 			</div><!-- End Carousel -->
+
+			<div class="row"> 
+				<div class="col-lg-12 text-center" style="margin-bottom: 30px;">
+					<h2></h2>
+
+					<p style="margin-bottom: 30px; margin-top: 50px;">Based on the available information, we have found some documents you might be interested in. Click "Search" to start when you are ready. Or you can tell us what you are interested in by changing the pre-populated information and click "Search".</p>
+					<!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
+				</div> 
+			</div>
+
 		</div>
 
     </div>
