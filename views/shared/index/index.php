@@ -118,12 +118,12 @@ $(document).ready(function(){
 			$(this).parent().addClass('active');		
 	}).on('slid.bs.carousel', function(e) {
 		if(!clickEvent) {
-			var count = $('.nav').children().length -1;
+			var count = $('#myCarousel > .nav').children().length -1;
 			var current = $('.nav li.active');
 			current.removeClass('active').next().addClass('active');
 			var id = parseInt(current.data('slide-to'));
 			if(count == id) {
-				$('.nav li').first().addClass('active');	
+				$('#myCarousel > .nav li').first().addClass('active');	
 			}
 		}
 		clickEvent = false;
