@@ -165,8 +165,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 		$this->_helper->db->setDefaultModelName('Item');
                 $subjectConceptArray = getAllSubjectConcepts();
                 $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
-                $subjectName = getSubjectConceptOnId($randomSubjectInt)[0];
-                $subjectDef = getDefinition($subjectName);
+                $subjectName = getSubjectConceptOnId($randomSubjectInt);
+                $subjectDef = getDefinition($subjectName[0]);
 		//Choosing a subject to test with some fake data to test view
 		$this->view->subject = $subjectName;
 		$this->view->subject_definition = $subjectDef;
