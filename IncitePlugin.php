@@ -40,7 +40,7 @@ SQL
 
         get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_group (
-        `id` int(11)        NOT NULL AUTO_INCREMENT,
+        `id`                int(11) NOT NULL AUTO_INCREMENT,
         `group_type`        int(11) NOT NULL,
         `timestamp`         timestamp NOT NULL,
         
@@ -48,6 +48,15 @@ SQL
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 SQL
         );
+        get_db()->query(<<<SQL
+      CREATE TABLE IF NOT EXISTS `omeka_incite_documents_subject_conjunction` (
+        `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `document_id`           int(11) NOT NULL,
+        `subject_concept_id`    int(11) NOT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+SQL
+                );
         get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_tags_conjunction (
         `id` int(11) NOT NULL AUTO_INCREMENT,
