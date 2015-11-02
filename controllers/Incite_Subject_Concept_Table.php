@@ -26,6 +26,7 @@ function createNewSubjectConcept($name, $definition)
 }
 function getDefinition($name)
 {
+    $def = "";
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT definition FROM omeka_incite_subject_concepts WHERE UPPER(name) = UPPER(?)");
     $stmt->bind_param("s", $name);
