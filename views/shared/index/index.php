@@ -23,243 +23,70 @@ include(dirname(__FILE__).'/../common/header.php');
             </div> 
         </div>
 
-        <div class="row">
-            <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-                <p>
-                    We found a few documents close to <a> Blacksburg</a>. Or You can tell us anything you have in mind about civil war below and see what we can find for you! 
-                </p>
-                <form class="form-wrapper" >
-                    <input type="text" id="search" placeholder="Search for Interesting Places!" required>
-                    <input type="submit" value="Search" id="submit">
-                </form>  
-            </div>
-        </div>
+<style>
+body { padding-top: 60px; }
+#myCarousel .nav a small {
+    display:block;
+}
+#myCarousel .nav {
+	background:#eee;
+}
+#myCarousel .nav a {
+    border-radius:0px;
+}
+</style>
+		<div class="container">
+			<div id="myCarousel" class="carousel slide" data-ride="carousel">
+			
+			  <!-- Wrapper for slides -->
+			  <div class="carousel-inner">
+			  
+				<div class="item active">
+				  <img src="http://placehold.it/1200x400/cccccc/ffffff">
+				   <div class="carousel-caption">
+					<h3>About</h3>
+					<p>Place to put information about our project. <a href="http://sevenx.de/demo/bootstrap-carousel/" target="_blank" class="label label-danger">Bootstrap 3 - Carousel Collection</a></p>
+				  </div>
+				</div><!-- End Item -->
+		 
+				 <div class="item">
+				  <img src="http://placehold.it/1200x400/999999/cccccc">
+				   <div class="carousel-caption">
+					<h3>Transcribe</h3>
+					<p>Introduction to transcribe task. <a href="http://sevenx.de/demo/bootstrap-carousel/" target="_blank" class="label label-danger">Bootstrap 3 - Carousel Collection</a></p>
+				  </div>
+				</div><!-- End Item -->
+				
+				<div class="item">
+				  <img src="http://placehold.it/1200x400/dddddd/333333">
+				   <div class="carousel-caption">
+					<h3>Tag</h3>
+					<p>Introduction to tag task. <a href="http://sevenx.de/demo/bootstrap-carousel/" target="_blank" class="label label-danger">Bootstrap 3 - Carousel Collection</a></p>
+				  </div>
+				</div><!-- End Item -->
+				
+				<div class="item">
+				  <img src="http://placehold.it/1200x400/999999/cccccc">
+				   <div class="carousel-caption">
+					<h3>Connect</h3>
+					<p>Introduction to connect task.</p>
+				  </div>
+				</div><!-- End Item -->
+						
+			  </div><!-- End Carousel Inner -->
 
-        <div class="row">
-            <div>
-                <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-                    <h2> Here are a list of projects that others are working on!</h2>
-                </div>
-                <p style="margin-left:1em">Sort by: <a href="">completion</a>-<a href="">types</a>-<a href="">time</a>-<a href="">last updated</a> </p>
-            </div>
-        </div>
 
-<div class="row">
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="http://www.placecage.com/200/200" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;">Hello World</h4>
-        <p style="text-align: center;"> this is placeholder text for a description </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
+				<ul class="nav nav-pills nav-justified">
+				  <li data-target="#myCarousel" data-slide-to="0" class="active"><a href="#">About<small>Mapping the Fourth</small></a></li>
+				  <li data-target="#myCarousel" data-slide-to="1"><a href="#">Transcribe<small>Searchable texts</small></a></li>
+				  <li data-target="#myCarousel" data-slide-to="2"><a href="#">Tag<small>Find entities</small></a></li>
+				  <li data-target="#myCarousel" data-slide-to="3"><a href="#">Connect<small>Concepts of documents</small></a></li>
+				</ul>
+
+
+			</div><!-- End Carousel -->
+		</div>
+
     </div>
 
 
@@ -276,14 +103,32 @@ include(dirname(__FILE__).'/../common/header.php');
     </div>
     <!-- /.container -->
 
-    <!-- jQuery Version 1.11.1 -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
     <script>
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
+
+	$('#myCarousel').carousel({
+		interval:   4000
+	});
+	
+	var clickEvent = false;
+	$('#myCarousel').on('click', '.nav a', function() {
+			clickEvent = true;
+			$('.nav li').removeClass('active');
+			$(this).parent().addClass('active');		
+	}).on('slid.bs.carousel', function(e) {
+		if(!clickEvent) {
+			var count = $('.nav').children().length -1;
+			var current = $('.nav li.active');
+			current.removeClass('active').next().addClass('active');
+			var id = parseInt(current.data('slide-to'));
+			if(count == id) {
+				$('.nav li').first().addClass('active');	
+			}
+		}
+		clickEvent = false;
+	});
+
 });
 </script>
 
