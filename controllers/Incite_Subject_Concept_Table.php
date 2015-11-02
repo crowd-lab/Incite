@@ -95,6 +95,7 @@ function getSubjectConceptOnId($id)
 }
 function addConceptToDocument($conceptID, $documentID, $userID)
 {
+    $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
     $stmt->bind_param("i", $documentID);
     $stmt->bind_result($id);

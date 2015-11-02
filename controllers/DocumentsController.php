@@ -168,7 +168,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $subjectName = getSubjectConceptOnId($randomSubjectInt);
                 $subjectDef = getDefinition($subjectName[0]);
 		//Choosing a subject to test with some fake data to test view
-		$this->view->subject = $subjectName;
+		$this->view->subject = $subjectName[0];
 		$this->view->subject_definition = $subjectDef;
 		$this->view->entities = array('liberty', 'independence');
 		$this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77));
