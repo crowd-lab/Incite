@@ -29,7 +29,7 @@ function getDefinition($name)
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT definition FROM omeka_incite_subject_concepts WHERE UPPER(name) = UPPER(?)");
     $stmt->bind_param("s", $name);
-    $stmt->bind_reuslt($def);
+    $stmt->bind_result($def);
     $stmt->execute();
     $stmt->fetch();
     if ($def != null)
