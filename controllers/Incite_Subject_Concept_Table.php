@@ -67,11 +67,11 @@ function getAllSubjectConcepts()
     $db = DB_Connect::connectDB();
     $results = Array();
     $stmt = $db->prepare("SELECT * FROM omeka_incite_subject_concepts");
-    $stmt->bind_result($result);
+    $stmt->bind_result($id, $name, $def);
     $stmt->execute();
     while ($stmt->fetch())
     {
-        $results[] = $result;
+        $results[] = array($id, $name, $def);
     }
     $stmt->close();
     $db->close();
