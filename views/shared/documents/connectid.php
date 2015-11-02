@@ -59,7 +59,7 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
             <div class="col-md-4">
       
-            <h2>Does this document talk about <?php echo $this->subject; ?>(definition: <?php echo $this->subject_definition; ?>)?</h2>
+            <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a></h2>
 			<form action="post">
 				<button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
 				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>

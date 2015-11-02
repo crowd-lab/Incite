@@ -165,7 +165,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
 		//Choosing a subject to test with some fake data to test view
 		$this->view->subject = 'Nationalism';
-		$this->view->subject_definition = 'Wiki it!';
+		$this->view->subject_definition = 'patriotic feeling, principles, or efforts';
 		$this->view->entities = array('liberty', 'independence');
 		$this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77));
 
