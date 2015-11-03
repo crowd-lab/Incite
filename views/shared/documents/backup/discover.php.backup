@@ -1,0 +1,5 @@
+<div style="color:orange">
+<p>View from discover!</p>
+<p>Message from config: <?php echo $this->InciteHelper(); ?><br />
+<?php //echo $this->url(); ?>
+</div>

@@ -1,0 +1,4 @@
+<div style="color:orange">
+<p>View from discuss!</p>
+<p>Message from config: <?php echo $this->InciteHelper(); ?>
+</div>
