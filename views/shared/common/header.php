@@ -49,6 +49,21 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<form class="navbar-form navbar-left" role="search">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Location" name="location">
+						<input type="text" class="form-control" placeholder="Time" name="time">
+						<input type="text" class="form-control" placeholder="Keywords" name="keywords">
+						<select class="form-control" name="task">
+							<option value="">Choose a task</option>
+							<option value="transcribe">Transcribe</option>
+							<option value="tag">Tag</option>
+							<option value="connect">Connect</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-default">Discover</button>
+			    </form>
+				<!-- discussion
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="/m4j/incite/documents/transcribe">Transcribe</a>
@@ -62,7 +77,6 @@
                     <li>
                         <a href="/m4j/incite/discussions">Discuss</a>
                     </li>
-					<!-- discussion
                     <li> 
                         <a href="./discussions">Discuss</a>
                     </li>
