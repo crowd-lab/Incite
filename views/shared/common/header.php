@@ -11,9 +11,6 @@
 	<?php echo js_tag('bootstrap.min'); ?>
     <?php echo head_css(); ?>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/style.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <style>
