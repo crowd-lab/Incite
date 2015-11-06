@@ -63,7 +63,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			}
 		} else {
 			//default view without id
-			$this->_forward('discover');
+			//$this->_forward('discover');
 		}
     }
 	

@@ -10,30 +10,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
     <!-- Page Content -->
     <div class="container">
-        <div class="second header">
-            <!-- Primary Navbar -->
-            <div class="navbar navbar-inverse" style="margin-right:-40px;">
-              <div class="container">
-                <div class="navbar-header">
-                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                  </button>
-                  <a class="navbar-brand" href="#"><?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></a>
-                </div>
-                <div class="nav navbar-nav navbar-right"> 
-                    <ul class="nav navbar-nav">
-                        <li ><a href="transcription_document.html">Transcribe</a></li>
-                        <li class="active"><a href="#about">Tag</a></li>
-                        <li><a href="#contact">Menu Item 2</a></li>
-                        <li><a href="#about">Menu Item 3</a></li>
-                    </ul>
-                </div> 
-              </div>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-md-8">
                 <div class="progress">
@@ -49,15 +25,23 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
         </div>
         <div class="container">
-            <div class="col-md-8">
-                <textarea name="transcribe_text" cols="97" rows="40" id="transcribe_copy"><?php print_r($this->transcription); ?></textarea>
-                <img id="document_img" src="<?php echo $this->tag->getFile()->getProperty('uri'); ?>" alt="Mountain View" style="max-width:604px;max-height:800px;">
+            <div class="col-md-6">
+                <textarea name="transcribe_text" cols="75" rows="40" id="transcribe_copy"><?php print_r($this->transcription); ?></textarea>
+                <img id="document_img" src="<?php echo $this->tag->getFile()->getProperty('uri'); ?>" alt="Mountain View" style="max-width:500px;max-height:800px;">
 
                 <br>
                 <button type="button" class="btn btn-default" id="show">Document</button>
                 <button type="button" class="btn btn-default" id="hide">Transcription</button>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
+				<table class="table">
+					<tr><th>Entities</th><th>Category</th><th>Subcategory</th><th>Details</th></tr>
+					<tr><td><input type="text" class="form-control" value="Richmond"></td><td><input class="form-control" type="text" value="Place"></td><td><input class="form-control" type="text"></td><td><input class="form-control" type="text"></td></tr>
+					<tr><td>Jetersville</td><td>Place</td><td><input type="text"></td><td><input type="text"></td></tr>
+					<tr><td>Amelia Springs</td><td>Place</td><td><input type="text"></td><td><input type="text"></td></tr>
+					<tr><td>R.E. Hughson</td><td>People</td><td><input type="text"></td><td><input type="text"></td></tr>
+				</table>
+				<button type="button" class="btn btn-primary">Add more</button>
 <!--
                 <p>Are these the same as the following entities? </p>
                 <form role="form">
@@ -74,7 +58,6 @@ include(dirname(__FILE__).'/../common/header.php');
                       <input type="radio" name="optradio">No
                     </label>
                 </form>
--->
 
             	<form role="form" method="post">
 					<p>Please type the tag name in the following text box:</p>
@@ -102,6 +85,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 	<textarea name="tag_description" cols="60" rows="15" id="tag_description">Details</textarea>
                 	<button type="submit" class="btn btn-default">Submit</button>
                 </form>
+-->
             </div> 
         </div>
 
@@ -114,11 +98,6 @@ include(dirname(__FILE__).'/../common/header.php');
     </div>
     <!-- /.container -->
 
-    <!-- jQuery Version 1.11.1 -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
     <script>
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
