@@ -16,6 +16,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     {
 		//Since this is for ajax purpose, we don't need to render any views!
 		$this->_helper->viewRenderer->setNoRender(TRUE);
+		include("DB_Connect.php");
+		include("Incite_Users_Table.php");
     }
 
 	//Demo of getting users
@@ -23,5 +25,12 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     {
 		echo 'getuser!';
     }
+
+	public function loginAction()
+	{
+		if ($this->getRequest()->isPost()) {
+			echo json_encode($_POST);
+		}
+	}
 
 }
