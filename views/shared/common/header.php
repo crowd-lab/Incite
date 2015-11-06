@@ -68,21 +68,81 @@
             {
                 var request = $.ajax({
                 type: "POST",
-                url: "controllers/Login.php",
+                url: "http://localhost/m4j/incite/ajax/login",
                 data: {username: username, password: password},
-            });
-            request.done(function(data){
-                alert("Login Succesful");
-            });
+                success: function(data) {
+			//called when successful
+			if (data)
+                        {
+                            alert("successful login");
+                            document.getElementById('loginButton').style.visiblity = 'hidden';
+                            document.getElementById('loginButton').style.display = 'none';
+                            document.getElementById('accountButton').style.visiblity = "hidden";
+                            document.getElementById('accountButton').style.display = 'none';
+                            document.getElementById('passwordForm').style.visibility = "hidden";
+                            document.getElementById('accountForm').style.visibility = "hidden";
+                        }
+                        else
+                        {
+                            alert("wrong username or password");
+                        }
+		  },
+		  error: function(e) {
+			//called when there is an error
+			console.log(e.message);
+		  }
+		});
+
             }
         }
         function createAccount()
         {
-            
+            var username = document.getElementById('newEmail').value;
+            var password = document.getElementById('newPassword').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            var firstName = document.getElementById('fName').value;
+            var lastName = document.getElementById('lName').value;
+            if (password != confirmPassword)
+            {
+                alert ("Passwords do not match");
+            }
+            else if (password == "" || firstName == "" || lastName == "" || username == "")
+            {
+                alert("Please fill in all fields");
+            }
+            else
+            {
+                var request = $.ajax({
+                type: "POST",
+                url: "http://localhost/m4j/incite/ajax/createaccount",
+                data: {username: username, password: password, fName: firstName, lName: lastName, priv: 1, exp: 1},
+                success: function(data) {
+			//called when successful
+			if (data)
+                        {
+                            alert("successful login");
+                            document.getElementById('loginButton').style.visiblity = 'hidden';
+                            document.getElementById('loginButton').style.display = 'none';
+                            document.getElementById('accountButton').style.visiblity = "hidden";
+                            document.getElementById('accountButton').style.display = 'none';
+                            document.getElementById('passwordForm').style.visibility = "hidden";
+                            document.getElementById('accountForm').style.visibility = "hidden";
+                        }
+                        else
+                        {
+                            alert("wrong username or password");
+                        }
+		  },
+		  error: function(e) {
+			//called when there is an error
+			console.log(e.message);
+		  }
+		});
+            }
         }
     </script>
     <!-- Navigation -->
-    <button type="button" class="btn btn-default" onclick="loginForm()">Login</button>
+    <button type="button" class="btn btn-default" onclick="loginForm()" id="loginButton">Login</button>
     <div id="passwordForm" style="visibility: hidden">
         <form id="passwordForm">
             <br />
@@ -91,12 +151,15 @@
             <input type="button" value="Submit" onclick="checkPassword()">
         </form>
     </div>
-    <button type="button" class="btn btn-default" onclick="newAccountForm()">Create Account</button>
+    <button type="button" class="btn btn-default" onclick="newAccountForm()" id="accountButton">Create Account</button>
     <div id="accountForm" style="visibility: hidden">
         <form id="accountForm">
             <br />
-            <input type="text" placeholder="Email" id="username">
-            <input type="password" placeholder="Password" id="password">
+            <input type="text" placeholder="Email" id="newEmail">
+            <input type="text" placeholder="First Name" id="fName">
+            <input type="text" placeholder="Last Name" id="lName">
+            <input type="password" placeholder="Password" id="newPassword">
+            <input type="password" placeholder="Confirm Password" id="confirmPassword">
             <input type="button" value="Submit" onclick="createAccount()">
         </form>
     </div>

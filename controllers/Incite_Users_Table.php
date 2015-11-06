@@ -15,9 +15,11 @@ require_once("DB_Connect.php");
     function verifyUser($email, $password)
     {
         $count = 0;
+        $hashedPassword = md5($password);
+        //var_dump($email);
         $db = DB_Connect::connectDB();
         $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_users WHERE email = ? AND password = ? AND is_active = 1");
-        $stmt->bind_param("ss", $email, md5($password));
+        $stmt->bind_param("ss", $email, $hashedPassword);
         $stmt->bind_result($count);
         $stmt->execute();
         $stmt->fetch();
@@ -25,6 +27,7 @@ require_once("DB_Connect.php");
         $db->close();
         if ($count == 1)
         {
+            
             return true;
         }
         else
@@ -35,7 +38,7 @@ require_once("DB_Connect.php");
     }
     /**
      * Gets information about the user in an array
-     * array format = [ID, FIRSTNAME, LASTNAME, PRIVILEGE_LEVEL, EXPERIENCE_LEVEL, GROUP_ID]
+     * array format = [ID, FIRSTNAME, LASTNAME, PRIVILEGE_LEVEL, EXPERIENCE_LEVEL]
      * @param type $email requires an email to check against
      * @return array containing information requested
      */
@@ -43,17 +46,19 @@ require_once("DB_Connect.php");
     {
         $arr = Array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT id, first_name, last_name, privilege_level, experience_level, group_id FROM omeka_incite_users WHERE username = ?");
+        $stmt = $db->prepare("SELECT id, first_name, last_name, privilege_level, experience_level FROM omeka_incite_users WHERE email = ?");
         $stmt->bind_param("s", $email);
-        $stmt->bind_result($result);
+        $stmt->bind_result($id, $firstname, $lastname, $priv, $exp);
         $stmt->execute();
-        $result = $stmt->get_result();
-        while ($data = $result->fetch_assoc())
-        {
-            $arr[] = $data;
-        }
+        $stmt->fetch();
         $stmt->close();
         $db->close();
+        
+        $arr[0] = $id;
+        $arr[1] = $firstname;
+        $arr[2] = $lastname;
+        $arr[3] = $priv;
+        $arr[4] = $exp;
         return $arr;
     }
     /**
@@ -224,15 +229,16 @@ require_once("DB_Connect.php");
         $stmt->close();
         if ($count == 0)
         {
-            $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (AUTO_INCREMENT, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP");
-            $stmt->bind_param("ssssiii", $firstName, $lastName, $email, md5($password), $privilege, $experienceLevel);
+            $hashedPassword = md5($password);
+            $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)");
+            $stmt->bind_param("ssssii", $firstName, $lastName, $email, $hashedPassword, $privilege, $experienceLevel);
             $stmt->execute();
             $stmt->close();
-            return "SUCCESS!";
+            return "Success";
         }
         else
         {
-            return "ERROR: ACCOUNT ALREADY EXISTS!";
+            return "Failure";
         }
     }
     /**
