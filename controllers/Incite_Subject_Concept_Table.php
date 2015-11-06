@@ -17,6 +17,8 @@ function createNewSubjectConcept($name, $definition)
     else
     {
         $stmt1->close();
+        $db->close();
+        $db = DB_Connect::connectDB();
         $stmt = $db->prepare("INSERT INTO omeka_incite_subject_concepts VALUES (NULL, ?, ?)");
         $stmt->bind_param("ss", $name, $definition);
         $stmt->execute();
@@ -105,8 +107,10 @@ function addConceptToDocument($conceptID, $documentID, $userID)
     {
         
         //store concept in conjunction table
+        $db->close();
+        $db = DB_Connect::connectDB();
         $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?)");
-        $newStmt->bind_param("ii", $conceptID, $documentID);
+        $newStmt->bind_param("ii", $conceptID, $id);
         $newStmt->execute();
         $newStmt->close();
         
@@ -114,11 +118,15 @@ function addConceptToDocument($conceptID, $documentID, $userID)
     else
     {
         //create document then tag
-        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents VALUES (NULL, ?, ?, -1, 0, 1, -1, NULL)");
+        $db->close();
+        $db = DB_Connect::connectDB();
+        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents VALUES (NULL, ?, ?, -1, 0, 1, -1, CURRENT_TIMESTAMP)");
         $newStmt->bind_param("ii", $documentID, $userID);
         $newStmt->execute();
         $id = $newStmt->insert_id;
         $newStmt->close();
+        $db->close();
+        $db = DB_Connect::connectDB();
         $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?)");
         $newStmt1->bind_param("ii", $conceptID, $id);
         $newStmt1->execute();

@@ -21,6 +21,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 	//Demo of getting users
     public function getuserAction()
     {
+        echo "<script type='text/javascript'>alert('hi')</script>";
 		echo 'getuser!';
     }
 

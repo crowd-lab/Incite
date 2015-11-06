@@ -3,7 +3,7 @@ class DB_Connect
 {
     static function isLoggedIn()
     {
-        if (isset($_SESSION['IS_LOGIN_VALID']))
+        if (isset($_SESSION['IS_LOGIN_VALID']) && $_SESSION['IS_LOGIN_VALID'])
             return true;
         else
             return false;

@@ -7,6 +7,7 @@ require_once("DB_Connect.php");
      * and password combination match (Should be exactly 1)
      * If a 1 is returned, then the username and password combination worked,
      * 0 means it did not work --> return false
+     * Account must be active in order to login
      * @param type $email to verify the account with (username)
      * @param type $password to verify the account with
      * @return boolean true if login successful, false otherwise
@@ -15,16 +16,21 @@ require_once("DB_Connect.php");
     {
         $count = 0;
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_users WHERE email = ? AND password = ?");
-        $stmt->bind_param("ss", $email, $password);
+        $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_users WHERE email = ? AND password = ? AND is_active = 1");
+        $stmt->bind_param("ss", $email, md5($password));
         $stmt->bind_result($count);
         $stmt->execute();
         $stmt->fetch();
         $stmt->close();
         $db->close();
         if ($count == 1)
+        {
             return true;
-        return false;
+        }
+        else
+        {
+            return false;
+        }
         
     }
     /**
@@ -59,7 +65,6 @@ require_once("DB_Connect.php");
      */
     function isUserActive($email)
     {
-        $count = 0;
         $db = DB_Connect::connectDB();
         $stmt = $db->prepare("SELECT is_active FROM omeka_incite_users WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -69,15 +74,22 @@ require_once("DB_Connect.php");
         $stmt->close();
         $db->close();
         if ($count == 1)
+        {
             return true;
+        }
         return false;
     }
-    
+    /**
+     * Change a user's password
+     * @param string $email associated with account
+     * @param string $newPassword to set for the account
+     * @return boolean true if it worked, false otherwise
+     */
     function changePassword($email, $newPassword)
     {
         $db = DB_Connect::connectDB();
         $stmt = $db->prepare("UPDATE omeka_incite_users SET password = ? WHERE email = ?");
-        $stmt->bind_param("ss", $newPassword, $email);
+        $stmt->bind_param("ss", md5($newPassword), $email);
         if (!$stmt->execute())
         {
             var_dump($stmt->error);
@@ -89,7 +101,12 @@ require_once("DB_Connect.php");
         $db->close();
         return true;
     }
-    
+    /**
+     * Upgrade or Downgrade user's experience level
+     * @param string $email associated with account
+     * @param int $experienceLevel to change to 
+     * @return boolean true if successful, false otherwise
+     */
     function changeExperienceLevel($email, $experienceLevel)
     {
         $db = DB_Connect::connectDB();
@@ -140,6 +157,11 @@ require_once("DB_Connect.php");
     }
      *
      */
+    /**
+     * Safe way to 'remove' an account by setting it's active status to '0'
+     * @param string $email associated with the account to deactivate
+     * @return boolean true if worked, false otherwise 
+     */
     function deactivateAccount($email)
     {
         $db = DB_Connect::connectDB();
@@ -157,6 +179,12 @@ require_once("DB_Connect.php");
         return true;
         
     }
+    /**
+     * If account is inactive, reactivate the account
+     * @param string $email associated with the account to activate
+     * @return boolean true if successful, false otherwise (could be account
+     * does not exist)
+     */
     function reactivateAccount($email)
     {
         $db = DB_Connect::connectDB();
@@ -173,11 +201,22 @@ require_once("DB_Connect.php");
         $db->close();
         return true;
     }
+    /**
+     * Create a new account. If the same email exists for another account, an
+     * error will be thrown
+     * @param string $email to create account
+     * @param string $password desired password
+     * @param string $firstName first name
+     * @param string $lastName last name
+     * @param string $privilege type of user
+     * @param int $experienceLevel user experience level
+     * @return string "Success" or "Failure"
+     */
     function createAccount($email, $password, $firstName, $lastName, $privilege, $experienceLevel)
     {
         $count = 0;
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_users WHERE email = ?");
+        $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_users WHERE UPPER(email) = UPPER(?)");
         $stmt->bind_param("s", $email);
         $stmt->bind_result($count);
         $stmt->execute();
@@ -186,7 +225,7 @@ require_once("DB_Connect.php");
         if ($count == 0)
         {
             $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (AUTO_INCREMENT, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP");
-            $stmt->bind_param("ssssiii", $firstName, $lastName, $email, $password, $privilege, $experienceLevel);
+            $stmt->bind_param("ssssiii", $firstName, $lastName, $email, md5($password), $privilege, $experienceLevel);
             $stmt->execute();
             $stmt->close();
             return "SUCCESS!";
@@ -196,6 +235,11 @@ require_once("DB_Connect.php");
             return "ERROR: ACCOUNT ALREADY EXISTS!";
         }
     }
+    /**
+     * Remove account from database
+     * WARNING! This will have cascading errors if used improperly
+     * @param type $userID to remove from the database
+     */
     function removeAccount($userID)
     {
         $db = DB_Connect::connectDB();
@@ -204,5 +248,19 @@ require_once("DB_Connect.php");
         $stmt->execute();
         $stmt->close();
         $db->close();
+    }
+    /**
+     * Generate an 11 digit random user id. Used only for making an 
+     * anonymous cookie for unlogged-in users
+     * @return int 11 digit random number
+     */
+    function generateRandomUserId()
+    {
+        $temp = "";
+        for ($i = 0; $i < 11; $i++)
+        {
+            $temp .= rand(0, 9);
+        }
+        return (int)$temp;
     }
 ?>

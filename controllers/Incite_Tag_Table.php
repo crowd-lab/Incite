@@ -5,10 +5,7 @@ require_once("DB_Connect.php");
 function createTag($userID, $tag_text, $category_name, $description, $documentID)
 {
     $db = DB_Connect::connectDB();
-    if (!$stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?)"))
-    {
-        echo $stmt->errno;
-    }
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
     $stmt->bind_param('isss', $userID, $tag_text, $category_name, $description);
     $stmt->execute();
     $tagID = $stmt->insert_id;
@@ -16,7 +13,8 @@ function createTag($userID, $tag_text, $category_name, $description, $documentID
     
     //see if document is existing in database and tag document if exists
     //if it doesn't exist, create it with the document id and then tag it with the tag id
-    
+    $db->close();
+    $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
     $stmt->bind_param("i", $documentID);
     $stmt->bind_result($id);
@@ -24,8 +22,9 @@ function createTag($userID, $tag_text, $category_name, $description, $documentID
     $stmt->fetch();
     if($stmt->num_rows > 0) 
     {
-        
         //store tag in conjunction table
+        $db->close();
+        $db = DB_Connect::connectDB();
         $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_tags_conjunction VALUES (NULL, ?, ?)");
         $newStmt->bind_param("ii", $id, $tagID);
         $newStmt->execute();
@@ -35,11 +34,15 @@ function createTag($userID, $tag_text, $category_name, $description, $documentID
     else
     {
         //create document then tag
-        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents VALUES (NULL, ?, ?, -1, 0, 1, -1, NULL)");
+        $db->close();
+        $db = DB_Connect::connectDB();
+        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents VALUES (NULL, ?, ?, -1, 0, 1, -1, CURRENT_TIMESTAMP)");
         $newStmt->bind_param("ii", $documentID, $userID);
         $newStmt->execute();
         $id = $newStmt->insert_id;
         $newStmt->close();
+        $db->close();
+        $db = DB_Connect::connectDB();
         $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_tags_conjunction VALUES (NULL, ?, ?)");
         $newStmt1->bind_param("ii", $id, $tagID);
         $newStmt1->execute();

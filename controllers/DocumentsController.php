@@ -17,6 +17,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         require_once("Incite_Transcription_Table.php");
         require_once("Incite_Tag_Table.php");
         require_once("Incite_Subject_Concept_Table.php");
+        if (!DB_Connect::isLoggedIn())
+        {
+            $GLOBALS['USERID'] = -1; //user is anonymous
+        }
+        else
+        {
+            $userArray = $_SESSION['USER_DATA'];
+            $GLOBALS['USERID'] = $userArray[0]; 
+        }
         
     }
 
@@ -65,7 +74,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			//save transcription and summary to database
                     if ($this->_hasParam('id'))
                     {
-                        createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
+                        createTranscription($this->_getParam('id'),  $GLOBALS['USERID'], $_POST['transcription'], $_POST['summary']);
                     }
                     
 		} 
@@ -114,8 +123,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 						//data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
 						//ready to insert tag into database
                         //createTag($userID, $tag_text, $category_name, $description, $documentID)
-                        $userID = -1;
-                        createTag($userID, $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description'], $this->_getParam('id'));
+                        createTag($GLOBALS['USERID'], $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description'], $this->_getParam('id'));
                     }
                     
 		} 
