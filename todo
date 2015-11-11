@@ -5,6 +5,7 @@ Webpage:
 	* Need to update login/signup status after trying
 		** Success: update topright status
 		** Failure: show error message on login/signup dialog
+	* Need to complete the search part of Discover
 
 10/28/2015:
 
