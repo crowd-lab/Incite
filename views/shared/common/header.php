@@ -150,7 +150,7 @@
         <h4 class="modal-title" id="login-signup-dialog-label">User Login/Sign-up</h4>
       </div>
       <div class="modal-body">
-		<ul class="nav nav-tabs nav-justified">
+		<ul class="nav nav-tabs nav-justified nav-pills">
 			<li class="active"><a href="#tab1" data-toggle="tab">Login</a></li>
 			<li><a href="#tab2" data-toggle="tab">Sign-up</a></li>
 		</ul>
