@@ -1,4 +1,11 @@
 
+11/11/2015:
+
+Webpage:
+	* Need to update login/signup status after trying
+		** Success: update topright status
+		** Failure: show error message on login/signup dialog
+
 10/28/2015:
 
 Database:
