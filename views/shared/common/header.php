@@ -12,9 +12,6 @@
     <?php echo head_css(); ?>
     
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
 
 
     <!-- Custom CSS -->
@@ -35,111 +32,55 @@
 
 <body>
     <script type="text/javascript">
-        function loginForm()
-        {
-            if (document.getElementById('passwordForm').style.visibility == "visible")
-            {
-                document.getElementById('passwordForm').style.visibility = "hidden";
-            }
-            else
-            {
-                document.getElementById('passwordForm').style.visibility = "visible";
-            }
-            
-        }
-        function newAccountForm()
-        {
-            if (document.getElementById('accountForm').style.visibility == "visible")
-            {
-                document.getElementById('accountForm').style.visibility = "hidden";
-            }
-            else
-            {
-                document.getElementById('accountForm').style.visibility = "visible";
-            }
-            
-        }
-        function checkPassword()
-        {
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-            
-            if (username != "" && password != "")
-            {
-                var request = $.ajax({
-                type: "POST",
-                url: "http://localhost/m4j/incite/ajax/login",
-                data: {username: username, password: password},
-                success: function(data) {
-			//called when successful
-			if (data)
-                        {
-                            alert("successful login");
-                            document.getElementById('loginButton').style.visiblity = 'hidden';
-                            document.getElementById('loginButton').style.display = 'none';
-                            document.getElementById('accountButton').style.visiblity = "hidden";
-                            document.getElementById('accountButton').style.display = 'none';
-                            document.getElementById('passwordForm').style.visibility = "hidden";
-                            document.getElementById('accountForm').style.visibility = "hidden";
-                        }
-                        else
-                        {
-                            alert("wrong username or password");
-                        }
-		  },
-		  error: function(e) {
-			//called when there is an error
-			console.log(e.message);
-		  }
+		$(document).ready( function() {
+			$('#login-button').on('click', function (e) {
+				if ($('#login-tab').hasClass('active')) {
+					if ($('#username').val() !== "" && $('#password').val() !== "") {
+						//do login
+                		var request = $.ajax({
+							type: "POST",
+							url: "http://localhost/m4j/incite/ajax/login",
+							data: {"username": $('#username').val(), "password": $('#password').val()},
+							success: function(data) {
+								if (data) {
+									alert("successful login");
+									$('#login-signup-dialog').modal('hide');
+								} else {
+									alert("wrong username or password");
+								}
+							},
+							error: function(e) {
+								console.log(e.message);
+							}
+						});
+					} else { 
+						alert('username and password are both required');
+					}
+				} else { //then #signup-tab is active
+					if ($('#newUsername').val() !== "" && $('#newPassword').val() !== "" && $('#confirmPassword').val() !== "" && $('#firstName').val !== "" && $('#lastName').val() !== "") {
+						//do signup
+                		var request = $.ajax({
+							type: "POST",
+							url: "http://localhost/m4j/incite/ajax/createaccount",
+							data: {"username": username, "password": password, "fName": firstName, "lName": lastName, "priv": 1, "exp": 1},
+							success: function(data) {
+								if (data) {
+									alert("successful login");
+									$('#login-signup-dialog').modal('hide');
+								} else {
+									alert("wrong username or password");
+								}
+							},
+							error: function(e) {
+								console.log(e.message);
+							}
+						});
+					} else { 
+						alert('all fields are required');
+					}
+				}
+			});
 		});
-
-            }
-        }
-        function createAccount()
-        {
-            var username = document.getElementById('newEmail').value;
-            var password = document.getElementById('newPassword').value;
-            var confirmPassword = document.getElementById('confirmPassword').value;
-            var firstName = document.getElementById('fName').value;
-            var lastName = document.getElementById('lName').value;
-            if (password != confirmPassword)
-            {
-                alert ("Passwords do not match");
-            }
-            else if (password == "" || firstName == "" || lastName == "" || username == "")
-            {
-                alert("Please fill in all fields");
-            }
-            else
-            {
-                var request = $.ajax({
-                type: "POST",
-                url: "http://localhost/m4j/incite/ajax/createaccount",
-                data: {username: username, password: password, fName: firstName, lName: lastName, priv: 1, exp: 1},
-                success: function(data) {
-			//called when successful
-			if (data)
-                        {
-                            alert("successful login");
-                            document.getElementById('loginButton').style.visiblity = 'hidden';
-                            document.getElementById('loginButton').style.display = 'none';
-                            document.getElementById('accountButton').style.visiblity = "hidden";
-                            document.getElementById('accountButton').style.display = 'none';
-                            document.getElementById('passwordForm').style.visibility = "hidden";
-                            document.getElementById('accountForm').style.visibility = "hidden";
-                        }
-                        else
-                        {
-                            alert("wrong username or password");
-                        }
-		  },
-		  error: function(e) {
-			//called when there is an error
-			console.log(e.message);
-		  }
-		});
-            }
-        }
     </script>
 
 <div class="modal fade" id="login-signup-dialog" tabindex="-1" role="dialog" aria-labelledby="login-signup-dialog-label">
@@ -151,55 +92,56 @@
       </div>
       <div class="modal-body">
 		<ul class="nav nav-tabs nav-justified nav-pills">
-			<li class="active"><a href="#tab1" data-toggle="tab">Login</a></li>
-			<li><a href="#tab2" data-toggle="tab">Sign-up</a></li>
+			<li class="active" id="login-tab"><a href="#tab1" data-toggle="tab">Login</a></li>
+			<li id="signup-tab"><a href="#tab2" data-toggle="tab">Sign-up</a></li>
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane active" id="tab1">
 				<form>
 				  <div class="form-group">
 					<label for="recipient-name" class="control-label">Username (email):</label>
-					<input type="text" class="form-control" id="email">
+					<input type="text" class="form-control" id="email" name="username">
 				  </div>
 				  <div class="form-group">
 					<label for="message-text" class="control-label">Password:</label>
-					<input type="text" class="form-control" id="password">
+					<input type="password" class="form-control" id="password" name="password">
 				  </div>
 				</form>
 			</div>
 			<div class="tab-pane" id="tab2">
 				<form>
 				  <div class="form-group">
-					<label for="recipient-name" class="control-label">Username (email):</label>
-					<input type="text" class="form-control" id="email">
+					<label class="control-label">Username (email):</label>
+					<input type="text" class="form-control" id="newUsername" name="email">
 				  </div>
 				  <div class="form-group">
 					<label for="message-text" class="control-label">Password:</label>
-					<input type="text" class="form-control" id="password">
+					<input type="password" class="form-control" id="newPassword" name="password">
 				  </div>
 				  <div class="form-group">
 					<label for="message-text" class="control-label">Confirm Password:</label>
-					<input type="text" class="form-control" id="password">
+					<input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
 				  </div>
 				  <div class="form-group">
 					<label for="message-text" class="control-label">First Name:</label>
-					<input type="text" class="form-control" id="password">
+					<input type="text" class="form-control" id="firstName" name="firstName">
 				  </div>
 				  <div class="form-group">
 					<label for="message-text" class="control-label">Last Name:</label>
-					<input type="text" class="form-control" id="password">
+					<input type="text" class="form-control" id="lastName" name="lastName">
 				  </div>
 				</form>
 			</div>
 		</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Submit</button>
+		<button type="button" class="btn btn-primary" id="login-button">Submit</button>
       </div>
     </div>
   </div>
 </div>
     <!-- Navigation -->
+<!--
     <button type="button" class="btn btn-default" onclick="loginForm()" id="loginButton">Login</button>
     <div id="passwordForm" style="visibility: hidden">
         <form id="passwordForm">
@@ -221,6 +163,7 @@
             <input type="button" value="Submit" onclick="createAccount()">
         </form>
     </div>
+-->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -245,9 +188,17 @@
                 <button type="submit" class="btn btn-default">Discover</button>
             </form>
 			</ul>
+<?php if (isset($_SESSION['IS_LOGIN_VALID']) && $_SESSION['IS_LOGIN_VALID'] == true): ?>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="user_profile!"><?php echo $_SESSION['USER_DATA'][1]; //first name ?></a></li>
+				<li><a href="logout!">Logout</a></li>
+			</ul>
+<?php else: ?>
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></li>
 			</ul>
+
+<?php endif; ?>
 
             <!-- discussion
 <ul class="nav navbar-nav">
