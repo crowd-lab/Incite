@@ -141,6 +141,64 @@
             }
         }
     </script>
+
+<div class="modal fade" id="login-signup-dialog" tabindex="-1" role="dialog" aria-labelledby="login-signup-dialog-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="login-signup-dialog-label">User Login/Sign-up</h4>
+      </div>
+      <div class="modal-body">
+		<ul class="nav nav-tabs nav-justified">
+			<li class="active"><a href="#tab1" data-toggle="tab">Login</a></li>
+			<li><a href="#tab2" data-toggle="tab">Sign-up</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="tab1">
+				<form>
+				  <div class="form-group">
+					<label for="recipient-name" class="control-label">Username (email):</label>
+					<input type="text" class="form-control" id="email">
+				  </div>
+				  <div class="form-group">
+					<label for="message-text" class="control-label">Password:</label>
+					<input type="text" class="form-control" id="password">
+				  </div>
+				</form>
+			</div>
+			<div class="tab-pane" id="tab2">
+				<form>
+				  <div class="form-group">
+					<label for="recipient-name" class="control-label">Username (email):</label>
+					<input type="text" class="form-control" id="email">
+				  </div>
+				  <div class="form-group">
+					<label for="message-text" class="control-label">Password:</label>
+					<input type="text" class="form-control" id="password">
+				  </div>
+				  <div class="form-group">
+					<label for="message-text" class="control-label">Confirm Password:</label>
+					<input type="text" class="form-control" id="password">
+				  </div>
+				  <div class="form-group">
+					<label for="message-text" class="control-label">First Name:</label>
+					<input type="text" class="form-control" id="password">
+				  </div>
+				  <div class="form-group">
+					<label for="message-text" class="control-label">Last Name:</label>
+					<input type="text" class="form-control" id="password">
+				  </div>
+				</form>
+			</div>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- Navigation -->
     <button type="button" class="btn btn-default" onclick="loginForm()" id="loginButton">Login</button>
     <div id="passwordForm" style="visibility: hidden">
@@ -188,7 +246,7 @@
             </form>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="../navbar/">Login/Sign-up</a></li>
+				<li><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></li>
 			</ul>
 
             <!-- discussion
