@@ -192,7 +192,6 @@
                 <button type="submit" class="btn btn-default">Discover</button>
             </form>
 			</ul>
-<?php print_r($_SESSION); ?>
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name ?></a></li>
