@@ -42,6 +42,8 @@
 							url: "http://localhost/m4j/incite/ajax/login",
 							data: {"username": $('#username').val(), "password": $('#password').val()},
 							success: function(data) {
+								console.log('login');
+								console.log(data);
 								if (data) {
 									alert("successful login");
 									$('#login-signup-dialog').modal('hide');
@@ -62,10 +64,12 @@
                 		var request = $.ajax({
 							type: "POST",
 							url: "http://localhost/m4j/incite/ajax/createaccount",
-							data: {"username": username, "password": password, "fName": firstName, "lName": lastName, "priv": 1, "exp": 1},
+							data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
 							success: function(data) {
+								console.log('signup');
+								console.log(data);
 								if (data) {
-									alert("successful login");
+									alert("successful signup and login");
 									$('#login-signup-dialog').modal('hide');
 								} else {
 									alert("wrong username or password");
@@ -100,7 +104,7 @@
 				<form>
 				  <div class="form-group">
 					<label for="recipient-name" class="control-label">Username (email):</label>
-					<input type="text" class="form-control" id="email" name="username">
+					<input type="text" class="form-control" id="username" name="username">
 				  </div>
 				  <div class="form-group">
 					<label for="message-text" class="control-label">Password:</label>
@@ -188,9 +192,10 @@
                 <button type="submit" class="btn btn-default">Discover</button>
             </form>
 			</ul>
-<?php if (isset($_SESSION['IS_LOGIN_VALID']) && $_SESSION['IS_LOGIN_VALID'] == true): ?>
+<?php print_r($_SESSION); ?>
+<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="user_profile!"><?php echo $_SESSION['USER_DATA'][1]; //first name ?></a></li>
+				<li><a href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name ?></a></li>
 				<li><a href="logout!">Logout</a></li>
 			</ul>
 <?php else: ?>

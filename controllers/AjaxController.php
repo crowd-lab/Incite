@@ -30,13 +30,12 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             $password = $_POST['password'];
             if (verifyUser($username, $password)) 
             {
-                if (isset($_SESSION))
+                if (!isset($_SESSION))
                 {
-                    session_destroy();
+                	session_start();
                 }
-                session_start();
-                $_SESSION['IS_LOGIN_VALID'] = true;
-                $_SESSION['USER_DATA'] = getUserData($username);
+                $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
+                $_SESSION['Incite']['USER_DATA'] = getUserData($username);
                 echo json_encode("true");
             } else {
                 echo json_encode("false");
@@ -55,13 +54,12 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             if (createAccount($username, $password, $firstName, $lastName, $priv, $exp) != "failure")
             {
                 //destroy previous session and then map it to the new session ==> store in new table
-                 if (isset($_SESSION))
+                 if (!isset($_SESSION))
                  {
-                    session_destroy();
+					session_start();
                  }
-                session_start();
-                $_SESSION['IS_LOGIN_VALID'] = true;
-                $_SESSION['USER_DATA'] = getUserData($username);
+                $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
+                $_SESSION['Incite']['USER_DATA'] = getUserData($username);
                 echo json_encode("true");
             }
             else
