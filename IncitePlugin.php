@@ -157,7 +157,7 @@ SQL
         `first_name`        varchar(15) NOT NULL,
         `last_name`         varchar(15) NOT NULL,
         `email`             varchar(30) NOT NULL,
-        `password`          varchar(30) NOT NULL,
+        `password`          varchar(32) NOT NULL,
         `privilege_level`   int(11) NOT NULL,
         `experience_level`  int(11) NOT NULL,
         `is_active`         int(11) NOT NULL,
