@@ -167,23 +167,18 @@
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/m4j/incite">Incite from Mapping the Fourth</a>
+            <a class="navbar-brand" href="/m4j/incite">Incite of Mapping the Fourth</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Location" name="location">
                     <input type="text" class="form-control" placeholder="Time" name="time">
                     <input type="text" class="form-control" placeholder="Keywords" name="keywords">
                     <select class="form-control" name="task">
-                        <option value="">Choose a task</option>
+                        <option value="">Select a task</option>
                         <option value="transcribe">Transcribe</option>
                         <option value="tag">Tag</option>
                         <option value="connect">Connect</option>
@@ -191,6 +186,10 @@
                 </div>
                 <button type="submit" class="btn btn-default">Discover</button>
             </form>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../navbar/">Login/Sign-up</a></li>
+			</ul>
 
             <!-- discussion
 <ul class="nav navbar-nav">
