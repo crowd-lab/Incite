@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Incite 
  *
@@ -28,22 +29,20 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
         if ($this->getRequest()->isPost()) {
             $username = $_POST['username'];
             $password = $_POST['password'];
-            if (verifyUser($username, $password)) 
-            {
-                if (!isset($_SESSION))
-                {
-                	session_start();
+            if (verifyUser($username, $password)) {
+                if (!isset($_SESSION)) {
+                    session_start();
                 }
                 $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
                 $_SESSION['Incite']['USER_DATA'] = getUserData($username);
-                echo json_encode("true");
+                echo json_encode(true);
             } else {
-                echo json_encode("false");
+                echo json_encode(false);
             }
         }
     }
-    public function createaccountAction()
-    {
+
+    public function createaccountAction() {
         if ($this->getRequest()->isPost()) {
             $username = $_POST['username'];
             $password = $_POST['password'];
@@ -51,22 +50,29 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             $lastName = $_POST['lName'];
             $priv = $_POST['priv'];
             $exp = $_POST['exp'];
-            if (createAccount($username, $password, $firstName, $lastName, $priv, $exp) != "failure")
-            {
+            if (createAccount($username, $password, $firstName, $lastName, $priv, $exp) != "failure") {
                 //destroy previous session and then map it to the new session ==> store in new table
-                 if (!isset($_SESSION))
-                 {
-					session_start();
-                 }
+                if (!isset($_SESSION)) {
+                    session_start();
+                }
                 $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
                 $_SESSION['Incite']['USER_DATA'] = getUserData($username);
-                echo json_encode("true");
-            }
-            else
-            {
-                echo json_encode("false");
+                echo json_encode(true);
+            } else {
+                echo json_encode(false);
             }
         }
+    }
+
+    public function logoutAction() {
+        $_SESSION = array();
+        session_destroy();
+        die();
+    }
+    
+    public function getdataAction()
+    {
+        echo json_encode($_SESSION['Incite']['USER_DATA']);
     }
 
 }
