@@ -65,8 +65,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
     }
 
     public function logoutAction() {
-        $_SESSION = array();
-        session_destroy();
+        $_SESSION['Incite'] = array();
         die();
     }
     
