@@ -86,13 +86,13 @@ $(document).ready(function(){
                     return false;
                   });
             });
+            $('.viewer').height($(window).height()*68/100);
         </script>
 
 <style>
             .viewer
             {
                 width: 100%;
-                height: 500px;
                 border: 1px solid black;
                 position: relative;
             }
