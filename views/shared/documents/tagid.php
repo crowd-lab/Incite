@@ -20,12 +20,11 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="container">
             <div class="col-md-6">
-            
                 <div style="position: fixed; width: 35%;">
                     <textarea name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></textarea>
-                        <div class="wrapper">
-                            <div id="document_img" class="viewer"></div>
-                        </div>
+                    <div class="wrapper">
+                        <div id="document_img" class="viewer"></div>
+                    </div>
                     <button type="button" class="btn btn-default" id="show">Document</button>
                     <button type="button" class="btn btn-default" id="hide">Transcription</button>
                 </div>
