@@ -7,16 +7,10 @@ $db = get_db();
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
-
     <!-- Page Content -->
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="60"
-                    aria-valuemin="0" aria-valuemax="100" style="width:60%">
-                    60%
-                </div>
             </div>
             </div>
             <div class="col-md-4">
@@ -26,12 +20,15 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="container">
             <div class="col-md-6">
-                <textarea name="transcribe_text" cols="75" rows="40" id="transcribe_copy"><?php print_r($this->transcription); ?></textarea>
-                <img id="document_img" src="<?php echo $this->tag->getFile()->getProperty('uri'); ?>" alt="Mountain View" style="max-width:500px;max-height:800px;">
-
-                <br>
-                <button type="button" class="btn btn-default" id="show">Document</button>
-                <button type="button" class="btn btn-default" id="hide">Transcription</button>
+            
+                <div style="position: fixed; width: 35%;">
+                    <textarea name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></textarea>
+                        <div class="wrapper">
+                            <div id="document_img" class="viewer"></div>
+                        </div>
+                    <button type="button" class="btn btn-default" id="show">Document</button>
+                    <button type="button" class="btn btn-default" id="hide">Transcription</button>
+                </div>
             </div>
             <div class="col-md-6">
 				<table class="table">
@@ -112,6 +109,31 @@ $(document).ready(function(){
     });
 });
 </script>
+<script type="text/javascript">
+            var $ = jQuery;
+            $(document).ready(function(){
+
+                  var iv2 = $("#document_img").iviewer(
+                  {
+                      src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>"
+                  });
+
+            });
+            $('.viewer').height($(window).height()*68/100);
+        </script>
+<style>
+            .viewer
+            {
+                width: 100%;
+                border: 1px solid black;
+                position: relative;
+            }
+            
+            .wrapper
+            {
+                overflow: hidden;
+            }
+        </style>
 
 </body>
 
