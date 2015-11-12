@@ -1,3 +1,8 @@
+<?php
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer'));
+$db = get_db();
+?>
+
 <head>
 
     <meta charset="utf-8">
@@ -9,6 +14,9 @@
     <title>Mapping the 4th</title>
     <?php echo js_tag('jquery'); ?>
     <?php echo js_tag('bootstrap.min'); ?>
+    <?php echo js_tag('jquery-ui'); ?>
+    <?php echo js_tag('jquery.mousewheel'); ?>
+    <?php echo js_tag('jquery.iviewer'); ?>
     <?php echo head_css(); ?>
 
 
