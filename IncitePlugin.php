@@ -164,10 +164,42 @@ SQL
         `timestamp`         timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 SQL
         );
-    }
+        get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags_subcategory (
+        `id`                int(10) unsigned NOT NULL AUTO_INCREMENT,
+        `name`              varchar(30) NOT NULL,
+        `category_id`       int(10) unsigned NOT NULL,
+        `created_by`        int(10) unsigned NOT NULL,
+        `timestamp`         timestamp NOT NULL,
+  
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+SQL
+    );
+    
+        get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags_category (
+        `id`            int(11) NOT NULL AUTO_INCREMENT,
+        `name`          varchar(30) NOT NULL,
+  
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1; 
+SQL
+   );
+        get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags_subcategory_conjunction (
+        `tag_id`            int(11) NOT NULL,
+        `subcategory_id`    int(11) NOT NULL
+    
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;    
+   
+SQL
+    );
+    
+}
 
     /**
      * remove the database tables
