@@ -37,7 +37,7 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php endforeach; ?>
 				</table>
 				<button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
-				<button type="button" class="btn btn-primary pull-right">I confirm the above information is correct!</button>
+				<button type="button" class="btn btn-primary pull-right" id="confirm-button">I confirm the above information is correct!</button>
                 <div id="container">
                     <h3> Discussion </h3>
                     <ul id="comments">
@@ -142,6 +142,19 @@ $(document).ready(function(){
                 $('#entity-table').on('click', 'button', function (e) {
                     $(this).parent().parent().remove();
                 }); 
+
+                $('#confirm-button').on('click', function(e) {
+                    var entities = [];
+                    var rows = $('#entity-table tr').has("td");
+                    rows.each(function (idx) { 
+                        //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+                        var fields = $(this).find('input');
+                        entities.push({entity:$(fields[0]).val(), category:$(fields[1]).val(), subcategory:$(fields[2]).val(), details:$(fields[3]).val()});
+                    });
+                    //alert is for testing
+                    //alert(JSON.stringify(entities));
+                    //data, that is, JSON.stringify(entities) are ready to be submitted for processing
+                });
 
             });
             $('.viewer').height($(window).height()*68/100);
