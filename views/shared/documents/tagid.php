@@ -38,6 +38,25 @@ include(dirname(__FILE__).'/../common/header.php');
 				</table>
 				<button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
 				<button type="button" class="btn btn-primary pull-right">I confirm the above information is correct!</button>
+                <div id="container">
+                    <h3> Discussion </h3>
+                    <ul id="comments">
+                        <li class="cmmnt">
+<!--                            <div class="avatar"><a href="javascript:void(0);"><img src="images/dark-cubes.png" width="55" height="55" alt="DarkCubes photo avatar"></a></div>
+-->
+                            <div class="cmmnt-content">
+                                <header><a href="javascript:void(0);" class="userlink">DarkCubes</a> - <span class="pubdate">posted 1 week ago</span></header>
+                                <p>Ut nec interdum libero. Sed felis lorem, venenatis sed malesuada vitae, tempor vel turpis. Mauris in dui velit, vitae mollis risus. Cras lacinia lorem sit amet augue mattis vel cursus enim laoreet. Vestibulum faucibus scelerisque nisi vel sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pellentesque massa ac justo tempor eu pretium massa accumsan. In pharetra mattis mi et ultricies. Nunc vel eleifend augue. Donec venenatis egestas iaculis.</p>
+                            </div>
+                        </li>
+                    </ul>
+<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
+                    <textarea name="transcribe_text" cols="60" rows="10" id="comment">Your comment</textarea>
+                    <button type="button" class="btn btn-default" id="">Submit</button>
+<?php else: ?>
+                    Please login or signup to join the discussion!
+                </div>
+<?php endif; ?>
 <!--
                 <p>Are these the same as the following entities? </p>
                 <form role="form">
