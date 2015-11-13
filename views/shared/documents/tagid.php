@@ -30,14 +30,14 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </div>
             <div class="col-md-6">
-				<table class="table">
-					<tr><th>Entities</th><th>Category</th><th>Subcategory</th><th>Details</th></tr>
-					<tr><td><input type="text" class="form-control" value="Richmond"></td><td><input class="form-control" type="text" value="Place"></td><td><input class="form-control" type="text"></td><td><input class="form-control" type="text"></td></tr>
-					<tr><td>Jetersville</td><td>Place</td><td><input type="text"></td><td><input type="text"></td></tr>
-					<tr><td>Amelia Springs</td><td>Place</td><td><input type="text"></td><td><input type="text"></td></tr>
-					<tr><td>R.E. Hughson</td><td>People</td><td><input type="text"></td><td><input type="text"></td></tr>
+				<table class="table" id="entity-table">
+					<tr><th>Entity</th><th>Category</th><th>Subcategory</th><th>Details</th><th>Not an entity?</th></tr>
+<?php foreach ($this->entities as $entity): ?>
+					<tr><td><input type="text" class="form-control" value="<?php echo $entity['entity']; ?>"></td><td><input class="form-control" type="text" value="<?php echo $entity['category']; ?>"></td><td><input class="form-control" type="text" value="<?php echo $entity['subcategory']; ?>"></td><td><input class="form-control" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+<?php endforeach; ?>
 				</table>
-				<button type="button" class="btn btn-primary">Add more</button>
+				<button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
+				<button type="button" class="btn btn-primary pull-right">I confirm the above information is correct!</button>
 <!--
                 <p>Are these the same as the following entities? </p>
                 <form role="form">
@@ -108,19 +108,23 @@ $(document).ready(function(){
     });
 });
 </script>
-<script type="text/javascript">
+        <script type="text/javascript">
             var $ = jQuery;
-            $(document).ready(function(){
+            $(document).ready(function() {
 
-                  var iv2 = $("#document_img").iviewer(
-                  {
-                      src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>"
-                  });
+                var iv2 = $("#document_img").iviewer({
+                    src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>"
+                });
+
+                $('#add-more-button').on('click', function (e) {
+                    $('#entity-table').append('<tr><td><input type="text" class="form-control" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td></td></tr>');
+                }); 
+            
 
             });
             $('.viewer').height($(window).height()*68/100);
         </script>
-<style>
+        <style>
             .viewer
             {
                 width: 100%;
@@ -134,6 +138,6 @@ $(document).ready(function(){
             }
         </style>
 
-</body>
+    </body>
 
 </html>

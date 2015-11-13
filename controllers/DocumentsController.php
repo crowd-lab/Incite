@@ -117,20 +117,21 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         // echo '<div style="color:blue">Welcome to Tag!</div>';
 		if ($this->getRequest()->isPost()) {
 			//save a tag to database
-                    if ($this->_hasParam('id'))
-                    {
-                        //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
-						//data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
-						//ready to insert tag into database
-                        //createTag($userID, $tag_text, $category_name, $description, $documentID)
-                        createTag($GLOBALS['USERID'], $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description'], $this->_getParam('id'));
-                    }
+                if ($this->_hasParam('id'))
+                {
+                    //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
+                    //data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
+                    //ready to insert tag into database
+                    //createTag($userID, $tag_text, $category_name, $description, $documentID)
+                    createTag($GLOBALS['USERID'], $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description'], $this->_getParam('id'));
+                }
                     
 		} 
 
 		$this->_helper->db->setDefaultModelName('Item');
 		if ($this->_hasParam('id')) {
 			$record = $this->_helper->db->find($this->_getParam('id'));
+            
 			if ($record != null) {
 				if ($record->getFile() == null) {
 					//no image to transcribe
@@ -144,6 +145,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 				}
 				$this->_helper->viewRenderer('tagid');
 				$this->view->tag = $record;
+                //Handling entities here!
+                $entities = array();
+                $entities[] = ['entity' => 'Richmond', 'category' => 'Place', 'subcategory' => '', 'details' => ''];
+                $entities[] = ['entity' => 'Jetersville', 'category' => 'Place', 'subcategory' => '', 'details' => ''];
+                $entities[] = ['entity' => 'Amelia Springs', 'category' => 'Place', 'subcategory' => '', 'details' => ''];
+                $entities[] = ['entity' => 'R.E. Hughson', 'category' => 'People', 'subcategory' => '', 'details' => ''];
+                $this->view->entities = $entities;
 			} else {
 				//no such document
 				echo 'no such document';
