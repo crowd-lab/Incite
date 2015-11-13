@@ -117,9 +117,12 @@ $(document).ready(function(){
                 });
 
                 $('#add-more-button').on('click', function (e) {
-                    $('#entity-table').append('<tr><td><input type="text" class="form-control" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td></td></tr>');
+                    $('#entity-table').append('<tr><td><input type="text" class="form-control" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><button type="button" class="btn btn-default" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
                 }); 
-            
+                
+                $('#entity-table').on('click', 'button', function (e) {
+                    $(this).parent().parent().remove();
+                }); 
 
             });
             $('.viewer').height($(window).height()*68/100);
