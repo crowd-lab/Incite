@@ -21,8 +21,8 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
         </div>
         <div class="container">
-            <div class="col-md-6">
-                <div style="position: fixed; width: 35%;">
+            <div class="col-md-6" id="work-zone">
+                <div style="position: fixed; width: 35%;" id="work-view">
                     <textarea name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php echo $this->transcription; ?></textarea>
                     <div class="wrapper">
                         <div id="document_img" class="viewer"></div>
@@ -100,13 +100,14 @@ $(document).ready(function(){
             var $ = jQuery;
             $(document).ready(function(){
 
-                  var iv2 = $("#document_img").iviewer(
-                  {
-                      src: "<?php echo $this->connection->getFile()->getProperty('uri'); ?>"
-                  });
+                var iv2 = $("#document_img").iviewer(
+                {
+                    src: "<?php echo $this->connection->getFile()->getProperty('uri'); ?>"
+                });
 
+		$('#work-view').width($('#work-zone').width());
+            	$('.viewer').height($(window).height()*68/100);
             });
-            $('.viewer').height($(window).height()*68/100);
         </script>
 <style>
             .viewer
