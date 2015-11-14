@@ -156,8 +156,8 @@ $(document).ready(function(){
                     //data, that is, JSON.stringify(entities) are ready to be submitted for processing
                 });
 		$('#work-view').width($('#work-zone').width());
-            	$('.viewer').height($(window).height()*68/100);
             });
+            $('.viewer').height($(window).height()*68/100);
         </script>
         <style>
             .viewer

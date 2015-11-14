@@ -106,8 +106,8 @@ $(document).ready(function(){
                 });
 
 		$('#work-view').width($('#work-zone').width());
-            	$('.viewer').height($(window).height()*68/100);
             });
+            $('.viewer').height($(window).height()*68/100);
         </script>
 <style>
             .viewer
