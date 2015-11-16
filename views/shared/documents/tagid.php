@@ -137,11 +137,22 @@ $(document).ready(function(){
                 });
 
                 $('#add-more-button').on('click', function (e) {
-                    $('#entity-table').append('<tr><td><input type="text" class="form-control" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><button type="button" class="btn btn-default" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+                    var new_entity = $('<tr><td><input type="text" class="form-control" value=""></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control" type="text" value=""></td><td><button type="button" class="btn btn-default" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+                    new_entity.find('.subcategory-select').multiselect({
+                        enableFiltering: true,
+                        filterBehavior: 'value',
+                        disableIfEmpty: true
+                    });
+
+                    $('#entity-table').append(new_entity);
                 }); 
                 
                 $('#entity-table').on('click', '.remove-entity-button', function (e) {
                     $(this).parent().parent().remove();
+                }); 
+
+                $('#entity-table').on('change', '.category-select', function (e) {
+                    //if first time, use ajax to fetch subcategories, add to .subcategory-select and rebuild .subcategory-select by $('#example-subcategory-select').multiselect('rebuild'). Also, the categories/subcategories should be stored to avoid frequent ajax calls
                 }); 
 
                 $('#confirm-button').on('click', function(e) {
