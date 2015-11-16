@@ -18,8 +18,8 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
         </div>
         <div class="container">
-            <div class="col-md-6">
-                <div style="position: fixed; width: 35%;">
+            <div class="col-md-6" id="work-zone">
+                <div style="position: fixed; width: 35%;" id="work-view">
                     <div>Title: <?php echo metadata($this->    transcription, array('Dublin Core', 'Title')); ?></div>
                     <div>Date: 11/12/1855</div>
                     <div>Location:</div>
@@ -80,13 +80,14 @@ $(document).ready(function(){
             var $ = jQuery;
             $(document).ready(function(){
 
-                  var iv2 = $("#viewer2").iviewer(
-                  {
+                var iv2 = $("#viewer2").iviewer(
+                {
                       src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
-                  });
+                });
+		$('#work-view').width($('#work-zone').width());
 
             });
-            $('.viewer').height($(window).height()*68/100);
+        $('.viewer').height($(window).height()*68/100);
         </script>
 
 <style>

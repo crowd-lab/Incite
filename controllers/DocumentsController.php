@@ -147,10 +147,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 				$this->view->tag = $record;
                 //Handling entities here!
                 $entities = array();
-                $entities[] = ['entity' => 'Richmond', 'category' => 'Place', 'subcategory' => '', 'details' => ''];
-                $entities[] = ['entity' => 'Jetersville', 'category' => 'Place', 'subcategory' => '', 'details' => ''];
-                $entities[] = ['entity' => 'Amelia Springs', 'category' => 'Place', 'subcategory' => '', 'details' => ''];
-                $entities[] = ['entity' => 'R.E. Hughson', 'category' => 'People', 'subcategory' => '', 'details' => ''];
+                $entities[] = array('entity' => 'Richmond', 'category' => 'Place', 'subcategory' => '', 'details' => '');
+                $entities[] = array('entity' => 'Jetersville', 'category' => 'Place', 'subcategory' => '', 'details' => '');
+                $entities[] = array('entity' => 'Amelia Springs', 'category' => 'Place', 'subcategory' => '', 'details' => '');
+                $entities[] = array('entity' => 'R.E. Hughson', 'category' => 'People', 'subcategory' => '', 'details' => '');
                 $this->view->entities = $entities;
 			} else {
 				//no such document

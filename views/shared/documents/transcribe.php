@@ -1,12 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'leaflet'));
+queue_js_file(array('leaflet', 'jquery'));
 $db = get_db();
 
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
+<style type='text/css'>
+    #map-div {
+    width:600px;
+    height:300px;
+    }
+</style>
+
+<script src="js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    function x() {
+        $('[data-toggle="popover"]').popover({ trigger: "hover" });
+        var map = L.map('map-div').setView([37.8, -96], 4);
+          L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+          L.marker([38.907192, -77.036871]).addTo(map);
+    }
+</script>
+
+<body onload="x();  ">
     <!-- Page Content -->
     <div class="container">
 
@@ -22,6 +44,12 @@ include(dirname(__FILE__).'/../common/header.php');
                         <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
                 </form>
             </p>
+
+
+    <div id="map-div" style="width:600px;
+    height:300px;"></div>
+
+
 <?php foreach ($this->Transcriptions as $transcription): ?>
     <div class="col-lg-2 col-sm-3 col-xs-4">
         <a href="<?php echo 'transcribe/'.$transcription->id; ?>" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
@@ -36,7 +64,6 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
     </div>
 <?php endforeach; ?>
-
 
         <div class="col-lg-4">
              <form class="form-wrapper" >
@@ -57,7 +84,9 @@ include(dirname(__FILE__).'/../common/header.php');
                    </form>
               </div>
 
-              <div style="margin-top: 5em;">
+
+
+<!--               <div style="margin-top: 5em;">
                 <p>Here's what other people are working on: </p>
               </div>
               <ul style="list-style-type:none">
@@ -73,23 +102,25 @@ include(dirname(__FILE__).'/../common/header.php');
                 <li>
                     <p>4) User4 is figuring out what the 3 documents have in common.</p> 
                 </li>
-              </ul>
+              </ul> -->
         </div>
-            
+
+                     
 </div>
+
+
 
     </div>
     <!-- /.container -->
 
+</body>
+
     <!-- jQuery Version 1.11.1 -->
 
-        <script>
-$(document).ready(function(){
-    $('[data-toggle="popover"]').popover({ trigger: "hover" });
-});
-</script>
+
+
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+
 
 </body>
 
