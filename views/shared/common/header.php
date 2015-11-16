@@ -1,5 +1,5 @@
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer'));
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect'));
 $db = get_db();
 ?>
 
@@ -17,6 +17,7 @@ $db = get_db();
     <?php echo js_tag('jquery-ui'); ?>
     <?php echo js_tag('jquery.mousewheel'); ?>
     <?php echo js_tag('jquery.iviewer'); ?>
+    <?php echo js_tag('bootstrap-multiselect'); ?>
     <?php echo head_css(); ?>
 
 

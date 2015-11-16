@@ -33,7 +33,7 @@ include(dirname(__FILE__).'/../common/header.php');
 				<table class="table" id="entity-table">
 					<tr><th>Entity</th><th>Category</th><th>Subcategory</th><th>Details</th><th>Not an entity?</th></tr>
 <?php foreach ($this->entities as $entity): ?>
-					<tr><td><input type="text" class="form-control" value="<?php echo $entity['entity']; ?>"></td><td><input class="form-control" type="text" value="<?php echo $entity['category']; ?>"></td><td><input class="form-control" type="text" value="<?php echo $entity['subcategory']; ?>"></td><td><input class="form-control" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+					<tr><td><input type="text" class="form-control" value="<?php echo $entity['entity']; ?>"></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
 <?php endforeach; ?>
 				</table>
 				<button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
@@ -57,6 +57,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     Please login or signup to join the discussion!
                 </div>
 <?php endif; ?>
+<select id="test"><option>1</option></select>
 <!--
                 <p>Are these the same as the following entities? </p>
                 <form role="form">
@@ -139,7 +140,7 @@ $(document).ready(function(){
                     $('#entity-table').append('<tr><td><input type="text" class="form-control" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><input class="form-control" type="text" value=""></td><td><button type="button" class="btn btn-default" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
                 }); 
                 
-                $('#entity-table').on('click', 'button', function (e) {
+                $('#entity-table').on('click', '.remove-entity-button', function (e) {
                     $(this).parent().parent().remove();
                 }); 
 
@@ -152,10 +153,20 @@ $(document).ready(function(){
                         entities.push({entity:$(fields[0]).val(), category:$(fields[1]).val(), subcategory:$(fields[2]).val(), details:$(fields[3]).val()});
                     });
                     //alert is for testing
-                    //alert(JSON.stringify(entities));
+                    alert(JSON.stringify(entities));
                     //data, that is, JSON.stringify(entities) are ready to be submitted for processing
                 });
 
+                $('.subcategory-select').each(function (idx) {
+                    $(this).multiselect({
+                        enableFiltering: true,
+                        filterBehavior: 'value',
+                        disableIfEmpty: true
+                    });
+                });
+
+                //$('.SelectBox').SumoSelect();
+                //$('.SelectBox').SumoSelect({placeholder: 'This is a placeholder', csvDispCount: 3 });
             });
             $('.viewer').height($(window).height()*68/100);
         </script>
