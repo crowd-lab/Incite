@@ -55,7 +55,6 @@
                     Please login or signup to join the discussion!
                 </div>
             <?php endif; ?>
-            <select id="test"><option>1</option></select>
             <!--
                             <p>Are these the same as the following entities? </p>
                             <form role="form">
@@ -114,7 +113,7 @@
 
 <script>
     //Global variable to store categories
-    var categories;
+    var categories = <?php echo json_encode($category_object); ?>
     
     
     $(document).ready(function () {
@@ -147,6 +146,7 @@
 </script>
 <script type="text/javascript">
     
+        var ttt;
     
     var $ = jQuery;
     $(document).ready(function () {
@@ -175,6 +175,13 @@
         $('#entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
         });
+        $('#entity-table').on('change', '.category-select', function (e) {
+            var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
+            subcategory_menu.find('option').remove().end();
+            $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
+                subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+            });
+        });
         $('#entity-table').ready( function(e) {
 
             //if first time, use ajax to fetch subcategories, add to .subcategory-select and rebuild .subcategory-select by $('#example-subcategory-select').multiselect('rebuild'). Also, the categories/subcategories should be stored to avoid frequent ajax calls
@@ -185,6 +192,22 @@
                     echo '$(\'.category-select\').append("<option value=\''.$category_object[$i]["id"].'\'>'.$category_object[$i]["name"].' </option>");';
                 }
             ?>
+
+            //Initial so category must be 0
+            $.each($('.category-select'), function (idx) {
+                var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
+                $.each(categories[0]['subcategory'], function (idx) {
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                });
+            });
+/*
+            var subcategory_menu = $(this);
+            console.log(categories[0]);
+            $.each(categories[0]['subcategory'], function (idx) {
+                //subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                console.log(subcategory_menu);
+            });
+*/
             $('.category-select').multiselect('rebuild');
         });
         $('#confirm-button').on('click', function (e) {
@@ -230,6 +253,12 @@
         overflow: hidden;
     }
 </style>
+<pre>
+
+<?php print_r($category_object); ?>
+
+<?php echo json_encode($category_object); ?>
+</pre>
 
 </body>
 
