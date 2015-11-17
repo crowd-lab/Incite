@@ -1,5 +1,5 @@
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet'));
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline'));
 $db = get_db();
 ?>
 
@@ -19,6 +19,7 @@ $db = get_db();
     <?php echo js_tag('jquery.iviewer'); ?>
     <?php echo js_tag('bootstrap-multiselect'); ?>
     <?php echo js_tag('leaflet'); ?>
+    <?php echo js_tag('jquery.jqtimeline'); ?>
     <?php echo head_css(); ?>
 
 
