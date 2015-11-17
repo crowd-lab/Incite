@@ -113,13 +113,17 @@ SQL
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_subject_concepts (
         `id`            int(11) NOT NULL AUTO_INCREMENT,
-        `name`          varchar(30) NOT NULL,
+        `name`          varchar(60) NOT NULL,
         `definition`    varchar(500) NOT NULL,
         
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;  
 SQL
         );
+        get_db()->query(<<<SQL
+    INSERT INTO {$db->prefix}incite_subject_concepts (`id`, `name`, `definition`) VALUES (NULL, 'Religion', 'This document talks about worship of a god'), (NULL, 'White Supremacy', 'This document talks about the belief that white people are superior to other races'), (NULL, 'Racial Equality', 'This document talks about equal regard to all races'), (NULL, 'Gender Equality/Inequality', 'This document talks about equal regard or complete disregard in relation to one''s gender'), (NULL, 'Human Equality', 'This document talks about all humans being equal'), (NULL, 'Self Goverment', 'This document talks about people who want a country to be ruled by it''s own people'), (NULL, 'America as a Global Beacon', 'This document talks about America''s domination in the world'), (NULL, 'Celebration of Revolutionary Generation', 'This document talks about celebrations in regards to the first generation post-civil war');
+SQL
+   );
 
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags (
@@ -190,6 +194,11 @@ SQL
 SQL
    );
         get_db()->query(<<<SQL
+    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'People');
+    
+SQL
+   );
+        get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags_subcategory_conjunction (
         `tag_id`            int(11) NOT NULL,
         `subcategory_id`    int(11) NOT NULL
@@ -251,6 +260,22 @@ SQL
     DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_tags_conjunction
 SQL
               );
+     get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_tags_category
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_tags_subcategory
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_tags_subcategory_conjunction
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_subject_conjunction
+SQL
+   );
     }
 
     /**
