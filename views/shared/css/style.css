@@ -27,6 +27,13 @@
 	width: 50em; 
 }
 
+@media (max-width: 1200px) {
+
+  #submit-zone { 
+    margin-left: 500px; 
+  }
+}
+
 #search1 {
   width: 30em; 
 }

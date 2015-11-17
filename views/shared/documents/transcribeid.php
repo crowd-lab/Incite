@@ -32,7 +32,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" id="submit-zone">
                 <form method="post">
                     <textarea name="transcription" rows="40" style="width: 100%;">Transcription</textarea>
                     <textarea name="transcription" rows="5" style="width: 100%;">Summary</textarea>
