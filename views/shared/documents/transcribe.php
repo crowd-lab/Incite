@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'leaflet'));
-queue_js_file(array('leaflet', 'jquery'));
-$db = get_db();
-
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
@@ -15,8 +11,6 @@ include(dirname(__FILE__).'/../common/header.php');
     }
 </style>
 
-<script src="js/bootstrap.min.js"></script>
-
 <script type="text/javascript">
     function x() {
         $('[data-toggle="popover"]').popover({ trigger: "hover" });
@@ -26,6 +20,7 @@ include(dirname(__FILE__).'/../common/header.php');
           }).addTo(map);
           L.marker([38.907192, -77.036871]).addTo(map);
     }
+
 </script>
 
 <body onload="x();  ">
@@ -48,6 +43,8 @@ include(dirname(__FILE__).'/../common/header.php');
 
     <div id="map-div" style="width:600px;
     height:300px;"></div>
+    
+    <div id="timeline" style="width:600px;"></div>
 
 
 <?php foreach ($this->Transcriptions as $transcription): ?>
@@ -107,7 +104,50 @@ include(dirname(__FILE__).'/../common/header.php');
 
                      
 </div>
+<script type="text/javascript">
+var ev = [{
+                            id : 1,
+                            name : "Joined Faecbook",
+                            on : new Date(2011,2,15)
+                        },{
+                            id : 11,
+                            name : "Updated my first status message",
+                            on : new Date(2011,2,17)
+                        },{
+                            id : 2,
+                            name : "Joined Twitter",
+                            on : new Date(2011,5,30)
+                        },{
+                            id : 9,
+                            name : "Created a new blogger account",
+                            on : new Date(2011,7,5)
+                        },{
+                            id : 3,
+                            name : "Trip to Australia",
+                            on : new Date(2012,5,5)
+                        },{
+                            id : 4,
+                            name : "Trip to New Zealand",
+                            on : new Date(2012,5,30)
+                        },{
+                            id : 5,
+                            name : "Awesome new year",
+                            on : new Date(2013,0,1)
+                        },{
+                            id : 6,
+                            name : "No idea about this date",
+                            on : new Date(2015,6,10)
+                        }]
 
+var tl = $('#timeline').jqtimeline({
+                            events : ev,
+                            numYears:4,
+                            startYear:2011,
+                            click:function(e,event){
+                                alert(event.name);
+                            }
+                        });
+</script>
 
 
     </div>
