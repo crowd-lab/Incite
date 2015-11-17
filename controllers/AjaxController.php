@@ -72,19 +72,4 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
     public function getdataAction() {
         echo json_encode($_SESSION['Incite']['USER_DATA']);
     }
-
-    public function getcategoriesAction() {
-        $results = Array();
-        $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT * FROM omeka_incite_tags_category");
-        $stmt->bind_result($id, $name);
-        $stmt->execute();
-        while ($stmt->fetch()) {
-            $results[] = Array($id, $name);
-        }
-        $stmt->close();
-        $db->close();
-        return $results;
-    }
-
 }

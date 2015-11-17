@@ -6,8 +6,6 @@
     include(dirname(__FILE__) . '/../common/header.php');
     
     $category_object = getAllCategories();
-    
-    echo "<script type='text/javascript'>var category_objects = ".sizeof($category_object)."; </script>";
     ?>
     <!-- Page Content -->
     <div class="container">
