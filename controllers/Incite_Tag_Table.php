@@ -108,7 +108,21 @@ function findTagOnCategory($category)
     }
     $stmt->close();
     $db->close();
-    return $tagObject;
+    return $results;
 }
-
+function getAllCategories()
+{
+    $results = Array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT * FROM omeka_incite_tags_category");
+    $stmt->bind_result($id, $name);
+    $stmt->execute();
+    while ($stmt->fetch())
+    {
+        $results[] = Array($id, $name);
+    }
+    $stmt->close();
+    $db->close();
+    return $results;
+}
 ?>
