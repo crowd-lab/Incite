@@ -1,6 +1,17 @@
 <?php
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet'));
 $db = get_db();
+include(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
+
+/**
+ * Generate session id if
+ * 1) User not logged in (guest)
+ * or (2) session hasn't started (cookie does not exist)
+ */
+if (!isset($SESSION['Incite']))
+{
+    createGuestSession();
+}
 ?>
 
 <head>
@@ -237,6 +248,7 @@ $db = get_db();
                     </ul>
                 <?php else: ?>
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a>Welcome Guest</a></li>
                         <li><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></li>
                     </ul>
 

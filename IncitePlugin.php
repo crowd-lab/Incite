@@ -203,6 +203,14 @@ SQL
     
 SQL
    );
+            get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_users_map (
+        `non_guest_id`  int(10) unsigned NOT NULL,
+        `guest_id`      int(10) unsigned NOT NULL
+                
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;  
+SQL
+    );
         get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags_subcategory_conjunction (
         `tag_id`            int(11) NOT NULL,
@@ -211,8 +219,7 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;    
    
 SQL
-    );
-    
+    );    
 }
 
     /**
@@ -279,6 +286,10 @@ SQL
    );
     get_db()->query(<<<SQL
     DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_subject_conjunction
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$db->prefix}incite_users_map
 SQL
    );
     }

@@ -242,6 +242,42 @@ require_once("DB_Connect.php");
         }
     }
     /**
+     * Create a new account. If the same email exists for another account, an
+     * error will be thrown
+     * @param int $id to set the account to; Usually done only for guest accounts
+     * @param string $email to create account
+     * @param string $password desired password
+     * @param string $firstName first name
+     * @param string $lastName last name
+     * @param string $privilege type of user
+     * @param int $experienceLevel user experience level
+     * @return string "Success" or "Failure"
+     */
+    function createGuestAccount($id, $email, $password, $firstName, $lastName, $privilege, $experienceLevel)
+    {
+        $count = 0;
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_users WHERE UPPER(email) = UPPER(?)");
+        $stmt->bind_param("s", $email);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $stmt->close();
+        if ($count == 0)
+        {
+            $hashedPassword = md5($password);
+            $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)");
+            $stmt->bind_param("ssssii", $firstName, $lastName, $email, $hashedPassword, $privilege, $experienceLevel);
+            $stmt->execute();
+            $stmt->close();
+            return "Success";
+        }
+        else
+        {
+            return "Failure";
+        }
+    }
+    /**
      * Remove account from database
      * WARNING! This will have cascading errors if used improperly
      * @param type $userID to remove from the database
@@ -268,5 +304,36 @@ require_once("DB_Connect.php");
             $temp .= rand(0, 9);
         }
         return (int)$temp;
+    }
+    
+    function createGuestSession()
+    {
+        $id = generateRandomUserId();
+        $username = "guest".$id; //guest12345678900
+        $password = "";
+        $firstName = "guest";
+        $lastName = "guest";
+        $priv = 0;
+        $exp = 0;
+        if (createGuestAccount($id, $username, $password, $firstName, $lastName, $priv, $exp) != "failure") {
+                //destroy previous session and then map it to the new session ==> store in new table
+                if (!isset($_SESSION)) {
+                    session_start();
+                }
+                $_SESSION['Incite']['IS_LOGIN_VALID'] = false;
+                $_SESSION['Incite']['Guest'] = true;
+                $_SESSION['Incite']['USER_DATA'] = getUserData($username);
+                echo json_encode(true);
+            } else {
+                echo json_encode(false);
+            }
+    }
+    /**
+     * If the guest account is never used (not referenced in any table), then we can safely delete it from the database
+     * @param int $id to delete
+     */
+    function deleteUnusedGuestAccount($id)
+    {
+        
     }
 ?>
