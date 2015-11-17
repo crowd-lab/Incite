@@ -23,7 +23,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
         else
         {
-            $userArray = $_SESSION['USER_DATA'];
+            $userArray = $_SESSION['Incite']['USER_DATA'];
             $GLOBALS['USERID'] = $userArray[0]; 
         }
         
@@ -74,6 +74,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			//save transcription and summary to database
                     if ($this->_hasParam('id'))
                     {
+                        if ($GLOBALS['USERDID'] == -1)
+                        {
+                            createGuestSession();
+                            $userArray = $_SESSION['Incite']['USER_DATA'];
+                            $GLOBALS['USERID'] = $userArray[0];
+                        }
                         createTranscription($this->_getParam('id'),  $GLOBALS['USERID'], $_POST['transcription'], $_POST['summary']);
                     }
                     
@@ -119,6 +125,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			//save a tag to database
                 if ($this->_hasParam('id'))
                 {
+                    if ($GLOBALS['USERDID'] == -1)
+                        {
+                            createGuestSession();
+                            $userArray = $_SESSION['Incite']['USER_DATA'];
+                            $GLOBALS['USERID'] = $userArray[0];
+                        }
                     //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
                     //data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
                     //ready to insert tag into database
@@ -195,7 +207,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     {
                         //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
 						//data from post: $_POST['connection'] //either true or false
-						//ready to connect subject to a document
+			if ($GLOBALS['USERDID'] == -1)
+                        {
+                            createGuestSession();
+                            $userArray = $_SESSION['Incite']['USER_DATA'];
+                            $GLOBALS['USERID'] = $userArray[0];
+                        }			//ready to connect subject to a document
                         $userID = -1;
                         addConceptToDocument($randomSubjectInt, $this->_getParam('id'), $userID);
                     }

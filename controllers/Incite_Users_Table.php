@@ -328,12 +328,4 @@ require_once("DB_Connect.php");
                 echo json_encode(false);
             }
     }
-    /**
-     * If the guest account is never used (not referenced in any table), then we can safely delete it from the database
-     * @param int $id to delete
-     */
-    function deleteUnusedGuestAccount($id)
-    {
-        
-    }
 ?>
