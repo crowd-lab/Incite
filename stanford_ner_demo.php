@@ -13,7 +13,9 @@ CNN)The search for the perpetrators of the <LOCATION>Paris</LOCATION> attacks ha
 
 START_END;
 
-$categories = array('ORGANIZATION', 'PERSON', 'DATE', 'LOCATION'); 
+//assuming 7 classes are used
+//seven classes 'ORGANIZATION', 'PERSON', 'DATE', 'LOCATION', 'TIME', 'MONEY', 'PERCENT' 
+$categories = array('ORGANIZATION', 'PERSON', 'DATE', 'LOCATION', 'TIME', 'MONEY', 'PERCENT'); 
 
 
 foreach ($categories as $category) {
