@@ -171,6 +171,13 @@
             $('.category-select').multiselect('rebuild');
                 
             $('#entity-table').append(new_entity);
+            //Initial so category must be 0
+            $.each($('.category-select'), function (idx) {
+                var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
+                $.each(categories[0]['subcategory'], function (idx) {
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                });
+            });
         });
         $('#entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
@@ -200,14 +207,6 @@
                     subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
                 });
             });
-/*
-            var subcategory_menu = $(this);
-            console.log(categories[0]);
-            $.each(categories[0]['subcategory'], function (idx) {
-                //subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
-                console.log(subcategory_menu);
-            });
-*/
             $('.category-select').multiselect('rebuild');
         });
         $('#confirm-button').on('click', function (e) {
