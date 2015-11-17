@@ -167,14 +167,17 @@
                 echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
             }
             ?>
+            new_entity.find('.category-select').multiselect({
+                disableIfEmpty: true
+            });
+            $('.category-select').multiselect('rebuild');
                 
             $('#entity-table').append(new_entity);
         });
         $('#entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
         });
-        $('#entity-table').ready(function()
-        {
+        $('#entity-table').ready( function(e) {
 
             //if first time, use ajax to fetch subcategories, add to .subcategory-select and rebuild .subcategory-select by $('#example-subcategory-select').multiselect('rebuild'). Also, the categories/subcategories should be stored to avoid frequent ajax calls
             $('.category-select').empty();
