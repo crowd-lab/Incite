@@ -96,7 +96,7 @@ function getTranscriptionStatus($documentID) {
 
 function createTranscription($documentID, $userID, $transcribedText, $summarizedText) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_transcriptions VALUES (NULL, ?, ?, ?, ?, 0, NULL, CURRENT_TIMESTAMP)");
+    $stmt = $db->prepare("INSERT INTO omeka_incite_transcriptions VALUES (NULL, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
     $stmt->bind_param("iiss", $documentID, $userID, $transcribedText, $summarizedText);
     $stmt->execute();
     $stmt->close();

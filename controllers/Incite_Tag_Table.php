@@ -119,7 +119,8 @@ function getAllCategories()
     $stmt->execute();
     while ($stmt->fetch())
     {
-        $results[] = Array($id, $name);
+        $results[] = Array("id" => $id, "name" => $name, "subcategory" => array());
+        
     }
     $stmt->close();
     $db->close();

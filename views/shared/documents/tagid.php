@@ -164,7 +164,7 @@
                 disableIfEmpty: true
             });
             <?php for ($i = 0; $i < sizeof($category_object); $i++){
-                echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i][0]."'>".$category_object[$i][1]."</option>\");";
+                echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
             }
             ?>
                 
@@ -181,7 +181,7 @@
             <?php 
                 for ($i = 0; $i < sizeof($category_object); $i++)
                 {
-                    echo '$(\'.category-select\').append("<option value=\''.$category_object[$i][0].'\'>'.$category_object[$i][1].' </option>");';
+                    echo '$(\'.category-select\').append("<option value=\''.$category_object[$i]["id"].'\'>'.$category_object[$i]["name"].' </option>");';
                 }
             ?>
         });
