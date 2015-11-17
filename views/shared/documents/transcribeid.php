@@ -20,7 +20,7 @@ include(dirname(__FILE__).'/../common/header.php');
         <div class="container">
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed; width: 35%;" id="work-view">
-                    <div>Title: <?php echo metadata($this->    transcription, array('Dublin Core', 'Title')); ?></div>
+                    <div>Title: <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></div>
                     <div>Date: 11/12/1855</div>
                     <div>Location:</div>
                     <div>Description:</div>
