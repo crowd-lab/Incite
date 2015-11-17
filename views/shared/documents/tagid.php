@@ -184,6 +184,7 @@
                     echo '$(\'.category-select\').append("<option value=\''.$category_object[$i]["id"].'\'>'.$category_object[$i]["name"].' </option>");';
                 }
             ?>
+            $('.category-select').multiselect('rebuild');
         });
         $('#confirm-button').on('click', function (e) {
             var entities = [];
@@ -201,6 +202,11 @@
             $(this).multiselect({
                 enableFiltering: true,
                 filterBehavior: 'value',
+                disableIfEmpty: true
+            });
+        });
+        $('.category-select').each(function (idx) {
+            $(this).multiselect({
                 disableIfEmpty: true
             });
         });
