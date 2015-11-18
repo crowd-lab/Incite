@@ -254,9 +254,6 @@
 </style>
 <pre>
 
-<?php print_r($category_object); ?>
-
-<?php echo json_encode($category_object); ?>
 </pre>
 
 </body>
