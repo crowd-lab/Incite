@@ -158,7 +158,8 @@
             var new_entity = $('<tr><td><input type="text" class="form-control" value=""></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
             new_entity.find('.subcategory-select').multiselect({
                 enableFiltering: true,
-                filterBehavior: 'value',
+                filterBehavior: 'text',
+                enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
             });
             <?php for ($i = 0; $i < sizeof($category_object); $i++){
@@ -222,7 +223,8 @@
         $('.subcategory-select').each(function (idx) {
             $(this).multiselect({
                 enableFiltering: true,
-                filterBehavior: 'value',
+                filterBehavior: 'text',
+                enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
             });
         });
