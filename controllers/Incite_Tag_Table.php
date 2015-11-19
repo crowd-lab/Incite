@@ -2,11 +2,11 @@
 
 require_once("DB_Connect.php");
 
-function createTag($userID, $tag_text, $category_name, $description, $documentID)
+function createTag($userID, $tag_text, $category, $subcategory, $description, $documentID)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
-    $stmt->bind_param('isss', $userID, $tag_text, $category_name, $description);
+    $stmt->bind_param('isis', $userID, $tag_text, $category, $description);
     $stmt->execute();
     $tagID = $stmt->insert_id;
     $stmt->close();
@@ -48,6 +48,17 @@ function createTag($userID, $tag_text, $category_name, $description, $documentID
         $newStmt1->execute();
         $newStmt1->close();
     }
+    //store the tag with the respective subcategories
+    //since there could be multiple subcategories, do this in a loop
+    $db = DB_Connect::connectDB();
+    for ($i = 0; $i < sizeof($subcategory); $i++)
+    {
+        $insertSubCat = $db->prepare("INSERT INTO omeka_incite_tags_subcategory_conjunction VALUES (?, ?)");
+        $insertSubCat->bind_param("ii", $tagID, $subcategory[$i]);
+        $insertSubCat->execute();
+        $insertSubCat->close();
+    }
+    $db->close();
 }
 function findTagOnDescription($description)
 {
