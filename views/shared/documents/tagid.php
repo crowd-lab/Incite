@@ -31,11 +31,11 @@
             <table class="table" id="entity-table">
                 <tr><th>Entity</th><th>Category</th><th>Subcategory</th><th>Details</th><th>Not an entity?</th></tr>
                 <?php foreach ($this->entities as $entity): ?>
-                    <tr><td><input type="text" class="form-control" value="<?php echo $entity['entity']; ?>"></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+                    <tr><td><input type="text" class="form-control entity-name" value="<?php echo $entity['entity']; ?>"></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
                 <?php endforeach; ?>
             </table>
             <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
-            <button type="button" class="btn btn-primary pull-right" id="confirm-button">I confirm the above information is correct!</button>
+            <button type="submit" class="btn btn-primary pull-right" id="confirm-button">I confirm the above information is correct!</button>
             <div id="container">
                 <h3> Discussion </h3>
                 <ul id="comments">
@@ -161,6 +161,7 @@
             new_entity.find('.subcategory-select').multiselect({
                 enableFiltering: true,
                 filterBehavior: 'text',
+                checkboxName: 'multiselect[]',
                 enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
             });
@@ -215,8 +216,15 @@
             var rows = $('#entity-table tr').has("td");
             rows.each(function (idx) {
                 //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var fields = $(this).find('input');
-                entities.push({entity: $(fields[0]).val(), category: $(fields[1]).val(), subcategory: $(fields[2]).val(), details: $(fields[3]).val()});
+                var name = $(this).find('.entity-name');
+                var details = $(this).find('.entity-details');
+                var category = $(this).find('.category-select option:selected');
+                var subcategories = $(this).find('.subcategory-select option:selected');
+                var subcategories_array = [];
+                subcategories.each( function (idx) {
+                    subcategories_array.push($(this).val());
+                });
+                entities.push({entity: $(name).val(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
             });
             //alert is for testing
             alert(JSON.stringify(entities));
@@ -226,6 +234,7 @@
             $(this).multiselect({
                 enableFiltering: true,
                 filterBehavior: 'text',
+                checkboxName: 'multiselect[]',
                 enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
             });
