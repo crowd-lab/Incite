@@ -1,7 +1,7 @@
 <?php
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline'));
 $db = get_db();
-include(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
+require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
 ?>
 
 <head>
@@ -96,7 +96,8 @@ include(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
                             success: function (data) {
                                 console.log('signup');
                                 console.log(data);
-                                if (data == "true") {
+                                if (data == "true") 
+                                {
                                     alert("successful signup and login");
                                     $('#login-signup-dialog').modal('hide');
                                     var getDataArray = $.ajax({
@@ -112,13 +113,14 @@ include(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
                                             $('ul[class="nav navbar-nav navbar-right"]').append('<li><a onclick = "logout()">Logout</a></li>');
                                             
                                             $('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
+                                           
 
                                         }
                                     })
                                     
                                     
                                 } else {
-                                    alert("wrong username or password");
+                                    alert("Unable to Sign Up!");
                                 }
                             },
                             error: function (e) {

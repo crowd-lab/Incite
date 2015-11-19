@@ -17,6 +17,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         require_once("Incite_Transcription_Table.php");
         require_once("Incite_Tag_Table.php");
         require_once("Incite_Subject_Concept_Table.php");
+        require_once("Incite_Users_Table.php");
         if (!DB_Connect::isLoggedIn())
         {
             $GLOBALS['USERID'] = -1; //user is anonymous
@@ -74,7 +75,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			//save transcription and summary to database
                     if ($this->_hasParam('id'))
                     {
-                        if ($GLOBALS['USERDID'] == -1)
+                        
+                        if ($GLOBALS['USERID'] == -1)
                         {
                             createGuestSession();
                             $userArray = $_SESSION['Incite']['USER_DATA'];
@@ -125,7 +127,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 			//save a tag to database
                 if ($this->_hasParam('id'))
                 {
-                    if ($GLOBALS['USERDID'] == -1)
+                    if ($GLOBALS['USERID'] == -1)
                         {
                             createGuestSession();
                             $userArray = $_SESSION['Incite']['USER_DATA'];
@@ -208,7 +210,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     {
                         //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
 						//data from post: $_POST['connection'] //either true or false
-			if ($GLOBALS['USERDID'] == -1)
+			if ($GLOBALS['USERID'] == -1)
                         {
                             createGuestSession();
                             $userArray = $_SESSION['Incite']['USER_DATA'];

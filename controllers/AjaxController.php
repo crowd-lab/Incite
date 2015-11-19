@@ -59,13 +59,25 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             $lastName = $_POST['lName'];
             $priv = $_POST['priv'];
             $exp = $_POST['exp'];
+            $isGuest = false;
+            if (isset($_SESSION['Incite']) && isset($_SESSION['Incite']['USER_DATA']) && strpos($_SESSION['Incite']['USER_DATA'][1], "guest") !== false)
+            {
+                //link guest and user accounts
+                $isGuest = true;
+                $guestID = $_SESSION['Incite']['USER_DATA'][0];
+            }
             if (createAccount($username, $password, $firstName, $lastName, $priv, $exp) != "failure") {
                 //destroy previous session and then map it to the new session ==> store in new table
-                if (!isset($_SESSION)) {
+                if (!isset($_SESSION)) 
+                {
                     session_start();
                 }
                 $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
                 $_SESSION['Incite']['USER_DATA'] = getUserData($username);
+                if ($isGuest)
+                {
+                    mapAccounts($guestID, $_SESSION['Incite']['USER_DATA'][0]);
+                }
                 echo json_encode(true);
             } else {
                 echo json_encode(false);
