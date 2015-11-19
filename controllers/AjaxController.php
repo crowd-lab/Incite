@@ -18,25 +18,34 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
         $this->_helper->viewRenderer->setNoRender(TRUE);
         include("Incite_Users_Table.php");
     }
-
-    //Demo of getting users
-    public function getuserAction() {
-        echo "<script type='text/javascript'>alert('hi')</script>";
-        echo 'getuser!';
-    }
-
     public function loginAction() {
         if ($this->getRequest()->isPost()) {
             $username = $_POST['username'];
             $password = $_POST['password'];
-            if (verifyUser($username, $password)) {
-                if (!isset($_SESSION)) {
+            $isGuest = false;
+            $guestID = -1;
+            if (isset($_SESSION['Incite']) && strpos($_SESSION['Incite']['USER_DATA'][1], "guest") !== false)
+            {
+                //link guest and user accounts
+                $isGuest = true;
+                $guestID = $_SESSION['Incite']['USER_DATA'][0];
+            }
+            if (verifyUser($username, $password)) 
+            {
+                if (!isset($_SESSION)) 
+                {
                     session_start();
                 }
                 $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
                 $_SESSION['Incite']['USER_DATA'] = getUserData($username);
+                if ($isGuest)
+                {
+                    mapAccounts($guestID, $_SESSION['Incite']['USER_DATA'][0]);
+                }
                 echo json_encode(true);
-            } else {
+            } 
+            else 
+            {
                 echo json_encode(false);
             }
         }

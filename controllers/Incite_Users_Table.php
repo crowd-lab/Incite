@@ -328,4 +328,13 @@ require_once("DB_Connect.php");
                 echo json_encode(false);
             }
     }
+    function mapAccounts($guestID, $userID)
+    {
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("INSERT INTO omeka_incite_users_map VALUES (?, ?)");
+        $stmt->bind_param("ii", $userID, $guestID);
+        $stmt->execute();
+        $stmt->clos();
+        $db->close();
+    }
 ?>
