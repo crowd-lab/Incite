@@ -77,6 +77,9 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
+    $('#work-zone').ready(function() {
+        $('#work-view').width($('#work-zone').width());
+    });
             var $ = jQuery;
             $(document).ready(function(){
 
@@ -84,7 +87,6 @@ $(document).ready(function(){
                 {
                       src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
                 });
-		$('#work-view').width($('#work-zone').width());
 
             });
         $('.viewer').height($(window).height()*68/100);
