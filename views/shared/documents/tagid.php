@@ -36,6 +36,9 @@
             </table>
             <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
             <button type="submit" class="btn btn-primary pull-right" id="confirm-button">I confirm the above information is correct!</button>
+            <form id="entity-form" method="post">
+                <input id="entity-info" type="hidden" name="entities" />
+            </form>
             <div id="container">
                 <h3> Discussion </h3>
                 <ul id="comments">
@@ -227,7 +230,8 @@
                 entities.push({entity: $(name).val(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
             });
             //alert is for testing
-            alert(JSON.stringify(entities));
+            $('#entity-info').val(JSON.stringify(entities));
+            $('#entity-form').submit();
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
         $('.subcategory-select').each(function (idx) {

@@ -135,6 +135,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     //data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
                     //ready to insert tag into database
                     //createTag($userID, $tag_text, $category_name, $description, $documentID)
+                    $entities = json_decode($_POST["entities"], true);
                     createTag($GLOBALS['USERID'], $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description'], $this->_getParam('id'));
                 }
                     
