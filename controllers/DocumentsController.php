@@ -262,4 +262,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     {
                         echo '<div style="color:black">Welcome to Discuss!</div>';
     }
+
+    public function fooAction() 
+    {
+    	// $this->_redirect('/incite/documents/foo');
+    }
 }
