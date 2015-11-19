@@ -18,7 +18,7 @@
     </div>
     <div class="container">
         <div class="col-md-6" id="work-zone">
-            <div style="position: fixed; width: 35%;" id="work-view">
+            <div style="position: fixed;" id="work-view">
                 <textarea name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></textarea>
                 <div class="wrapper">
                     <div id="document_img" class="viewer"></div>
@@ -146,9 +146,11 @@
 </script>
 <script type="text/javascript">
     
-        var ttt;
-    
     var $ = jQuery;
+    $('#work-zone').ready(function() {
+        $('#work-view').width($('#work-zone').width());
+    });
+
     $(document).ready(function () {
 
         var iv2 = $("#document_img").iviewer({
@@ -158,7 +160,8 @@
             var new_entity = $('<tr><td><input type="text" class="form-control" value=""></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
             new_entity.find('.subcategory-select').multiselect({
                 enableFiltering: true,
-                filterBehavior: 'value',
+                filterBehavior: 'text',
+                enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
             });
             <?php for ($i = 0; $i < sizeof($category_object); $i++){
@@ -172,11 +175,9 @@
                 
             $('#entity-table').append(new_entity);
             //Initial so category must be 0
-            $.each($('.category-select'), function (idx) {
-                var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
-                $.each(categories[0]['subcategory'], function (idx) {
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
-                });
+            var subcategory_menu = new_entity.closest('tr').find('.subcategory-select');
+            $.each(categories[0]['subcategory'], function (idx) {
+                subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
             });
         });
         $('#entity-table').on('click', '.remove-entity-button', function (e) {
@@ -224,7 +225,8 @@
         $('.subcategory-select').each(function (idx) {
             $(this).multiselect({
                 enableFiltering: true,
-                filterBehavior: 'value',
+                filterBehavior: 'text',
+                enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
             });
         });
@@ -252,12 +254,6 @@
         overflow: hidden;
     }
 </style>
-<pre>
-
-<?php print_r($category_object); ?>
-
-<?php echo json_encode($category_object); ?>
-</pre>
 
 </body>
 

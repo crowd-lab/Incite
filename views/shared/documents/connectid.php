@@ -96,13 +96,15 @@ $(document).ready(function(){
 <script type="text/javascript">
             var $ = jQuery;
             $(document).ready(function(){
+    $('#work-zone').ready(function() {
+        $('#work-view').width($('#work-zone').width());
+    });
 
                 var iv2 = $("#document_img").iviewer(
                 {
                     src: "<?php echo $this->connection->getFile()->getProperty('uri'); ?>"
                 });
 
-		$('#work-view').width($('#work-zone').width());
             });
             $('.viewer').height($(window).height()*68/100);
         </script>
