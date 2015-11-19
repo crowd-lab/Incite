@@ -10,10 +10,18 @@
  *
  * @package Incite 
  */
-class Incite_DocumentsController extends Omeka_Controller_AbstractActionController {
+function getTextBetweenTags($string, $tagname)
+{
+    $pattern = "/<$tagname>(.*?)<\/$tagname>/";
+    preg_match_all($pattern, $string, $matches);
+    return $matches;
+}
 
-    public function init() {
-        //echo '<div style="color:red">Documents Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
+class Incite_DocumentsController extends Omeka_Controller_AbstractActionController
+{
+    public function init()
+    {
+                        //echo '<div style="color:red">Documents Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
         require_once("Incite_Transcription_Table.php");
         require_once("Incite_Tag_Table.php");
         require_once("Incite_Subject_Concept_Table.php");
@@ -134,47 +142,72 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         if ($this->_hasParam('id')) {
             $record = $this->_helper->db->find($this->_getParam('id'));
 
-            if ($record != null) {
-                if ($record->getFile() == null) {
-                    //no image to transcribe
-                    echo 'no image';
+			if ($record != null) {
+				if ($record->getFile() == null) {
+					//no image to transcribe
+					echo 'no image';
+				}
+				$transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
+				$this->view->transcription = "No transcription";
+				if ($transcription != null) {
+					$this->view->transcription = getTranscriptionText($transcription[0]);
+				} else {
+				}
+				$this->_helper->viewRenderer('tagid');
+				$this->view->tag = $record;
+                //NER
+                $oldwd = getcwd();
+                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
+                if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
+                    $this->view->file = 'not exist';
+                    $ner_input = fopen('../tmp/ner/'.$this->_getParam('id'), "w") or die("unable to open transcription");
+                    fwrite($ner_input, $this->view->transcription);
+                    fclose($ner_input);
+                    system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile ".'../tmp/ner/'.$this->_getParam('id').' > '.'../tmp/ner/'.$this->_getParam('id').'.ner');
                 }
-                $transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
-                $this->view->transcription = "No transcription";
-                if ($transcription != null) {
-                    $this->view->transcription = getTranscriptionText($transcription[0]);
-                } else {
-                    
-                }
-                $this->_helper->viewRenderer('tagid');
-                $this->view->tag = $record;
-                //Handling entities here!
-                $entities = array();
-                $entities[] = array('entity' => 'Richmond', 'category' => 'Place', 'subcategory' => '', 'details' => '');
-                $entities[] = array('entity' => 'Jetersville', 'category' => 'Place', 'subcategory' => '', 'details' => '');
-                $entities[] = array('entity' => 'Amelia Springs', 'category' => 'Place', 'subcategory' => '', 'details' => '');
-                $entities[] = array('entity' => 'R.E. Hughson', 'category' => 'People', 'subcategory' => '', 'details' => '');
-                $this->view->entities = $entities;
-            } else {
-                //no such document
-                echo 'no such document';
-            }
-        } else {
-            //default view without id
-            //$this->_forward('discover');
-            //$records = get_records('Item', array('type' => 21), 20);  //21: Image
-            $records[] = $this->_helper->db->find(15);
-            $records[] = $this->_helper->db->find(18);
-            $records[] = $this->_helper->db->find(22);
-            $records[] = $this->_helper->db->find(24);
+                $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
+                $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
+                fclose($nered_file);
 
-            //check if there is really exacit one image file for each item
-            if ($records != null) {
-                $this->view->assign(array('Tags' => $records));
-            } else {
-                //no need to transcribe
-            }
-        }
+                $entity_table = array();
+                //org
+                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
+
+                foreach ($categories as $category) {
+                    $entities = getTextBetweenTags($parsed_text, $category);
+                    if (isset($entities[1]) && count($entities[1]) > 0) {
+                        foreach ($entities[1] as $entity) {
+                            if ($category == 'PERSON')
+                                $entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '');
+                            else
+                                $entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '');
+                        }
+                    }
+                }
+
+                chdir($oldwd);
+                $this->view->entities = $entity_table;
+			} else {
+				//no such document
+				echo 'no such document';
+			}
+		} else {
+			//default view without id
+			//$this->_forward('discover');
+			//$records = get_records('Item', array('type' => 21), 20);  //21: Image
+			$records[] = $this->_helper->db->find(15);
+			$records[] = $this->_helper->db->find(18);
+			$records[] = $this->_helper->db->find(22);
+			$records[] = $this->_helper->db->find(24);
+
+			//check if there is really exacit one image file for each item
+			if ($records != null) {
+				$this->view->assign(array('Tags' => $records));
+			} else {
+				//no need to transcribe
+			}
+			
+		}
     }
 
     public function connectAction() {

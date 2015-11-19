@@ -31,7 +31,7 @@
             <table class="table" id="entity-table">
                 <tr><th>Entity</th><th>Category</th><th>Subcategory</th><th>Details</th><th>Not an entity?</th></tr>
                 <?php foreach ($this->entities as $entity): ?>
-                    <tr><td><input type="text" class="form-control entity-name" value="<?php echo $entity['entity']; ?>"></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+                    <tr><td><input type="text" class="form-control entity-name" value="<?php echo $entity['entity']; ?>"></td><td><select class="category-select <?php echo ucwords(strtolower($entity['category'])); ?>"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
                 <?php endforeach; ?>
             </table>
             <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
@@ -205,10 +205,21 @@
                 }
             ?>
 
-            //Initial so category must be 0
             $.each($('.category-select'), function (idx) {
+                //Location: 1, Event: 2, People: 3, Organization 4
+                var cat = 1;
+                if ($(this).hasClass('Location')) {
+                    $($(this).find('option[value=1]')).attr('selected', 'selected');
+                } else if ($(this).hasClass('People')) {
+                    cat = 3;
+                    $($(this).find('option[value=3]')).attr('selected', 'selected');
+                } else if ($(this).hasClass('Organization')) {
+                    cat = 4;
+                    $($(this).find('option[value=4]')).attr('selected', 'selected');
+                } else {
+                }
                 var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
-                $.each(categories[0]['subcategory'], function (idx) {
+                $.each(categories[cat-1]['subcategory'], function (idx) {
                     subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
                 });
             });
@@ -267,7 +278,6 @@
         overflow: hidden;
     }
 </style>
-
 </body>
 
 </html>
