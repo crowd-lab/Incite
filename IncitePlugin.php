@@ -184,7 +184,7 @@ SQL
 SQL
     );
         get_db()->query(<<<SQL
-      INSERT INTO {$db->prefix}incite_tags_subcategory (`id`, `name`, `category_id`, `timestamp`) VALUES (NULL, 'State', 1, NULL), (NULL, 'City', 1, NULL), (NULL, 'Town', 1, NULL), (NULL, 'Building', 1, NULL), (NULL, 'Oration', 2, NULL), (NULL, 'Banquet', 2, NULL), (NULL, 'Fireworks', 2, NULL), (NULL, 'Parade', 2, NULL), (NULL, 'Reading of Declaration', 2, NULL), (NULL, 'Prayer', 2, NULL), (NULL, 'Ecursion', 2, NULL), (NULL, 'Music', 2, NULL), (NULL, 'White Southerners', 3, NULL), (NULL, 'White Northerners', 3, NULL), (NULL, 'African Americans', 3, NULL), (NULL, 'Women', 3, NULL), (NULL, 'Immigrants',3, NULL), (NULL, 'Whigs', 3, NULL), (NULL, 'Democrats', 3, NULL), (NULL, 'Republicans', 3, NULL);
+      INSERT INTO {$db->prefix}incite_tags_subcategory (`id`, `name`, `category_id`, `timestamp`) VALUES (NULL, 'State', 1, NULL), (NULL, 'City', 1, NULL), (NULL, 'Town', 1, NULL), (NULL, 'Building', 1, NULL), (NULL, 'Oration', 2, NULL), (NULL, 'Banquet', 2, NULL), (NULL, 'Fireworks', 2, NULL), (NULL, 'Parade', 2, NULL), (NULL, 'Reading of Declaration', 2, NULL), (NULL, 'Prayer', 2, NULL), (NULL, 'Excursion', 2, NULL), (NULL, 'Music', 2, NULL), (NULL, 'White Southerners', 3, NULL), (NULL, 'White Northerners', 3, NULL), (NULL, 'African Americans', 3, NULL), (NULL, 'Women', 3, NULL), (NULL, 'Immigrants',3, NULL), (NULL, 'Whigs', 3, NULL), (NULL, 'Democrats', 3, NULL), (NULL, 'Republicans', 3, NULL), (NULL, 'Military', 4, NULL), (NULL, 'Social', 4, NULL), (NULL, 'Charity', 4, NULL), (NULL, 'Business', 4, NULL), (NULL, 'Religious', 4, NULL), (NULL, 'Political', 4, NULL);
    
 SQL
     );
@@ -199,7 +199,7 @@ SQL
 SQL
    );
         get_db()->query(<<<SQL
-    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'People');
+    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'People'), (NULL, 'Organization');
     
 SQL
    );
