@@ -23,6 +23,13 @@
   text-decoration: none;
 }
 
+  @media (max-width: 1200px) {
+
+    #submit-zone { 
+      margin-left: 500px; 
+    }
+  }
+
 #search {
 	width: 50em; 
 }
@@ -37,6 +44,13 @@
 #search1 {
   width: 30em; 
 }
+
+#content {
+  padding: 10px 15px;
+color: inherit;
+background-color: #eee
+}
+
 .two-col {
     overflow: hidden;/* Makes this div contain its floats */
 }
