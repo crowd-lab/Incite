@@ -157,7 +157,7 @@
             src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>"
         });
         $('#add-more-button').on('click', function (e) {
-            var new_entity = $('<tr><td><input type="text" class="form-control" value=""></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+            var new_entity = $('<tr><td><input type="text" class="form-control entity-name" value=""></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
             new_entity.find('.subcategory-select').multiselect({
                 enableFiltering: true,
                 filterBehavior: 'text',
