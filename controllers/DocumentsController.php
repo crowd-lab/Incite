@@ -152,6 +152,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 				if ($transcription != null) {
 					$this->view->transcription = getTranscriptionText($transcription[0]);
 				} else {
+					//not using $this->forward b/c the url remains the same!
+                			$this->redirect('incite/documents/transcribe/'.$this->_getParam('id'));
 				}
 				$this->_helper->viewRenderer('tagid');
 				$this->view->tag = $record;
