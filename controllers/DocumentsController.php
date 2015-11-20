@@ -21,7 +21,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 {
     public function init()
     {
-        //echo '<div style="color:red">Documents Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
         require_once("Incite_Transcription_Table.php");
         require_once("Incite_Tag_Table.php");
         require_once("Incite_Subject_Concept_Table.php");
@@ -89,25 +88,23 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $record = $this->_helper->db->find($this->_getParam('id'));
             if ($record != null) {
                 if ($record->getFile() == null) {
-                    //no image to transcribe
-                    echo 'no image';
+                    //no image to transcribe so redirect to documents that need to be transcribed
+                    $this->redirect('incite/documents/transcribe');
                 }
                 $this->_helper->viewRenderer('transcribeid');
                 $this->view->transcription = $record;
             } else {
-                //no such document
-                echo 'no such document';
+                //no such document so redirect to documents that need to be transcribed
+                $this->redirect('incite/documents/transcribe');
             }
         } else {
-            //default view without id
-            //$this->_forward('discover');
-            //$records = get_records('Item', array('type' => 21), 20);  //21: Image
+            //default: fetch documents that need to be transcribed
             $records[] = $this->_helper->db->find(15);
             $records[] = $this->_helper->db->find(18);
             $records[] = $this->_helper->db->find(20);
             $records[] = $this->_helper->db->find(77);
 
-            //check if there is really exacit one image file for each item
+            //Assign all documents that need to be transcribed to view!
             if ($records != null) {
                 $this->view->assign(array('Transcriptions' => $records));
             } else {
@@ -117,7 +114,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function tagAction() {
-        // echo '<div style="color:blue">Welcome to Tag!</div>';
+
         if ($this->getRequest()->isPost()) {
             //save a tag to database
             if ($this->_hasParam('id')) {
@@ -126,13 +123,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $userArray = $_SESSION['Incite']['USER_DATA'];
                     $GLOBALS['USERID'] = $userArray[0];
                 }
-                //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
-                //data from post: $_POST['tag_text'], $_POST['tag_category'], $_POST['tag_description']
-                //ready to insert tag into database
-                //createTag($userID, $tag_text, $category_name, $description, $documentID)
                 $entities = json_decode($_POST["entities"], true);
-                for ($i = 0; $i < sizeof($entities); $i++)
-                {
+                for ($i = 0; $i < sizeof($entities); $i++) {
                     createTag($GLOBALS['USERID'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
                 }
             }
@@ -152,12 +144,19 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if ($transcription != null) {
                     $this->view->transcription = getTranscriptionText($transcription[0]);
                 } else {
-                    //not using $this->forward b/c the url remains the same!
-                    $this->redirect('incite/documents/transcribe/'.$this->_getParam('id'));
+                    //Redirect to transcribe task if there is no transcription available
+                    $this->redirect('incite/documents/transcribe'.$this->_getParam('id'));
                 }
                 $this->_helper->viewRenderer('tagid');
-                $this->view->tag = $record;
-                //NER
+
+                //Check entities:
+                //  1) is tagged already?  Yes: skip the task; No: do the following
+                //  2) pull similar entities in the database based on searching in transcription
+                //  3) NER to get entities
+
+                //NER: start
+                $ner_entity_table = array();
+
                 $oldwd = getcwd();
                 chdir('./plugins/Incite/stanford-ner-2015-04-20/');
                 if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
@@ -171,7 +170,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
                 fclose($nered_file);
 
-                $entity_table = array();
                 //org
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
 
@@ -188,7 +186,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
 
                 chdir($oldwd);
-                $this->view->entities = $entity_table;
+                //NER:end
+
+                $this->view->entities = $ner_entity_table;
             } else {
                 //no such document
                 echo 'no such document';

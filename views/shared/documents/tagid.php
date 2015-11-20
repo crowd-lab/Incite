@@ -57,51 +57,7 @@
                 <?php else: ?>
                     Please login or signup to join the discussion!
                 </div>
-            <?php endif; ?>
-            <!--
-                            <p>Are these the same as the following entities? </p>
-                            <form role="form">
-                                <label class="radio-inline">
-                                  <input type="radio" name="optradio">George Washington
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="optradio">Washington State
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="optradio">Not an Entity
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="optradio">No
-                                </label>
-                            </form>
-            
-                            <form role="form" method="post">
-                                                    <p>Please type the tag name in the following text box:</p>
-                                                              <input type="text" name="tag_text">
-                                                    <br />
-                                                    <p>Please choose what type the tag is:</p>
-                                <label class="radio-inline">
-                                  <input type="radio" name="tag_category" value="People">People
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="tag_category" value="Places">Places
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="tag_category" value="Organizations">Organizations
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="tag_category" value="Events">Events
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="tag_category" value="Ideas">Ideas
-                                </label>
-                                <label class="radio-inline">
-                                  <input type="radio" name="tag_category" value="Time">Time/Date
-                                </label>
-                                    <textarea name="tag_description" cols="60" rows="15" id="tag_description">Details</textarea>
-                                    <button type="submit" class="btn btn-default">Submit</button>
-                            </form>
-            -->
+                <?php endif; ?>
         </div> 
     </div>
 
@@ -114,10 +70,9 @@
 </div>
 <!-- /.container -->
 
-<script>
+<script type="text/javascript">
     //Global variable to store categories
     var categories = <?php echo json_encode($category_object); ?>
-    
     
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({trigger: "hover"});
@@ -130,26 +85,8 @@
             $("#document_img").show();
             $("#transcribe_copy").hide();
         });
-    });</script>
-
-
-<script type="text/javascript">
-    /*
-    $(document).ready(function () {
-        var request = $.ajax({
-            async: false,
-            type: "POST",
-            url: "http://localhost/m4j/incite/ajax/getcategories",
-            success: function (data) {
-                window.categories = JSON.parse(data);
-            }});
     });
-    */
 
-</script>
-<script type="text/javascript">
-    
-    var $ = jQuery;
     $('#work-zone').ready(function() {
         $('#work-view').width($('#work-zone').width());
     });
