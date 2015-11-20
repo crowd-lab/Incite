@@ -148,6 +148,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $this->redirect('incite/documents/transcribe'.$this->_getParam('id'));
                 }
                 $this->_helper->viewRenderer('tagid');
+                $this->view->tag = $record;
 
                 //Check entities:
                 //  1) is tagged already?  Yes: skip the task; No: do the following
@@ -178,9 +179,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     if (isset($entities[1]) && count($entities[1]) > 0) {
                         foreach ($entities[1] as $entity) {
                             if ($category == 'PERSON')
-                                $entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '');
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '');
                             else
-                                $entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '');
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '');
                         }
                     }
                 }
