@@ -322,7 +322,7 @@ require_once("DB_Connect.php");
             $stmt = $db->prepare("INSERT INTO omeka_incite_users_map VALUES (?, ?)");
             $stmt->bind_param("ii", $userID, $guestID);
             $stmt->execute();
-            $stmt->clos();
+            $stmt->close();
             $db->close();
         }
     }
