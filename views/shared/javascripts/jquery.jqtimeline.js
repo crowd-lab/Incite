@@ -1,3 +1,4 @@
+
 /*!
  * jqtimeline Plugin
  * http://goto.io/jqtimeline
@@ -10,10 +11,12 @@
 (function($) {
 	var pluginName = 'jqTimeline',
 		defaults = {
-			startYear : (new Date()).getFullYear() -1 , // Start with one less year by default
+			startYear : (new Date()).getFullYear() - 1 , // Start with one less year by default
+            endYear : (new Date()).getFullYear() + 10,
 			numYears : 3,
 			gap : 25, // gap between lines
 			showToolTip : true,
+            totalWidth : 1000,
 			groupEventWithinPx : 6, // Will show common tooltip for events within this range of px
 			events : [],
 			click : null //Handler for click event for event
@@ -64,24 +67,50 @@
 	jqTimeLine.prototype._generateMarkup = function() {
 		var _this = this;
 		var i = 0,j=0;
-		var totalWidth = _this.options.numYears * this._gap * 12 + 3;
-		var containerWidth = totalWidth + 30;
+		//var totalWidth = _this.options.numYears * this._gap * 12 + 3;
+		var totalWidth = _this.options.totalWidth
+		var containerWidth = totalWidth;
 		var $mainContainer = this.$mainContainer = $(
 			'<div class="gt-timeline" style="width:'+containerWidth+'px">' + 
 				'<div class="main_line" style="width:'+totalWidth+'px"></div>' + 
 			'</div>'
 		);
-		for(j=0;j<_this.options.numYears;j++){
-			for(i=0;i<12;i++){
-				$mainContainer.append(_this._getMonthMarkup(i,_this.options.startYear + j));
-			}
-		}
-		$mainContainer.append(_this._getMonthMarkup(0,_this.options.startYear + _this.options.numYears));
+		var retStr='<div class="horizontal-line leftend" style="left:'+_this._current_offset_x+'px">' + 
+						'<div class="year">'+_this.options.startYear+'</div>' + 
+						//'<div class="month">Jan</div>' + 
+					'</div>';
+		$mainContainer.append(retStr);
+		retStr='<div class="horizontal-line leftend" style="left:'+(totalWidth+11)+'px">' + 
+						'<div class="year">'+_this.options.endYear+'</div>' + 
+					'</div>';
+		$mainContainer.append(retStr);
+		retStr='<div class="horizontal-line leftend" style="left:'+((totalWidth+11)/2)+'px">' + 
+						'<div class="year">'+Math.ceil((_this.options.endYear+_this.options.startYear)/2)+'</div>' + 
+					'</div>';
+		$mainContainer.append(retStr);
+		retStr = '<div class="horizontal-line month-line even-month" style="left:'+((totalWidth+11)*0.25)+'px">'+
+                        '<div class="month">'+Math.ceil(_this.options.numYears/4+_this.options.startYear)+'</div>' +
+                    '</div>';
+		$mainContainer.append(retStr);
+		retStr = '<div class="horizontal-line month-line even-month" style="left:'+((totalWidth+11)*0.75)+'px">'+
+                        '<div class="month">'+Math.ceil(_this.options.numYears*0.75+_this.options.startYear)+'</div>' +
+                    '</div>';
+		$mainContainer.append(retStr);
+
+		retStr = '<div class="horizontal-line month-line odd-month" style="left:'+((totalWidth+11)*0.125)+'px"></div>';
+		$mainContainer.append(retStr);
+		retStr = '<div class="horizontal-line month-line odd-month" style="left:'+((totalWidth+11)*0.375)+'px"></div>';
+		$mainContainer.append(retStr);
+		retStr = '<div class="horizontal-line month-line odd-month" style="left:'+((totalWidth+11)*0.625)+'px"></div>';
+		$mainContainer.append(retStr);
+		retStr = '<div class="horizontal-line month-line odd-month" style="left:'+((totalWidth+11)*0.875)+'px"></div>';
+		$mainContainer.append(retStr);
+
 		//Start adding events
 		for(var k=0;k<_this.options.events.length;k++){
 			var e = _this.options.events[k];
 			var d = e.on;
-			if(d.getFullYear() >= _this.options.startYear && d.getFullYear() < _this.options.startYear + _this.options.numYears){
+			if(d.getFullYear() >= _this.options.startYear && d.getFullYear() < _this.options.endYear){
 				$mainContainer.append(_this._getEventMarkup(e));
 			}
 		}
@@ -89,20 +118,6 @@
 	};
 
 	jqTimeLine.prototype._getMonthMarkup = function(num,year){
-		var _this = this;
-		var retStr = "";
-		if(num== 0){
-			retStr='<div class="horizontal-line leftend" style="left:'+_this._current_offset_x+'px">' + 
-						'<div class="year">'+year+'</div>' + 
-						'<div class="month">Jan</div>' + 
-					'</div>';
-		}else if(num%2 == 1){
-			retStr = '<div class="horizontal-line month-line odd-month" style="left:'+_this._current_offset_x+'px"></div>';
-		}else{
-			retStr = '<div class="horizontal-line month-line even-month" style="left:'+_this._current_offset_x+'px"><div class="month">'+aMonths[num]+'</div></div>';
-		}
-		_this._current_offset_x += _this._gap;
-		return retStr;
 	}
 
 	jqTimeLine.prototype._getGenId = function(){
@@ -147,7 +162,9 @@
 		var yn = d.getFullYear() - _this.options.startYear;
 		var mn = d.getMonth();
 		var totalMonths = (yn * 12) + mn;
-		var leftVal = Math.ceil(_this._offset_x + totalMonths * _this.options.gap + (_this.options.gap/31)*n - _this._eDotWidth/2);
+		//var leftVal = Math.ceil(_this._offset_x + totalMonths * _this.options.gap + (_this.options.gap/31)*n - _this._eDotWidth/2);
+		var leftVal = Math.ceil(_this.options.totalWidth*(yn/(_this.options.endYear-_this.options.startYear)));
+
 		var $retHtml = $('<div class="event" id="event_'+e.id+'" style="left:'+leftVal+'px">&nbsp;</div>').data('event',e);
 		$retHtml.data('eventInfo',_this._aEvents[e.id]);
 		if(_this.options.click){

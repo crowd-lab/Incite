@@ -44,7 +44,8 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="map-div" style="width:600px;
     height:300px;"></div>
     
-    <div id="timeline" style="width:600px;"></div>
+    <div id="timeline" style="width:1000px;"></div>
+    <div id="" style="width:1000px; height:100px;"></div>
 
 
 <?php foreach ($this->Transcriptions as $transcription): ?>
@@ -81,70 +82,29 @@ include(dirname(__FILE__).'/../common/header.php');
                    </form>
               </div>
 
-
-
-<!--               <div style="margin-top: 5em;">
-                <p>Here's what other people are working on: </p>
-              </div>
-              <ul style="list-style-type:none">
-                <li>
-                    <p>1) User1 just found a diary from Emma LeConte in 1840! </p> 
-                </li>
-                <li>
-                    <p>2) User2 is decoding a mysterious historical document allegedly from South.  </p> 
-                </li>
-                <li>
-                    <p>3) User3 found a new document talking about Nationalism. </p> 
-                </li>
-                <li>
-                    <p>4) User4 is figuring out what the 3 documents have in common.</p> 
-                </li>
-              </ul> -->
         </div>
-
                      
 </div>
-<script type="text/javascript">
-var ev = [{
-                            id : 1,
-                            name : "Joined Faecbook",
-                            on : new Date(2011,2,15)
-                        },{
-                            id : 11,
-                            name : "Updated my first status message",
-                            on : new Date(2011,2,17)
-                        },{
-                            id : 2,
-                            name : "Joined Twitter",
-                            on : new Date(2011,5,30)
-                        },{
-                            id : 9,
-                            name : "Created a new blogger account",
-                            on : new Date(2011,7,5)
-                        },{
-                            id : 3,
-                            name : "Trip to Australia",
-                            on : new Date(2012,5,5)
-                        },{
-                            id : 4,
-                            name : "Trip to New Zealand",
-                            on : new Date(2012,5,30)
-                        },{
-                            id : 5,
-                            name : "Awesome new year",
-                            on : new Date(2013,0,1)
-                        },{
-                            id : 6,
-                            name : "No idea about this date",
-                            on : new Date(2015,6,10)
-                        }]
+    <script type="text/javascript">
+    var ev = [
+<?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
+            {
+                id : <?php echo $i; ?>,
+                name : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Title')); ?>",
+                desc : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Description')); ?>",
+                on : new Date("<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Date')); ?>")
+            },
+<?php endfor; ?>
+    ]
 
 var tl = $('#timeline').jqtimeline({
                             events : ev,
-                            numYears:4,
-                            startYear:2011,
+							numYears: (1880-1845),
+							startYear: 1845,
+                            endYear: 1880,
+                            totalWidth: $('#timeline').width(),
                             click:function(e,event){
-                                alert(event.name);
+                                alert(event.desc);
                             }
                         });
 </script>
