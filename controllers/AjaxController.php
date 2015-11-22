@@ -24,7 +24,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             $password = $_POST['password'];
             $isGuest = false;
             $guestID = -1;
-            if (isset($_SESSION['Incite']) && strpos($_SESSION['Incite']['USER_DATA'][1], "guest") !== false)
+            if (isset($_SESSION['Incite']) && isset($_SESSION['Incite']['USER_DATA']) && strpos($_SESSION['Incite']['USER_DATA'][1], "guest") !== false)
             {
                 //link guest and user accounts
                 $isGuest = true;

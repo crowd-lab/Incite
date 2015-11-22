@@ -44,6 +44,18 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
 
 <body>
     <script type="text/javascript">
+        $(document).ready(function()
+        {
+            $("#signup-tab").on('click', function()
+            {
+                if (document.getElementById("errorMessage") !== null)
+                {
+                    var x = document.getElementById("errorMessage");
+                    var usernameDiv = document.getElementById("modal-footer");
+                    usernameDiv.removeChild(x);
+                }
+            });
+        });
         $(document).ready(function () {
             $('#login-button').on('click', function (e) {
                 if ($('#login-tab').hasClass('active')) {
@@ -55,8 +67,29 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             data: {"username": $('#username').val(), "password": $('#password').val()},
                             success: function (data) {
                                 if (data == "true") {
-                                    alert("successful login");
-                                    $('#login-signup-dialog').modal('hide');
+                                    //alert("successful login");
+                                    var loginDiv = document.getElementById("modal-footer");
+                                    if (document.getElementById("errorMessage") !== null)
+                                    {
+                                        var x = document.getElementById("errorMessage");
+                                        loginDiv.removeChild(x);
+                                    }
+                                    var usernameError = document.createElement('div');
+                                    var textNode = document.createTextNode("Login Successful!");
+                                    usernameError.style.textAlign = "center";
+                                    usernameError.appendChild(textNode);
+                                    
+                                    usernameError.id = "errorMessage";
+                                    usernameError.className = "alert alert-block alert-success messages status";
+                                    var submitButton = document.getElementById("login-button");
+                                    loginDiv.insertBefore(usernameError, submitButton);
+                                    
+                                    
+                                    setTimeout(function()
+                                    {
+                                        $('#login-signup-dialog').modal('hide');
+                                        loginDiv.removeChild(usernameError);
+                                    }, 2000);
                                     var getDataArray = $.ajax({
                                         type: "POST",
                                         url: "http://localhost/m4j/incite/ajax/getdata",
@@ -76,7 +109,23 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
 
 
                                 } else {
-                                    alert("wrong username or password");
+                                    //alert("wrong username or password");
+                                    
+                                    var loginDiv = document.getElementById("modal-footer");
+                                    if (document.getElementById("errorMessage") !== null)
+                                    {
+                                        var x = document.getElementById("errorMessage");
+                                        loginDiv.removeChild(x);
+                                    }
+                                    var usernameError = document.createElement('div');
+                                    var textNode = document.createTextNode("Wrong Username or Password");
+                                    usernameError.style.textAlign = "center";
+                                    usernameError.appendChild(textNode);
+                                    
+                                    usernameError.id = "errorMessage";
+                                    usernameError.className = "alert alert-block alert-danger messages error";
+                                    var submitButton = document.getElementById("login-button");
+                                    loginDiv.insertBefore(usernameError, submitButton);
                                 }
                             },
                             error: function (e) {
