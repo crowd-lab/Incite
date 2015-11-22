@@ -19,6 +19,10 @@
     <div class="container">
         <div class="col-md-6" id="work-zone">
             <div style="position: fixed;" id="work-view">
+                    <div>Title: <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></div>
+                    <div>Date: <?php echo metadata($this->tag, array('Dublin Core', 'Date')); ?></div>
+                    <div>Location: <?php echo metadata($this->tag, array('Item Type Metadata', 'Location')); ?></div>
+                    <div>Description: <?php echo metadata($this->tag, array('Dublin Core', 'Description')); ?></div>
                 <textarea name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></textarea>
                 <div class="wrapper">
                     <div id="document_img" class="viewer"></div>
