@@ -14,13 +14,14 @@ function createTag($userID, $tag_text, $category, $subcategory, $description, $d
     //see if document is existing in database and tag document if exists
     //if it doesn't exist, create it with the document id and then tag it with the tag id
     $db->close();
+    $count = 0;
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
+    $stmt = $db->prepare("SELECT COUNT(*), id FROM omeka_incite_documents WHERE item_id = ?");
     $stmt->bind_param("i", $documentID);
-    $stmt->bind_result($id);
+    $stmt->bind_result($count, $id);
     $stmt->execute();
     $stmt->fetch();
-    if($stmt->num_rows > 0) 
+    if($count > 0) 
     {
         //store tag in conjunction table
         $db->close();
@@ -149,5 +150,24 @@ function getAllCategories()
     $stmt->close();
     $db->close();
     return $results;
+}
+function isDocumentTagged($documentID)
+{
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents_tags_conjunction WHERE document_id = ?");
+    $stmt->bind_param("i", $documentID);
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    if ($count >= 10)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 ?>
