@@ -16,6 +16,13 @@ function getTextBetweenTags($string, $tagname)
     preg_match_all($pattern, $string, $matches);
     return $matches;
 }
+function colorTextBetweenTags($string, $tagname, $color)
+{
+    $result = $string;
+    $result = str_replace('<'.$tagname.'>', '<span style="background-color:'.$color.';">', $result);
+    $result = str_replace('</'.$tagname.'>', '</span>', $result);
+    return $result;
+}
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController
 {
@@ -158,6 +165,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //NER: start
                 $ner_entity_table = array();
 
+                //running NER
                 $oldwd = getcwd();
                 chdir('./plugins/Incite/stanford-ner-2015-04-20/');
                 if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
@@ -171,17 +179,20 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
                 fclose($nered_file);
 
-                //org
+                //parsing results
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
+                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
+                $colored_transcription = $parsed_text;
 
                 foreach ($categories as $category) {
                     $entities = getTextBetweenTags($parsed_text, $category);
+                    $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                     if (isset($entities[1]) && count($entities[1]) > 0) {
                         foreach ($entities[1] as $entity) {
                             if ($category == 'PERSON')
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '');
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
                             else
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '');
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
                         }
                     }
                 }
@@ -190,6 +201,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //NER:end
 
                 $this->view->entities = $ner_entity_table;
+                $this->view->transcription = $colored_transcription;
             } else {
                 //no such document
                 echo 'no such document';
