@@ -41,21 +41,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function indexAction() {
-        echo '<div style="color:black">Welcome to Homepage (discover)!</div>';
-        $this->_helper->db->setDefaultModelName('Item');
-        $record = $this->_helper->db->findById(225);
-        $this->view->assign(array('Item' => $record));
-        //$this->discoverAction();
-    }
-
-    public function discoverAction() {
-
-        echo '<div style="color:red">Welcome to Discover!</div>';
-        //print_r($this->_getAllParams());
-        if ($this->_hasParam('id'))
-            echo 'discovering document with id: ' . $this->_getParam('id');
-        else
-            echo 'general discovering';
+        //Since we don't have document lists, redirect to the transcribe task page.
+        $this->redirect('incite/documents/transcribe');
     }
 
     public function showAction() {
@@ -71,7 +58,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            //$this->_forward('discover');
         }
     }
 
@@ -208,30 +194,26 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            //$this->_forward('discover');
-            //$records = get_records('Item', array('type' => 21), 20);  //21: Image
             $records[] = $this->_helper->db->find(15);
             $records[] = $this->_helper->db->find(18);
             $records[] = $this->_helper->db->find(22);
             $records[] = $this->_helper->db->find(24);
 
-            //check if there is really exacit one image file for each item
             if ($records != null) {
                 $this->view->assign(array('Tags' => $records));
             } else {
                 //no need to transcribe
             }
-
         }
     }
 
     public function connectAction() {
-        //echo '<div style="color:green">Welcome to Connect!</div>';
         $this->_helper->db->setDefaultModelName('Item');
         $subjectConceptArray = getAllSubjectConcepts();
         $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
         $subjectName = getSubjectConceptOnId($randomSubjectInt);
         $subjectDef = getDefinition($subjectName[0]);
+
         //Choosing a subject to test with some fake data to test view
         $this->view->subject = $subjectName[0];
         $this->view->subject_definition = $subjectDef;
@@ -241,8 +223,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         if ($this->getRequest()->isPost()) {
             //save a connection to database
             if ($this->_hasParam('id')) {
-                //createTranscription($this->_getParam('id'), -1, $_POST['transcription'], $_POST['summary']);
-                //data from post: $_POST['connection'] //either true or false
                 if ($GLOBALS['USERID'] == -1) {
                     createGuestSession();
                     $userArray = $_SESSION['Incite']['USER_DATA'];
@@ -275,8 +255,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            //$this->_forward('discover');
-            //$records = get_records('Item', array('type' => 21), 20);  //21: Image
             $records[] = $this->_helper->db->find(15);
             $records[] = $this->_helper->db->find(18);
             $records[] = $this->_helper->db->find(77);
@@ -291,11 +269,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function discussAction() {
-        echo '<div style="color:black">Welcome to Discuss!</div>';
+        //Possibly for in-document discussions
     }
-
-    public function fooAction() {
-        // $this->_redirect('/incite/documents/foo');
-    }
-
 }
