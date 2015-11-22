@@ -170,4 +170,54 @@ function isDocumentTagged($documentID)
         return false;
     }
 }
+/**
+ * @return array of all tags in specified format:
+ * [0][id, user_id, corresponding_document_id, tag_text, created_timestamp, category_name, subcategories (array), description]
+ */
+function getAllTagInformation()
+{
+    $dataArray = array();
+    $db = DB_Connect::connectDB();
+    
+    
+    $stmt = $db->prepare("SELECT * FROM omeka_incite_tags");
+    $stmt->bind_result($tag_id, $user_id, $tag_text, $timestamp, $category_id, $description);
+    $stmt->execute();
+    while ($stmt->fetch())
+    {
+        $db1 = DB_Connect::connectDB();
+        $db2 = DB_Connect::connectDB();
+        $db3 = DB_Connect::connectDB();
+        $category_name = "";
+        $getCategoryName = $db1->prepare("SELECT name FROM omeka_incite_tags_category WHERE id = ?");
+        $getCategoryName->bind_param("i", $category_id);
+        $getCategoryName->bind_result($category_name);
+        $getCategoryName->execute();
+        $getCategoryName->fetch();
+        $getCategoryName->close();
+        $db1->close();
+        $subcategory = array();
+        
+        $getSubCategories = $db2->prepare("SELECT name FROM `omeka_incite_tags_subcategory` INNER JOIN omeka_incite_tags_subcategory_conjunction ON omeka_incite_tags_subcategory.id = omeka_incite_tags_subcategory_conjunction.subcategory_id WHERE omeka_incite_tags_subcategory_conjunction.subcategory_id = ?");
+        $getSubCategories->bind_param("i", $tag_id);
+        $getSubCategories->bind_result($subcategory_name);
+        $getSubCategories->execute();
+        while ($getSubCategories->fetch())
+        {
+            $subcategory[] = $subcategory_name;
+        }
+        $getSubCategories->close();
+        $db2->close();
+        
+        $getDocumentId = $db3->prepare("SELECT document_id FROM omeka_incite_documents_tags_conjunction WHERE tag_id = ?");
+        $getDocumentId->bind_param("i", $tag_id);
+        $getDocumentId->bind_result($documentID);
+        $getDocumentId->execute();
+        $getDocumentId->fetch();
+        
+        
+        $dataArray[] = array("tag_id" => $tag_id, "user_id" => $user_id, "document_id" => $documentID, "tag_text" => $tag_text, "timestamp" => $timestamp, "category_name" => $category_name, "subcategories" => $subcategory, "description" => $description);
+    }
+    return $dataArray;
+}
 ?>
