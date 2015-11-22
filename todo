@@ -1,4 +1,8 @@
 
+11/21/2015:
+    * Search part for Discover (currently there is no "search" implemented yet)
+    * Integrate existing entity information and NER (currently we only use NER)
+
 11/20/2015:
     * Issues with the tagging task:
         ** Sometimes it's hard to find an appropriate entity for an event (See item 1 for example)
