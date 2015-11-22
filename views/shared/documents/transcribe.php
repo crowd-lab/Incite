@@ -97,12 +97,6 @@ function loc_to_lat_long($loc_str)
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
-<style type='text/css'>
-    #map-div {
-    width:600px;
-    height:300px;
-    }
-</style>
 
 <script type="text/javascript">
     function x() {
@@ -141,11 +135,9 @@ include(dirname(__FILE__).'/../common/header.php');
             </p>
 
 
-    <div id="map-div" style="width:600px;
-    height:300px;"></div>
-    
-    <div id="timeline" style="width:1000px;"></div>
-    <div id="" style="width:1000px; height:100px;"></div>
+    <div id="map-div" class="col-md-10 col-md-offset-1"></div>
+    <div id="timeline" class="col-md-10 col-md-offset-1"></div>
+    <div id="timeline-spacing" class="col-md-10 col-md-offset-1" style="height:100px;"></div>
 
 
 <?php foreach ($this->Transcriptions as $transcription): ?>
@@ -155,37 +147,18 @@ include(dirname(__FILE__).'/../common/header.php');
         </a>
         <h4 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h4>
         <p style="text-align: center;"> <?php echo metadata($transcription, array('Dublin Core', 'Description')); ?> </p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                <span class="sr-only">45% Complete</span>
-            </div>
-        </div>
     </div>
 <?php endforeach; ?>
 
-        <div class="col-lg-4">
-             <form class="form-wrapper" >
-                    <input type="text" style="margin-bottom: 10px;" id="search1" placeholder="Keywords" required>
-            </form>
-            <form class="form-wrapper" >
-                    <input type="text" style="margin-bottom: 10px;" id="search1" placeholder="Locations" required>
-            </form>
-            <div class="two-col">
-                <div class="col1">
-                   <form class="form-wrapper" >
-                        <input type="text" id="company" placeholder="Date 1"/> 
-                   </form>
-                </div>
-              <div class="col2">
-                   <form class="form-wrapper" >
-                        <input type="text" id="company" placeholder="Date 2"/>
-                   </form>
-              </div>
-
-        </div>
                      
 </div>
     <script type="text/javascript">
+
+    $('#map-div').ready( function (e) {
+        $('#map-div').height($('#map-div').width()/2);
+    });
+
+$(document).ready( function (e) {
     var ev = [
 <?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
             {
@@ -207,6 +180,8 @@ var tl = $('#timeline').jqtimeline({
                                 alert(event.desc);
                             }
                         });
+
+});
 </script>
 
 
