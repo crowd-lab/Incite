@@ -1,3 +1,96 @@
+<?php
+
+/**
+    Input: Location from Item Type Metadata (Format: State - County - City or "State - City Indep. City")
+    Output: array including "lat" and "long".
+ */
+function loc_to_lat_long($loc_str)
+{
+    $states = array(
+        'Alabama'=>'AL',
+        'Alaska'=>'AK',
+        'Arizona'=>'AZ',
+        'Arkansas'=>'AR',
+        'California'=>'CA',
+        'Colorado'=>'CO',
+        'Connecticut'=>'CT',
+        'Delaware'=>'DE',
+        'Florida'=>'FL',
+        'Georgia'=>'GA',
+        'Hawaii'=>'HI',
+        'Idaho'=>'ID',
+        'Illinois'=>'IL',
+        'Indiana'=>'IN',
+        'Iowa'=>'IA',
+        'Kansas'=>'KS',
+        'Kentucky'=>'KY',
+        'Louisiana'=>'LA',
+        'Maine'=>'ME',
+        'Maryland'=>'MD',
+        'Massachusetts'=>'MA',
+        'Michigan'=>'MI',
+        'Minnesota'=>'MN',
+        'Mississippi'=>'MS',
+        'Missouri'=>'MO',
+        'Montana'=>'MT',
+        'Nebraska'=>'NE',
+        'Nevada'=>'NV',
+        'New Hampshire'=>'NH',
+        'New Jersey'=>'NJ',
+        'New Mexico'=>'NM',
+        'New York'=>'NY',
+        'North Carolina'=>'NC',
+        'North Dakota'=>'ND',
+        'Ohio'=>'OH',
+        'Oklahoma'=>'OK',
+        'Oregon'=>'OR',
+        'Pennsylvania'=>'PA',
+        'Rhode Island'=>'RI',
+        'South Carolina'=>'SC',
+        'South Dakota'=>'SD',
+        'Tennessee'=>'TN',
+        'Texas'=>'TX',
+        'Utah'=>'UT',
+        'Vermont'=>'VT',
+        'Virginia'=>'VA',
+        'Washington'=>'WA',
+        'West Virginia'=>'WV',
+        'Wisconsin'=>'WI',
+        'Wyoming'=>'WY');
+    $elem  = explode("-", $loc_str);
+    $state = "";
+    $city  = "";
+
+    //Parse state and city names
+    if (count($elem) == 3) {
+        $state = $states[trim($elem[0])];
+        $city  = trim($elem[2]);
+    } else if (count($elem) == 2) {
+        $state = $states[trim($elem[0])];
+        $city  = strstr(trim($elem[1]), ' Indep.', true);
+    } else {
+        die('new location string: '.$loc_str);
+    }
+
+    //Convert state and city to lat and long
+    $result = array();
+    $latlong_file = fopen('./plugins/Incite/zip_codes_states.csv', 'r') or die('no zip file!');
+
+    while (($row = fgetcsv($latlong_file)) != FALSE) {
+        //Just use the first result as our final result!
+        if ($city == $row[3] && $state == $row[4]) {
+            $result['lat']  = $row[1];
+            $result['long'] = $row[2];
+            break;
+        }
+    }
+    fclose($latlong_file);
+
+    return $result;
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <?php
@@ -18,12 +111,19 @@ include(dirname(__FILE__).'/../common/header.php');
           L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
               attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
-          L.marker([38.907192, -77.036871]).addTo(map);
+<?php
+    foreach($this->Transcriptions as $transcription) {
+        $lat_long = loc_to_lat_long(metadata($transcription, array('Item Type Metadata', 'Location')));
+        if (count($lat_long) > 0) {
+            echo 'L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map);\n";
+        }
+    }
+?>
     }
 
 </script>
 
-<body onload="x();  ">
+<body onload="x();">
     <!-- Page Content -->
     <div class="container">
 
@@ -115,13 +215,5 @@ var tl = $('#timeline').jqtimeline({
 
 </body>
 
-    <!-- jQuery Version 1.11.1 -->
-
-
-
-    <!-- Bootstrap Core JavaScript -->
-
-
-</body>
 
 </html>
