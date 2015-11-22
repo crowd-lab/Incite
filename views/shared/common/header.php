@@ -44,9 +44,9 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
 
 <body>
     <script type="text/javascript">
-        $(document).ready(function()
+        $(document).ready(function ()
         {
-            $("#signup-tab").on('click', function()
+            $("#signup-tab").on('click', function ()
             {
                 if (document.getElementById("errorMessage") !== null)
                 {
@@ -78,14 +78,14 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                     var textNode = document.createTextNode("Login Successful!");
                                     usernameError.style.textAlign = "center";
                                     usernameError.appendChild(textNode);
-                                    
+
                                     usernameError.id = "errorMessage";
                                     usernameError.className = "alert alert-block alert-success messages status";
                                     var submitButton = document.getElementById("login-button");
                                     loginDiv.insertBefore(usernameError, submitButton);
-                                    
-                                    
-                                    setTimeout(function()
+
+
+                                    setTimeout(function ()
                                     {
                                         $('#login-signup-dialog').modal('hide');
                                         loginDiv.removeChild(usernameError);
@@ -97,12 +97,16 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                         {
                                             var dataArray = JSON.parse(data);
                                             //console.log(dataArray);
-
+                                            var navBarElement = $('ul[class="nav navbar-nav navbar-right"]');
+                                            navBarElement.find('li').each(function ()
+                                            {
+                                                $(this).remove();
+                                            });
 
                                             $('ul[class="nav navbar-nav navbar-right"]').append('<li><a href="user_profile!">' + dataArray[1] + '</a></li>');
                                             $('ul[class="nav navbar-nav navbar-right"]').append('<li><a onclick = "logout()">Logout</a></li>');
-                                            
-                                            $('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
+
+//                                          //$('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
 
                                         }
                                     })
@@ -110,7 +114,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
 
                                 } else {
                                     //alert("wrong username or password");
-                                    
+
                                     var loginDiv = document.getElementById("modal-footer");
                                     if (document.getElementById("errorMessage") !== null)
                                     {
@@ -121,7 +125,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                     var textNode = document.createTextNode("Wrong Username or Password");
                                     usernameError.style.textAlign = "center";
                                     usernameError.appendChild(textNode);
-                                    
+
                                     usernameError.id = "errorMessage";
                                     usernameError.className = "alert alert-block alert-danger messages error";
                                     var submitButton = document.getElementById("login-button");
@@ -145,7 +149,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             success: function (data) {
                                 console.log('signup');
                                 console.log(data);
-                                if (data == "true") 
+                                if (data == "true")
                                 {
                                     alert("successful signup and login");
                                     $('#login-signup-dialog').modal('hide');
@@ -156,18 +160,22 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                         {
                                             var dataArray = JSON.parse(data);
                                             //console.log(dataArray);
-
+                                            var navBarElement = $('ul[class="nav navbar-nav navbar-right"]');
+                                            navBarElement.find('li').each(function ()
+                                            {
+                                                $(this).remove();
+                                            });
 
                                             $('ul[class="nav navbar-nav navbar-right"]').append('<li><a href="user_profile!">' + dataArray[1] + '</a></li>');
                                             $('ul[class="nav navbar-nav navbar-right"]').append('<li><a onclick = "logout()">Logout</a></li>');
-                                            
-                                            $('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
-                                           
+
+                                            //$('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
+
 
                                         }
                                     })
-                                    
-                                    
+
+
                                 } else {
                                     alert("Unable to Sign Up!");
                                 }
@@ -189,9 +197,16 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                 url: "http://localhost/m4j/incite/ajax/logout",
                 success: function () {
                     alert("Logout Successful!");
+
+                    var navBarElement = $('ul[class="nav navbar-nav navbar-right"]');
+                    navBarElement.find('li').each(function ()
+                    {
+                        $(this).remove();
+                    });
+
                     $('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
                     $('ul[class="nav navbar-nav navbar-right"]').append('<li><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></li>');
-                    $('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
+                    //$('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
                 },
                 error: function (e) {
                     console.log(e.message);
@@ -285,7 +300,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                 </ul>
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name   ?></a></li>
+                        <li><a href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name    ?></a></li>
                         <li><a onclick = 'logout()'>Logout</a></li>
                     </ul>
                 <?php else: ?>
