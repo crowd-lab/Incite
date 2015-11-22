@@ -251,7 +251,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modal-footer">
                     <button type="button" class="btn btn-primary" id="login-button">Submit</button>
                 </div>
             </div>
