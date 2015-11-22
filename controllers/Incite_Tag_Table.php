@@ -161,7 +161,7 @@ function isDocumentTagged($documentID)
     $stmt->execute();
     $stmt->fetch();
     $stmt->close();
-    if ($count >= 10)
+    if ($count > 0)
     {
         return true;
     }
