@@ -57,14 +57,18 @@ function loc_to_lat_long($loc_str)
         'West Virginia'=>'WV',
         'Wisconsin'=>'WI',
         'Wyoming'=>'WY');
+
+    //mostly only use state and city but in case of no such city, we use county instead
     $elem  = explode("-", $loc_str);
     $state = "";
     $city  = "";
+    $county = "";
 
     //Parse state and city names
     if (count($elem) == 3) {
-        $state = $states[trim($elem[0])];
-        $city  = trim($elem[2]);
+        $state  = $states[trim($elem[0])];
+        $city   = trim($elem[2]);
+        $county = trim(str_replace('County', '', $elem[1]));
     } else if (count($elem) == 2) {
         $state = $states[trim($elem[0])];
         $city  = strstr(trim($elem[1]), ' Indep.', true);
@@ -77,6 +81,11 @@ function loc_to_lat_long($loc_str)
     $latlong_file = fopen('./plugins/Incite/zip_codes_states.csv', 'r') or die('no zip file!');
 
     while (($row = fgetcsv($latlong_file)) != FALSE) {
+        //Just use the last result as our county guess
+        if ($county == $row[5] && $state == $row[4]) {
+            $result['lat']  = $row[1];
+            $result['long'] = $row[2];
+        }
         //Just use the first result as our final result!
         if ($city == $row[3] && $state == $row[4]) {
             $result['lat']  = $row[1];
