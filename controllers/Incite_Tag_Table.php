@@ -213,7 +213,7 @@ function getAllTagInformation($item_id)
         $getSubCategories->close();
         $db2->close();
 
-        $dataArray[] = array("tag_id" => $id, "user_id" => $user_id, "document_id" => $document_id, "tag_text" => $tag_text, "timestamp" => $timestamp, "category_name" => $category_name, "subcategories" => $subcategory, "description" => $description);
+        $dataArray[] = array("tag_id" => $id, "user_id" => $user_id, "document_id" => $item_id, "tag_text" => $tag_text, "timestamp" => $timestamp, "category_name" => $category_name, "subcategories" => $subcategory, "description" => $description);
     }
     $getTagID->close();
     $db4->close();
