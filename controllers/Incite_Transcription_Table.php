@@ -3,16 +3,12 @@
  * API for the transcription table
  */
 require_once("DB_Connect.php");
-<<<<<<< HEAD
+require_once("Incite_Document_Table.php");
 /**
  * Get a transcription's author's id
  * @param int $transcriptionID
  * @return int --> user id
  */
-=======
-require_once("Incite_Document_Table.php");
-
->>>>>>> 2c91187de42103f6f0b5cb0ee7bff9f9e0dab04c
 function getTranscriptionAuthorID($transcriptionID) {
     $userID = -1;
     $db = DB_Connect::connectDB();
@@ -246,22 +242,7 @@ function getDocumentsWithoutTranscription()
 
     $transcribable_documents = getTranscribableDocuments();
 
-<<<<<<< HEAD
-    $db = DB_Connect::connectDB();
-    $documents_with_jpeg = array();  //document id's and assume documents with jpeg all need transcriptions
-    $stmt = $db->prepare("SELECT item_id FROM omeka_files WHERE mime_type = image/jpeg");
-    $stmt->bind_result($result);
-    $stmt->execute();
-    while ($stmt->fetch()) {
-        $documents_with_jpeg[] = $result;
-    }
-    $stmt->close();
-    $db->close();
-
-    return array_diff($documents_with_jpeg, $transcription_ids);
-=======
     return array_diff($transcribable_documents, $transcription_ids);
->>>>>>> 2c91187de42103f6f0b5cb0ee7bff9f9e0dab04c
 }
 
 ?>

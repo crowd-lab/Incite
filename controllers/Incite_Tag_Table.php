@@ -3,7 +3,8 @@
  * API for the Incite_Tag_Table
  */
 require_once("DB_Connect.php");
-<<<<<<< HEAD
+require_once("Incite_Document_Table.php");
+
 /**
  * Creates a tag for a specific document.
  * @param int $userID
@@ -13,10 +14,6 @@ require_once("DB_Connect.php");
  * @param string $description
  * @param int $documentID
  */
-=======
-require_once("Incite_Document_Table.php");
-
->>>>>>> 2c91187de42103f6f0b5cb0ee7bff9f9e0dab04c
 function createTag($userID, $tag_text, $category, $subcategory, $description, $documentID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
