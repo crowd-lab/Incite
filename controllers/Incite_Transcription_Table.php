@@ -1,7 +1,13 @@
 <?php
-
+/**
+ * API for the transcription table
+ */
 require_once("DB_Connect.php");
-
+/**
+ * Get a transcription's author's id
+ * @param int $transcriptionID
+ * @return int --> user id
+ */
 function getTranscriptionAuthorID($transcriptionID) {
     $userID = -1;
     $db = DB_Connect::connectDB();
@@ -14,7 +20,12 @@ function getTranscriptionAuthorID($transcriptionID) {
     $db->close();
     return $userID;
 }
-
+/**
+ * Get the summarized text of a specific transcription
+ * @param int $documentID
+ * @param int $transcriptionID
+ * @return string of the summarized text
+ */
 function getSummarizedText($documentID, $transcriptionID) {
     $text = "";
     $db = DB_Connect::connectDB();
@@ -27,7 +38,11 @@ function getSummarizedText($documentID, $transcriptionID) {
     $db->close();
     return $text;
 }
-
+/**
+ * Get the transcription text of a specific transcription id
+ * @param int $transcriptionID
+ * @return string of the transcription
+ */
 function getTranscriptionText($transcriptionID) {
     $text = "";
     $db = DB_Connect::connectDB();
@@ -40,7 +55,11 @@ function getTranscriptionText($transcriptionID) {
     $db->close();
     return $text;
 }
-
+/**
+ * Get a list of ids for approved transcriptions for a document
+ * @param int documentID
+ * @return array of results
+ */
 function getIsAnyTranscriptionApproved($documentID) {
     $db = DB_Connect::connectDB();
     $result = Array();
@@ -54,7 +73,11 @@ function getIsAnyTranscriptionApproved($documentID) {
     }
     return $result;
 }
-
+/**
+ * Get when the transcription was approved
+ * @param int $transcriptionID
+ * @return string of timestamp
+ */
 function getApprovalTranscriptionTimestamp($transcriptionID) {
     $timestamp = "";
     $db = DB_Connect::connectDB();
@@ -67,7 +90,11 @@ function getApprovalTranscriptionTimestamp($transcriptionID) {
     $db->close();
     return $timestamp;
 }
-
+/**
+ * Get when the transcription was created
+ * @param int $transcriptionID
+ * @return string of the transcription
+ */
 function getTranscriptionCreationTimestamp($transcriptionID) {
     $timestamp = "";
     $db = DB_Connect::connectDB();
@@ -80,7 +107,11 @@ function getTranscriptionCreationTimestamp($transcriptionID) {
     $db->close();
     return $timestamp;
 }
-
+/**
+ * Gets the transcription status of a document based on the document id
+ * @param int $documentID
+ * @return int of status
+ */
 function getTranscriptionStatus($documentID) {
     $status = -1;
     $db = DB_Connect::connectDB();
@@ -93,7 +124,13 @@ function getTranscriptionStatus($documentID) {
     $db->close();
     return $status;
 }
-
+/**
+ * Create a transcription and summary of the document
+ * @param type $documentID
+ * @param type $userID
+ * @param type $transcribedText
+ * @param type $summarizedText
+ */
 function createTranscription($documentID, $userID, $transcribedText, $summarizedText) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_transcriptions VALUES (NULL, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
@@ -102,7 +139,11 @@ function createTranscription($documentID, $userID, $transcribedText, $summarized
     $stmt->close();
     $db->close();
 }
-
+/**
+ * Change the trasncription string a specific transcription id
+ * @param int $transcriptionID
+ * @param string $text
+ */
 function changeTranscribedText($transcriptionID, $text) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("UPDATE omeka_incite_transcriptions SET transcribed_text = ? WHERE id = ?");
@@ -111,7 +152,11 @@ function changeTranscribedText($transcriptionID, $text) {
     $stmt->close();
     $db->close();
 }
-
+/**
+ * Change the summarized text of a specific transcription id
+ * @param int $transcriptionID
+ * @param string $text
+ */
 function changeSummarizedText($transcriptionID, $text) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("UPDATE omeka_incite_transcriptions SET summarized_text = ? WHERE id = ?");
@@ -120,7 +165,10 @@ function changeSummarizedText($transcriptionID, $text) {
     $stmt->close();
     $db->close();
 }
-
+/**
+ * Approve a transcription
+ * @param int $transcriptionID
+ */
 function approve($transcriptionID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("UPDATE omeka_incite_transcriptions SET is_approved = 1 WHERE id = ?");
@@ -129,7 +177,10 @@ function approve($transcriptionID) {
     $stmt->close();
     $db->close();
 }
-
+/**
+ * Remove approval for a transcription
+ * @param int $transcriptionID
+ */
 function removeApproval($transcriptionID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("UPDATE omeka_incite_transcriptions SET is_approved = 0 WHERE id = ?");
@@ -138,7 +189,10 @@ function removeApproval($transcriptionID) {
     $stmt->close();
     $db->close();
 }
-
+/**
+ * Delete a transcription from table
+ * @param id $transcriptionID
+ */
 function deleteTranscription($transcriptionID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("DELETE FROM omeka_incite_transcriptions WHERE id = ?");
@@ -147,6 +201,11 @@ function deleteTranscription($transcriptionID) {
     $stmt->close();
     $db->close();
 }
+/**
+ * Get all transcriptions (approved or not) for a specific document
+ * @param int $documentID
+ * @return array of integers
+ */
 function getTranscriptionIDsForDocument($documentID)
 {
     $db = DB_Connect::connectDB();
@@ -163,12 +222,15 @@ function getTranscriptionIDsForDocument($documentID)
     $db->close();
     return $arr;
 }
-
+/**
+ * Get all documents that do not have a transcription
+ * @return array of document ids
+ */
 function getDocumentsWithoutTranscription()
 {
     $db = DB_Connect::connectDB();
     $transcription_ids = array();
-    $stmt = $db->prepare("SELECT `document_id` FROM `omeka_incite_transcriptions`");
+    $stmt = $db->prepare("SELECT document_id FROM omeka_incite_transcriptions");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -180,7 +242,7 @@ function getDocumentsWithoutTranscription()
 
     $db = DB_Connect::connectDB();
     $documents_with_jpeg = array();  //document id's and assume documents with jpeg all need transcriptions
-    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_files` WHERE `mime_type` = 'image/jpeg'");
+    $stmt = $db->prepare("SELECT item_id FROM omeka_files WHERE mime_type = image/jpeg");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {

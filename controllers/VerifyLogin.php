@@ -1,4 +1,7 @@
 <?php
+/**
+ * Verifies if the user is still logged in
+ */
 session_start();
 include_once ("DB_Connect.php");
 if (!DB_Connect::isLoggedIn()) 

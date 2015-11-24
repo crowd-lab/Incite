@@ -1,7 +1,17 @@
 <?php
-
+/**
+ * API for the Incite_Tag_Table
+ */
 require_once("DB_Connect.php");
-
+/**
+ * Creates a tag for a specific document.
+ * @param int $userID
+ * @param int $tag_text
+ * @param int $category
+ * @param int $subcategory
+ * @param string $description
+ * @param int $documentID
+ */
 function createTag($userID, $tag_text, $category, $subcategory, $description, $documentID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
@@ -55,7 +65,11 @@ function createTag($userID, $tag_text, $category, $subcategory, $description, $d
     }
     $db->close();
 }
-
+/**
+ * Finds a tag based on a description
+ * @param string $description
+ * @return array of results
+ */
 function findTagOnDescription($description) {
     $results = Array();
     $db = DB_Connect::connectDB();
@@ -69,7 +83,11 @@ function findTagOnDescription($description) {
     $db->close();
     return $tagObject;
 }
-
+/**
+ * Finds tags by name
+ * @param String $name
+ * @return an array of results
+ */
 function findTagOnName($name) {
     $results = Array();
     $db = DB_Connect::connectDB();
@@ -83,7 +101,11 @@ function findTagOnName($name) {
     $db->close();
     return $tagObject;
 }
-
+/**
+ * Finds tags based on who entered the tag
+ * @param int $userID
+ * @return an array of results
+ */
 function findTagOnUserId($userID) {
     $results = Array();
     $db = DB_Connect::connectDB();
@@ -97,11 +119,15 @@ function findTagOnUserId($userID) {
     $db->close();
     return $tagObject;
 }
-
+/**
+ * Find tags based on a category id
+ * @param int $category
+ * @return array of results
+ */
 function findTagOnCategory($category) {
     $results = Array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT * FROM omeka_incite_tags WHERE category_name = ?");
+    $stmt = $db->prepare("SELECT * FROM omeka_incite_tags INNER JOIN omeka_incite_tags_category ON category_id = omeka_incite_tags_category.id WHERE omeka_incite_tags_category.id = ?");
     $stmt->bind_param("i", $category);
     $stmt->bind_result($tagObject);
     while ($stmt->fetch()) {
@@ -111,7 +137,10 @@ function findTagOnCategory($category) {
     $db->close();
     return $results;
 }
-
+/**
+ * Returns a list of all categories along with their subcategory information
+ * @return an array of results
+ */
 function getAllCategories() {
     $results = Array();
     $count = 0;
@@ -138,7 +167,11 @@ function getAllCategories() {
     $db->close();
     return $results;
 }
-
+/**
+ * Returns true is a document is tagged, false otherwise
+ * @param int $documentID
+ * @return boolean
+ */
 function isDocumentTagged($documentID) {
     $count = 0;
     $db = DB_Connect::connectDB();
@@ -219,7 +252,10 @@ function getAllTagInformation($item_id)
     $db4->close();
     return $dataArray;
 }
-
+/**
+ * Gets all document id with out tags
+ * @return an array of results
+ */
 function getDocumentsWithoutTag()
 {
     $db = DB_Connect::connectDB();

@@ -18,6 +18,11 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
         $this->_helper->viewRenderer->setNoRender(TRUE);
         include("Incite_Users_Table.php");
     }
+    /**
+     * Ajax function to check if a username and password does exist in the database and if they are valid.
+     * A cookie is created when the login is valid
+     * If a guest account was being used previously, it is mapped to the logged in account
+     */
     public function loginAction() {
         if ($this->getRequest()->isPost()) {
             $username = $_POST['username'];
@@ -50,7 +55,16 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             }
         }
     }
-
+    /**
+     * Ajax function that creates accounts. This can be invoked in 2 ways
+     * 1) An action is done and the user is not logged in, an account is automatically created for said user.
+     * This account is a 'guest' account only meant for tracking any changes on the website
+     * 
+     * 2) The user wants to create an account on the website that is not a guest account. If a guest account was used,
+     * it is mapped back to the new account. On completion of making a new account, the user is automatically signed in.
+     * 
+     * This method will throw 'false' if an account already exists in the system
+     */
     public function createaccountAction() {
         if ($this->getRequest()->isPost()) {
             $username = $_POST['username'];
@@ -84,12 +98,16 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             }
         }
     }
-
+    /**
+     * Logs a user out of the website. This kills the cookie
+     */
     public function logoutAction() {
         $_SESSION['Incite'] = array();
         die();
     }
-
+    /**
+     * This gets the data of a specific user
+     */
     public function getdataAction() {
         echo json_encode($_SESSION['Incite']['USER_DATA']);
     }

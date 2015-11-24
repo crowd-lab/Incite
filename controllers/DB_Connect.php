@@ -1,6 +1,13 @@
 <?php
+/**
+ * Class with static methods for connecting to the database
+ */
 class DB_Connect
 {
+    /**
+     * Checks to see if the cookie is still valid. If it is, the user is logged in, false otherwise
+     * @return boolean
+     */
     static function isLoggedIn()
     {
         if (isset($_SESSION['IS_LOGIN_VALID']) && $_SESSION['IS_LOGIN_VALID'])
@@ -8,13 +15,15 @@ class DB_Connect
         else
             return false;
     }
-    
+    /**
+     * Creates a database object using the db.ini file. This is currently configured in m4j/db.ini
+     * @return mysqli object
+     */
     static function connectDB() 
     {
-        $root = $_SERVER['DOCUMENT_ROOT']; //   var/www/html
+        $root = $_SERVER['DOCUMENT_ROOT']; // 
         $db = get_db();
         $ini_array = parse_ini_file($root. '/m4j/db.ini');
-        //var_dump($ini_array);
         $dbhost = $ini_array["host"];
         $dbuser = $ini_array["username"];
         $dbpass = $ini_array["password"];

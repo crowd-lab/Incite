@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * API for Incite_Users_Table
+ */
 require_once("DB_Connect.php");
     /**
      * Verify the username and password combination. Use a prepare object to

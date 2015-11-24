@@ -1,5 +1,14 @@
 <?php
+/**
+ * API for the subject/concept table
+ */
 require_once("DB_Connect.php");
+/**
+ * Creates a new subject/concept
+ * @param String $name
+ * @param String $definition
+ * @return boolean --> true if created, false if subject/concept already exists
+ */
 function createNewSubjectConcept($name, $definition)
 {
     $db = DB_Connect::connectDB();
@@ -26,6 +35,11 @@ function createNewSubjectConcept($name, $definition)
         $db->close();
     }
 }
+/**
+ * Get the definition of a certain subject/concept
+ * @param String $name
+ * @return mixed --> return false if no definition exists for a name or returns a string if definition exists
+ */
 function getDefinition($name)
 {
     $def = "";
@@ -41,6 +55,12 @@ function getDefinition($name)
     }
     return false;
 }
+/**
+ * Change the definition of a subject/concept
+ * @param String $name
+ * @param String $def
+ * @return boolean true if complete, false if no subject/concept exists with the name provided
+ */
 function changeDefinition($name, $def)
 {
     $db = DB_Connect::connectDB();
@@ -65,6 +85,10 @@ function changeDefinition($name, $def)
         $db->close();
     }
 }
+/**
+ * Return all subject/concepts from the database
+ * @return array of results
+ */
 function getAllSubjectConcepts()
 {
     $db = DB_Connect::connectDB();
@@ -80,6 +104,11 @@ function getAllSubjectConcepts()
     $db->close();
     return $results;
 }
+/**
+ * Get the subject/concept based on id. 
+ * @param int $id
+ * @return array of [name, definition]
+ */
 function getSubjectConceptOnId($id)
 {
     $db = DB_Connect::connectDB();
@@ -95,6 +124,12 @@ function getSubjectConceptOnId($id)
     $db->close();
     return $arr;
 }
+/**
+ * Tags the document with a subject/concept
+ * @param int $conceptID
+ * @param int $documentID
+ * @param int $userID
+ */
 function addConceptToDocument($conceptID, $documentID, $userID)
 {
     $db = DB_Connect::connectDB();
