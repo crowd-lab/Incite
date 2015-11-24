@@ -145,7 +145,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                 //Check entities:
                 //  1) is tagged already?  Yes: skip the task; No: do the following
-                //  2) pull similar entities in the database based on searching in transcription
+                //  2) (to be implemented) pull similar entities in the database based on searching in transcription
                 //  3) NER to get entities
 
                 //NER: start
@@ -188,6 +188,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                 $this->view->entities = $ner_entity_table;
                 $this->view->transcription = $colored_transcription;
+                $this->view->category_colors = $category_colors;
             } else {
                 //no such document
                 echo 'no such document';

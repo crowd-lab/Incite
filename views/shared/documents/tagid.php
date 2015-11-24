@@ -25,6 +25,9 @@
                     <div>Location: <?php echo metadata($this->tag, array('Item Type Metadata', 'Location')); ?></div>
                     <div>Description: <?php echo metadata($this->tag, array('Dublin Core', 'Description')); ?></div>
                 <h4>Transcription:</h4>
+<?php foreach ($this->category_colors as $category => $color): ?>
+                <div><span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span></div>
+<?php endforeach; ?>
                 <div style="border-style: solid;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                 <div class="wrapper">
                     <div id="document_img" class="viewer"></div>
