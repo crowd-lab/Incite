@@ -20,7 +20,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
                 </form>
             </p>
-<?php foreach ($this->Tags as $tag): ?>
+<?php foreach ((array)$this->Tags as $tag): ?>
     <div class="col-lg-2 col-sm-3 col-xs-4">
         <a href="<?php echo 'tag/'.$tag->id; ?>" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
              <img src="<?php echo $tag->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">

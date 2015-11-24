@@ -203,10 +203,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            $records[] = $this->_helper->db->find(15);
-            $records[] = $this->_helper->db->find(18);
-            $records[] = $this->_helper->db->find(22);
-            $records[] = $this->_helper->db->find(24);
+            $document_ids = getDocumentsWithoutTag();
+            $max_records_to_show = 5;
+            $records_counter = 0;
+            $records = array();
+
+            if (count($document_ids) > 0) {
+                foreach ($document_ids as $id) {
+                    if ($records_counter++ >= $max_records_to_show)
+                        break;
+                    $records[] = $this->_helper->db->find($id);
+                }
+            }
 
             if ($records != null) {
                 $this->view->assign(array('Tags' => $records));
