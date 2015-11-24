@@ -1,4 +1,8 @@
 
+11/23/2015:
+    * Using zip_codes_states.csv is just to demonstrate the concept. The data should be integrated into database instead of using a file.
+
+
 11/21/2015:
     * Search part for Discover (currently there is no "search" implemented yet)
     * Integrate existing entity information and NER (currently we only use NER)
