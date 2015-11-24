@@ -65,7 +65,7 @@ function loc_to_lat_long($loc_str)
     $county = "";
 
     //Parse state and city names
-    if (count($elem) == 3) {
+    if (count($elem) >= 3) { //currently ignore extra info about location. Item 11 is an exception here!
         $state  = $states[trim($elem[0])];
         $city   = trim($elem[2]);
         $county = trim(str_replace('County', '', $elem[1]));
