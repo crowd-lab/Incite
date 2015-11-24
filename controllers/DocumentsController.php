@@ -92,10 +92,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default: fetch documents that need to be transcribed
-            $records[] = $this->_helper->db->find(15);
-            $records[] = $this->_helper->db->find(18);
-            $records[] = $this->_helper->db->find(20);
-            $records[] = $this->_helper->db->find(77);
+            $document_ids = getDocumentsWithoutTranscription();
+            $max_records_to_show = 5;
+            $records_counter = 0;
+            $records = array();
+
+            if (count($document_ids) > 0) {
+                foreach ($document_ids as $id) {
+                    if ($records_counter++ >= $max_records_to_show)
+                        break;
+                    $records[] = $this->_helper->db->find($id);
+                }
+            }
 
             //Assign all documents that need to be transcribed to view!
             if ($records != null) {
