@@ -1,6 +1,13 @@
 
 11/23/2015:
     * Using zip_codes_states.csv is just to demonstrate the concept. The data should be integrated into database instead of using a file.
+    * Currently item_id and document_id are used (kind of) interchangeablely but we should only use document_id's, which should be copied/updated/added from existing item_id's.
+        ** In transcription: item_id is mainly used
+        ** In tagging: document_id is mainly used
+    * Currently transcribe is a demo for the concept (list view, map view, and timeline view). Tag and connect might have a lot in common, especially tag.
+    * Tags are currently added to database w/o checking if there are duplicates
+    * Currently task lists (documents/(transcribe, tag)) only show documents that are never tried before, that is, currently transcribing and tagging can only be done once and they won't be shown to the task lists. So the functions names are getDocumentsWithout(Transcription/Tag) but instead, they should be getDocumentsNeed(Transcribing/Taggin) and we need to define mechanisms to determine them.
+    * The three views (map, list, timeline) in task lists (documents/(transcribe, tag)) work now but they are not connected yet.
 
 
 11/21/2015:
