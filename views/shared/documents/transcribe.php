@@ -73,7 +73,7 @@ function loc_to_lat_long($loc_str)
         $state = $states[trim($elem[0])];
         $city  = strstr(trim($elem[1]), ' Indep.', true);
     } else {
-        die('new location string: '.$loc_str);
+        //Should send to log and to alert new format of location!
     }
 
     //Convert state and city to lat and long
@@ -115,7 +115,7 @@ include(dirname(__FILE__).'/../common/header.php');
               attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
 <?php
-    foreach($this->Transcriptions as $transcription) {
+    foreach((array)$this->Transcriptions as $transcription) {
         $lat_long = loc_to_lat_long(metadata($transcription, array('Item Type Metadata', 'Location')));
         if (count($lat_long) > 0) {
             echo 'L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map);\n";
@@ -149,7 +149,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="timeline-spacing" class="col-md-10 col-md-offset-1" style="height:100px;"></div>
 
 
-<?php foreach ($this->Transcriptions as $transcription): ?>
+<?php foreach ((array)$this->Transcriptions as $transcription): ?>
     <div class="col-lg-2 col-sm-3 col-xs-4">
         <a href="<?php echo 'transcribe/'.$transcription->id; ?>" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
              <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
