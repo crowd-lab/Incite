@@ -157,11 +157,39 @@ function getTranscriptionIDsForDocument($documentID)
     $stmt->execute();
     while ($stmt->fetch())
     {
-        $arr[] = $reults;
+        $arr[] = $results;
     }
     $stmt->close();
     $db->close();
     return $arr;
+}
+
+function getDocumentsWithoutTranscription()
+{
+    $db = DB_Connect::connectDB();
+    $transcription_ids = array();
+    $stmt = $db->prepare("SELECT `document_id` FROM `omeka_incite_transcriptions`");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $transcription_ids[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+
+
+    $db = DB_Connect::connectDB();
+    $documents_with_jpeg = array();  //document id's and assume documents with jpeg all need transcriptions
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_files` WHERE `mime_type` = 'image/jpeg'");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $documents_with_jpeg[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+
+    return array_diff($documents_with_jpeg, $transcription_ids);
 }
 
 ?>
