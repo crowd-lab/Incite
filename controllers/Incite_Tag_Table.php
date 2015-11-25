@@ -271,8 +271,12 @@ function getDocumentsWithoutTag()
     $stmt->close();
     $db->close();
 
-    $transcribable_documents = getTranscribableDocuments();
+    //Select document that are untranscribed but transcribable. Since currently if there is not transcription for the document to be tagged, the user will be redirected to transcribe task.
+    //$taggable_documents = getTranscribableDocuments();
 
-    return array_diff($transcribable_documents, $tagged_document_ids);
+    //Select documents that have approved transcriptions
+    $taggable_documents = getDocumentsWithApprovedTranscription();
+
+    return array_diff($taggable_documents, $tagged_document_ids);
 }
 ?>

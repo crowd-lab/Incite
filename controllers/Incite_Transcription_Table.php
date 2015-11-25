@@ -230,19 +230,59 @@ function getTranscriptionIDsForDocument($documentID)
 function getDocumentsWithoutTranscription()
 {
     $db = DB_Connect::connectDB();
-    $transcription_ids = array();
+    $documents_with_transcription = array();
     $stmt = $db->prepare("SELECT document_id FROM omeka_incite_transcriptions");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {
-        $transcription_ids[] = $result;
+        $documents_with_transcription[] = $result;
     }
     $stmt->close();
     $db->close();
 
     $transcribable_documents = getTranscribableDocuments();
 
-    return array_diff($transcribable_documents, $transcription_ids);
+    return array_diff($transcribable_documents, $documents_with_transcription);
+}
+
+/**
+ * Get all documents that have at least one transcription
+ * @return array of document ids
+ */
+function getDocumentsWithTranscription()
+{
+    $db = DB_Connect::connectDB();
+    $documents_with_transcription = array();
+    $stmt = $db->prepare("SELECT DISTINCT document_id FROM omeka_incite_transcriptions");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $documents_with_transcription[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+
+    return $documents_with_transcription;
+}
+
+/**
+ * Get all documents that have at least one approved transcription
+ * @return array of document ids
+ */
+function getDocumentsWithApprovedTranscription()
+{
+    $db = DB_Connect::connectDB();
+    $documents_with_transcription = array();
+    $stmt = $db->prepare("SELECT DISTINCT document_id FROM omeka_incite_transcriptions WHERE is_approved = 1");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $documents_with_transcription[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+
+    return $documents_with_transcription;
 }
 
 ?>
