@@ -75,7 +75,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                         loginDiv.removeChild(x);
                                     }
                                     var usernameError = document.createElement('div');
-                                    var textNode = document.createTextNode("Login Successful!");
+                                    var textNode = document.createTextNode("Login Successfully!");
                                     usernameError.style.textAlign = "center";
                                     usernameError.appendChild(textNode);
 
@@ -83,7 +83,8 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                     usernameError.className = "alert alert-block alert-success messages status";
                                     var submitButton = document.getElementById("login-button");
                                     loginDiv.insertBefore(usernameError, submitButton);
-
+                                    
+                                    $('#login-button').addClass('disabled');
 
                                     setTimeout(function ()
                                     {
@@ -196,7 +197,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                 type: "POST",
                 url: "http://localhost/m4j/incite/ajax/logout",
                 success: function () {
-                    alert("Logout Successful!");
+                    alert("Logout Successfully!");
 
                     var navBarElement = $('ul[class="nav navbar-nav navbar-right"]');
                     navBarElement.find('li').each(function ()
@@ -206,6 +207,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
 
                     $('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
                     $('ul[class="nav navbar-nav navbar-right"]').append('<li><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></li>');
+                    $('#login-button').removeClass('disabled');
                     //$('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
                 },
                 error: function (e) {
