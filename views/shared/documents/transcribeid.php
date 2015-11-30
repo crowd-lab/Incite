@@ -32,9 +32,20 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </div>
             <div class="col-md-6" id="submit-zone">
-                <form method="post">
-                    <textarea name="transcription" rows="40" style="width: 100%;">Transcription</textarea>
-                    <textarea name="summary" rows="5" style="width: 100%;">Summary</textarea>
+                <form method="post" id="transcribe-form">
+                    <textarea name="transcription" rows="40" style="width: 100%;" placeholder="Transcription"></textarea>
+                    <textarea name="summary" rows="5" style="width: 100%;" placeholder="Summary"></textarea>
+                    <div class="form-group">
+                        <label class="control-label">Tone of the document:</label>
+                        <select class="form-control" name="tone">
+                            <option value=""></option>
+                            <option value="anxiety">Anxiety</option>
+                            <option value="optimism">Optimism</option>
+                            <option value="sarcasm">Sarcasm</option>
+                            <option value="pride">Pride</option>
+                            <option value="aggression">Aggression</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-default">Done</button>
                 </form>
 
@@ -51,7 +62,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         </li>
                     </ul>
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                    <textarea name="transcribe_text" cols="60" rows="10" id="comment">Your comment</textarea>
+                    <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
                     <button type="button" class="btn btn-default" id="">Submit</button>
 <?php else: ?>
                     Please login or signup to join the discussion!
