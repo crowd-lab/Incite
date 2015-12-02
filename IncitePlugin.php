@@ -144,7 +144,7 @@ SQL
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
-        `transcribed_text`      varchar(5000) NOT NULL,
+        `transcribed_text`      varchar(20000) NOT NULL,
         `summarized_text`       varchar(1000) NOT NULL,
         `is_approved`           int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
