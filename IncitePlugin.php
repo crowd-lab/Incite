@@ -49,7 +49,7 @@ SQL
 SQL
         );
         get_db()->query(<<<SQL
-      CREATE TABLE IF NOT EXISTS `omeka_incite_documents_subject_conjunction` (
+      CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_subject_conjunction (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
         `subject_concept_id`    int(11) NOT NULL,
@@ -85,8 +85,7 @@ SQL
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
         `question_text`         varchar(1000) NOT NULL,
-        `document_id`           int(11) NOT NULL,
-        `document_reference`    int(11) NOT NULL,
+        `is_active`             int(11) NOT NULL,
         `timestamp`             timestamp NOT NULL,
   
         PRIMARY KEY (`id`)
@@ -99,9 +98,7 @@ SQL
         `id`            int(11) NOT NULL AUTO_INCREMENT,
         `user_id`       int(11) NOT NULL,
         `reply_text`    varchar(500) NOT NULL,
-        `document_id`   int(11) NOT NULL,
         `question_id`   int(11) NOT NULL,
-        `reply_id`      int(11) NOT NULL,
         `is_active`     int(11) NOT NULL,
         `timestamp`     timestamp NOT NULL,
         
@@ -109,6 +106,28 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 SQL
         );
+   
+        get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_questions_conjunction (
+        `id`                int(11) NOT NULL AUTO_INCREMENT,
+        `document_id`       int(11) NOT NULL,
+        `question_id`       int(11) NOT NULL,
+   
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+SQL
+        );
+   get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_replies_conjunction (
+        `id`                int(11) NOT NULL AUTO_INCREMENT,
+        `document_id`       int(11) NOT NULL,
+        `repy_id`           int(11) NOT NULL,
+        
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+SQL
+        );
+   
 
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_subject_concepts (
@@ -290,6 +309,14 @@ SQL
    );
     get_db()->query(<<<SQL
     DROP TABLE IF EXISTS {$db->prefix}incite_users_map
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_questions_conjunction
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_replies_conjunction
 SQL
    );
     }
