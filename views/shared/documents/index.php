@@ -12,12 +12,13 @@ include(dirname(__FILE__).'/../common/header.php');
         <!-- /.row -->
 
         <div class="row"> 
-            <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-                <h1>Welcome to Mapping The Fourth!</h1>
-                <p class="lead"> Help us better understand the history of our country.</p>
-
-                <p style="margin-bottom: 20px;"> The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation’s borders lie? But it was on one particular day each year—July 4—that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p>
-                <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
+            <div class="jumbotron">
+                <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
+                    <h1>Welcome to Mapping The Fourth!</h1>
+                    <p class="lead"> Help us better understand the history of our country.</p>
+                    <p style="margin-bottom: 20px;"> The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation’s borders lie? But it was on one particular day each year—July 4—that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p>
+                    <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
+                </div> 
             </div> 
         </div>
 

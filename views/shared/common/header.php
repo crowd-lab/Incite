@@ -279,7 +279,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="/m4j/incite">Incite of Mapping the Fourth</a>
+                <a class="navbar-brand" href="/m4j/incite">Incite</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -299,19 +299,17 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                         </div>
                         <button type="submit" class="btn btn-default">Discover</button>
                     </form>
-                </ul>
+                    <li> 
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name    ?></a></li>
-                        <li><a onclick = 'logout()'>Logout</a></li>
-                    </ul>
+                        <button type="button" class="btn btn-default"><a href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name    ?></a></button>
+                        <button type="button" class="btn btn-default"><a onclick = 'logout()'>Logout</a></button>
                 <?php else: ?>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a>Welcome Guest</a></li>
-                        <li><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></li>
-                    </ul>
+                        <button type="button" class="btn btn-default"><a>Welcome Guest</a></button>
+                        <button type="button" class="btn btn-default"><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></button>
 
                 <?php endif; ?>
+                </ul>
+
 
                 <!-- discussion
     <ul class="nav navbar-nav">

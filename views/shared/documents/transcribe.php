@@ -150,12 +150,14 @@ include(dirname(__FILE__).'/../common/header.php');
 
 
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="<?php echo 'transcribe/'.$transcription->id; ?>" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-             <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
-        </a>
-        <h4 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h4>
-        <p style="text-align: center;"> <?php echo metadata($transcription, array('Dublin Core', 'Description')); ?> </p>
+    <div class="col-md-4">
+        <div class="thumbnail">
+             <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
+                <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 300px; height: 300px;">
+            </a>
+            <h3 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h3>
+            <p style="text-align: center;"> <?php echo metadata($transcription, array('Dublin Core', 'Description')); ?> </p>
+        </div>
     </div>
 <?php endforeach; ?>
 
