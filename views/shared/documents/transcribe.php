@@ -118,7 +118,7 @@ include(dirname(__FILE__).'/../common/header.php');
     foreach((array)$this->Transcriptions as $transcription) {
         $lat_long = loc_to_lat_long(metadata($transcription, array('Item Type Metadata', 'Location')));
         if (count($lat_long) > 0) {
-            echo 'L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map);\n";
+            echo 'L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map).bindPopup('".metadata($transcription, array('Dublin Core', 'Title'))."');\n";
         }
     }
 ?>
@@ -144,11 +144,40 @@ include(dirname(__FILE__).'/../common/header.php');
             </p>
 
 
-    <div id="map-div" class="col-md-10 col-md-offset-1"></div>
-    <div id="timeline" class="col-md-10 col-md-offset-1"></div>
-    <div id="timeline-spacing" class="col-md-10 col-md-offset-1" style="height:100px;"></div>
+    <div id="map-div" class="col-md-8"></div>
+    <div class="col-md-4">
+<?php $cf = 1; ?>
+<?php foreach ((array)$this->Transcriptions as $transcription): ?>
+        <div class="col-md-6">
+            <div class="thumbnail">
+                 <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
+                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="max-width: 150px; max-height: 120px;">
+                </a>
+                <h4 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h4>
+            </div>
+        </div>
+    <?php if ($cf > 0 && $cf % 2 == 0): ?>
+        <div class="clearfix"></div>
+    <?php endif; ?>
+    <?php $cf++; ?>
+<?php endforeach; ?>
+    </div>
+    <div id="timeline" class="col-md-8"></div>
+    <div class="col-md-4 text-center">
+        <nav>
+          <ul class="pagination">
+            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+            <li class=""><a href="#">2 </a></li>
+            <li class=""><a href="#">3 </a></li>
+            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+          </ul>
+        </nav>
+    </div>
+    </div>
+    <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
-
+<!--
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
     <div class="col-md-4">
         <div class="thumbnail">
@@ -160,7 +189,7 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
     </div>
 <?php endforeach; ?>
-
+-->
                      
 </div>
     <script type="text/javascript">

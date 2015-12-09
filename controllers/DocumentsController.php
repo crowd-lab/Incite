@@ -93,7 +93,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         } else {
             //default: fetch documents that need to be transcribed
             $document_ids = getDocumentsWithoutTranscription();
-            $max_records_to_show = 5;
+            $max_records_to_show = 4;
             $records_counter = 0;
             $records = array();
 
