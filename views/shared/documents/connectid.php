@@ -47,7 +47,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following three documents.</h3>
 <?php foreach($this->related_documents as $document): ?>
             <div class="col-md-4">
-                <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+                <a href="#" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
                      <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
                 </a>
                 <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
