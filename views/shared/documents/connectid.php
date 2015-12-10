@@ -20,11 +20,16 @@ include(dirname(__FILE__).'/../common/header.php');
         <div class="container">
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed; width: 35%;" id="work-view">
-                    <div>Title: <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?></div>
-                    <div>Date: <?php echo metadata($this->connection, array('Dublin Core', 'Date')); ?></div>
-                    <div>Location: <?php echo metadata($this->connection, array('Item Type Metadata', 'Location')); ?></div>
-                    <div>Description: <?php echo metadata($this->connection, array('Dublin Core', 'Description')); ?></div>
-                    <textarea name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php echo $this->transcription; ?></textarea>
+                    <h4>Information:</h4>
+                        <div>Title: <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?></div>
+                        <div>Date: <?php echo metadata($this->connection, array('Dublin Core', 'Date')); ?></div>
+                        <div>Location: <?php echo metadata($this->connection, array('Item Type Metadata', 'Location')); ?></div>
+                        <div>Description: <?php echo metadata($this->connection, array('Dublin Core', 'Description')); ?></div>
+                    <h4>Transcription:</h4>
+<?php foreach ($this->category_colors as $category => $color): ?>
+                    <div><span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span></div>
+<?php endforeach; ?>
+                    <div style="border-style: solid;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                     <div class="wrapper">
                         <div id="document_img" class="viewer"></div>
                     </div>
@@ -34,19 +39,19 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
             <div class="col-md-6">
       
-            <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a></h2>
+            <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
 			<form action="post">
 				<button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
 				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>
 			</form>
-            <p>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following three documents.</p>
+            <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following three documents.</h3>
 <?php foreach($this->related_documents as $document): ?>
-        <div class="">
-            <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
-                 <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
-            </a>
-            <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
-        </div>
+            <div class="col-md-4">
+                <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">
+                     <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
+                </a>
+                <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
+            </div>
 <?php endforeach; ?>
                 <div id="container">
                     <h3> Discussion </h3>
