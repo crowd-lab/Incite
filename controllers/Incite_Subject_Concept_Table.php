@@ -174,7 +174,7 @@ function addConceptToDocument($conceptID, $documentID, $userID)
  * @param array $id_array to search against
  * @param int $minimum_match the number of matches per document you want to be included in the search
  */
-function searchClosestMatch($id_array, $minimum_match)
+function searchClosestMatchConcept($id_array, $minimum_match)
 {
     $dictionary = array(array());
     for ($i = 0; $i < sizeof($id_array); $i++)
