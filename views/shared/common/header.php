@@ -84,31 +84,30 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                     var submitButton = document.getElementById("login-button");
                                     loginDiv.insertBefore(usernameError, submitButton);
                                     
-                                    $('#login-button').addClass('disabled');
+                                    $('#logout_button').addClass('disabled');
 
                                     setTimeout(function ()
                                     {
                                         $('#login-signup-dialog').modal('hide');
                                         loginDiv.removeChild(usernameError);
                                     }, 2000);
+                                    
                                     var getDataArray = $.ajax({
                                         type: "POST",
                                         url: "http://localhost/m4j/incite/ajax/getdata",
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
-                                            //console.log(dataArray);
-                                            var navBarElement = $('ul[class="nav navbar-nav navbar-right"]');
-                                            navBarElement.find('li').each(function ()
-                                            {
-                                                $(this).remove();
-                                            });
-
-                                            $('ul[class="nav navbar-nav navbar-right"]').append('<li><a href="user_profile!">' + dataArray[1] + '</a></li>');
-                                            $('ul[class="nav navbar-nav navbar-right"]').append('<li><a onclick = "logout()">Logout</a></li>');
-
-//                                          //$('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
-
+                                            $('#welcome_message').text(dataArray[1]);
+                                            $('#welcome_message').prop('href', "user_profile!");
+                                            $('#welcome_message').prop('disabled', false);
+                                            $('#welcome_message').prop('id', 'user_profile');
+                                            
+                                            $('#login_modal').text("Logout");
+                                            $('#login_modal').removeAttr('data-toggle');
+                                            $('#login_modal').removeAttr('data-target');
+                                            $('#login_modal')[0].setAttribute('onclick', 'logout()');
+                                            $('#login_modal').prop('id', 'logout_button');
                                         }
                                     })
 
@@ -166,12 +165,17 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                             {
                                                 $(this).remove();
                                             });
-
-                                            $('ul[class="nav navbar-nav navbar-right"]').append('<li><a href="user_profile!">' + dataArray[1] + '</a></li>');
-                                            $('ul[class="nav navbar-nav navbar-right"]').append('<li><a onclick = "logout()">Logout</a></li>');
-
-                                            //$('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
-
+                                            
+                                            
+                                            $('#welcome_message').text(dataArray[1]);
+                                            $('#welcome_message').prop('href', "user_profile!");
+                                            $('#welcome_message').prop('id', 'user_profile');
+                                            
+                                            $('#login_modal').text("Logout");
+                                            $('#login_modal').removeAttr('data-toggle');
+                                            $('#login_modal').removeAttr('data-target');
+                                            $('#login_modal')[0].setAttribute('onclick', 'logout()');
+                                            $('#login_modal').prop('id', 'logout_button');
 
                                         }
                                     })
@@ -196,19 +200,20 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
             var request = $.ajax({
                 type: "POST",
                 url: "http://localhost/m4j/incite/ajax/logout",
-                success: function () {
+                success: function () 
+                {
                     alert("Logout Successfully!");
-
-                    var navBarElement = $('ul[class="nav navbar-nav navbar-right"]');
-                    navBarElement.find('li').each(function ()
-                    {
-                        $(this).remove();
-                    });
-
-                    $('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
-                    $('ul[class="nav navbar-nav navbar-right"]').append('<li><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></li>');
-                    $('#login-button').removeClass('disabled');
-                    //$('ul[class="nav navbar-nav navbar-right"] li').eq(0).remove();
+                    
+                    $('#user_profile').text('Welcome Guest');
+                    $('#user_profile').attr('href', '');
+                    $('#user_profile').attr('id', 'welcome_message');
+                    $('#welcome_message').prop("disabled", true);
+                    
+                    $('#logout_button').text('Login/Sign-up');
+                    $('#logout_button').removeAttr('onclick');
+                    $('#logout_button')[0].setAttribute('data-toggle', 'modal')
+                    $('#logout_button')[0].setAttribute('data-target', '#login-signup-dialog');
+                    $('#logout_button').prop('id', 'login_modal');
                 },
                 error: function (e) {
                     console.log(e.message);
@@ -301,11 +306,11 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     </form>
                     <li> 
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-                        <button type="button" class="btn btn-default"><a href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name    ?></a></button>
-                        <button type="button" class="btn btn-default"><a onclick = 'logout()'>Logout</a></button>
+                        <button id="user_profile" type="button" class="btn btn-default"  href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name    ?></button>
+                        <button id="logout_button" type="button" class="btn btn-default" onclick="logout()">Logout</button>
                 <?php else: ?>
-                        <button type="button" class="btn btn-default"><a>Welcome Guest</a></button>
-                        <button type="button" class="btn btn-default"><a href="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a></button>
+                        <button id="welcome_message" type="button" class="btn btn-default" disabled>Welcome Guest</button>
+                        <button id="login_modal" type="button" class="btn btn-default" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>
 
                 <?php endif; ?>
                 </ul>
