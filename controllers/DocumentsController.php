@@ -316,7 +316,20 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
     }
 
-    public function discussAction() {
+    public function discussAction()
+    {
+        if ($this->hasParam($id))
+        {
+            $isReply = $_POST['IS_REPLY'];
+            if ($isReply == 0)
+            {
+                $_questionText = $POST['QUESTION_TEXT'];
+            }
+            else
+            {
+                
+            }
+        }
         //Possibly for in-document discussions
     }
 }
