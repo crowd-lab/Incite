@@ -53,32 +53,25 @@ body { padding-top: 60px;
 			  <!-- Wrapper for slides -->
 			  <div class="carousel-inner">
 			  
-				<div class="item active">
-				  <img src="http://placehold.it/1200x400/cccccc/ffffff">
-				   <div class="carousel-caption">
-					<h3>About</h3>
-					<p>Place to put information about our project. <a href="http://sevenx.de/demo/bootstrap-carousel/" target="_blank" class="label label-danger">Bootstrap 3 - Carousel Collection</a></p>
-				  </div>
-				</div><!-- End Item -->
 		 
-				 <div class="item">
-				  <img src="http://placehold.it/1200x400/999999/cccccc">
+				 <div class="item active">
+				   <img src="/m4j/plugins/Incite/views/shared/images/Transcribe.png">
 				   <div class="carousel-caption">
 					<h3>Transcribe</h3>
-					<p>Introduction to transcribe task. <a href="http://sevenx.de/demo/bootstrap-carousel/" target="_blank" class="label label-danger">Bootstrap 3 - Carousel Collection</a></p>
+					<p>Introduction to transcribe task.</p>
 				  </div>
 				</div><!-- End Item -->
 				
 				<div class="item">
-				  <img src="http://placehold.it/1200x400/dddddd/333333">
+				  <img src="/m4j/plugins/Incite/views/shared/images/Tag.png">
 				   <div class="carousel-caption">
 					<h3>Tag</h3>
-					<p>Introduction to tag task. <a href="http://sevenx.de/demo/bootstrap-carousel/" target="_blank" class="label label-danger">Bootstrap 3 - Carousel Collection</a></p>
+					<p>Intro to Tag task. </p>
 				  </div>
 				</div><!-- End Item -->
 				
 				<div class="item">
-				  <img src="http://placehold.it/1200x400/999999/cccccc">
+				  <img src="/m4j/plugins/Incite/views/shared/images/Connect.png">
 				   <div class="carousel-caption">
 					<h3>Connect</h3>
 					<p>Introduction to connect task.</p>
@@ -89,10 +82,9 @@ body { padding-top: 60px;
 
 
 				<ul class="nav nav-pills nav-justified">
-				  <li data-target="#myCarousel" data-slide-to="0" class="active"><a href="#">About<small>Mapping the Fourth</small></a></li>
-				  <li data-target="#myCarousel" data-slide-to="1"><a href="#">Transcribe<small>Searchable texts</small></a></li>
-				  <li data-target="#myCarousel" data-slide-to="2"><a href="#">Tag<small>Find entities</small></a></li>
-				  <li data-target="#myCarousel" data-slide-to="3"><a href="#">Connect<small>Concepts of documents</small></a></li>
+				  <li data-target="#myCarousel" data-slide-to="0" class="active"><a href="#">Transcribe<small>Searchable texts</small></a></li>
+				  <li data-target="#myCarousel" data-slide-to="1"><a href="#">Tag<small>Find entities</small></a></li>
+				  <li data-target="#myCarousel" data-slide-to="2"><a href="#">Connect<small>Concepts of documents</small></a></li>
 				</ul>
 
 
