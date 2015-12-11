@@ -79,7 +79,7 @@ function getAllReplyIDsForUserId($user_id)
     $db->close();
     return $idArray;
 }
-function getAllReferencedDocumentIDs($reply_id)
+function getAllReferencedDocumentIDsForReply($reply_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();

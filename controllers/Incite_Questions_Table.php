@@ -94,7 +94,7 @@ function getAllReplyIDsForQuestion($question_id)
     $db->close();
     return $idArray;
 }
-function getAllReferencedDocumentIds($question_id)
+function getAllReferencedDocumentIdsForQuestion($question_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
