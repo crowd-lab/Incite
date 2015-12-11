@@ -3,7 +3,7 @@
 require_once("DB_Connect.php");
 
 
-function createQuestion($question, $user_id, $document_id, $type)
+function createQuestionTag($question, $user_id, $document_id, $type)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_questions VALUES (DEFAULT, ?, ?, 1, CURRENT_TIMESTAMP, ?)");
@@ -21,7 +21,6 @@ function createQuestion($question, $user_id, $document_id, $type)
         $stmt->execute();
         $stmt->close();
     }
-    
 }
 
 function getAllQuestionsForUserID($user_id)
@@ -105,6 +104,23 @@ function getAllReferencedDocumentIdsForQuestion($question_id)
     while ($stmt->fetch())
     {
         $idArray[] = $document_id;
+    }
+    $stmt->close();
+    $db->close();
+    return $idArray;
+}
+
+function pullQuestionsForDocumentOnly($document_id)
+{
+    $idArray = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT question_id FROM omeka_incite_documents_questions_conjunction INNER JOIN omeka_incite_questions ON omeka_incite_questions.id = omeka_incite_documents_questions_conjunction.question_id WHERE question_type = 0 AND document_id = ?");
+    $stmt->bind_param("i", $document_id);
+    $stmt->bind_result($question_id);
+    $stmt->execute();
+    while ($stmt->fetch())
+    {
+        $idArray[] = $question_id;
     }
     $stmt->close();
     $db->close();
