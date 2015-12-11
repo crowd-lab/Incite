@@ -168,4 +168,49 @@ function addConceptToDocument($conceptID, $documentID, $userID)
         $newStmt1->close();
     }
 }
+
+/**
+ * Return an array of document ids that have the same matching tags as another document
+ * @param array $id_array to search against
+ * @param int $minimum_match the number of matches per document you want to be included in the search
+ */
+function searchClosestMatch($id_array, $minimum_match)
+{
+    $dictionary = array(array());
+    for ($i = 0; $i < sizeof($id_array); $i++)
+    {
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT document_id FROM omeka_incite_documents_suject_conjunction WHERE subject_concept_id = ?");
+        $stmt->bind_param("i", $id_array[$i]);
+        $stmt->bind_result($document_id);
+        $stmt->execute();
+        while ($stmt->fetch())
+        {
+            $dictionary[$id_array[$i]][] = $document_id;
+        }
+        $stmt->close();
+        $db->close();
+    }
+    //dictionary setup: conceptID --> [document_ids]
+    $allDocumentIDs = array();
+    for ($i = 0; $i < sizeof($dictionary); $i++)
+    {
+        for ($j = 0; $j < sizeof($dictionary[$i]); $j++)
+        {
+            $allDocumentIDs[] = $dictionary[$i][$j];
+        }
+    }
+    asort($allDocumentIDs);
+    
+    $frequencyChart = array_count_values($allDocumentIDs);
+    $idAboveMinimum = array();
+    foreach($frequencyChart as $key => $value)
+    {
+        if ($value >= $minimum_match)
+        {
+            $idAboveMinimum[] = $key;
+        }
+    }
+    return $idAboveMinimum;
+}
 ?>
