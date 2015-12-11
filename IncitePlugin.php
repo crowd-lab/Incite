@@ -87,6 +87,7 @@ SQL
         `question_text`         varchar(1000) NOT NULL,
         `is_active`             int(11) NOT NULL,
         `timestamp`             timestamp NOT NULL,
+        `question_type`         int(11) NOT NULL,
   
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
@@ -121,7 +122,7 @@ SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_replies_conjunction (
         `id`                int(11) NOT NULL AUTO_INCREMENT,
         `document_id`       int(11) NOT NULL,
-        `repy_id`           int(11) NOT NULL,
+        `reply_id`           int(11) NOT NULL,
         
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
