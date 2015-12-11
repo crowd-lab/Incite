@@ -93,7 +93,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         } else {
             //default: fetch documents that need to be transcribed
             $document_ids = getDocumentsWithoutTranscription();
-            $max_records_to_show = 4;
+            $max_records_to_show = 8;
             $records_counter = 0;
             $records = array();
 
@@ -235,7 +235,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->subject = $subjectName[0];
         $this->view->subject_definition = $subjectDef;
         $this->view->entities = array('liberty', 'independence');
-        $this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77));
+        $this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77), $this->_helper->db->find(22));
+
+        //From tagAction
+        $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
+        $this->view->category_colors = $category_colors;
 
         if ($this->getRequest()->isPost()) {
             //save a connection to database
@@ -264,6 +268,31 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 } else {
 
                 }
+                $oldwd = getcwd();
+                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
+                $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
+                $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
+                fclose($nered_file);
+                //parsing results
+                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
+                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
+                $colored_transcription = $parsed_text;
+
+                foreach ($categories as $category) {
+                    $entities = getTextBetweenTags($parsed_text, $category);
+                    $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                    if (isset($entities[1]) && count($entities[1]) > 0) {
+                        foreach ($entities[1] as $entity) {
+                            if ($category == 'PERSON')
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                            else
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                        }
+                    }
+                }
+                $this->view->transcription = $colored_transcription;
+
+                chdir($oldwd);
                 $this->_helper->viewRenderer('connectid');
                 $this->view->connection = $record;
             } else {

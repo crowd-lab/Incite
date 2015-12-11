@@ -148,12 +148,14 @@ include(dirname(__FILE__).'/../common/header.php');
     <div class="col-md-4">
 <?php $cf = 1; ?>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
-        <div class="col-md-6">
-            <div class="thumbnail">
-                 <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
-                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="max-width: 150px; max-height: 120px;">
-                </a>
-                <h4 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h4>
+        <div class="col-md-12">
+            <div class="col-md-3">
+                    <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
+                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="max-width: 50px; max-height: 30px;">
+                    </a>
+            </div>
+            <div class="col-md-9">
+                <p style=""><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></p>
             </div>
         </div>
     <?php if ($cf > 0 && $cf % 2 == 0): ?>
