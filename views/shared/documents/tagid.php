@@ -28,7 +28,7 @@
 <?php foreach ((array)$this->category_colors as $category => $color): ?>
                 <div><span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span></div>
 <?php endforeach; ?>
-                <div style="border-style: solid;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
+                <div style="border-style: solid; overflow: scroll; max-height: 250px;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                 <div class="wrapper">
                     <div id="document_img" class="viewer"></div>
                 </div>
@@ -84,7 +84,7 @@
                     </li>
                 </ul>
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
-                    <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
+                    <textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
                     <button type="button" class="btn btn-default" id="">Submit</button>
                 <?php else: ?>
                     Please login or signup to join the discussion!
@@ -241,7 +241,7 @@
         //$('.SelectBox').SumoSelect({placeholder: 'This is a placeholder', csvDispCount: 3 });
         $('#work-view').width($('#work-zone').width());
     });
-    $('.viewer').height($(window).height() * 68 / 100);
+    $('.viewer').height($(window).height() * 50 / 100);
 </script>
 <style>
     .viewer

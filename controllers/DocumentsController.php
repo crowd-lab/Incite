@@ -218,7 +218,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $entities = getTextBetweenTags($parsed_text, $category);
                         $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                         if (isset($entities[1]) && count($entities[1]) > 0) {
-                            foreach ($entities[1] as $entity) {
+                            $uniq_entities = array_unique($entities[1]);
+                            foreach ($uniq_entities as $entity) {
                                     $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
                             }
                         }
