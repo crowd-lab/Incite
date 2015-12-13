@@ -23,6 +23,11 @@ function colorTextBetweenTags($string, $tagname, $color)
     $result = str_replace('</'.$tagname.'>', '</span>', $result);
     return $result;
 }
+function sort_strlen($str1, $str2)
+{
+    return strlen($str2) - strlen($str1);
+}
+
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController
 {
@@ -127,6 +132,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $GLOBALS['USERID'] = $userArray[0];
                 }
                 $entities = json_decode($_POST["entities"], true);
+                removeAllTagsFromDocument($this->_getParam('id'));
                 for ($i = 0; $i < sizeof($entities); $i++) {
                     createTag($GLOBALS['USERID'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
                 }
@@ -135,6 +141,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         $this->_helper->db->setDefaultModelName('Item');
         if ($this->_hasParam('id')) {
+            //$this->view->isTagged = isDocumentTagged($this->_getParam('id'));
             $record = $this->_helper->db->find($this->_getParam('id'));
 
             if ($record != null) {
@@ -158,46 +165,72 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //  2) (to be implemented) pull similar entities in the database based on searching in transcription
                 //  3) NER to get entities
 
-                //NER: start
-                $ner_entity_table = array();
+                //Initialize attributes for entities
+                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
+                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
+                if (isDocumentTagged($this->_getParam('id'))) {
+                    //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
+                    $allTags = getAllTagInformation($this->_getParam('id'));
+                    $entities = array();
+                    $entity_names = array();
+                    $entity_category = array();
+                    $colored_transcription = $this->view->transcription;
+                    foreach ((array)$allTags as $tag) {
+                        $subs = array();
+                        foreach ((array)$tag['subcategories'] as $sub) {
+                            $subs[] = str_replace(' ', '', $sub);
+                        }
+                        $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
+                        $entity_names[] = $tag['tag_text'];
+                        $entity_category[$tag['tag_text']] = $tag['category_name'];
+                    }
+                    usort($entity_names, 'sort_strlen');
+                    foreach ((array)$entity_names as $name) {
+                        $colored_transcription = str_replace($name, '<'.strtoupper($entity_category[$name]).'>'.$name.'</'.strtoupper($entity_category[$name]).'>', $colored_transcription);
+                    }
+                    foreach ($categories as $category) {
+                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                    }
+                    $this->view->entities = $entities;
+                    $this->view->transcription = $colored_transcription;
+                } else {
+                    //NER: start
+                    $ner_entity_table = array();
 
-                //running NER
-                $oldwd = getcwd();
-                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-                if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
-                    $this->view->file = 'not exist';
-                    $ner_input = fopen('../tmp/ner/'.$this->_getParam('id'), "w") or die("unable to open transcription");
-                    fwrite($ner_input, $this->view->transcription);
-                    fclose($ner_input);
-                    system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile ".'../tmp/ner/'.$this->_getParam('id').' > '.'../tmp/ner/'.$this->_getParam('id').'.ner');
-                }
-                $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
-                $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
-                fclose($nered_file);
+                    //running NER
+                    $oldwd = getcwd();
+                    chdir('./plugins/Incite/stanford-ner-2015-04-20/');
+                    if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
+                        $this->view->file = 'not exist';
+                        $ner_input = fopen('../tmp/ner/'.$this->_getParam('id'), "w") or die("unable to open transcription");
+                        fwrite($ner_input, $this->view->transcription);
+                        fclose($ner_input);
+                        system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile ".'../tmp/ner/'.$this->_getParam('id').' > '.'../tmp/ner/'.$this->_getParam('id').'.ner');
+                    }
+                    $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
+                    $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
+                    fclose($nered_file);
 
-                //parsing results
-                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
-                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
-                $colored_transcription = $parsed_text;
+                    //parsing results
+                    $colored_transcription = $parsed_text;
 
-                foreach ($categories as $category) {
-                    $entities = getTextBetweenTags($parsed_text, $category);
-                    $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
-                    if (isset($entities[1]) && count($entities[1]) > 0) {
-                        foreach ($entities[1] as $entity) {
-                            if ($category == 'PERSON')
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
-                            else
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                    foreach ($categories as $category) {
+                        $entities = getTextBetweenTags($parsed_text, $category);
+                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                        if (isset($entities[1]) && count($entities[1]) > 0) {
+                            $uniq_entities = array_unique($entities[1]);
+                            foreach ($uniq_entities as $entity) {
+                                    $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                            }
                         }
                     }
-                }
 
-                chdir($oldwd);
-                //NER:end
+                    chdir($oldwd);
+                    //NER:end
 
-                $this->view->entities = $ner_entity_table;
-                $this->view->transcription = $colored_transcription;
+                    $this->view->entities = $ner_entity_table;
+                    $this->view->transcription = $colored_transcription;
+                } //end of isDocumentTagged
                 $this->view->category_colors = $category_colors;
             } else {
                 //no such document
@@ -230,6 +263,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->_helper->db->setDefaultModelName('Item');
         $subjectConceptArray = getAllSubjectConcepts();
         $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
+        $subject_id = 1;
         $subjectName = getSubjectConceptOnId($randomSubjectInt);
         $subjectDef = getDefinition($subjectName[0]);
 
@@ -237,10 +271,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->subject = $subjectName[0];
         $this->view->subject_definition = $subjectDef;
         $this->view->entities = array('liberty', 'independence');
-        $this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77), $this->_helper->db->find(22));
+        $this->view->related_documents = array();
 
         //From tagAction
-        $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
+        $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
         $this->view->category_colors = $category_colors;
 
         if ($this->getRequest()->isPost()) {
@@ -252,7 +286,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $GLOBALS['USERID'] = $userArray[0];
                 }   //ready to connect subject to a document
                 $userID = -1;
-                addConceptToDocument($randomSubjectInt, $this->_getParam('id'), $userID);
+                if (isset($_POST['subject']) && $_POST['connection'] == 'true') {
+                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $userID, 1);
+                } else if (isset($_POST['subject']) && $_POST['connection'] == 'false') {
+                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $userID, 0);
+                } else {
+                }
             }
         }
 
@@ -270,31 +309,64 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 } else {
 
                 }
-                $oldwd = getcwd();
-                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-                $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
-                $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
-                fclose($nered_file);
-                //parsing results
-                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
-                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
-                $colored_transcription = $parsed_text;
-
-                foreach ($categories as $category) {
-                    $entities = getTextBetweenTags($parsed_text, $category);
-                    $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
-                    if (isset($entities[1]) && count($entities[1]) > 0) {
-                        foreach ($entities[1] as $entity) {
-                            if ($category == 'PERSON')
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
-                            else
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
+                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
+                if (isDocumentTagged($this->_getParam('id'))) {
+                    //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
+                    $allTags = getAllTagInformation($this->_getParam('id'));
+                    $entities = array();
+                    $entity_names = array();
+                    $entity_category = array();
+                    $colored_transcription = $this->view->transcription;
+                    $tag_ids = array();
+                    foreach ((array)$allTags as $tag) {
+                        $subs = array();
+                        $tag_ids[] = $tag['tag_id'];
+                        foreach ((array)$tag['subcategories'] as $sub) {
+                            $subs[] = str_replace(' ', '', $sub);
                         }
+                        $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
+                        $entity_names[] = $tag['tag_text'];
+                        $entity_category[$tag['tag_text']] = $tag['category_name'];
                     }
-                }
-                $this->view->transcription = $colored_transcription;
+                    usort($entity_names, 'sort_strlen');
+                    foreach ((array)$entity_names as $name) {
+                        $colored_transcription = str_replace($name, '<'.strtoupper($entity_category[$name]).'>'.$name.'</'.strtoupper($entity_category[$name]).'>', $colored_transcription);
+                    }
+                    foreach ($categories as $category) {
+                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                    }
+                    
+                    //Targets
+                    $target_minimum_common_tags = 3;
+                    $target_entities = $entity_names;
 
-                chdir($oldwd);
+                    //Actual values
+                    $actual_entities = $entity_names;
+                    $actual_minimum_common_tags = $target_minimum_common_tags;
+                    if ($actual_minimum_common_tags > count($actual_entities))
+                        $actual_minimum_common_tags = count($actual_entities);
+
+                    $related = array();
+                    while(count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
+                        $actual_minimum_common_tags--;
+                    if ($actual_minimum_common_tags > 0) {
+
+                    } else if ($actual_minimum_common_tags == 0) {
+                        //no documents with common tags
+                    } else {
+                        //error!
+                    }
+                    $related_documents = array_values(array_diff($related, array($this->_getParam('id'))));
+                    $actual_entities = findCommonTagNames($related);
+                    for ($i = 0; $i < count($related_documents); $i++) {
+                        $this->view->related_documents[] = $this->_helper->db->find($related_documents[$i]);
+                    }
+                    $this->view->entities = $actual_entities;
+                    $this->view->transcription = $colored_transcription;
+                    $this->view->subject_id = $subject_id;
+                } else {
+                }
                 $this->_helper->viewRenderer('connectid');
                 $this->view->connection = $record;
             } else {

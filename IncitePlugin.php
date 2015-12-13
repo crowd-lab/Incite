@@ -53,6 +53,7 @@ SQL
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
         `subject_concept_id`    int(11) NOT NULL,
+        `is_positive`           int(5) NOT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 SQL
@@ -219,7 +220,7 @@ SQL
 SQL
    );
         get_db()->query(<<<SQL
-    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'People'), (NULL, 'Organization');
+    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization');
     
 SQL
    );

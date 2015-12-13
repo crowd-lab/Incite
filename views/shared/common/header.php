@@ -84,10 +84,11 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                     var submitButton = document.getElementById("login-button");
                                     loginDiv.insertBefore(usernameError, submitButton);
                                     
-                                    $('#logout_button').addClass('disabled');
+                                    //$('#login_button').attr('visiblity', 'hidden');
 
                                     setTimeout(function ()
                                     {
+                                        
                                         $('#login-signup-dialog').modal('hide');
                                         loginDiv.removeChild(usernameError);
                                     }, 2000);

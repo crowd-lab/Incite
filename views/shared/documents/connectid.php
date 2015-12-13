@@ -43,8 +43,13 @@ include(dirname(__FILE__).'/../common/header.php');
 			<form action="post">
 				<button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
 				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>
+                <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
 			</form>
-            <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following three documents.</h3>
+<?php if (count($this->related_documents) == 1): ?>
+            <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
+<?php else: ?>
+            <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
+<?php endif; ?>
 <?php foreach($this->related_documents as $document): ?>
             <div class="col-md-4">
                 <a href="#" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
@@ -53,6 +58,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
             </div>
 <?php endforeach; ?>
+            <div class="clearfix"></div>
                 <div id="container">
                     <h3> Discussion </h3>
                     <ul id="comments">
@@ -66,7 +72,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         </li>
                     </ul>
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                    <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
+                    <textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
                     <button type="button" class="btn btn-default" id="">Submit</button>
 <?php else: ?>
                     Please login or signup to join the discussion!

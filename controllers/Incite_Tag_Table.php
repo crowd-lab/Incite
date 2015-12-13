@@ -170,24 +170,98 @@ function getAllCategories() {
     return $results;
 }
 /**
- * Returns true is a document is tagged, false otherwise
- * @param int $documentID
+ * Returns true if a document is tagged, false otherwise
+ * @param int $itemID
  * @return boolean
  */
-function isDocumentTagged($documentID) {
+function isDocumentTagged($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents_tags_conjunction WHERE document_id = ?");
-    $stmt->bind_param("i", $documentID);
+    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents INNER JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE item_id = ?");
+    $stmt->bind_param("i", $itemID);
     $stmt->bind_result($count);
     $stmt->execute();
     $stmt->fetch();
     $stmt->close();
+    $db->close();
     if ($count > 0) {
         return true;
     } else {
         return false;
     }
+}
+
+/**
+ * Returns true if a tag exists
+ * @param string $tag
+ * @return boolean
+ */
+function tagExists($tag) {
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM `omeka_incite_tags` WHERE `tag_text` = ?");
+    $stmt->bind_param("s", $tag);
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($count > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Returns true if a tag exists in a document
+ * @param string $tag, int item_id
+ * @return boolean
+ */
+function tagExistsInDocument($tag, $itemID) {
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id` WHERE `tag_text` = ? AND `item_id` = ?");
+    $stmt->bind_param("si", $tag, $itemID);
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($count > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Remove all tags in a document
+ * @param int item_id
+ */
+function removeAllTagsFromDocument($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `omeka_incite_tags`.`id`, `omeka_incite_documents_tags_conjunction`.`document_id` FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id` WHERE `item_id` = ?");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($tag_id, $document_id);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $db2 = DB_Connect::connectDB();
+        $stmt2 = $db2->prepare("DELETE FROM omeka_incite_tags WHERE id = ?");
+        $stmt2->bind_param("i", $tag_id);
+        $stmt2->execute();
+        $stmt2->close();
+        $db2->close();
+
+        $db2 = DB_Connect::connectDB();
+        $stmt2 = $db2->prepare("DELETE FROM omeka_incite_documents_tags_conjunction WHERE document_id = ? AND tag_id = ?");
+        $stmt2->bind_param("ii", $document_id, $tag_id);
+        $stmt2->execute();
+        $stmt2->close();
+        $db2->close();
+    }
+    $stmt->close();
+    $db->close();
 }
 
 /**
@@ -281,8 +355,8 @@ function getDocumentsWithoutTag()
 }
 /**
  * Return an array of document ids that have the same matching tags as another document
- * @param array $id_array to search against
- * @param int $minimum_match the number of matches per document you want to be included in the search
+ * @param array of tag id $id_array to search against
+ * @param int $minimum_match the minimum number of matches (common tags) per document you want to be included in the search
  */
 function searchClosestMatch($id_array, $minimum_match)
 {
@@ -322,5 +396,75 @@ function searchClosestMatch($id_array, $minimum_match)
         }
     }
     return $idAboveMinimum;
+}
+/**
+ * Return an array of document ids that have the same matching tags as another document
+ * @param array of tag id $tag_name_array to search against
+ * @param int $minimum_match the minimum number of matches (common tags) per document you want to be included in the search
+ */
+function searchClosestMatchByTagName($tag_name_array, $minimum_match)
+{
+    $dictionary = array();
+    for ($i = 0; $i < sizeof($tag_name_array); $i++)
+    {
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id = omeka_incite_documents_tags_conjunction.document_id WHERE omeka_incite_tags.tag_text = ?");
+        $stmt->bind_param("s", $tag_name_array[$i]);
+        $stmt->bind_result($document_id);
+        $stmt->execute();
+        while ($stmt->fetch())
+        {
+            $dictionary[$tag_name_array[$i]][] = $document_id;
+        }
+        $stmt->close();
+        $db->close();
+    }
+    //dictionary setup: tagID --> [document_ids]
+    $allDocumentIDs = array();
+    foreach ((array)$dictionary as $tag_name) {
+        for ($i = 0; $i < count($tag_name); $i++) {
+            $allDocumentIDs[] = $tag_name[$i];
+        }
+    }
+    asort($allDocumentIDs);
+    
+    $frequencyChart = array_count_values($allDocumentIDs);
+    $idAboveMinimum = array();
+    foreach($frequencyChart as $key => $value)
+    {
+        if ($value >= $minimum_match)
+        {
+            $idAboveMinimum[] = $key;
+        }
+    }
+    
+    return $idAboveMinimum;
+}
+/**
+ * Return an array of tag ids and names that are in common of given documents (by item_ids)
+ * @param array of item id $item_ids to search against
+ */
+function findCommonTagNames($item_ids)
+{
+    $tags_for_items = array();
+    for ($i = 0; $i < sizeof($item_ids); $i++)
+    {
+        $tags_for_one_item = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT tag_id, tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
+        $stmt->bind_param("i", $item_ids[$i]);
+        $stmt->bind_result($tag_id, $tag_name);
+        $stmt->execute();
+        while ($stmt->fetch())
+        {
+            $tags_for_one_item[] = $tag_name;
+        }
+        $stmt->close();
+        $db->close();
+        $tags_for_items[] = $tags_for_one_item;
+    }
+    $common_tags = array_values(call_user_func_array('array_intersect', $tags_for_items));
+    
+    return $common_tags;
 }
 ?>
