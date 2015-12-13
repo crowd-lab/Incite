@@ -409,8 +409,6 @@ function searchClosestMatchByTagName($tag_name_array, $minimum_match)
     for ($i = 0; $i < sizeof($tag_name_array); $i++)
     {
         $db = DB_Connect::connectDB();
-        //$stmt = $db->prepare("SELECT document_id FROM omeka_incite_documents_tags_conjunction WHERE tag_id = ?");
-        //$stmt = $db->prepare("SELECT document_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id WHERE omeka_incite_tags.tag_text = ?");
         $stmt = $db->prepare("SELECT item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id = omeka_incite_documents_tags_conjunction.document_id WHERE omeka_incite_tags.tag_text = ?");
         $stmt->bind_param("s", $tag_name_array[$i]);
         $stmt->bind_result($document_id);
@@ -422,7 +420,6 @@ function searchClosestMatchByTagName($tag_name_array, $minimum_match)
         $stmt->close();
         $db->close();
     }
-    print_r($dictionary);
     //dictionary setup: tagID --> [document_ids]
     $allDocumentIDs = array();
     foreach ((array)$dictionary as $tag_name) {
