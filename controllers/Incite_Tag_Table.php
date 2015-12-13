@@ -170,25 +170,98 @@ function getAllCategories() {
     return $results;
 }
 /**
- * Returns true is a document is tagged, false otherwise
+ * Returns true if a document is tagged, false otherwise
  * @param int $itemID
  * @return boolean
  */
 function isDocumentTagged($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents_tags_conjunction WHERE document_id = ?");
-    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents INNER JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_documents_tags_conjunction.id = omeka_incite_documents.id WHERE item_id = ?");
+    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents INNER JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE item_id = ?");
     $stmt->bind_param("i", $itemID);
     $stmt->bind_result($count);
     $stmt->execute();
     $stmt->fetch();
     $stmt->close();
+    $db->close();
     if ($count > 0) {
         return true;
     } else {
         return false;
     }
+}
+
+/**
+ * Returns true if a tag exists
+ * @param string $tag
+ * @return boolean
+ */
+function tagExists($tag) {
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM `omeka_incite_tags` WHERE `tag_text` = ?");
+    $stmt->bind_param("s", $tag);
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($count > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Returns true if a tag exists in a document
+ * @param string $tag, int item_id
+ * @return boolean
+ */
+function tagExistsInDocument($tag, $itemID) {
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id` WHERE `tag_text` = ? AND `item_id` = ?");
+    $stmt->bind_param("si", $tag, $itemID);
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($count > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Remove all tags in a document
+ * @param int item_id
+ */
+function removeAllTagsFromDocument($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `omeka_incite_tags`.`id`, `omeka_incite_documents_tags_conjunction`.`document_id` FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id` WHERE `item_id` = ?");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($tag_id, $document_id);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $db2 = DB_Connect::connectDB();
+        $stmt2 = $db2->prepare("DELETE FROM omeka_incite_tags WHERE id = ?");
+        $stmt2->bind_param("i", $tag_id);
+        $stmt2->execute();
+        $stmt2->close();
+        $db2->close();
+
+        $db2 = DB_Connect::connectDB();
+        $stmt2 = $db2->prepare("DELETE FROM omeka_incite_documents_tags_conjunction WHERE document_id = ? AND tag_id = ?");
+        $stmt2->bind_param("ii", $document_id, $tag_id);
+        $stmt2->execute();
+        $stmt2->close();
+        $db2->close();
+    }
+    $stmt->close();
+    $db->close();
 }
 
 /**

@@ -127,6 +127,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $GLOBALS['USERID'] = $userArray[0];
                 }
                 $entities = json_decode($_POST["entities"], true);
+                removeAllTagsFromDocument($this->_getParam('id'));
                 for ($i = 0; $i < sizeof($entities); $i++) {
                     createTag($GLOBALS['USERID'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
                 }
@@ -135,7 +136,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         $this->_helper->db->setDefaultModelName('Item');
         if ($this->_hasParam('id')) {
-            $this->view->isTagged = isDocumentTagged($this->_getParam('id'));
+            //$this->view->isTagged = isDocumentTagged($this->_getParam('id'));
             $record = $this->_helper->db->find($this->_getParam('id'));
 
             if ($record != null) {

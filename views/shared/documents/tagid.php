@@ -227,7 +227,8 @@
                 filterBehavior: 'text',
                 checkboxName: 'multiselect[]',
                 enableCaseInsensitiveFiltering: true,
-                disableIfEmpty: true
+                disableIfEmpty: true,
+                numberDisplayed: 1
             });
         });
         $('.category-select').each(function (idx) {
@@ -255,11 +256,6 @@
     }
 </style>
 
-<pre>
-<?php 
-    print_r($this->allTags);  
-?>
-</pre>
 </body>
 
 </html>
