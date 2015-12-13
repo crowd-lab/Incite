@@ -270,10 +270,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->subject = $subjectName[0];
         $this->view->subject_definition = $subjectDef;
         $this->view->entities = array('liberty', 'independence');
-        $this->view->related_documents = array($this->_helper->db->find(15), $this->_helper->db->find(77), $this->_helper->db->find(22));
+        $this->view->related_documents = array();
 
         //From tagAction
-        $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
+        $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
         $this->view->category_colors = $category_colors;
 
         if ($this->getRequest()->isPost()) {
@@ -303,28 +303,53 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 } else {
 
                 }
-                $oldwd = getcwd();
-                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-                $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
-                $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
-                fclose($nered_file);
-                //parsing results
-                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
-                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
-                $colored_transcription = $parsed_text;
-
-                foreach ($categories as $category) {
-                    $entities = getTextBetweenTags($parsed_text, $category);
-                    $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
-                    if (isset($entities[1]) && count($entities[1]) > 0) {
-                        foreach ($entities[1] as $entity) {
-                            $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
+                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
+                if (isDocumentTagged($this->_getParam('id'))) {
+                    //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
+                    $allTags = getAllTagInformation($this->_getParam('id'));
+                    $entities = array();
+                    $entity_names = array();
+                    $entity_category = array();
+                    $colored_transcription = $this->view->transcription;
+                    $tag_ids = array();
+                    foreach ((array)$allTags as $tag) {
+                        $subs = array();
+                        $tag_ids[] = $tag['tag_id'];
+                        foreach ((array)$tag['subcategories'] as $sub) {
+                            $subs[] = str_replace(' ', '', $sub);
                         }
+                        $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
+                        $entity_names[] = $tag['tag_text'];
+                        $entity_category[$tag['tag_text']] = $tag['category_name'];
                     }
-                }
-                $this->view->transcription = $colored_transcription;
+                    usort($entity_names, 'sort_strlen');
+                    foreach ((array)$entity_names as $name) {
+                        $colored_transcription = str_replace($name, '<'.strtoupper($entity_category[$name]).'>'.$name.'</'.strtoupper($entity_category[$name]).'>', $colored_transcription);
+                    }
+                    foreach ($categories as $category) {
+                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                    }
+                    
+                    //Targets
+                    $target_minimum_common_tags = 3;
+                    $target_entities = $entity_names;
 
-                chdir($oldwd);
+                    //Actual values
+                    $actual_entities = $entity_names;
+                    $actual_minimum_common_tags = $target_minimum_common_tags;
+                    if ($actual_minimum_common_tags > count($actual_entities))
+                        $actual_minimum_common_tags = count($actual_entities);
+
+                    $related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags);
+                    $related_documents = array_diff($related, array($this->_getParam('id')));
+                    for ($i = 0; $i < count($related_documents); $i++) {
+                        $this->view->related_documents[] = $this->_helper->db->find($related_documents[$i]);
+                    }
+                    $this->view->entities = $actual_entities;
+                    $this->view->transcription = $colored_transcription;
+                } else {
+                }
                 $this->_helper->viewRenderer('connectid');
                 $this->view->connection = $record;
             } else {
