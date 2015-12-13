@@ -355,8 +355,8 @@ function getDocumentsWithoutTag()
 }
 /**
  * Return an array of document ids that have the same matching tags as another document
- * @param array $id_array to search against
- * @param int $minimum_match the number of matches per document you want to be included in the search
+ * @param array of tag id $id_array to search against
+ * @param int $minimum_match the minimum number of matches (common tags) per document you want to be included in the search
  */
 function searchClosestMatch($id_array, $minimum_match)
 {
@@ -382,6 +382,51 @@ function searchClosestMatch($id_array, $minimum_match)
         for ($j = 0; $j < sizeof($dictionary[$i]); $j++)
         {
             $allDocumentIDs[] = $dictionary[$i][$j];
+        }
+    }
+    asort($allDocumentIDs);
+    
+    $frequencyChart = array_count_values($allDocumentIDs);
+    $idAboveMinimum = array();
+    foreach($frequencyChart as $key => $value)
+    {
+        if ($value >= $minimum_match)
+        {
+            $idAboveMinimum[] = $key;
+        }
+    }
+    
+    return $idAboveMinimum;
+}
+/**
+ * Return an array of document ids that have the same matching tags as another document
+ * @param array of tag id $tag_name_array to search against
+ * @param int $minimum_match the minimum number of matches (common tags) per document you want to be included in the search
+ */
+function searchClosestMatchByTagName($tag_name_array, $minimum_match)
+{
+    $dictionary = array();
+    for ($i = 0; $i < sizeof($tag_name_array); $i++)
+    {
+        $db = DB_Connect::connectDB();
+        //$stmt = $db->prepare("SELECT document_id FROM omeka_incite_documents_tags_conjunction WHERE tag_id = ?");
+        $stmt = $db->prepare("SELECT document_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id WHERE omeka_incite_tags.tag_text = ?");
+        $stmt->bind_param("s", $tag_name_array[$i]);
+        $stmt->bind_result($document_id);
+        $stmt->execute();
+        while ($stmt->fetch())
+        {
+            $dictionary[$tag_name_array[$i]][] = $document_id;
+        }
+        $stmt->close();
+        $db->close();
+    }
+    print_r($dictionary);
+    //dictionary setup: tagID --> [document_ids]
+    $allDocumentIDs = array();
+    foreach ((array)$dictionary as $tag_name) {
+        for ($i = 0; $i < count($tag_name); $i++) {
+            $allDocumentIDs[] = $tag_name[$i];
         }
     }
     asort($allDocumentIDs);
