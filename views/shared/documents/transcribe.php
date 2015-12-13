@@ -151,7 +151,7 @@ include(dirname(__FILE__).'/../common/header.php');
         <div class="col-md-12">
             <div class="col-md-3">
                     <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
-                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="max-width: 50px; max-height: 30px;">
+                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                     </a>
             </div>
             <div class="col-md-9">

@@ -171,14 +171,15 @@ function getAllCategories() {
 }
 /**
  * Returns true is a document is tagged, false otherwise
- * @param int $documentID
+ * @param int $itemID
  * @return boolean
  */
-function isDocumentTagged($documentID) {
+function isDocumentTagged($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents_tags_conjunction WHERE document_id = ?");
-    $stmt->bind_param("i", $documentID);
+    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents INNER JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_documents_tags_conjunction.id = omeka_incite_documents.id WHERE item_id = ?");
+    $stmt->bind_param("i", $itemID);
     $stmt->bind_result($count);
     $stmt->execute();
     $stmt->fetch();
