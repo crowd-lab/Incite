@@ -347,8 +347,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     if ($actual_minimum_common_tags > count($actual_entities))
                         $actual_minimum_common_tags = count($actual_entities);
 
-                    $related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags);
-                    $related_documents = array_diff($related, array($this->_getParam('id')));
+                    $related = array();
+                    while(count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
+                        $actual_minimum_common_tags--;
+                    if ($actual_minimum_common_tags > 0) {
+
+                    } else if ($actual_minimum_common_tags == 0) {
+                        //no documents with common tags
+                    } else {
+                        //error!
+                    }
+                    $related_documents = array_values(array_diff($related, array($this->_getParam('id'))));
+                    $actual_entities = findCommonTagNames($related);
                     for ($i = 0; $i < count($related_documents); $i++) {
                         $this->view->related_documents[] = $this->_helper->db->find($related_documents[$i]);
                     }
