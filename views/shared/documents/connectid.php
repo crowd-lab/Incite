@@ -53,6 +53,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
             </div>
 <?php endforeach; ?>
+            <div class="clearfix"></div>
                 <div id="container">
                     <h3> Discussion </h3>
                     <ul id="comments">
