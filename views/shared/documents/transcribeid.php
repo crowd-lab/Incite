@@ -59,18 +59,25 @@ include(dirname(__FILE__).'/../common/header.php');
                                 <header><a href="javascript:void(0);" class="userlink">DarkCubes</a> - <span class="pubdate">posted 1 week ago</span></header>
                                 <p>Ut nec interdum libero. Sed felis lorem, venenatis sed malesuada vitae, tempor vel turpis. Mauris in dui velit, vitae mollis risus. Cras lacinia lorem sit amet augue mattis vel cursus enim laoreet. Vestibulum faucibus scelerisque nisi vel sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pellentesque massa ac justo tempor eu pretium massa accumsan. In pharetra mattis mi et ultricies. Nunc vel eleifend augue. Donec venenatis egestas iaculis.</p>
                                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                                <button type="button" class="btn btn-default" id="">Reply</button>
+                                <button type="button" class="btn btn-default" id="reply">Reply</button>
                                 <?php endif; ?>
                             </div>
                         </li>
                     </ul>
+                    <div id="onLogin">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
+                    
+                    <form id="discuss-form" method="POST">
                     <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
                     <button type="button" class="btn btn-default" id="">Submit</button>
+                    </form>
+                    
 <?php else: ?>
                     Please login or signup to join the discussion!
-                </div>
+                
 <?php endif; ?>
+                    </div>
+                    </div>
             </div> 
         </div>
 
@@ -94,17 +101,12 @@ $(document).ready(function(){
 $(function(){
 
     //start with `NewContent` being the HTML to add to the page
-<<<<<<< HEAD
-    var NewContent='<textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea><button type="button" class="btn btn-default" id="">Submit</button>';
-=======
-    var NewContent='<textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default" id="">Submit</button>'
->>>>>>> 3a53f1f6216f029efb57495d41752b2a636a3771
-    $(".add").click(function(){
-
+    var NewContent='<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea><button type="button" class="btn btn-default" id="">Submit</button></form>';
+    
+    $("#reply").click(function(){
         //check if `NewContent` is empty or not
         if (NewContent != '') {
-            $("#cmmnt").after(NewContent);
+            $("#reply").after(NewContent);
 
             //now that `NewContent` has been added to the DOM, reset it's value to an empty string so this doesn't happen again
             NewContent = '';
@@ -112,7 +114,7 @@ $(function(){
 
             //this is not the first click, so just toggle the appearance of the element that has already been added to the DOM
             //since we injected the element just after the `#spin` element we can select it relatively to that element by using `.next()`
-            $('#cmmnt').next().toggle();
+            $('#reply').next().toggle();
         }
     });
 });

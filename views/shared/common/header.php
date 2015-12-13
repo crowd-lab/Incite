@@ -109,6 +109,11 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                             $('#login_modal').removeAttr('data-target');
                                             $('#login_modal')[0].setAttribute('onclick', 'logout()');
                                             $('#login_modal').prop('id', 'logout_button');
+                                            
+                                            if (document.getElementById("onLogin") != null)
+                                            {
+                                                $('#onLogin').load(document.URL + ' #onLogin');
+                                            }
                                         }
                                     })
 
@@ -215,6 +220,10 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     $('#logout_button')[0].setAttribute('data-toggle', 'modal')
                     $('#logout_button')[0].setAttribute('data-target', '#login-signup-dialog');
                     $('#logout_button').prop('id', 'login_modal');
+                    if (document.getElementById("onLogin") != null)
+                    {
+                        $('#onLogin').load(document.URL + ' #onLogin');
+                    }
                 },
                 error: function (e) {
                     console.log(e.message);
