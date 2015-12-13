@@ -67,7 +67,7 @@
 <?php endforeach; ?>
             </table>
             <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
-            <button type="submit" class="btn btn-primary pull-right" id="confirm-button">I confirm the above information is correct!</button>
+            <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
             <form id="entity-form" method="post">
                 <input id="entity-info" type="hidden" name="entities" />
             </form>
@@ -135,7 +135,8 @@
                 filterBehavior: 'text',
                 checkboxName: 'multiselect[]',
                 enableCaseInsensitiveFiltering: true,
-                disableIfEmpty: true
+                disableIfEmpty: true,
+                numberDisplayed: 1
             });
             <?php for ($i = 0; $i < sizeof($category_object); $i++){
                 echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
