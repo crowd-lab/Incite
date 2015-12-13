@@ -43,6 +43,7 @@ include(dirname(__FILE__).'/../common/header.php');
 			<form action="post">
 				<button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
 				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>
+                <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
 			</form>
             <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following three documents.</h3>
 <?php foreach($this->related_documents as $document): ?>

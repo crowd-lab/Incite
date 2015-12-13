@@ -130,7 +130,7 @@ function getSubjectConceptOnId($id)
  * @param int $documentID
  * @param int $userID
  */
-function addConceptToDocument($conceptID, $documentID, $userID)
+function addConceptToDocument($conceptID, $documentID, $userID, $positive)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
@@ -144,8 +144,8 @@ function addConceptToDocument($conceptID, $documentID, $userID)
         //store concept in conjunction table
         $db->close();
         $db = DB_Connect::connectDB();
-        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?)");
-        $newStmt->bind_param("ii", $conceptID, $id);
+        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?)");
+        $newStmt->bind_param("iii", $conceptID, $id, $positive);
         $newStmt->execute();
         $newStmt->close();
         
@@ -162,8 +162,8 @@ function addConceptToDocument($conceptID, $documentID, $userID)
         $newStmt->close();
         $db->close();
         $db = DB_Connect::connectDB();
-        $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?)");
-        $newStmt1->bind_param("ii", $conceptID, $id);
+        $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?)");
+        $newStmt1->bind_param("ii", $conceptID, $id, $positive);
         $newStmt1->execute();
         $newStmt1->close();
     }

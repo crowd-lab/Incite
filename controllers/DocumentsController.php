@@ -263,6 +263,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->_helper->db->setDefaultModelName('Item');
         $subjectConceptArray = getAllSubjectConcepts();
         $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
+        $subject_id = 1;
         $subjectName = getSubjectConceptOnId($randomSubjectInt);
         $subjectDef = getDefinition($subjectName[0]);
 
@@ -285,7 +286,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $GLOBALS['USERID'] = $userArray[0];
                 }   //ready to connect subject to a document
                 $userID = -1;
-                addConceptToDocument($randomSubjectInt, $this->_getParam('id'), $userID);
+                if (isset($_POST['subject']) && $_POST['connection'] == 'true') {
+                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $userID, 1);
+                } else if (isset($_POST['subject']) && $_POST['connection'] == 'false') {
+                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $userID, 0);
+                } else {
+                }
             }
         }
 
@@ -348,6 +354,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                     $this->view->entities = $actual_entities;
                     $this->view->transcription = $colored_transcription;
+                    $this->view->subject_id = $subject_id;
                 } else {
                 }
                 $this->_helper->viewRenderer('connectid');
