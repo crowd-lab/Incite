@@ -135,6 +135,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         $this->_helper->db->setDefaultModelName('Item');
         if ($this->_hasParam('id')) {
+            $this->view->isTagged = isDocumentTagged($this->_getParam('id'));
             $record = $this->_helper->db->find($this->_getParam('id'));
 
             if ($record != null) {
@@ -158,47 +159,62 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //  2) (to be implemented) pull similar entities in the database based on searching in transcription
                 //  3) NER to get entities
 
-                //NER: start
-                $ner_entity_table = array();
+                //Initialize attributes for entities
+                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
+                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
+                if (isDocumentTagged($this->_getParam('id'))) {
+                    //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
+                    $allTags = getAllTagInformation($this->_getParam('id'));
+                    $entities = array();
+                    foreach ((array)$allTags as $tag) {
+                        $subs = array();
+                        foreach ((array)$tag['subcategories'] as $sub) {
+                            $subs[] = str_replace(' ', '', $sub);
+                        }
+                        $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
+                    }
+                    $this->view->entities = $entities;
+                } else {
+                    //NER: start
+                    $ner_entity_table = array();
 
-                //running NER
-                $oldwd = getcwd();
-                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-                if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
-                    $this->view->file = 'not exist';
-                    $ner_input = fopen('../tmp/ner/'.$this->_getParam('id'), "w") or die("unable to open transcription");
-                    fwrite($ner_input, $this->view->transcription);
-                    fclose($ner_input);
-                    system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile ".'../tmp/ner/'.$this->_getParam('id').' > '.'../tmp/ner/'.$this->_getParam('id').'.ner');
-                }
-                $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
-                $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
-                fclose($nered_file);
+                    //running NER
+                    $oldwd = getcwd();
+                    chdir('./plugins/Incite/stanford-ner-2015-04-20/');
+                    if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
+                        $this->view->file = 'not exist';
+                        $ner_input = fopen('../tmp/ner/'.$this->_getParam('id'), "w") or die("unable to open transcription");
+                        fwrite($ner_input, $this->view->transcription);
+                        fclose($ner_input);
+                        system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile ".'../tmp/ner/'.$this->_getParam('id').' > '.'../tmp/ner/'.$this->_getParam('id').'.ner');
+                    }
+                    $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
+                    $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
+                    fclose($nered_file);
 
-                //parsing results
-                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION');
-                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow');
-                $colored_transcription = $parsed_text;
+                    //parsing results
+                    $colored_transcription = $parsed_text;
 
-                foreach ($categories as $category) {
-                    $entities = getTextBetweenTags($parsed_text, $category);
-                    $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
-                    if (isset($entities[1]) && count($entities[1]) > 0) {
-                        foreach ($entities[1] as $entity) {
-                            if ($category == 'PERSON')
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
-                            else
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                    foreach ($categories as $category) {
+                        $entities = getTextBetweenTags($parsed_text, $category);
+                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                        if (isset($entities[1]) && count($entities[1]) > 0) {
+                            foreach ($entities[1] as $entity) {
+                                if ($category == 'PERSON')
+                                    $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                                else
+                                    $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                            }
                         }
                     }
-                }
 
-                chdir($oldwd);
-                //NER:end
+                    chdir($oldwd);
+                    //NER:end
 
-                $this->view->entities = $ner_entity_table;
-                $this->view->transcription = $colored_transcription;
-                $this->view->category_colors = $category_colors;
+                    $this->view->entities = $ner_entity_table;
+                    $this->view->transcription = $colored_transcription;
+                    $this->view->category_colors = $category_colors;
+                } //end of isDocumentTagged
             } else {
                 //no such document
                 echo 'no such document';

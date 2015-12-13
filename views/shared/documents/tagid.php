@@ -25,7 +25,7 @@
                     <div>Location: <?php echo metadata($this->tag, array('Item Type Metadata', 'Location')); ?></div>
                     <div>Description: <?php echo metadata($this->tag, array('Dublin Core', 'Description')); ?></div>
                 <h4>Transcription:</h4>
-<?php foreach ($this->category_colors as $category => $color): ?>
+<?php foreach ((array)$this->category_colors as $category => $color): ?>
                 <div><span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span></div>
 <?php endforeach; ?>
                 <div style="border-style: solid;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
@@ -38,10 +38,33 @@
         </div>
         <div class="col-md-6">
             <table class="table" id="entity-table">
-                <tr><th>Entity</th><th>Category</th><th>Subcategory</th><th>Details</th><th>Not an entity?</th></tr>
-                <?php foreach ($this->entities as $entity): ?>
-                    <tr><td><input type="text" class="form-control entity-name" value="<?php echo $entity['entity']; ?>"></td><td><select class="category-select <?php echo ucwords(strtolower($entity['category'])); ?>"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value="<?php echo $entity['details']; ?>"></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
-                <?php endforeach; ?>
+                <tr>
+                    <th>Entity</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Details</th>
+                    <th>Not a tag?</th></tr>
+<?php foreach ((array)$this->entities as $entity): ?>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control entity-name" value="<?php echo $entity['entity']; ?>">
+                    </td>
+                    <td>
+                        <select class="category-select <?php echo ucwords(strtolower($entity['category'])); ?>"></select>
+                    </td>
+                    <td>
+                        <select class="subcategory-select <?php echo implode(' ', $entity['subcategories']); ?>" multiple="multiple"></select>
+                    </td>
+                    <td>
+                        <input class="form-control entity-details" type="text" value="<?php echo $entity['details']; ?>">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+<?php endforeach; ?>
             </table>
             <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
             <button type="submit" class="btn btn-primary pull-right" id="confirm-button">I confirm the above information is correct!</button>
@@ -162,11 +185,18 @@
                 } else if ($(this).hasClass('Organization')) {
                     cat = 4;
                     $($(this).find('option[value=4]')).attr('selected', 'selected');
-                } else {
+                } else if ($(this).hasClass('Event')) {
+                    cat = 2;
+                    $($(this).find('option[value=2]')).attr('selected', 'selected');
+                } else {  //unexpected category!
                 }
                 var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
                 $.each(categories[cat-1]['subcategory'], function (idx) {
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                    var selected = "";
+                    if (subcategory_menu.hasClass(this['subcategory'].replace(/ /g, ''))) {
+                        selected = "selected=selected";
+                    }
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'"'+selected+'>'+this['subcategory']+'</option>').multiselect('rebuild');
                 });
             });
             $('.category-select').multiselect('rebuild');
@@ -224,6 +254,12 @@
         overflow: hidden;
     }
 </style>
+
+<pre>
+<?php 
+    print_r($this->allTags);  
+?>
+</pre>
 </body>
 
 </html>
