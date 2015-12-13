@@ -23,6 +23,11 @@ function colorTextBetweenTags($string, $tagname, $color)
     $result = str_replace('</'.$tagname.'>', '</span>', $result);
     return $result;
 }
+function sort_strlen($str1, $str2)
+{
+    return strlen($str2) - strlen($str1);
+}
+
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController
 {
@@ -167,14 +172,30 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
                     $allTags = getAllTagInformation($this->_getParam('id'));
                     $entities = array();
+                    $entity_names = array();
+                    $entity_category = array();
+                    $colored_transcription = $this->view->transcription;
                     foreach ((array)$allTags as $tag) {
                         $subs = array();
                         foreach ((array)$tag['subcategories'] as $sub) {
                             $subs[] = str_replace(' ', '', $sub);
                         }
                         $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
+                        $entity_names[] = $tag['tag_text'];
+                        $entity_category[$tag['tag_text']] = $tag['category_name'];
+                    }
+                    usort($entity_names, 'sort_strlen');
+                    foreach ((array)$entity_names as $name) {
+                        $colored_transcription = str_replace($name, '<'.strtoupper($entity_category[$name]).'>'.$name.'</'.strtoupper($entity_category[$name]).'>', $colored_transcription);
+                    }
+                    foreach ($categories as $category) {
+                        if ($category != 'PERSON') 
+                            $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                        else
+                            $colored_transcription = colorTextBetweenTags($colored_transcription, 'PEOPLE', $category_colors[$category]);
                     }
                     $this->view->entities = $entities;
+                    $this->view->transcription = $colored_transcription;
                 } else {
                     //NER: start
                     $ner_entity_table = array();
@@ -214,8 +235,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                     $this->view->entities = $ner_entity_table;
                     $this->view->transcription = $colored_transcription;
-                    $this->view->category_colors = $category_colors;
                 } //end of isDocumentTagged
+                $this->view->category_colors = $category_colors;
             } else {
                 //no such document
                 echo 'no such document';

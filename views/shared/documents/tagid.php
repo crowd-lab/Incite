@@ -39,7 +39,7 @@
         <div class="col-md-6">
             <table class="table" id="entity-table">
                 <tr>
-                    <th>Entity</th>
+                    <th>Tag</th>
                     <th>Category</th>
                     <th>Subcategory</th>
                     <th>Details</th>
