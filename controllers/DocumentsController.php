@@ -330,10 +330,5 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 
             }
         }
-        //Possibly for in-document discussions
-    }
-
-    public function fooAction() {
-        
     }
 }

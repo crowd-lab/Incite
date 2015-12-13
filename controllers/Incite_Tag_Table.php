@@ -321,7 +321,6 @@ function searchClosestMatch($id_array, $minimum_match)
             $idAboveMinimum[] = $key;
         }
     }
-    
     return $idAboveMinimum;
 }
 ?>

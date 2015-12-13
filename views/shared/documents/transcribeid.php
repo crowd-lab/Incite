@@ -94,8 +94,7 @@ $(document).ready(function(){
 $(function(){
 
     //start with `NewContent` being the HTML to add to the page
-    var NewContent='<textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default" id="">Submit</button>'
+    var NewContent='<textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea><button type="button" class="btn btn-default" id="">Submit</button>';
     $(".add").click(function(){
 
         //check if `NewContent` is empty or not
