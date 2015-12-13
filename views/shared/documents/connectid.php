@@ -66,7 +66,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         </li>
                     </ul>
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                    <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
+                    <textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
                     <button type="button" class="btn btn-default" id="">Submit</button>
 <?php else: ?>
                     Please login or signup to join the discussion!
