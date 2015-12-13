@@ -189,10 +189,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $colored_transcription = str_replace($name, '<'.strtoupper($entity_category[$name]).'>'.$name.'</'.strtoupper($entity_category[$name]).'>', $colored_transcription);
                     }
                     foreach ($categories as $category) {
-                        if ($category != 'PERSON') 
-                            $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
-                        else
-                            $colored_transcription = colorTextBetweenTags($colored_transcription, 'PEOPLE', $category_colors[$category]);
+                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                     }
                     $this->view->entities = $entities;
                     $this->view->transcription = $colored_transcription;
@@ -222,9 +219,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                         if (isset($entities[1]) && count($entities[1]) > 0) {
                             foreach ($entities[1] as $entity) {
-                                if ($category == 'PERSON')
-                                    $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
-                                else
                                     $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
                             }
                         }
@@ -323,10 +317,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                     if (isset($entities[1]) && count($entities[1]) > 0) {
                         foreach ($entities[1] as $entity) {
-                            if ($category == 'PERSON')
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => 'PEOPLE', 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
-                            else
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                            $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
                         }
                     }
                 }

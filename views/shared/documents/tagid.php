@@ -176,11 +176,11 @@
             ?>
 
             $.each($('.category-select'), function (idx) {
-                //Location: 1, Event: 2, People: 3, Organization 4
+                //Location: 1, Event: 2, Person: 3, Organization 4
                 var cat = 1;
                 if ($(this).hasClass('Location')) {
                     $($(this).find('option[value=1]')).attr('selected', 'selected');
-                } else if ($(this).hasClass('People')) {
+                } else if ($(this).hasClass('Person')) {
                     cat = 3;
                     $($(this).find('option[value=3]')).attr('selected', 'selected');
                 } else if ($(this).hasClass('Organization')) {

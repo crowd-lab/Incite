@@ -219,7 +219,7 @@ SQL
 SQL
    );
         get_db()->query(<<<SQL
-    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'People'), (NULL, 'Organization');
+    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization');
     
 SQL
    );
