@@ -134,7 +134,8 @@ $(function(){
                 });
 
             });
-        $('.viewer').height($(window).height()*68/100);
+        $('.viewer').height($(window).height()-$('.viewer')[0].getBoundingClientRect().top-60);
+        $('#transcribe_copy').height($(window).height()-$('.viewer')[0].getBoundingClientRect().top-60);
         </script>
 
 <style>

@@ -122,7 +122,9 @@ $(document).ready(function(){
                 });
 
             });
-            $('.viewer').height($(window).height()*68/100);
+        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
+        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
+
         </script>
 <style>
             .viewer
