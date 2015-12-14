@@ -389,10 +389,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     } else {
                         for ($i = 0; $i < count($subject_candidates); $i++) {
                             if (!in_array($subject_candidates[$i]['subject'], $self_subjects)) {
-                                $this->view->subject_id = $subject_candidates[0]['subject_id'];
-                                $this->view->subject = $subject_candidates[0]['subject'];
-                                $this->view->subject_definition = $subject_candidates[0]['subject_definition'];
-                                $subject_related_documents = $subject_candidates[0]['ids'];
+                                $this->view->subject_id = $subject_candidates[$i]['subject_id'];
+                                $this->view->subject = $subject_candidates[$i]['subject'];
+                                $this->view->subject_definition = $subject_candidates[$i]['subject_definition'];
+                                $subject_related_documents = $subject_candidates[$i]['ids'];
                                 break;
                             }
                         }
