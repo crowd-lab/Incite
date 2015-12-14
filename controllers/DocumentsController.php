@@ -102,7 +102,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $current_page = 1;
             if (isset($_GET['page']))
                 $current_page = $_GET['page'];
-            $document_ids = array_values(getDocumentsWithoutTranscription());
+            $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, 24);
             $max_records_to_show = 8;
             $total_pages = ceil(count($document_ids)/$max_records_to_show);
             $records_counter = 0;
