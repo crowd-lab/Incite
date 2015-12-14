@@ -125,18 +125,39 @@ function getSubjectConceptOnId($id)
     return $arr;
 }
 /**
+ * Get all the subjects/concepts (both positive and negative) for a document based on item_id. 
+ * @param int $item_id
+ * @return array of [name, definition]
+ */
+function getAllSubjectsOnId($item_id)
+{
+    $db = DB_Connect::connectDB();
+    $subjects = array();
+    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.document_id WHERE omeka_incite_documents.item_id = ?");
+    $stmt->bind_param("i", $item_id);
+    $stmt->bind_result($subject);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $subjects[] = $subject;
+    }
+    $stmt->close();
+    $db->close();
+    return $subjects;
+}
+/**
  * Tags the document with a subject/concept
  * @param int $conceptID
- * @param int $documentID
+ * @param int $itemID
  * @param int $userID
  */
-function addConceptToDocument($conceptID, $documentID, $userID, $positive)
+function addConceptToDocument($conceptID, $itemID, $userID, $positive)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
-    $stmt->bind_param("i", $documentID);
-    $stmt->bind_result($id);
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($documentID);
     $stmt->execute();
+    $stmt->store_result();
     $stmt->fetch();
     if($stmt->num_rows > 0) 
     {
@@ -145,7 +166,7 @@ function addConceptToDocument($conceptID, $documentID, $userID, $positive)
         $db->close();
         $db = DB_Connect::connectDB();
         $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?)");
-        $newStmt->bind_param("iii", $conceptID, $id, $positive);
+        $newStmt->bind_param("iii", $documentID, $conceptID, $positive);
         $newStmt->execute();
         $newStmt->close();
         
@@ -163,7 +184,7 @@ function addConceptToDocument($conceptID, $documentID, $userID, $positive)
         $db->close();
         $db = DB_Connect::connectDB();
         $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?)");
-        $newStmt1->bind_param("ii", $conceptID, $id, $positive);
+        $newStmt1->bind_param("iii",$documentID, $conceptID, $positive);
         $newStmt1->execute();
         $newStmt1->close();
     }

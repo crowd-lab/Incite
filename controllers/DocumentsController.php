@@ -28,6 +28,32 @@ function sort_strlen($str1, $str2)
     return strlen($str2) - strlen($str1);
 }
 
+function findRelatedDocumentsViaTags($self_id, $minimum_common_tags=3)
+{
+    $entity_names = getTagNamesOnId($self_id);
+    //Targets
+    $target_minimum_common_tags = $minimum_common_tags;
+    $target_entities = $entity_names;
+
+    //Actual values
+    $actual_entities = $entity_names;
+    $actual_minimum_common_tags = $target_minimum_common_tags;
+    if ($actual_minimum_common_tags > count($actual_entities))
+        $actual_minimum_common_tags = count($actual_entities);
+
+    $related = array();
+    while(count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
+        $actual_minimum_common_tags--;
+    if ($actual_minimum_common_tags > 0) {
+
+    } else if ($actual_minimum_common_tags == 0) {
+        //no documents with common tags
+    } else {
+        //error!
+    }
+    return array_values(array_diff($related, array($self_id)));
+}
+
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController
 {
@@ -99,24 +125,32 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default: fetch documents that need to be transcribed
-            $document_ids = getDocumentsWithoutTranscription();
+            $current_page = 1;
+            if (isset($_GET['page']))
+                $current_page = $_GET['page'];
+            $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, 24);
             $max_records_to_show = 8;
+            $total_pages = ceil(count($document_ids)/$max_records_to_show);
             $records_counter = 0;
             $records = array();
 
             if (count($document_ids) > 0) {
-                foreach ($document_ids as $id) {
+                for ($i = ($current_page-1)*$max_records_to_show; $i < count($document_ids); $i++) {
                     if ($records_counter++ >= $max_records_to_show)
                         break;
-                    $records[] = $this->_helper->db->find($id);
+                    $records[] = $this->_helper->db->find($document_ids[$i]);
                 }
             }
+            $this->view->total_pages = $total_pages;
+            $this->view->current_page = $current_page;
 
             //Assign all documents that need to be transcribed to view!
             if ($records != null) {
                 $this->view->assign(array('Transcriptions' => $records));
             } else {
                 //no need to transcribe
+                echo 'no need to transcribe';
+                die();
             }
         }
     }
@@ -238,16 +272,23 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            $document_ids = getDocumentsWithoutTag();
-            $max_records_to_show = 5;
+            $current_page = 1;
+            if (isset($_GET['page']))
+                $current_page = $_GET['page'];
+            $document_ids = array_values(getDocumentsWithoutTag());
+            $max_records_to_show = 8;
             $records_counter = 0;
             $records = array();
+            $total_pages = ceil(count($document_ids)/$max_records_to_show);
+
+            $this->view->total_pages = $total_pages;
+            $this->view->current_page = $current_page;
 
             if (count($document_ids) > 0) {
-                foreach ($document_ids as $id) {
+                for ($i = ($current_page-1)*$max_records_to_show; $i < count($document_ids); $i++) {
                     if ($records_counter++ >= $max_records_to_show)
                         break;
-                    $records[] = $this->_helper->db->find($id);
+                    $records[] = $this->_helper->db->find($document_ids[$i]);
                 }
             }
 
@@ -337,35 +378,47 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                     }
                     
-                    //Targets
-                    $target_minimum_common_tags = 3;
-                    $target_entities = $entity_names;
-
-                    //Actual values
-                    $actual_entities = $entity_names;
-                    $actual_minimum_common_tags = $target_minimum_common_tags;
-                    if ($actual_minimum_common_tags > count($actual_entities))
-                        $actual_minimum_common_tags = count($actual_entities);
-
-                    $related = array();
-                    while(count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
-                        $actual_minimum_common_tags--;
-                    if ($actual_minimum_common_tags > 0) {
-
-                    } else if ($actual_minimum_common_tags == 0) {
-                        //no documents with common tags
-                    } else {
-                        //error!
+                    $related_documents = findRelatedDocumentsViaTags($this->_getParam('id'), 3);
+                    if (count($related_documents) == 0) {
+                        //no connections at all so redirect to documents with at least some connections
+                        $this->redirect('incite/documents/connect');
                     }
-                    $related_documents = array_values(array_diff($related, array($this->_getParam('id'))));
-                    $actual_entities = findCommonTagNames($related);
-                    for ($i = 0; $i < count($related_documents); $i++) {
-                        $this->view->related_documents[] = $this->_helper->db->find($related_documents[$i]);
+
+                    //Get subject candidates
+                    $subject_candidates = getBestSubjectCandidateList($related_documents);
+                    $self_subjects = getAllSubjectsOnId($this->_getParam('id'));
+                    $subject_related_documents = array();
+                    if (count($subject_candidates) <= 0) {
+                        //Need other method because there is no suggested subject
+                        echo 'no connection found!';
+                        die();
+                    } else {
+                        for ($i = 0; $i < count($subject_candidates); $i++) {
+                            if (!in_array($subject_candidates[$i]['subject'], $self_subjects)) {
+                                $this->view->subject_id = $subject_candidates[$i]['subject_id'];
+                                $this->view->subject = $subject_candidates[$i]['subject'];
+                                $this->view->subject_definition = $subject_candidates[$i]['subject_definition'];
+                                $subject_related_documents = $subject_candidates[$i]['ids'];
+                                if (count($subject_related_documents) > 0)
+                                    break;
+                            }
+                        }
+                    }
+                    if (count($subject_related_documents) == 0) {
+                        echo 'no connection needed';
+                        die();
+                    }
+                    //fetch documents!    
+                    $actual_entities = findCommonTagNames($subject_related_documents);
+                    $this->view->related_documents = array();
+                    for ($i = 0; $i < count($subject_related_documents); $i++) {
+                        $this->view->related_documents[] = $this->_helper->db->find($subject_related_documents[$i]);
                     }
                     $this->view->entities = $actual_entities;
                     $this->view->transcription = $colored_transcription;
                     $this->view->subject_id = $subject_id;
                 } else {
+                    $this->redirect('incite/documents/tag/'.$this->_getParam('id'));
                 }
                 $this->_helper->viewRenderer('connectid');
                 $this->view->connection = $record;
@@ -375,9 +428,42 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            $records[] = $this->_helper->db->find(15);
-            $records[] = $this->_helper->db->find(18);
-            $records[] = $this->_helper->db->find(77);
+
+            $all_tagged_documents = getAllTaggedDocuments();
+            $connectable_documents = array();
+            for ($i = 0; $i < count($all_tagged_documents); $i++) {
+                $related_documents = findRelatedDocumentsViaTags($i);
+                if (count($related_documents) == 0)
+                    continue;
+
+                $subject_candidates = getBestSubjectCandidateList($related_documents);
+                if (count($subject_candidates) == 0)
+                    continue;
+
+                $self_subjects = getAllSubjectsOnId($i);
+                for ($j = 0; $j < count($subject_candidates); $j++) {
+                    if (!in_array($subject_candidates[$j]['subject'], $self_subjects)) {
+                        if (count($subject_candidates[$j]['ids']) > 0) {
+                            $connectable_documents[] = $i;
+                            continue 2;
+                        }
+                    }
+                }
+            }
+            $records = array();
+            for ($i = 0; $i < count($connectable_documents); $i++) {
+                $records[] = $this->_helper->db->find($connectable_documents[$i]);
+            }
+
+            $current_page = 1;
+            if (isset($_GET['page']))
+                $current_page = $_GET['page'];
+            $max_records_to_show = 8;
+            $records_counter = 0;
+            $total_pages = ceil(count($connectable_documents)/$max_records_to_show);
+
+            $this->view->total_pages = $total_pages;
+            $this->view->current_page = $current_page;
 
             //check if there is really exacit one image file for each item
             if ($records != null) {

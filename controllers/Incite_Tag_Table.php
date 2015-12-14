@@ -170,6 +170,23 @@ function getAllCategories() {
     return $results;
 }
 /**
+ * Returns a list of all tagged documents in item id
+ * @return an array of results
+ */
+function getAllTaggedDocuments() {
+    $item_ids = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT DISTINCT omeka_incite_documents.item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id=omeka_incite_documents.id");
+    $stmt->bind_result($item_id);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $item_ids[] = $item_id;
+    }
+    $stmt->close();
+    $db->close();
+    return $item_ids;
+}
+/**
  * Returns true if a document is tagged, false otherwise
  * @param int $itemID
  * @return boolean
@@ -354,6 +371,25 @@ function getDocumentsWithoutTag()
     return array_diff($taggable_documents, $tagged_document_ids);
 }
 /**
+ * Gets all tag names of a document by item id
+ * @return an array of results
+ */
+function getTagNamesOnId($item_id)
+{
+    $db = DB_Connect::connectDB();
+    $tag_names = array();
+    $stmt = $db->prepare("SELECT DISTINCT omeka_incite_tags.tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_tags_conjunction.document_id WHERE omeka_incite_documents.item_id = ?");
+    $stmt->bind_param("i", $item_id);
+    $stmt->bind_result($tag_name);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $tag_names[] = $tag_name;
+    }
+    $stmt->close();
+    $db->close();
+    return $tag_names;
+}
+/**
  * Return an array of document ids that have the same matching tags as another document
  * @param array of tag id $id_array to search against
  * @param int $minimum_match the minimum number of matches (common tags) per document you want to be included in the search
@@ -463,8 +499,53 @@ function findCommonTagNames($item_ids)
         $db->close();
         $tags_for_items[] = $tags_for_one_item;
     }
-    $common_tags = array_values(call_user_func_array('array_intersect', $tags_for_items));
+    if (count($tags_for_items) == 1)
+        return $tags_for_items[0];
+    else
+        return array_values(call_user_func_array('array_intersect', $tags_for_items));
     
-    return $common_tags;
+}
+/**
+ * Return an array of candidate subjects and frequencies of subjects
+ * @param array of related item id $item_ids to search against
+ */
+function getBestSubjectCandidateList($item_ids)
+{
+    $subjects_counts = array();
+    $subjects_ids = array();
+    $subject_and_id = array();
+    $subject_and_def = array();
+    for ($i = 0; $i < sizeof($item_ids); $i++)
+    {
+        $tags_for_one_item = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.id, omeka_incite_subject_concepts.name, omeka_incite_subject_concepts.definition FROM omeka_incite_subject_concepts JOIN omeka_incite_documents_subject_conjunction on omeka_incite_documents_subject_conjunction.subject_concept_id = omeka_incite_subject_concepts.id JOIN omeka_incite_documents ON omeka_incite_documents_subject_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ? AND omeka_incite_documents_subject_conjunction.is_positive = 1");
+        $stmt->bind_param("i", $item_ids[$i]);
+        $stmt->bind_result($subject_id, $subject_name, $subject_def);
+        $stmt->execute();
+        while ($stmt->fetch())
+        {
+            if (!isset($subjects_counts[$subject_name]))
+                $subjects_counts[$subject_name] = 0;
+            $subjects_counts[$subject_name]++;
+            if (!isset($subjects_ids[$subject_name]))
+                $subjects_ids[$subject_name] = array();
+            $subjects_ids[$subject_name][] = $item_ids[$i];
+
+            $subject_and_id[$subject_name] = $subject_id;
+            $subject_and_def[$subject_name] = $subject_def;
+        }
+        $stmt->close();
+        $db->close();
+    }
+    
+    if (count($subjects_counts) == 0)
+        return array();
+
+    arsort($subjects_counts);
+    $results = array();
+    foreach ($subjects_counts as $subject => $count)
+        $results[] = array('subject' => $subject, 'subject_id' => $subject_and_id[$subject], 'subject_definition' => $subject_and_def[$subject], 'ids' => $subjects_ids[$subject], 'count' => $count);
+    return $results;
 }
 ?>

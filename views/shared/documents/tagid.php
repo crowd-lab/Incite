@@ -28,7 +28,7 @@
 <?php foreach ((array)$this->category_colors as $category => $color): ?>
                 <div><span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span></div>
 <?php endforeach; ?>
-                <div style="border-style: solid; overflow: scroll; max-height: 250px;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
+                <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                 <div class="wrapper">
                     <div id="document_img" class="viewer"></div>
                 </div>
@@ -240,8 +240,9 @@
         //$('.SelectBox').SumoSelect();
         //$('.SelectBox').SumoSelect({placeholder: 'This is a placeholder', csvDispCount: 3 });
         $('#work-view').width($('#work-zone').width());
+    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
+    $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
     });
-    $('.viewer').height($(window).height() * 50 / 100);
 </script>
 <style>
     .viewer
