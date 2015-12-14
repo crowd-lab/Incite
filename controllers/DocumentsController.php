@@ -28,6 +28,32 @@ function sort_strlen($str1, $str2)
     return strlen($str2) - strlen($str1);
 }
 
+function findRelatedDocumentsViaTags($self_id, $minimum_common_tags=3)
+{
+    $entity_names = getTagNamesOnId($self_id);
+    //Targets
+    $target_minimum_common_tags = $minimum_common_tags;
+    $target_entities = $entity_names;
+
+    //Actual values
+    $actual_entities = $entity_names;
+    $actual_minimum_common_tags = $target_minimum_common_tags;
+    if ($actual_minimum_common_tags > count($actual_entities))
+        $actual_minimum_common_tags = count($actual_entities);
+
+    $related = array();
+    while(count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
+        $actual_minimum_common_tags--;
+    if ($actual_minimum_common_tags > 0) {
+
+    } else if ($actual_minimum_common_tags == 0) {
+        //no documents with common tags
+    } else {
+        //error!
+    }
+    return array_values(array_diff($related, array($self_id)));
+}
+
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController
 {
@@ -352,27 +378,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                     }
                     
-                    //Targets
-                    $target_minimum_common_tags = 1;
-                    $target_entities = $entity_names;
-
-                    //Actual values
-                    $actual_entities = $entity_names;
-                    $actual_minimum_common_tags = $target_minimum_common_tags;
-                    if ($actual_minimum_common_tags > count($actual_entities))
-                        $actual_minimum_common_tags = count($actual_entities);
-
-                    $related = array();
-                    while(count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
-                        $actual_minimum_common_tags--;
-                    if ($actual_minimum_common_tags > 0) {
-
-                    } else if ($actual_minimum_common_tags == 0) {
-                        //no documents with common tags
-                    } else {
-                        //error!
-                    }
-                    $related_documents = array_values(array_diff($related, array($this->_getParam('id'))));
+                    $related_documents = findRelatedDocumentsViaTags($this->_getParam('id'), 3);
                     if (count($related_documents) == 0) {
                         //no connections at all so redirect to documents with at least some connections
                         $this->redirect('incite/documents/connect');
@@ -421,9 +427,31 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            $records[] = $this->_helper->db->find(15);
-            $records[] = $this->_helper->db->find(18);
-            $records[] = $this->_helper->db->find(77);
+            $all_tagged_documents = getAllTaggedDocuments();
+            $connectable_documents = array();
+            for ($i = 0; $i < count($all_tagged_documents); $i++) {
+                $related_documents = findRelatedDocumentsViaTags($i);
+                if (count($related_documents) == 0)
+                    continue;
+
+                $subject_candidates = getBestSubjectCandidateList($related_documents);
+                if (count($subject_candidates) == 0)
+                    continue;
+
+                $self_subjects = getAllSubjectsOnId($i);
+                for ($j = 0; $j < count($subject_candidates); $j++) {
+                    if (!in_array($subject_candidates[$j]['subject'], $self_subjects)) {
+                        if (count($subject_candidates[$j]['ids']) > 0) {
+                            $connectable_documents[] = $i;
+                            continue 2;
+                        }
+                    }
+                }
+            }
+            $records = array();
+            for ($i = 0; $i < count($connectable_documents); $i++) {
+                $records[] = $this->_helper->db->find($connectable_documents[$i]);
+            }
 
             //check if there is really exacit one image file for each item
             if ($records != null) {
