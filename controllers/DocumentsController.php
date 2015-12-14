@@ -399,7 +399,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                                 $this->view->subject = $subject_candidates[$i]['subject'];
                                 $this->view->subject_definition = $subject_candidates[$i]['subject_definition'];
                                 $subject_related_documents = $subject_candidates[$i]['ids'];
-                                break;
+                                if (count($subject_related_documents) > 0)
+                                    break;
                             }
                         }
                     }
