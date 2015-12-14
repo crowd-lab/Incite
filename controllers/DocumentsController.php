@@ -358,9 +358,26 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         //error!
                     }
                     $related_documents = array_values(array_diff($related, array($this->_getParam('id'))));
+                    if (count($related_documents) == 0) {
+                        //no connections at all so redirect to documents with at least some connections
+                        $this->redirect('incite/documents/connect');
+                    }
+
+                    //Get subject candidates
+                    $subject_candidates = getBestSubjectCandidateList($related_documents);
+                    $subject_related_documents = array();
+                    if (count($subject_candidates) <= 0) {
+                        //Need other method because there is no suggested subject
+                    } else {
+                        $this->view->subject_id = $subject_candidates[0]['subject_id'];
+                        $this->view->subject = $subject_candidates[0]['subject'];
+                        $this->view->subject_definition = $subject_candidates[0]['subject_definition'];
+                        $subject_related_documents = $subject_candidates[0]['ids'];
+                    }
+                    //fetch documents!    
                     $actual_entities = findCommonTagNames($related);
-                    for ($i = 0; $i < count($related_documents); $i++) {
-                        $this->view->related_documents[] = $this->_helper->db->find($related_documents[$i]);
+                    for ($i = 0; $i < count($subject_related_documents); $i++) {
+                        $this->view->related_documents[] = $this->_helper->db->find($subject_related_documents[$i]);
                     }
                     $this->view->entities = $actual_entities;
                     $this->view->transcription = $colored_transcription;
