@@ -109,7 +109,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $records = array();
 
             if (count($document_ids) > 0) {
-                for ($i = ($current_page-1)*8; $i < count($document_ids); $i++) {
+                for ($i = ($current_page-1)*$max_records_to_show; $i < count($document_ids); $i++) {
                     if ($records_counter++ >= $max_records_to_show)
                         break;
                     $records[] = $this->_helper->db->find($document_ids[$i]);
@@ -246,16 +246,23 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
-            $document_ids = getDocumentsWithoutTag();
-            $max_records_to_show = 5;
+            $current_page = 1;
+            if (isset($_GET['page']))
+                $current_page = $_GET['page'];
+            $document_ids = array_values(getDocumentsWithoutTag());
+            $max_records_to_show = 8;
             $records_counter = 0;
             $records = array();
+            $total_pages = ceil(count($document_ids)/$max_records_to_show);
+
+            $this->view->total_pages = $total_pages;
+            $this->view->current_page = $current_page;
 
             if (count($document_ids) > 0) {
-                foreach ($document_ids as $id) {
+                for ($i = ($current_page-1)*$max_records_to_show; $i < count($document_ids); $i++) {
                     if ($records_counter++ >= $max_records_to_show)
                         break;
-                    $records[] = $this->_helper->db->find($id);
+                    $records[] = $this->_helper->db->find($document_ids[$i]);
                 }
             }
 
