@@ -40,7 +40,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <div class="col-md-6">
       
             <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
-			<form action="post">
+			<form method="post">
 				<button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
 				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>
                 <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
@@ -52,7 +52,7 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php endif; ?>
 <?php foreach($this->related_documents as $document): ?>
             <div class="col-md-4">
-                <a href="#" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
+                <a href="/m4j/incite/documents/connect/<?php echo $document->id; ?>" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
                      <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
                 </a>
                 <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>

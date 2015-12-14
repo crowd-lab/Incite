@@ -368,6 +368,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $subject_related_documents = array();
                     if (count($subject_candidates) <= 0) {
                         //Need other method because there is no suggested subject
+                        echo 'no connection found!';
+                        die();
                     } else {
                         $this->view->subject_id = $subject_candidates[0]['subject_id'];
                         $this->view->subject = $subject_candidates[0]['subject'];

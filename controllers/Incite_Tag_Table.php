@@ -493,9 +493,10 @@ function getBestSubjectCandidateList($item_ids)
             if (!isset($subjects_ids[$subject_name]))
                 $subjects_ids[$subject_name] = array();
             $subjects_ids[$subject_name][] = $item_ids[$i];
+
+            $subject_and_id[$subject_name] = $subject_id;
+            $subject_and_def[$subject_name] = $subject_def;
         }
-        $subject_and_id[$subject_name] = $subject_id;
-        $subject_and_def[$subject_name] = $subject_def;
         $stmt->close();
         $db->close();
     }
