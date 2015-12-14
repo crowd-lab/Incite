@@ -365,19 +365,29 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                     //Get subject candidates
                     $subject_candidates = getBestSubjectCandidateList($related_documents);
+                    $self_subjects = getAllSubjectsOnId($this->_getParam('id'));
                     $subject_related_documents = array();
                     if (count($subject_candidates) <= 0) {
                         //Need other method because there is no suggested subject
                         echo 'no connection found!';
                         die();
                     } else {
-                        $this->view->subject_id = $subject_candidates[0]['subject_id'];
-                        $this->view->subject = $subject_candidates[0]['subject'];
-                        $this->view->subject_definition = $subject_candidates[0]['subject_definition'];
-                        $subject_related_documents = $subject_candidates[0]['ids'];
+                        for ($i = 0; $i < count($subject_candidates); $i++) {
+                            if (!in_array($subject_candidates[$i]['subject'], $self_subjects)) {
+                                $this->view->subject_id = $subject_candidates[0]['subject_id'];
+                                $this->view->subject = $subject_candidates[0]['subject'];
+                                $this->view->subject_definition = $subject_candidates[0]['subject_definition'];
+                                $subject_related_documents = $subject_candidates[0]['ids'];
+                                break;
+                            }
+                        }
+                    }
+                    if (count($subject_related_documents) == 0) {
+                        echo 'no connection needed';
+                        die();
                     }
                     //fetch documents!    
-                    $actual_entities = findCommonTagNames($related);
+                    $actual_entities = findCommonTagNames($subject_related_documents);
                     for ($i = 0; $i < count($subject_related_documents); $i++) {
                         $this->view->related_documents[] = $this->_helper->db->find($subject_related_documents[$i]);
                     }

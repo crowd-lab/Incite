@@ -125,6 +125,26 @@ function getSubjectConceptOnId($id)
     return $arr;
 }
 /**
+ * Get all the subjects/concepts (both positive and negative) for a document based on item_id. 
+ * @param int $item_id
+ * @return array of [name, definition]
+ */
+function getAllSubjectsOnId($item_id)
+{
+    $db = DB_Connect::connectDB();
+    $subjects = array();
+    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.document_id WHERE omeka_incite_documents.item_id = ?");
+    $stmt->bind_param("i", $item_id);
+    $stmt->bind_result($subject);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $subjects[] = $subject;
+    }
+    $stmt->close();
+    $db->close();
+    return $subjects;
+}
+/**
  * Tags the document with a subject/concept
  * @param int $conceptID
  * @param int $itemID

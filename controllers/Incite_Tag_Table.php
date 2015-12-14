@@ -481,7 +481,7 @@ function getBestSubjectCandidateList($item_ids)
     {
         $tags_for_one_item = array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.id, omeka_incite_subject_concepts.name, omeka_incite_subject_concepts.definition FROM omeka_incite_subject_concepts JOIN omeka_incite_documents_subject_conjunction on omeka_incite_documents_subject_conjunction.subject_concept_id = omeka_incite_subject_concepts.id JOIN omeka_incite_documents ON omeka_incite_documents_subject_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
+        $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.id, omeka_incite_subject_concepts.name, omeka_incite_subject_concepts.definition FROM omeka_incite_subject_concepts JOIN omeka_incite_documents_subject_conjunction on omeka_incite_documents_subject_conjunction.subject_concept_id = omeka_incite_subject_concepts.id JOIN omeka_incite_documents ON omeka_incite_documents_subject_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ? AND omeka_incite_documents_subject_conjunction.is_positive = 1");
         $stmt->bind_param("i", $item_ids[$i]);
         $stmt->bind_result($subject_id, $subject_name, $subject_def);
         $stmt->execute();
