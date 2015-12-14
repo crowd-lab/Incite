@@ -427,6 +427,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else {
             //default view without id
+
             $all_tagged_documents = getAllTaggedDocuments();
             $connectable_documents = array();
             for ($i = 0; $i < count($all_tagged_documents); $i++) {
@@ -452,6 +453,16 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             for ($i = 0; $i < count($connectable_documents); $i++) {
                 $records[] = $this->_helper->db->find($connectable_documents[$i]);
             }
+
+            $current_page = 1;
+            if (isset($_GET['page']))
+                $current_page = $_GET['page'];
+            $max_records_to_show = 8;
+            $records_counter = 0;
+            $total_pages = ceil(count($connectable_documents)/$max_records_to_show);
+
+            $this->view->total_pages = $total_pages;
+            $this->view->current_page = $current_page;
 
             //check if there is really exacit one image file for each item
             if ($records != null) {
