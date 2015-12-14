@@ -467,4 +467,44 @@ function findCommonTagNames($item_ids)
     
     return $common_tags;
 }
+/**
+ * Return an array of candidate subjects and frequencies of subjects
+ * @param array of related item id $item_ids to search against
+ */
+function getBestSubjectCandidateList($item_ids)
+{
+    $subjects_counts = array();
+    $subjects_ids = array();
+    $subject_and_id = array();
+    for ($i = 0; $i < sizeof($item_ids); $i++)
+    {
+        $tags_for_one_item = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.id, omeka_incite_subject_concepts.name FROM omeka_incite_subject_concepts JOIN omeka_incite_documents_subject_conjunction on omeka_incite_documents_subject_conjunction.subject_concept_id = omeka_incite_subject_concepts.id JOIN omeka_incite_documents ON omeka_incite_documents_subject_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
+        $stmt->bind_param("i", $item_ids[$i]);
+        $stmt->bind_result($subject_id, $subject_name);
+        $stmt->execute();
+        while ($stmt->fetch())
+        {
+            if (!isset($subjects_counts[$subject_name]))
+                $subjects_counts[$subject_name] = 0;
+            $subjects_counts[$subject_name]++;
+            if (!isset($subjects_ids[$subject_name]))
+                $subjects_ids[$subject_name] = array();
+            $subjects_ids[$subject_name][] = $item_ids[$i];
+        }
+        $subject_and_id[$subject_name] = $subject_id;
+        $stmt->close();
+        $db->close();
+    }
+    
+    if (count($subjects_counts) == 0)
+        return array();
+
+    arsort($subjects_counts);
+    $results = array();
+    foreach ($subjects_counts as $subject => $count)
+        $results[] = array('subject' => $subject, 'subject_id' => $subject_and_id[$subject], 'ids' => $subjects_ids[$subject], 'count' => $count);
+    return $results;
+}
 ?>
