@@ -408,15 +408,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         echo 'no connection needed';
                         die();
                     }
+					$docs_for_common_tags = array_merge($subject_related_documents, array($this->_getParam('id')));
                     //fetch documents!    
-                    $actual_entities = findCommonTagNames($subject_related_documents);
+                    $actual_entities = findCommonTagNames($docs_for_common_tags);
                     $this->view->related_documents = array();
                     for ($i = 0; $i < count($subject_related_documents); $i++) {
                         $this->view->related_documents[] = $this->_helper->db->find($subject_related_documents[$i]);
                     }
                     $this->view->entities = $actual_entities;
                     $this->view->transcription = $colored_transcription;
-                    $this->view->subject_id = $subject_id;
                 } else {
                     $this->redirect('incite/documents/tag/'.$this->_getParam('id'));
                 }
@@ -432,7 +432,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $all_tagged_documents = getAllTaggedDocuments();
             $connectable_documents = array();
             for ($i = 0; $i < count($all_tagged_documents); $i++) {
-                $related_documents = findRelatedDocumentsViaTags($i);
+                $related_documents = findRelatedDocumentsViaTags($all_tagged_documents[$i]);
                 if (count($related_documents) == 0)
                     continue;
 
@@ -444,7 +444,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 for ($j = 0; $j < count($subject_candidates); $j++) {
                     if (!in_array($subject_candidates[$j]['subject'], $self_subjects)) {
                         if (count($subject_candidates[$j]['ids']) > 0) {
-                            $connectable_documents[] = $i;
+                            $connectable_documents[] = $all_tagged_documents[$i];
                             continue 2;
                         }
                     }
