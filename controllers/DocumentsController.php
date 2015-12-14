@@ -338,7 +338,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                     
                     //Targets
-                    $target_minimum_common_tags = 3;
+                    $target_minimum_common_tags = 1;
                     $target_entities = $entity_names;
 
                     //Actual values
@@ -388,6 +388,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                     //fetch documents!    
                     $actual_entities = findCommonTagNames($subject_related_documents);
+                    $this->view->related_documents = array();
                     for ($i = 0; $i < count($subject_related_documents); $i++) {
                         $this->view->related_documents[] = $this->_helper->db->find($subject_related_documents[$i]);
                     }
@@ -395,6 +396,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $this->view->transcription = $colored_transcription;
                     $this->view->subject_id = $subject_id;
                 } else {
+                    $this->redirect('incite/documents/tag/'.$this->_getParam('id'));
                 }
                 $this->_helper->viewRenderer('connectid');
                 $this->view->connection = $record;

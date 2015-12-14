@@ -45,7 +45,8 @@ include(dirname(__FILE__).'/../common/header.php');
 				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>
                 <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
 			</form>
-<?php if (count($this->related_documents) == 1): ?>
+<?php if (count($this->related_documents) == 0): ?>
+<?php elseif (count($this->related_documents) == 1): ?>
             <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
 <?php else: ?>
             <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>

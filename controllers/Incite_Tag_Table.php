@@ -463,9 +463,11 @@ function findCommonTagNames($item_ids)
         $db->close();
         $tags_for_items[] = $tags_for_one_item;
     }
-    $common_tags = array_values(call_user_func_array('array_intersect', $tags_for_items));
+    if (count($tags_for_items) == 1)
+        return $tags_for_items[0];
+    else
+        return array_values(call_user_func_array('array_intersect', $tags_for_items));
     
-    return $common_tags;
 }
 /**
  * Return an array of candidate subjects and frequencies of subjects
