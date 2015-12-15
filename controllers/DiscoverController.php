@@ -34,7 +34,8 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
 					$this->_redirect('/incite/documents/connect');
 				} else if ($_GET['task'] == "discuss") {
 					$this->_redirect('/incite/discussions');
-				} else { //then...random!
+				} else { //then...random! but currently need more transcriptions
+					$this->_redirect('/incite/documents/transcribe');
 				}
 			}
 		}	
