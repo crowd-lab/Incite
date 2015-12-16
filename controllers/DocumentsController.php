@@ -260,7 +260,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         if (isset($entities[1]) && count($entities[1]) > 0) {
                             $uniq_entities = array_unique($entities[1]);
                             foreach ($uniq_entities as $entity) {
-                                    $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategory' => '', 'details' => '', 'color' => $category_colors[$category]);
+                                    $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategories' => '', 'details' => '', 'color' => $category_colors[$category]);
                             }
                         }
                     }
