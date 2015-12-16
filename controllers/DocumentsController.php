@@ -112,6 +112,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         }
 
+        //Fake comments
+        //getCommentsForDocOnTask(doc_id, task_id)
+        $this->view->comments = array(
+            array('id' => 1, 'username' => 'Kurt', 'time' => 'three week ago', 'content' => 'Interesting!'),
+            array('id' => 2, 'username' => 'Amit', 'time' => 'two weeks ago', 'content' => 'Agreed!'),
+            array('id' => 3, 'username' => 'Vijay', 'time' => 'two weeks ago', 'content' => 'Agreed, too!')
+            );
+
         $this->_helper->db->setDefaultModelName('Item');
         if ($this->_hasParam('id')) {
             $record = $this->_helper->db->find($this->_getParam('id'));
@@ -260,7 +268,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         if (isset($entities[1]) && count($entities[1]) > 0) {
                             $uniq_entities = array_unique($entities[1]);
                             foreach ($uniq_entities as $entity) {
-                                    $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategories' => '', 'details' => '', 'color' => $category_colors[$category]);
+                                    $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategories' => array(), 'details' => '', 'color' => $category_colors[$category]);
                             }
                         }
                     }
