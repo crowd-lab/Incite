@@ -33,7 +33,7 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
             <div class="col-md-6" id="submit-zone">
                 <form method="post" id="transcribe-form">
-                    <textarea name="transcription" rows="40" style="width: 100%;" placeholder="Transcription"></textarea>
+                    <textarea name="transcription" rows="15" style="width: 100%;" placeholder="Transcription"></textarea>
                     <textarea name="summary" rows="5" style="width: 100%;" placeholder="Summary"></textarea>
                     <div class="form-group">
                         <label class="control-label">Tone of the document:</label>
@@ -52,17 +52,19 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div id="container">
                     <h3> Discussion </h3>
                     <ul id="comments">
+<?php foreach ( (array)$this->comments as $comment ): ?>
                         <li class="cmmnt">
 <!--                            <div class="avatar"><a href="javascript:void(0);"><img src="images/dark-cubes.png" width="55" height="55" alt="DarkCubes photo avatar"></a></div>
 -->
                             <div class="cmmnt-content">
-                                <header><a href="javascript:void(0);" class="userlink">DarkCubes</a> - <span class="pubdate">posted 1 week ago</span></header>
-                                <p>Ut nec interdum libero. Sed felis lorem, venenatis sed malesuada vitae, tempor vel turpis. Mauris in dui velit, vitae mollis risus. Cras lacinia lorem sit amet augue mattis vel cursus enim laoreet. Vestibulum faucibus scelerisque nisi vel sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pellentesque massa ac justo tempor eu pretium massa accumsan. In pharetra mattis mi et ultricies. Nunc vel eleifend augue. Donec venenatis egestas iaculis.</p>
+                                <header><a href="javascript:void(0);" class="userlink"><?php echo $comment['username']; ?></a> - <span class="pubdate"><?php echo $comment['time']; ?></span></header>
+                                <p><?php echo $comment['content']; ?></p>
                                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                                <button type="button" class="btn btn-default" id="reply">Reply</button>
+                                <button type="button" class="btn btn-default reply-comment" id="reply<?php echo $comment['id']; ?>">Reply</button>
                                 <?php endif; ?>
                             </div>
                         </li>
+<? endforeach; ?>
                     </ul>
                     <div id="onLogin">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
