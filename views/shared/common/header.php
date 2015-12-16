@@ -1,5 +1,5 @@
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline'));
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker'));
 $db = get_db();
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
 ?>
@@ -21,6 +21,8 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
     <?php echo js_tag('bootstrap-multiselect'); ?>
     <?php echo js_tag('leaflet'); ?>
     <?php echo js_tag('jquery.jqtimeline'); ?>
+    <?php echo js_tag('moment.min'); ?>
+    <?php echo js_tag('daterangepicker'); ?>
     <?php echo head_css(); ?>
 
 
@@ -40,6 +42,19 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+<script>
+    $(document).ready(function () {
+        $('#time_picker').daterangepicker({
+            "startDate": "01/01/1830",   //could be dynamic or user's choice
+            "endDate"  : "12/31/1870",   //could be dynamic or user's choice
+            "minDate"  : "01/01/1830",
+            "maxDate"  : "12/31/1870",
+            "opens"    : "center"
+            }, 
+            function (start, end, label) {
+            });
+    });
+</script>
 </head>
 
 <body>
@@ -302,7 +317,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     <form class="navbar-form navbar-left" role="search" action="/m4j/incite/discover">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Location" name="location">
-                            <input type="text" class="form-control" placeholder="Time" name="time">
+                            <input id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
                             <input type="text" class="form-control" placeholder="Keywords" name="keywords">
                             <select class="form-control" name="task">
                                 <option value="random">Select a task</option>
