@@ -168,6 +168,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     public function tagAction() {
 
+
         if ($this->getRequest()->isPost()) {
             //save a tag to database
             if ($this->_hasParam('id')) {
