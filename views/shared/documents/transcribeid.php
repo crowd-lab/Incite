@@ -60,11 +60,11 @@ include(dirname(__FILE__).'/../common/header.php');
                                 <header><a href="javascript:void(0);" class="userlink"><?php echo $comment['username']; ?></a> - <span class="pubdate"><?php echo $comment['time']; ?></span></header>
                                 <p><?php echo $comment['content']; ?></p>
                                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                                <button type="button" class="btn btn-default reply-comment" id="reply<?php echo $comment['id']; ?>">Reply</button>
+                                <button type="button" name="reply" class="btn btn-default reply-comment" id="reply<?php echo $comment['id']; ?>">Reply</button>
                                 <?php endif; ?>
                             </div>
                         </li>
-<? endforeach; ?>
+<?php endforeach; ?>
                     </ul>
                     <div id="onLogin">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
@@ -103,21 +103,22 @@ $(document).ready(function(){
 $(function(){
 
     //start with `NewContent` being the HTML to add to the page
-    var NewContent='<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea><button type="button" class="btn btn-default" id="">Submit</button></form>';
+    var NewContent='<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your Reply"></textarea><button type="button" class="btn btn-default" id="">Submit</button></form>';
     
-    $("#reply").click(function(){
+    $('[name="reply"]').click(function(event){
+        
         //check if `NewContent` is empty or not
-        if (NewContent != '') {
-            $("#reply").after(NewContent);
-
+        //if (NewContent != '') {
+        $("#" + event.target.id).after(NewContent);
+        $("#" + event.target.id).remove();
             //now that `NewContent` has been added to the DOM, reset it's value to an empty string so this doesn't happen again
-            NewContent = '';
-        } else {
+        //NewContent = '';
+       // } else {
 
             //this is not the first click, so just toggle the appearance of the element that has already been added to the DOM
             //since we injected the element just after the `#spin` element we can select it relatively to that element by using `.next()`
-            $('#reply').next().toggle();
-        }
+       //     $('#reply').next().toggle();
+       // }
     });
 });
 
