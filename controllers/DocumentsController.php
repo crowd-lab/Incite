@@ -10,26 +10,24 @@
  *
  * @package Incite 
  */
-function getTextBetweenTags($string, $tagname)
-{
+function getTextBetweenTags($string, $tagname) {
     $pattern = "/<$tagname>(.*?)<\/$tagname>/";
     preg_match_all($pattern, $string, $matches);
     return $matches;
 }
-function colorTextBetweenTags($string, $tagname, $color)
-{
+
+function colorTextBetweenTags($string, $tagname, $color) {
     $result = $string;
-    $result = str_replace('<'.$tagname.'>', '<span style="background-color:'.$color.';">', $result);
-    $result = str_replace('</'.$tagname.'>', '</span>', $result);
+    $result = str_replace('<' . $tagname . '>', '<span style="background-color:' . $color . ';">', $result);
+    $result = str_replace('</' . $tagname . '>', '</span>', $result);
     return $result;
 }
-function sort_strlen($str1, $str2)
-{
+
+function sort_strlen($str1, $str2) {
     return strlen($str2) - strlen($str1);
 }
 
-function findRelatedDocumentsViaTags($self_id, $minimum_common_tags=2)
-{
+function findRelatedDocumentsViaTags($self_id, $minimum_common_tags = 2) {
     $entity_names = getTagNamesOnId($self_id);
     //Targets
     $target_minimum_common_tags = $minimum_common_tags;
@@ -42,10 +40,10 @@ function findRelatedDocumentsViaTags($self_id, $minimum_common_tags=2)
         $actual_minimum_common_tags = count($actual_entities);
 
     $related = array();
-    while(count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
+    while (count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
         $actual_minimum_common_tags--;
     if ($actual_minimum_common_tags > 0) {
-
+        
     } else if ($actual_minimum_common_tags == 0) {
         //no documents with common tags
     } else {
@@ -54,11 +52,9 @@ function findRelatedDocumentsViaTags($self_id, $minimum_common_tags=2)
     return array_values(array_diff($related, array($self_id)));
 }
 
+class Incite_DocumentsController extends Omeka_Controller_AbstractActionController {
 
-class Incite_DocumentsController extends Omeka_Controller_AbstractActionController
-{
-    public function init()
-    {
+    public function init() {
         require_once("Incite_Transcription_Table.php");
         require_once("Incite_Tag_Table.php");
         require_once("Incite_Subject_Concept_Table.php");
@@ -106,9 +102,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $GLOBALS['USERID'] = $userArray[0];
                 }
                 createTranscription($this->_getParam('id'), $GLOBALS['USERID'], $_POST['transcription'], $_POST['summary']);
-				$_SESSION['Incite']['previous_task'] = 'transcribe';
-				//Since we only need one copy now, we redirect the same user to next task of the same document.
-				$this->redirect('incite/documents/tag/'.$this->_getParam('id'));
+                $_SESSION['Incite']['previous_task'] = 'transcribe';
+                //Since we only need one copy now, we redirect the same user to next task of the same document.
+                $this->redirect('incite/documents/tag/' . $this->_getParam('id'));
             }
         }
 
@@ -118,7 +114,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             array('id' => 1, 'username' => 'Kurt', 'time' => 'three week ago', 'content' => 'Interesting!'),
             array('id' => 2, 'username' => 'Amit', 'time' => 'two weeks ago', 'content' => 'Agreed!'),
             array('id' => 3, 'username' => 'Vijay', 'time' => 'two weeks ago', 'content' => 'Agreed, too!')
-            );
+        );
 
         $this->_helper->db->setDefaultModelName('Item');
         if ($this->_hasParam('id')) {
@@ -141,12 +137,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $current_page = $_GET['page'];
             $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $_SESSION['Incite']['search']['time']['item_ids'], $_SESSION['Incite']['search']['location']['item_ids']), 0, 24);
             $max_records_to_show = 8;
-            $total_pages = ceil(count($document_ids)/$max_records_to_show);
+            $total_pages = ceil(count($document_ids) / $max_records_to_show);
             $records_counter = 0;
             $records = array();
 
             if (count($document_ids) > 0) {
-                for ($i = ($current_page-1)*$max_records_to_show; $i < count($document_ids); $i++) {
+                for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
                     if ($records_counter++ >= $max_records_to_show)
                         break;
                     $records[] = $this->_helper->db->find($document_ids[$i]);
@@ -182,9 +178,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 for ($i = 0; $i < sizeof($entities); $i++) {
                     createTag($GLOBALS['USERID'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
                 }
-				$_SESSION['Incite']['previous_task'] = 'tag';
-				//Since we only need one copy now, we redirect the same user to next task of the same document.
-				$this->redirect('incite/documents/connect/'.$this->_getParam('id'));
+                $_SESSION['Incite']['previous_task'] = 'tag';
+                //Since we only need one copy now, we redirect the same user to next task of the same document.
+                $this->redirect('incite/documents/connect/' . $this->_getParam('id'));
             }
         }
 
@@ -204,7 +200,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $this->view->transcription = getTranscriptionText($transcription[0]);
                 } else {
                     //Redirect to transcribe task if there is no transcription available
-                    $this->redirect('incite/documents/transcribe/'.$this->_getParam('id'));
+                    $this->redirect('incite/documents/transcribe/' . $this->_getParam('id'));
                 }
                 $this->_helper->viewRenderer('tagid');
                 $this->view->tag = $record;
@@ -213,10 +209,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //  1) is tagged already?  Yes: skip the task; No: do the following
                 //  2) (to be implemented) pull similar entities in the database based on searching in transcription
                 //  3) NER to get entities
-
                 //Initialize attributes for entities
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
-                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
+                $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
                 if (isDocumentTagged($this->_getParam('id'))) {
                     //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
                     $allTags = getAllTagInformation($this->_getParam('id'));
@@ -224,9 +219,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $entity_names = array();
                     $entity_category = array();
                     $colored_transcription = $this->view->transcription;
-                    foreach ((array)$allTags as $tag) {
+                    foreach ((array) $allTags as $tag) {
                         $subs = array();
-                        foreach ((array)$tag['subcategories'] as $sub) {
+                        foreach ((array) $tag['subcategories'] as $sub) {
                             $subs[] = str_replace(' ', '', $sub);
                         }
                         $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
@@ -234,8 +229,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $entity_category[$tag['tag_text']] = $tag['category_name'];
                     }
                     usort($entity_names, 'sort_strlen');
-                    foreach ((array)$entity_names as $name) {
-                        $colored_transcription = str_replace($name, '<'.strtoupper($entity_category[$name]).'>'.$name.'</'.strtoupper($entity_category[$name]).'>', $colored_transcription);
+                    foreach ((array) $entity_names as $name) {
+                        $colored_transcription = str_replace($name, '<' . strtoupper($entity_category[$name]) . '>' . $name . '</' . strtoupper($entity_category[$name]) . '>', $colored_transcription);
                     }
                     foreach ($categories as $category) {
                         $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
@@ -249,15 +244,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     //running NER
                     $oldwd = getcwd();
                     chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-                    if (!file_exists('../tmp/ner/'.$this->_getParam('id'))) {
+                    if (!file_exists('../tmp/ner/' . $this->_getParam('id'))) {
                         $this->view->file = 'not exist';
-                        $ner_input = fopen('../tmp/ner/'.$this->_getParam('id'), "w") or die("unable to open transcription");
+                        $ner_input = fopen('../tmp/ner/' . $this->_getParam('id'), "w") or die("unable to open transcription");
                         fwrite($ner_input, $this->view->transcription);
                         fclose($ner_input);
-                        system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile ".'../tmp/ner/'.$this->_getParam('id').' > '.'../tmp/ner/'.$this->_getParam('id').'.ner');
+                        system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/' . $this->_getParam('id') . ' > ' . '../tmp/ner/' . $this->_getParam('id') . '.ner');
                     }
-                    $nered_file = fopen('../tmp/ner/'.$this->_getParam('id').'.ner', "r");
-                    $parsed_text = fread($nered_file, filesize('../tmp/ner/'.$this->_getParam('id').'.ner'));
+                    $nered_file = fopen('../tmp/ner/' . $this->_getParam('id') . '.ner', "r");
+                    $parsed_text = fread($nered_file, filesize('../tmp/ner/' . $this->_getParam('id') . '.ner'));
                     fclose($nered_file);
 
                     //parsing results
@@ -269,7 +264,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         if (isset($entities[1]) && count($entities[1]) > 0) {
                             $uniq_entities = array_unique($entities[1]);
                             foreach ($uniq_entities as $entity) {
-                                    $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategories' => array(), 'details' => '', 'color' => $category_colors[$category]);
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategories' => array(), 'details' => '', 'color' => $category_colors[$category]);
                             }
                         }
                     }
@@ -294,13 +289,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $max_records_to_show = 8;
             $records_counter = 0;
             $records = array();
-            $total_pages = ceil(count($document_ids)/$max_records_to_show);
+            $total_pages = ceil(count($document_ids) / $max_records_to_show);
 
             $this->view->total_pages = $total_pages;
             $this->view->current_page = $current_page;
 
             if (count($document_ids) > 0) {
-                for ($i = ($current_page-1)*$max_records_to_show; $i < count($document_ids); $i++) {
+                for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
                     if ($records_counter++ >= $max_records_to_show)
                         break;
                     $records[] = $this->_helper->db->find($document_ids[$i]);
@@ -330,7 +325,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->related_documents = array();
 
         //From tagAction
-        $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
+        $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
         $this->view->category_colors = $category_colors;
 
         if ($this->getRequest()->isPost()) {
@@ -347,10 +342,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 } else if (isset($_POST['subject']) && $_POST['connection'] == 'false') {
                     addConceptToDocument($_POST['subject'], $this->_getParam('id'), $userID, 0);
                 } else {
+                    
                 }
-				$_SESSION['Incite']['previous_task'] = 'connect';
-				//Since we only need one copy now and connect is the final task, we redirect the same user to next document to start a new transcription
-				$this->redirect('incite/documents/transcribe');
+                $_SESSION['Incite']['previous_task'] = 'connect';
+                //Since we only need one copy now and connect is the final task, we redirect the same user to next document to start a new transcription
+                $this->redirect('incite/documents/transcribe');
             }
         }
 
@@ -366,10 +362,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if ($transcription != null) {
                     $this->view->transcription = getTranscriptionText($transcription[0]);
                 } else {
-
+                    
                 }
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
-                $category_colors = array('ORGANIZATION'=>'red', 'PERSON'=>'orange', 'LOCATION'=>'yellow', 'EVENT' => 'gray');
+                $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
                 if (isDocumentTagged($this->_getParam('id'))) {
                     //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
                     $allTags = getAllTagInformation($this->_getParam('id'));
@@ -378,10 +374,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $entity_category = array();
                     $colored_transcription = $this->view->transcription;
                     $tag_ids = array();
-                    foreach ((array)$allTags as $tag) {
+                    foreach ((array) $allTags as $tag) {
                         $subs = array();
                         $tag_ids[] = $tag['tag_id'];
-                        foreach ((array)$tag['subcategories'] as $sub) {
+                        foreach ((array) $tag['subcategories'] as $sub) {
                             $subs[] = str_replace(' ', '', $sub);
                         }
                         $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
@@ -389,20 +385,20 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $entity_category[$tag['tag_text']] = $tag['category_name'];
                     }
                     usort($entity_names, 'sort_strlen');
-                    foreach ((array)$entity_names as $name) {
-                        $colored_transcription = str_replace($name, '<'.strtoupper($entity_category[$name]).'>'.$name.'</'.strtoupper($entity_category[$name]).'>', $colored_transcription);
+                    foreach ((array) $entity_names as $name) {
+                        $colored_transcription = str_replace($name, '<' . strtoupper($entity_category[$name]) . '>' . $name . '</' . strtoupper($entity_category[$name]) . '>', $colored_transcription);
                     }
                     foreach ($categories as $category) {
                         $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                     }
-                    
+
                     $related_documents = findRelatedDocumentsViaTags($this->_getParam('id'));
                     if (count($related_documents) == 0) {
                         //no connections at all so redirect to documents with at least some connections
-						if ($_SESSION['Incite']['previous_task'] === 'tag') 
-                        	$this->redirect('incite/documents/transcribe');
-						else
-                        	$this->redirect('incite/documents/connect');
+                        if ($_SESSION['Incite']['previous_task'] === 'tag')
+                            $this->redirect('incite/documents/transcribe');
+                        else
+                            $this->redirect('incite/documents/connect');
                     }
 
                     //Get subject candidates
@@ -429,7 +425,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         echo 'no connection needed';
                         die();
                     }
-					$docs_for_common_tags = array_merge($subject_related_documents, array($this->_getParam('id')));
+                    $docs_for_common_tags = array_merge($subject_related_documents, array($this->_getParam('id')));
                     //fetch documents!    
                     $actual_entities = findCommonTagNames($docs_for_common_tags);
                     $this->view->related_documents = array();
@@ -439,7 +435,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $this->view->entities = $actual_entities;
                     $this->view->transcription = $colored_transcription;
                 } else {
-                    $this->redirect('incite/documents/tag/'.$this->_getParam('id'));
+                    $this->redirect('incite/documents/tag/' . $this->_getParam('id'));
                 }
                 $this->_helper->viewRenderer('connectid');
                 $this->view->connection = $record;
@@ -482,7 +478,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $current_page = $_GET['page'];
             $max_records_to_show = 8;
             $records_counter = 0;
-            $total_pages = ceil(count($connectable_documents)/$max_records_to_show);
+            $total_pages = ceil(count($connectable_documents) / $max_records_to_show);
 
             $this->view->total_pages = $total_pages;
             $this->view->current_page = $current_page;
@@ -496,34 +492,29 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
     }
 
-    public function discussAction()
-    {
-         var_dump("hi");
-        if ($this->hasParam($id))
-        {
-        $this->_helper->db->setDefaultModelName('Item');
-        $subjectConceptArray = getAllSubjectConcepts();
-        $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
-        $subject_id = 1;
-        $subjectName = getSubjectConceptOnId($randomSubjectInt);
-        $subjectDef = getDefinition($subjectName[0]);
+    public function discussAction() {
+        var_dump("hi");
+        if ($this->hasParam($id)) {
+            $this->_helper->db->setDefaultModelName('Item');
+            $subjectConceptArray = getAllSubjectConcepts();
+            $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
+            $subject_id = 1;
+            $subjectName = getSubjectConceptOnId($randomSubjectInt);
+            $subjectDef = getDefinition($subjectName[0]);
 
-        //Choosing a subject to test with some fake data to test view
-        $this->view->subject = $subjectName[0];
-        $this->view->subject_definition = $subjectDef;
-        $this->view->entities = array('liberty', 'independence');
-        $this->view->related_documents = array();
+            //Choosing a subject to test with some fake data to test view
+            $this->view->subject = $subjectName[0];
+            $this->view->subject_definition = $subjectDef;
+            $this->view->entities = array('liberty', 'independence');
+            $this->view->related_documents = array();
 
-                    $record = $this->_helper->db->find($this->_getParam('id'));
+            $record = $this->_helper->db->find($this->_getParam('id'));
             $isReply = $_POST['IS_REPLY'];
-            if ($isReply == 0)
-            {
+            if ($isReply == 0) {
                 $_questionText = $POST['QUESTION_TEXT'];
-            }
-            else
-            {
+            } else {
                 //do something
-
             }
+        }
     }
 }
