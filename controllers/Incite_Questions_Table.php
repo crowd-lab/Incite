@@ -2,24 +2,37 @@
 
 require_once("DB_Connect.php");
 
-
-function createQuestionTag($question, $user_id, $document_id, $type)
+/**
+ * 
+ * **USE THIS GUIDELINE THROUGHOUT PLUGIN**
+ * 
+ * TYPES OF QUESTIONS
+ * 0 --> belongs to a specific document's transcribe question
+ * 1 --> belongs to a specific document's tag question
+ * 2 --> belongs to a specific document's connect question
+ * 4 --> General forum question, can tag multiple documents
+ * @param type $question
+ * @param type $user_id
+ * @param type $document_id
+ * @param type $type
+ */
+function createQuestion($question, $user_id, $document_id, $type)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_questions VALUES (DEFAULT, ?, ?, 1, CURRENT_TIMESTAMP, ?)");
-    $stmt->bind_param("is", $user_id, $question, $type);
+    $stmt->bind_param("isi", $user_id, $question, $type);
     $stmt->execute();
     $insertedID = $stmt->insert_id;
     $stmt->close();
     $db->close();
-    
-    $db = DB_Connect::connectDB();
+    $newdb = DB_Connect::connectDB();
     for ($i = 0; $i < sizeof($document_id); $i++)
     {
-        $stmt = $db->prepare("INSERT INTO omeka_incite_questions_conjunction VALUES (DEFAULT, ?, ?)");
-        $stmt->bind_param("ii", $document_id[$i], $insertedID);
-        $stmt->execute();
-        $stmt->close();
+        $documentID = intval($document_id[$i]);
+        $newstmt = $newdb->prepare("INSERT INTO omeka_incite_documents_questions_conjunction VALUES (DEFAULT, ?, ?)");
+        $newstmt->bind_param("ii", $documentID, $insertedID);
+        $newstmt->execute();
+        $newstmt->close();
     }
 }
 
@@ -121,6 +134,58 @@ function pullQuestionsForDocumentOnly($document_id)
     while ($stmt->fetch())
     {
         $idArray[] = $question_id;
+    }
+    $stmt->close();
+    $db->close();
+    return $idArray;
+}
+function getQuestionText($question_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT question_text FROM omeka_incite_questions WHERE id = ?");
+    $stmt->bind_param("i", $question_id);
+    $stmt->bind_result($text);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $text;
+}
+function getQuestionUser($question_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT user_id FROM omeka_incite_questions WHERE id = ?");
+    $stmt->bind_param("i", $question_id);
+    $stmt->bind_result($userid);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $userid;
+}
+function getQuestionTimestamp($question_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT timestamp FROM omeka_incite_questions WHERE id = ?");
+    $stmt->bind_param("i", $question_id);
+    $stmt->bind_result($timestamp);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $timestamp;
+}
+function getAllRepliesForQuestion($question_id)
+{
+    $idArray = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_replies WHERE question_id = ?");
+    $stmt->bind_param("i", $question_id);
+    $stmt->bind_result($id);
+    $stmt->execute();
+    while ($stmt->fetch())
+    {
+        $idArray[] = $id;
     }
     $stmt->close();
     $db->close();

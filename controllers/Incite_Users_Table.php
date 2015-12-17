@@ -64,6 +64,31 @@ require_once("DB_Connect.php");
         return $arr;
     }
     /**
+     * Gets information about the user in an array
+     * array format = [ID, FIRSTNAME, LASTNAME, PRIVILEGE_LEVEL, EXPERIENCE_LEVEL]
+     * @param type $id requires an id to check against
+     * @return array containing information requested
+     */
+    function getUserDataID($id)
+    {
+        $arr = Array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT first_name, last_name, email, privilege_level, experience_level FROM omeka_incite_users WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->bind_result($firstname, $email, $lastname, $priv, $exp);
+        $stmt->execute();
+        $stmt->fetch();
+        $stmt->close();
+        $db->close();
+        
+        $arr[0] = $firstname;
+        $arr[1] = $lastname;
+        $arr[2] = $email;
+        $arr[3] = $priv;
+        $arr[4] = $exp;
+        return $arr;
+    }
+    /**
      * Check if the user is active. If the user is inactive, return false else
      * return true. We check this by selecting the 'is_active' column in the
      * database

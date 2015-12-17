@@ -17,6 +17,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
         //Since this is for ajax purpose, we don't need to render any views!
         $this->_helper->viewRenderer->setNoRender(TRUE);
         include("Incite_Users_Table.php");
+        include("Incite_Replies_Table.php");
+        include("Incite_Questions_Table.php");
     }
     /**
      * Ajax function to check if a username and password does exist in the database and if they are valid.
@@ -116,11 +118,61 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
      */
     public function postcommentAction() {
         if ($this->getRequest()->isPost()) {
+            $documentID = $_POST['documentId'];
+            $text = $_POST['commentText'];
+            $type = $_POST['type'];
+            createQuestion($text, $_SESSION['Incite']['USER_DATA'][0], array($documentID), $type);
+            return true;
+        }
+    }
+    public function postreplyAction()
+    {
+        if ($this->getRequest()->isPost())
+        {
+            $text = $_POST['replyText'];
+            $questionID = $_POST['originalQuestionId'];
+            $documentID = $_POST['documentId'];
+            replyToQuestion($text, $_SESSION['Incite']['USER_DATA'][0], $questionID, $documentID);
+            return true;
         }
     }
     /**
      * This returns comments of a document
      */
-    public function getcommentsdocAction() {
+    public function getcommentsdocAction() 
+    {
+        if ($this->getRequest()->isPost())
+        {
+            $text = array(array());
+            $documentID = $_POST['documentId'];
+            $questionIDs = pullQuestionsForDocumentOnly($documentID);
+            for ($i = 0; $i < sizeof($questionIDs); $i++)
+            {
+                $text[$i]['question_text'] = getQuestionText($questionIDs[$i]);
+                $text[$i]['question_id'] = $questionIDs[$i];
+                $text[$i]['question_timestamp'] = getQuestionTimestamp($questionIDs[$i]);
+                $text[$i]['user_info'] = getUserDataID(getQuestionUser($questionIDs[$i]));
+                $text[$i]['question_replies'] = array();
+                $text[$i]['question_replies_timestamp'] = array();
+                $text[$i]['question_replies_user'] = array();
+                for ($j = 0; $j < sizeof(getAllRepliesForQuestion($questionIDs[$i])); $j++)
+                {
+                    $text[$i]['question_replies'][] = getReplyText(getAllRepliesForQuestion($questionIDs[$i])[$j]);
+                    $text[$i]['question_replies_timestamp'][] = getTimeStamp(getAllRepliesForQuestion($questionIDs[$i])[$j]);
+                    $text[$i]['question_replies_user_data'][] = getUserDataID(getUserId(getAllRepliesForQuestion($questionIDs[$i])[$j]));
+                }
+            }
+            echo json_encode($text);
+        }
+    }
+    
+    public function issignedinAction()
+    {
+        $array = array();
+        $array[0] = (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID']);
+        $array[1] = $_POST['loopVar'];
+        $array[2] = $_POST['commentArray'];
+        $array[3] = $_POST['format'];
+        echo json_encode($array);
     }
 }

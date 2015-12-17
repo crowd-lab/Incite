@@ -1,10 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<?php
-include(dirname(__FILE__).'/../common/header.php');
+    <?php
+    include(dirname(__FILE__) . '/../common/header.php');
 //$this->transcription must exist because controller has ensured it. If it doesn't exist, then controller should've redirected it to the right place!
-?>
+    ?>
+    <script type="text/javascript">
+
+        $(function ()
+        {
+            var documentId = <?php echo $this->transcription->id; ?>;
+            var request = $.ajax({
+                type: "POST",
+                url: "http://localhost/m4j/incite/ajax/getcommentsdoc",
+                data: {documentId: documentId},
+                success: function (data)
+                {
+                    var commentsArray = JSON.parse(data);
+
+
+                    for (var i = 0; i < commentsArray.length; i++)
+                    {
+
+                        var databaseDate = new Date(commentsArray[i]['question_timestamp']);
+
+
+                        var format = compareDates(databaseDate);
+
+                        var commentsArrayObject = {commentsArray};
+                        var isSignedIn = $.ajax({
+                            type: 'POST',
+                            url: 'http://localhost/m4j/incite/ajax/issignedin',
+                            data: {loopVar: i, commentArray: commentsArray, format: format},
+                            success: appendNewComment
+                        })
+                    }
+                }
+            });
+        });
+        function appendNewComment(dataArray)
+        {
+            var parsedData = JSON.parse(dataArray);
+            var commentsArray = parsedData[2];
+            var format = parsedData[3];
+            var i = parseInt(parsedData[1]);
+            var boolean = parsedData[0];
+
+            var commentsArrayReplies = commentsArray[i]['question_replies'];
+            var commentsArrayRepliesTimestamp = commentsArray[i]['question_replies_timestamp'];
+            var commentsArrayRepliesUserData = commentsArray[i]['question_replies_user_data'];
+            if (boolean)
+            {
+                var dynamicLi = document.createElement('li');
+                dynamicLi.className = "cmmnt";
+                var dynamicDiv = document.createElement('div');
+                dynamicDiv.className = "cmmnt-content";
+                dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+
+                if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
+                {
+                    var string = "<ul><li><header><a href='javascript:void(0);' class='userlink'>";
+                    for (var j = 0; j < commentsArrayReplies.length; j++)
+                    {
+                        var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
+                        string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">' + compareDates(databaseDate) +'</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
+                        if (j != commentsArrayReplies.length - 1)
+                        {
+                            string += "<li><header><a href='javascript:void(0);' class='userlink'>";
+                        }
+                    }
+                    string += "</ul>"
+                    dynamicDiv.innerHTML += (string + '<button type="button" name="reply" class="btn btn-default reply-comment" id="reply' + i + '" value="' + commentsArray[i]['question_id'] + '">Reply</button>');
+                } else
+                {
+                    dynamicDiv.innerHTML += '<button type="button" name="reply" class="btn btn-default reply-comment" id="reply' + i + '" value="' + commentsArray[i]['question_id'] + '">Reply</button>';
+                }
+
+                dynamicLi.appendChild(dynamicDiv);
+                document.getElementById("comments").appendChild(dynamicLi);
+            } else
+            {
+                var dynamicLi = document.createElement('li');
+                dynamicLi.className = "cmmnt";
+                var dynamicDiv = document.createElement('div');
+                dynamicDiv.className = "cmmnt-content";
+                dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+                dynamicLi.appendChild(dynamicDiv);
+                document.getElementById("comments").appendChild(dynamicLi);
+            }
+        }
+        function compareDates(databaseDate)
+        {
+            var currentDate = new Date();
+            var differenceDate = Math.ceil((currentDate.getTime() - databaseDate.getTime()) / 1000);
+            var format = "posted ";
+            if (differenceDate < 60)
+            {
+                format += differenceDate + " second ago";
+            }
+            else if(differenceDate < 3600)
+            {
+                format += (new Date).clearTime().addSeconds(differenceDate).toString('m') + " minutes ago";
+            }
+            else if (differenceDate < 86400)
+            {
+                if (differenceDate < 7200)
+                {
+                    format += (new Date).clearTime().addSeconds(differenceDate).toString('H') + " hour ago";
+                } else
+                {
+                    format += (new Date).clearTime().addSeconds(differenceDate).toString('H') + " hours ago";
+                }
+            } 
+            else if (differenceDate < 31540000)
+            {
+                if (differenceDate < 2629746)
+                {
+                    format += "1 month ago";
+                } else
+                {
+                    format += (new Date).clearTime().addSeconds(differenceDate).toString('M') + " months ago";
+                }
+            } 
+            else
+            {
+                if (differenceDate < 63080000)
+                {
+                    format += " 1 year ago";
+                } else
+                {
+                    if ((new Date).clearTime().addSeconds(differenceDate).toString('YY').charAt(0) == '0')
+                    {
+                        format += (new Date).clearTime().addSeconds(differenceDate).toString('YY').charAt(1) + " year ago";
+                    } else
+                    {
+                        format += (new Date).clearTime().addSeconds(differenceDate).toString('YY') + " year ago";
+                    }
+                }
+            }
+            return format;
+        }
+    </script>
+
 
     <!-- Page Content -->
     <div class="container">
@@ -27,7 +163,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <div class="wrapper">
                         <div id="viewer2" class="viewer"></div>
 <!--                        <img src="<?php echo $this->transcription->getFile()->getProperty('uri'); ?>" alt="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>">
--->
+                        -->
                     </div>
                 </div>
             </div>
@@ -52,108 +188,101 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div id="container">
                     <h3> Discussion </h3>
                     <ul id="comments">
-<?php foreach ( (array)$this->comments as $comment ): ?>
-                        <li class="cmmnt">
-<!--                            <div class="avatar"><a href="javascript:void(0);"><img src="images/dark-cubes.png" width="55" height="55" alt="DarkCubes photo avatar"></a></div>
--->
-                            <div class="cmmnt-content">
-                                <header><a href="javascript:void(0);" class="userlink"><?php echo $comment['username']; ?></a> - <span class="pubdate"><?php echo $comment['time']; ?></span></header>
-                                <p><?php echo $comment['content']; ?></p>
-                                <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                                <button type="button" name="reply" class="btn btn-default reply-comment" id="reply<?php echo $comment['id']; ?>">Reply</button>
-                                <?php endif; ?>
-                            </div>
-                        </li>
-<?php endforeach; ?>
+
                     </ul>
                     <div id="onLogin">
-<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                    
-                    <form id="discuss-form" method="POST">
-                    <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default" id="">Submit</button>
-                    </form>
-                    
-<?php else: ?>
-                    Please login or signup to join the discussion!
-                
-<?php endif; ?>
+                        <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
+
+                            <form id="discuss-form" method="POST">
+                                <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
+                                <button type="button" class="btn btn-default" onclick="submitComment()">Submit</button>
+                            </form>
+
+                        <?php else: ?>
+                            Please login or signup to join the discussion!
+
+                        <?php endif; ?>
                     </div>
-                    </div>
+                </div>
             </div> 
         </div>
-
-
-
-
-  
-</div>
-
     </div>
     <!-- /.container -->
+    <script type="text/javascript">
+        $(function () {
+            //getAllComments();
+            $('[data-toggle="popover"]').popover({trigger: "hover"});
 
-    <script>
-$(document).ready(function(){
-    $('[data-toggle="popover"]').popover({ trigger: "hover" });
-});
-</script>
-
-<script type="text/javascript">
-
-$(function(){
-
-    //start with `NewContent` being the HTML to add to the page
-    var NewContent='<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your Reply"></textarea><button type="button" class="btn btn-default" id="">Submit</button></form>';
-    
-    $('[name="reply"]').click(function(event){
-        
-        //check if `NewContent` is empty or not
-        //if (NewContent != '') {
-        $("#" + event.target.id).after(NewContent);
-        $("#" + event.target.id).remove();
-            //now that `NewContent` has been added to the DOM, reset it's value to an empty string so this doesn't happen again
-        //NewContent = '';
-       // } else {
-
-            //this is not the first click, so just toggle the appearance of the element that has already been added to the DOM
-            //since we injected the element just after the `#spin` element we can select it relatively to that element by using `.next()`
-       //     $('#reply').next().toggle();
-       // }
-    });
-});
-
-</script>
-
-<script type="text/javascript">
-    $('#work-zone').ready(function() {
-        $('#work-view').width($('#work-zone').width());
-    });
-            var $ = jQuery;
-            $(document).ready(function(){
-
-                var iv2 = $("#viewer2").iviewer(
+            $(document).on('click', 'button', function (event)
+            {
+                if (event.target.name === "reply")
                 {
-                      src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
-                });
-
+                    var NewContent = '<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event)" class="btn btn-default" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Submit</button></form>';
+                    $("#" + event.target.id).after(NewContent);
+                    $("#" + event.target.id).remove();
+                }
             });
-        $('.viewer').height($(window).height()-$('.viewer')[0].getBoundingClientRect().top-60);
-        $('#transcribe_copy').height($(window).height()-$('.viewer')[0].getBoundingClientRect().top-60);
-        </script>
+        });
 
-<style>
-            .viewer
-            {
-                width: 100%;
-                border: 1px solid black;
-                position: relative;
-            }
-            
-            .wrapper
-            {
-                overflow: hidden;
-            }
-        </style>
+        $('#work-zone').ready(function () {
+            $('#work-view').width($('#work-zone').width());
+        });
+        var $ = jQuery;
+        $(document).ready(function () {
+
+            var iv2 = $("#viewer2").iviewer(
+                    {
+                        src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
+                    });
+
+        });
+        $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 60);
+        $('#transcribe_copy').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 60);
+
+        function submitReply(event)
+        {
+            var replyText = document.getElementById('replyBox' + event.target.id.substring(6)).value;
+            var questionID = parseInt(event.target.value);
+            var documentId = <?php echo $this->transcription->id; ?>;
+            var request = $.ajax({
+                type: "POST",
+                url: "http://localhost/m4j/incite/ajax/postreply",
+                data: {replyText: replyText, originalQuestionId: questionID, documentId: documentId},
+                success: function (data)
+                {
+                    alert("successfully replied");
+                }
+            });
+        }
+        function submitComment()
+        {
+            var commentText = document.getElementById('comment').value;
+            var documentId = <?php echo $this->transcription->id; ?>;
+            var request = $.ajax({
+                type: "POST",
+                url: "http://localhost/m4j/incite/ajax/postcomment",
+                data: {documentId: documentId, commentText: commentText, type: 0},
+                success: function ()
+                {
+                    alert("successfully posted comment");
+                }
+            })
+        }
+
+    </script>
+    <style>
+        .viewer
+        {
+            width: 100%;
+            border: 1px solid black;
+            position: relative;
+        }
+
+        .wrapper
+        {
+            overflow: hidden;
+        }
+    </style>
 
 </body>
 

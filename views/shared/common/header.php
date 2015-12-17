@@ -23,6 +23,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
     <?php echo js_tag('jquery.jqtimeline'); ?>
     <?php echo js_tag('moment.min'); ?>
     <?php echo js_tag('daterangepicker'); ?>
+    <?php echo js_tag('date'); ?>
     <?php echo head_css(); ?>
 
 

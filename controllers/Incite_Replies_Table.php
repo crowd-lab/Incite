@@ -15,8 +15,9 @@ function replyToQuestion($reply, $user_id, $question_id, $document_id)
     $db = DB_Connect::connectDB();
     for ($i = 0; $i < sizeof($document_id); $i++)
     {
-        $stmt = $db->prepare("INSERT INTO omeka_incite_replies_conjunction VALUES (DEFAULT, ?, ?)");
-        $stmt->bind_param("ii", $document_id[$i], $insertedID);
+        $documentID = intval($document_id[$i]);
+        $stmt = $db->prepare("INSERT INTO omeka_incite_documents_replies_conjunction VALUES (DEFAULT, ?, ?)");
+        $stmt->bind_param("ii", $documentID, $insertedID);
         $stmt->execute();
         $stmt->close();
     }
@@ -94,5 +95,41 @@ function getAllReferencedDocumentIDsForReply($reply_id)
     $stmt->close();
     $db->close();
     return $idArray;
+}
+function getReplyText($reply_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT reply_text FROM omeka_incite_replies WHERE id = ?");
+    $stmt->bind_param("i", $reply_id);
+    $stmt->bind_result($text);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $text;
+}
+function getTimestamp($reply_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT timestamp FROM omeka_incite_replies WHERE id = ?");
+    $stmt->bind_param("i", $reply_id);
+    $stmt->bind_result($timestamp);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $timestamp;
+}
+function getUserId($reply_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT user_id FROM omeka_incite_replies WHERE id = ?");
+    $stmt->bind_param("i", $reply_id);
+    $stmt->bind_result($userID);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $userID;
 }
 ?>
