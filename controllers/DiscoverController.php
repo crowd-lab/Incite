@@ -16,8 +16,29 @@ function getAllDocumentsBetweenDates($start, $end, $order='ASC')
 
     $db = DB_Connect::connectDB();
     $item_ids = array();  
-    $stmt = $db->prepare("SELECT record_id FROM `omeka_element_texts` WHERE `element_id` = 40 AND `text` BETWEEN ? AND ? ORDER BY `text` ".$order);
-    $stmt->bind_param("ss", $start, $end);
+    //40: Date
+    $element_id_for_date = 40;
+    $stmt = $db->prepare("SELECT record_id FROM `omeka_element_texts` WHERE `element_id` = ? AND `text` BETWEEN ? AND ? ORDER BY `text` ".$order);
+    $stmt->bind_param("iss", $element_id_for_date, $start, $end);
+    $stmt->bind_result($item_id);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $item_ids[] = $item_id;
+    }
+    $stmt->close();
+    $db->close();
+    
+    return $item_ids;
+}
+function getAllDocumentsContainLocation($location)
+{
+
+    $db = DB_Connect::connectDB();
+    $item_ids = array();  
+    $element_id_for_location = 4;
+    $location_query = "%".$location."%";
+    $stmt = $db->prepare('SELECT `record_id` FROM `omeka_element_texts` WHERE `element_id` = ? AND `text` LIKE ?');
+    $stmt->bind_param("is", $element_id_for_location, $location_query);
     $stmt->bind_result($item_id);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -41,6 +62,10 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
             //Assume there is session already because query is stored in session
             $_SESSION['Incite']['search'] = array();
             //Process location search
+            if (isset($_GET['location'])) {
+                $item_ids = getAllDocumentsContainLocation($_GET['location']);
+                $_SESSION['Incite']['search']['location'] = array('query' => $_GET['location'], 'item_ids' => $item_ids);
+            }
 
             //Process time search
             if (isset($_GET['time'])) {
