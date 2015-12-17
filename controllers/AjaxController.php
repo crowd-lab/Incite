@@ -111,4 +111,16 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
     public function getdataAction() {
         echo json_encode($_SESSION['Incite']['USER_DATA']);
     }
+    /**
+     * This gets a comment from a specific user
+     */
+    public function postcommentAction() {
+        if ($this->getRequest()->isPost()) {
+        }
+    }
+    /**
+     * This returns comments of a document
+     */
+    public function getcommentsdocAction() {
+    }
 }
