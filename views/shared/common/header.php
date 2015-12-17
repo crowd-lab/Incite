@@ -45,10 +45,11 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
 <script>
     $(document).ready(function () {
         $('#time_picker').daterangepicker({
-            "startDate": "01/01/1830",   //could be dynamic or user's choice
-            "endDate"  : "12/31/1870",   //could be dynamic or user's choice
-            "minDate"  : "01/01/1830",
-            "maxDate"  : "12/31/1870",
+            locale     : { format: 'YYYY-MM-DD'},
+            "startDate": "1830-01-01",   //could be dynamic or user's choice
+            "endDate"  : "1870-12-31",   //could be dynamic or user's choice
+            "minDate"  : "1830-01-01",
+            "maxDate"  : "1870-12-31",
             "opens"    : "center"
             }, 
             function (start, end, label) {
