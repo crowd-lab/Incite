@@ -499,7 +499,20 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
          var_dump("hi");
         if ($this->hasParam($id))
         {
-           
+        $this->_helper->db->setDefaultModelName('Item');
+        $subjectConceptArray = getAllSubjectConcepts();
+        $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
+        $subject_id = 1;
+        $subjectName = getSubjectConceptOnId($randomSubjectInt);
+        $subjectDef = getDefinition($subjectName[0]);
+
+        //Choosing a subject to test with some fake data to test view
+        $this->view->subject = $subjectName[0];
+        $this->view->subject_definition = $subjectDef;
+        $this->view->entities = array('liberty', 'independence');
+        $this->view->related_documents = array();
+
+                    $record = $this->_helper->db->find($this->_getParam('id'));
             $isReply = $_POST['IS_REPLY'];
             if ($isReply == 0)
             {
@@ -507,8 +520,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
             else
             {
-                
+                //do something
+
             }
-        }
     }
 }

@@ -57,8 +57,14 @@
   width: 30em; 
 }
 
-#content {
+#content-1 {
   padding: 10px 15px;
+color: inherit;
+background-color: #eee
+}
+
+#content-2 {
+    padding: 10px 15px;
 color: inherit;
 background-color: #eee
 }
