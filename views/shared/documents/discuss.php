@@ -94,3 +94,4 @@ include(dirname(__FILE__).'/../common/header.php');
 </script>
 
 </body>
+</html>
