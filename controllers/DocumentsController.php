@@ -135,7 +135,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $current_page = 1;
             if (isset($_GET['page']))
                 $current_page = $_GET['page'];
-            $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $_SESSION['Incite']['search']['time']['item_ids'], $_SESSION['Incite']['search']['location']['item_ids']), 0, 24);
+            $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $_SESSION['Incite']['search']['final_items']), 0, 24);
             $max_records_to_show = 8;
             $total_pages = ceil(count($document_ids) / $max_records_to_show);
             $records_counter = 0;
@@ -285,7 +285,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $current_page = 1;
             if (isset($_GET['page']))
                 $current_page = $_GET['page'];
-            $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $_SESSION['Incite']['search']['time']['item_ids'], $_SESSION['Incite']['search']['location']['item_ids']), 0, 24);
+            $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $_SESSION['Incite']['search']['final_items']), 0, 24);
             $max_records_to_show = 8;
             $records_counter = 0;
             $records = array();
@@ -467,7 +467,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                 }
             }
-            $document_ids = array_slice(array_intersect(array_values($connectable_documents), $_SESSION['Incite']['search']['time']['item_ids'], $_SESSION['Incite']['search']['location']['item_ids']), 0, 24);
+            $document_ids = array_slice(array_intersect(array_values($connectable_documents), $_SESSION['Incite']['search']['final_items']), 0, 24);
             $records = array();
             for ($i = 0; $i < count($document_ids); $i++) {
                 $records[] = $this->_helper->db->find($document_ids[$i]);
