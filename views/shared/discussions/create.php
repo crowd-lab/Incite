@@ -35,7 +35,7 @@ include(dirname(__FILE__).'/../common/header.php');
 
             <div class="row" id="content-1">
                 <h3>Create a New Discussion</h3>
-                <form class="form-wrapper" method="get">
+                <form class="form-wrapper" method="post">
                     Title: <input name="title" type="text" style="margin-bottom: 10px;" id="search1" placeholder="How do Northerners vs Southerners write...." required>
                     <p>Content: </p>
                         <textarea name="content" rows="15" cols="100"> </textarea>
