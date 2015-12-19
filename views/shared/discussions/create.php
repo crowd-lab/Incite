@@ -51,6 +51,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
                 </div>
                 <br>
+                <button type="button" class="btn btn-primary">Add Reference</button>
                 <button type="button" class="btn btn-primary">Submit</button>
             </div>
             <div class="row" id="content-2">
