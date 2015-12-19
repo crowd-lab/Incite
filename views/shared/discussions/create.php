@@ -35,24 +35,25 @@ include(dirname(__FILE__).'/../common/header.php');
 
             <div class="row" id="content-1">
                 <h3>Create a New Discussion</h3>
-                <form class="form-wrapper" >
-                    Title: <input type="text" style="margin-bottom: 10px;" id="search1" placeholder="How do Northerners vs Southerners write...." required>
-                </form>
-                <p>Content: </p>
-                <form class="form-wrapper">
-                    <textarea rows="15" cols="100"> </textarea>
-                </form>
+                <form class="form-wrapper" method="get">
+                    Title: <input name="title" type="text" style="margin-bottom: 10px;" id="search1" placeholder="How do Northerners vs Southerners write...." required>
+                    <p>Content: </p>
+                        <textarea name="content" rows="15" cols="100"> </textarea>
 
 
-                <h4>References: </h4>
-                <div id="images" style="white-space: nowrap;">
-                    <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt=""/>
-                    <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
-                    <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
-                </div>
-                <br>
-                <button type="button" class="btn btn-primary">Add Reference</button>
-                <button type="button" class="btn btn-primary">Submit</button>
+                    <h4>References: </h4>
+                    <div id="images" style="white-space: nowrap;">
+                        <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt=""/>
+                        <input name="ref_1" type="hidden" value="doc_id1" />
+                        <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
+                        <input name="ref_2" type="hidden" value="doc_id2" />
+                        <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
+                        <input name="ref_3" type="hidden" value="doc_id3" />
+                    </div>
+                    <br>
+                    <button type="button" class="btn btn-primary">Add Reference</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
             <div class="row" id="content-2">
                 <h3> Subjects of this document: <a href="">Nationalism</a>, 
