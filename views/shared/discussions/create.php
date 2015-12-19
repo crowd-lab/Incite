@@ -2,7 +2,44 @@
 <html lang="en">
 
 <head>
-
+    <script type="text/javascript">
+        function searchForDocuments()
+        {
+            var currentSearch = document.getElementById('searchDocuments').value;
+            if (currentSearch !== "")
+            {
+                var request = $.ajax({
+                    type: "POST",
+                    url: "http://localhost/m4j/incite/ajax/searchkeyword",
+                    data: {keyword: currentSearch},
+                    success: function(data)
+                    {
+                        $("#document_icons").empty();
+                        var parsedData = JSON.parse(data);
+                        for (var i = 0; i < parsedData.length; i += 2)
+                        {
+                            var optionTag = document.createElement('option');
+                            optionTag.setAttribute("data-img-src", parsedData[i]);
+                            optionTag.className = "thumbnail";
+                            optionTag.value = parsedData[i + 1];
+                           
+                            $("#document_icons").append(optionTag);
+                        }                        
+                        $("#document_icons").imagepicker();
+                        $("img").each(function()
+                        {
+                            $(this).css('width', '40px');
+                            $(this).css('height', '40px');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                //clear selector
+            }
+        }
+    </script>
 
 
     <?php
@@ -17,7 +54,37 @@ include(dirname(__FILE__).'/../common/header.php');
 </head>
 
 <body>
-
+    <div class="modal fade" id="document-selector-dialog" tabindex="-1" role="dialog" aria-labelledby="document-selector-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="login-signup-dialog-label">Select References</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1">
+                            <form>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="control-label">Search for documents:</label>
+                                    <input type="text" class="form-control" id="searchDocuments" name="searchDocuments" onchange="searchForDocuments()">
+                                </div>
+                                <div id="document_icon_belt">
+                                    <select id="document_icons" multiple="multiple">
+                                        
+                                    </select>
+                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="modal-footer">
+                    <button type="button" class="btn btn-primary" id="login-button">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-6" id="work-zone">
             <div style="position: fixed; width: 35%;" id="work-view">
@@ -51,7 +118,8 @@ include(dirname(__FILE__).'/../common/header.php');
                         <input name="ref_3" type="hidden" value="doc_id3" />
                     </div>
                     <br>
-                    <button type="button" class="btn btn-primary">Add Reference</button>
+                    <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Add Reference</button>
+                    
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
