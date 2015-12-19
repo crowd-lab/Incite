@@ -120,7 +120,7 @@
                     }
                     else
                     {
-                        format += (parseInt((new Date).clearTime().addSeconds(differenceDate).toString('d')) - parseInt((newDate).toString('d'))) + " days ago";
+                        format += (parseInt((new Date).clearTime().addSeconds(differenceDate).toString('d')) - parseInt((new Date).toString('d'))) + " days ago";
                     }
                 } 
                 else
