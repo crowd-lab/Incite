@@ -127,7 +127,7 @@ function pullQuestionsForDocumentOnly($document_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT question_id FROM omeka_incite_documents_questions_conjunction INNER JOIN omeka_incite_questions ON omeka_incite_questions.id = omeka_incite_documents_questions_conjunction.question_id WHERE question_type = 0 AND document_id = ?");
+    $stmt = $db->prepare("SELECT question_id FROM omeka_incite_documents_questions_conjunction INNER JOIN omeka_incite_questions ON omeka_incite_questions.id = omeka_incite_documents_questions_conjunction.question_id WHERE question_type = 0 AND document_id = ? ORDER BY question_id");
     $stmt->bind_param("i", $document_id);
     $stmt->bind_result($question_id);
     $stmt->execute();
@@ -179,7 +179,7 @@ function getAllRepliesForQuestion($question_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT id FROM omeka_incite_replies WHERE question_id = ?");
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_replies WHERE question_id = ? ORDER BY id");
     $stmt->bind_param("i", $question_id);
     $stmt->bind_result($id);
     $stmt->execute();
