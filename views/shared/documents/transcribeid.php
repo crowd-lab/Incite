@@ -26,11 +26,11 @@
 
 
                         var format = compareDates(databaseDate);
-
                         var commentsArrayObject = {commentsArray};
                         var isSignedIn = $.ajax({
                             type: 'POST',
                             url: 'http://localhost/m4j/incite/ajax/issignedin',
+                            async: false,
                             data: {loopVar: i, commentArray: commentsArray, format: format},
                             success: appendNewComment
                         });
@@ -40,6 +40,7 @@
         }
         function appendNewComment(dataArray)
         {
+            
             var parsedData = JSON.parse(dataArray);
             var commentsArray = parsedData[2];
             var format = parsedData[3];
