@@ -157,6 +157,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $text = array(array());
             $documentID = $_POST['documentId'];
             $questionIDs = pullQuestionsForDocumentOnly($documentID);
+            //asort($questionIDs);
+            //var_dump($questionIDs);
             $counter = 0;
             for ($i = sizeof($questionIDs) - 1; $i >= 0; $i--)
             {
