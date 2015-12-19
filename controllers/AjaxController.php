@@ -137,6 +137,16 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             return true;
         }
     }
+        public function cmp($a, $b)
+    {
+        $firstime = strtotime($a['question_timestamp']);
+        $secondtime = strtotime($b['question_timestamp']);
+        if ($firstime == $secondtime)
+        {
+            return 0;
+        }
+        return ($firstime < $secondtime) ? -1 : 1;
+    }
     /**
      * This returns comments of a document
      */
@@ -147,21 +157,23 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $text = array(array());
             $documentID = $_POST['documentId'];
             $questionIDs = pullQuestionsForDocumentOnly($documentID);
-            for ($i = 0; $i < sizeof($questionIDs); $i++)
+            $counter = 0;
+            for ($i = sizeof($questionIDs) - 1; $i >= 0; $i--)
             {
-                $text[$i]['question_text'] = getQuestionText($questionIDs[$i]);
-                $text[$i]['question_id'] = $questionIDs[$i];
-                $text[$i]['question_timestamp'] = getQuestionTimestamp($questionIDs[$i]);
-                $text[$i]['user_info'] = getUserDataID(getQuestionUser($questionIDs[$i]));
-                $text[$i]['question_replies'] = array();
-                $text[$i]['question_replies_timestamp'] = array();
-                $text[$i]['question_replies_user'] = array();
+                $text[$counter]['question_text'] = getQuestionText($questionIDs[$i]);
+                $text[$counter]['question_id'] = $questionIDs[$i];
+                $text[$counter]['question_timestamp'] = getQuestionTimestamp($questionIDs[$i]);
+                $text[$counter]['user_info'] = getUserDataID(getQuestionUser($questionIDs[$i]));
+                $text[$counter]['question_replies'] = array();
+                $text[$counter]['question_replies_timestamp'] = array();
+                $text[$counter]['question_replies_user'] = array();
                 for ($j = 0; $j < sizeof(getAllRepliesForQuestion($questionIDs[$i])); $j++)
                 {
-                    $text[$i]['question_replies'][] = getReplyText(getAllRepliesForQuestion($questionIDs[$i])[$j]);
-                    $text[$i]['question_replies_timestamp'][] = getTimeStamp(getAllRepliesForQuestion($questionIDs[$i])[$j]);
-                    $text[$i]['question_replies_user_data'][] = getUserDataID(getUserId(getAllRepliesForQuestion($questionIDs[$i])[$j]));
+                    $text[$counter]['question_replies'][] = getReplyText(getAllRepliesForQuestion($questionIDs[$i])[$j]);
+                    $text[$counter]['question_replies_timestamp'][] = getTimeStamp(getAllRepliesForQuestion($questionIDs[$i])[$j]);
+                    $text[$counter]['question_replies_user_data'][] = getUserDataID(getUserId(getAllRepliesForQuestion($questionIDs[$i])[$j]));
                 }
+                $counter++;
             }
             echo json_encode($text);
         }

@@ -109,12 +109,21 @@
                 {
                     format += (new Date).clearTime().addSeconds(differenceDate).toString('H') + " hours ago";
                 }
-            } else if (differenceDate < 31540000)
+            }
+            else if (differenceDate < 31540000)
             {
                 if (differenceDate < 2629746)
                 {
-                    format += "1 month ago";
-                } else
+                    if (parseInt((new Date).clearTime().addSeconds(differenceDate).toString('d')) - 1 == (new Date).toString('d'))
+                    {
+                        format += "1 day ago";
+                    }
+                    else
+                    {
+                        format += (parseInt((new Date).clearTime().addSeconds(differenceDate).toString('d')) - parseInt((newDate).toString('d'))) + " days ago";
+                    }
+                } 
+                else
                 {
                     format += (new Date).clearTime().addSeconds(differenceDate).toString('M') + " months ago";
                 }
