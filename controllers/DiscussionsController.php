@@ -20,6 +20,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
 
     public function indexAction()
     {
+        $this->forward('discuss');
 
     }
 
@@ -44,6 +45,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
             }
         } else {
             //Get all discussions and list them!
+            //$this->view->Discussions = ???
         }
 
     }
