@@ -3,10 +3,11 @@
     <?php
     include(dirname(__FILE__) . '/../common/header.php');
 //$this->transcription must exist because controller has ensured it. If it doesn't exist, then controller should've redirected it to the right place!
+    
     ?>
     <script type="text/javascript">
 
-        $(function ()
+        function getNewComments()
         {
             var documentId = <?php echo $this->transcription->id; ?>;
             var request = $.ajax({
@@ -32,11 +33,11 @@
                             url: 'http://localhost/m4j/incite/ajax/issignedin',
                             data: {loopVar: i, commentArray: commentsArray, format: format},
                             success: appendNewComment
-                        })
+                        });
                     }
                 }
             });
-        });
+        }
         function appendNewComment(dataArray)
         {
             var parsedData = JSON.parse(dataArray);
@@ -62,7 +63,7 @@
                     for (var j = 0; j < commentsArrayReplies.length; j++)
                     {
                         var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
-                        string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">' + compareDates(databaseDate) +'</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
+                        string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
                         if (j != commentsArrayReplies.length - 1)
                         {
                             string += "<li><header><a href='javascript:void(0);' class='userlink'>";
@@ -96,12 +97,10 @@
             if (differenceDate < 60)
             {
                 format += differenceDate + " second ago";
-            }
-            else if(differenceDate < 3600)
+            } else if (differenceDate < 3600)
             {
                 format += (new Date).clearTime().addSeconds(differenceDate).toString('m') + " minutes ago";
-            }
-            else if (differenceDate < 86400)
+            } else if (differenceDate < 86400)
             {
                 if (differenceDate < 7200)
                 {
@@ -110,8 +109,7 @@
                 {
                     format += (new Date).clearTime().addSeconds(differenceDate).toString('H') + " hours ago";
                 }
-            } 
-            else if (differenceDate < 31540000)
+            } else if (differenceDate < 31540000)
             {
                 if (differenceDate < 2629746)
                 {
@@ -120,8 +118,7 @@
                 {
                     format += (new Date).clearTime().addSeconds(differenceDate).toString('M') + " months ago";
                 }
-            } 
-            else
+            } else
             {
                 if (differenceDate < 63080000)
                 {
@@ -139,6 +136,11 @@
             }
             return format;
         }
+
+        $(function ()
+        {
+            getNewComments();
+        });
     </script>
 
 
@@ -191,14 +193,14 @@
 
                     </ul>
                     <div id="onLogin">
-                        <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
+<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
 
                             <form id="discuss-form" method="POST">
                                 <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
                                 <button type="button" class="btn btn-default" onclick="submitComment()">Submit</button>
                             </form>
 
-                        <?php else: ?>
+<?php else: ?>
                             Please login or signup to join the discussion!
 
                         <?php endif; ?>
@@ -250,7 +252,14 @@
                 data: {replyText: replyText, originalQuestionId: questionID, documentId: documentId},
                 success: function (data)
                 {
-                    alert("successfully replied");
+                    $("#comments").empty();
+                    getNewComments();
+                    notif({
+                       msg: "Successfully Posted Reply",
+                       type: "success",
+                       timeout: 2000
+                    });
+                    document.getElementById('replyBox' + event.target.id.substring(6)).value = "";
                 }
             });
         }
@@ -264,7 +273,14 @@
                 data: {documentId: documentId, commentText: commentText, type: 0},
                 success: function ()
                 {
-                    alert("successfully posted comment");
+                    $("#comments").empty();
+                    getNewComments();
+                    notif({
+                       msg: "Successfully Posted Comment",
+                       type: "success",
+                       timeout: 2000
+                    });
+                    document.getElementById('comment').value = "";
                 }
             })
         }

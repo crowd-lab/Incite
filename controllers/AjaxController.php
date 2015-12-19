@@ -11,8 +11,8 @@
  * @package Incite 
  * Ajax controller for responding different ajax requests
  */
-class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
-
+class Incite_AjaxController extends Omeka_Controller_AbstractActionController 
+{
     public function init() {
         //Since this is for ajax purpose, we don't need to render any views!
         $this->_helper->viewRenderer->setNoRender(TRUE);
@@ -117,7 +117,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
      * This gets a comment from a specific user
      */
     public function postcommentAction() {
-        if ($this->getRequest()->isPost()) {
+        if ($this->getRequest()->isPost()) 
+        {
             $documentID = $_POST['documentId'];
             $text = $_POST['commentText'];
             $type = $_POST['type'];
@@ -165,14 +166,16 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController {
             echo json_encode($text);
         }
     }
-    
     public function issignedinAction()
     {
         $array = array();
         $array[0] = (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID']);
-        $array[1] = $_POST['loopVar'];
-        $array[2] = $_POST['commentArray'];
-        $array[3] = $_POST['format'];
+        if (isset($_POST['loopVar']))
+        {
+            $array[1] = $_POST['loopVar'];
+            $array[2] = $_POST['commentArray'];
+            $array[3] = $_POST['format'];
+        }
         echo json_encode($array);
     }
 }

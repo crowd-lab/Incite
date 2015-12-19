@@ -1,5 +1,5 @@
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker'));
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt'));
 $db = get_db();
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
 ?>
@@ -24,6 +24,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
     <?php echo js_tag('moment.min'); ?>
     <?php echo js_tag('daterangepicker'); ?>
     <?php echo js_tag('date'); ?>
+    <?php echo js_tag('notifIt'); ?>
     <?php echo head_css(); ?>
 
 
