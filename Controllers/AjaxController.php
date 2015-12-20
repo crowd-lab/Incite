@@ -205,6 +205,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             {
                  $urlData[] = $file->getProperty('uri');
                  $urlData[] = $documentID[$i];
+                 $urlData[] = metadata($record, array('Dublin Core', 'Description'));
             }
         }
         echo json_encode($urlData);

@@ -3,6 +3,7 @@
 
 <head>
     <script type="text/javascript">
+        var selectedReferences = null;
         function searchForDocuments()
         {
             var currentSearch = document.getElementById('searchDocuments').value;
@@ -16,26 +17,34 @@
                     {
                         $("#document_icons").empty();
                         var parsedData = JSON.parse(data);
-                        for (var i = 0; i < parsedData.length; i += 2)
+                        for (var i = 0; i < parsedData.length; i += 3)
                         {
                             var optionTag = document.createElement('option');
                             optionTag.setAttribute("data-img-src", parsedData[i]);
                             optionTag.className = "thumbnail";
                             optionTag.value = parsedData[i + 1];
-                           
+                            
                             $("#document_icons").append(optionTag);
                         }                        
                         $("#document_icons").imagepicker();
+                        var count = 0;
                         $("img").each(function()
                         {
                             $(this).css('width', '40px');
                             $(this).css('height', '40px');
+                            $(this).attr("data-toggle","popover");
+                            $(this).attr("data-trigger", "hover");
+                            $(this).attr("data-content", "" + parsedData[count + 2]);
+                            $(this).popover();
+                            count += 3;
+                            
                         });
                     }
                 });
             }
             else
             {
+                $("#document_icons").empty();
                 //clear selector
             }
         }
@@ -67,7 +76,7 @@ include(dirname(__FILE__).'/../common/header.php');
                             <form>
                                 <div class="form-group">
                                     <label for="recipient-name" class="control-label">Search for documents:</label>
-                                    <input type="text" class="form-control" id="searchDocuments" name="searchDocuments" onchange="searchForDocuments()">
+                                    <input type="text" class="form-control" id="searchDocuments" name="searchDocuments" onkeydown="searchForDocuments()">
                                 </div>
                                 <div id="document_icon_belt">
                                     <select id="document_icons" multiple="multiple">
@@ -80,7 +89,10 @@ include(dirname(__FILE__).'/../common/header.php');
                     </div>
                 </div>
                 <div class="modal-footer" id="modal-footer">
-                    <button type="button" class="btn btn-primary" id="login-button">Submit</button>
+                    <div style="float:left">
+                        <button type="button" class="btn btn-primary" id="remove-button" onclick="removeSelectedOptions()">Remove Previously Selected</button>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="submit-button" onclick="getSelectedOptions()">Add References</button>
                 </div>
             </div>
         </div>
@@ -105,7 +117,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <form class="form-wrapper" method="post">
                     Title: <input name="title" type="text" style="margin-bottom: 10px;" id="search1" placeholder="How do Northerners vs Southerners write...." required>
                     <p>Content: </p>
-                        <textarea name="content" rows="15" cols="100"> </textarea>
+                        <textarea name="content" rows="15" cols="75"> </textarea>
 
 
                     <h4>References: </h4>
@@ -145,7 +157,19 @@ include(dirname(__FILE__).'/../common/header.php');
         }
     });
     $("#content-2").hide(); 
-
+    
+        $(function()
+        {
+            $("#document_icons").hide();
+            $("#remove-button").hide();
+        });
+    function getSelectedOptions()
+    {
+        var delimValue = $("option:selected").map(function(){return this.value}).get().join(",");
+        selectedReferences = delimValue.split(',');
+        $("#remove-button").show();
+        
+    }
 </script>
 
 </body>
