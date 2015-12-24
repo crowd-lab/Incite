@@ -19,6 +19,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         include("Incite_Users_Table.php");
         include("Incite_Replies_Table.php");
         include("Incite_Questions_Table.php");
+        include("DiscoverController.php");
     }
     /**
      * Ajax function to check if a username and password does exist in the database and if they are valid.
@@ -157,8 +158,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $text = array(array());
             $documentID = $_POST['documentId'];
             $questionIDs = pullQuestionsForDocumentOnly($documentID);
-            //asort($questionIDs);
-            //var_dump($questionIDs);
             $counter = 0;
             for ($i = sizeof($questionIDs) - 1; $i >= 0; $i--)
             {
@@ -191,5 +190,24 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $array[3] = $_POST['format'];
         }
         echo json_encode($array);
+    }
+    
+    public function searchkeywordAction()
+    {
+        $urlData = array();
+        $documentID = getAllDocumentsContainKeyword($_POST['keyword']);
+        $documentID = array_values(array_unique($documentID));
+        for ($i = 0; $i < sizeof($documentID); $i++)
+        {
+            $record = get_record_by_id('item', $documentID[$i]);
+            $file = $record->getFile();
+            if ($file != null)
+            {
+                 $urlData[] = $file->getProperty('uri');
+                 $urlData[] = $documentID[$i];
+                 $urlData[] = metadata($record, array('Dublin Core', 'Description'));
+            }
+        }
+        echo json_encode($urlData);
     }
 }
