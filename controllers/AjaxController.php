@@ -195,8 +195,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     public function searchkeywordAction()
     {
         $urlData = array();
-        $documentID = getAllDocumentsContainKeyword($_POST['keyword']);
-        $documentID = array_values(array_unique($documentID));
+        $x = getAllDocumentsContainKeyword($_POST['keyword']);
+        $documentID = array_values(array_unique($x));
         for ($i = 0; $i < sizeof($documentID); $i++)
         {
             $record = get_record_by_id('item', $documentID[$i]);

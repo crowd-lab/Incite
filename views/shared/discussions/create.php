@@ -23,7 +23,6 @@
                             optionTag.setAttribute("data-img-src", parsedData[i]);
                             optionTag.className = "thumbnail";
                             optionTag.value = parsedData[i + 1];
-                            
                             $("#document_icons").append(optionTag);
                         }                        
                         $("#document_icons").imagepicker();
@@ -35,6 +34,7 @@
                             $(this).attr("data-toggle","popover");
                             $(this).attr("data-trigger", "hover");
                             $(this).attr("data-content", "" + parsedData[count + 2]);
+                            $(this).attr("document-id", "" + parsedData[count + 1])
                             $(this).popover();
                             count += 3;
                             
@@ -68,7 +68,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="login-signup-dialog-label">Select References</h4>
+                    <h4 class="modal-title" id="select-references-label">Select References</h4>
                 </div>
                 <div class="modal-body">
                     <div class="tab-content">
@@ -122,12 +122,14 @@ include(dirname(__FILE__).'/../common/header.php');
 
                     <h4>References: </h4>
                     <div id="images" style="white-space: nowrap;">
+                        <!--
                         <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt=""/>
                         <input name="ref_1" type="hidden" value="doc_id1" />
                         <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
                         <input name="ref_2" type="hidden" value="doc_id2" />
                         <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
                         <input name="ref_3" type="hidden" value="doc_id3" />
+                        -->
                     </div>
                     <br>
                     <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Add Reference</button>
@@ -164,11 +166,50 @@ include(dirname(__FILE__).'/../common/header.php');
             $("#remove-button").hide();
         });
     function getSelectedOptions()
-    {
-        var delimValue = $("option:selected").map(function(){return this.value}).get().join(",");
-        selectedReferences = delimValue.split(',');
-        $("#remove-button").show();
+    {      
         
+        var delimValue = $("option:selected").map(function(){return $(this).val();}).get().join(",");
+        selectedReferences = delimValue.split(',');
+        for (var i = 1; i < selectedReferences.length; i++)
+        {
+            var didFind = false;
+            //do not add repeated references to images belt
+            if ($('#images').find('img').length > 0)
+            {
+                var currentReferenceString = "";
+                $('#images').find('img').each(function()
+                {
+                    currentReferenceString += $(this).attr('document-id') + ",";
+                });
+                var currentReferenceArray = currentReferenceString.split(',');
+                for (var j = 0; j < currentReferenceArray.length; j++)
+                {
+                    
+                    if (currentReferenceArray[j] == selectedReferences[i])
+                    {
+                        didFind = true;
+                        break;
+                    }
+                }
+            }
+            if (!didFind)
+            {
+                var imgTag = document.createElement('img');
+                imgTag.src = $('img[document-id="' + selectedReferences[i] + '"').attr('src');
+                imgTag.setAttribute('document-id', selectedReferences[i]);
+                imgTag.setAttribute('data-toggle', 'popover');
+                imgTag.setAttribute('data-trigger', 'hover');
+                imgTag.setAttribute('data-content', $('img[document-id="' + selectedReferences[i] + '"').attr('data-content'));
+                $('#images').append(imgTag);
+                $("img").each(function()
+                {
+                    $(this).css('width', '40px');
+                    $(this).css('height', '40px');
+                    $(this).popover();
+                });
+            }
+        }
+        $('#document-selector-dialog').modal('hide');
     }
 </script>
 
