@@ -26,6 +26,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
     <?php echo js_tag('date'); ?>
     <?php echo js_tag('notifIt'); ?>
     <?php echo js_tag('image-picker.min'); ?>
+    <?php echo js_tag('comments'); ?>
     <?php echo head_css(); ?>
 
 

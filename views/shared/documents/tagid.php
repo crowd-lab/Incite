@@ -5,6 +5,12 @@
     
     $category_object = getAllCategories();
     ?>
+    <script type="text/javascript">
+        $(function ()
+        {
+            getNewComments(<?php echo $this->tag->id; ?>);
+        });
+    </script>
     <!-- Page Content -->
     <div class="container">
         <div class="row">
@@ -73,23 +79,17 @@
             </form>
             <div id="container">
                 <h3> Discussion </h3>
-                <ul id="comments">
-                    <li class="cmmnt">
-<!--                            <div class="avatar"><a href="javascript:void(0);"><img src="images/dark-cubes.png" width="55" height="55" alt="DarkCubes photo avatar"></a></div>
-                        -->
-                        <div class="cmmnt-content">
-                            <header><a href="javascript:void(0);" class="userlink">DarkCubes</a> - <span class="pubdate">posted 1 week ago</span></header>
-                            <p>Ut nec interdum libero. Sed felis lorem, venenatis sed malesuada vitae, tempor vel turpis. Mauris in dui velit, vitae mollis risus. Cras lacinia lorem sit amet augue mattis vel cursus enim laoreet. Vestibulum faucibus scelerisque nisi vel sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pellentesque massa ac justo tempor eu pretium massa accumsan. In pharetra mattis mi et ultricies. Nunc vel eleifend augue. Donec venenatis egestas iaculis.</p>
-                        </div>
-                    </li>
-                </ul>
+                <div id="onLogin">
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
                     <textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default" id="">Submit</button>
+                    <button type="button" class="btn btn-default" onclick="submitComment(<?php echo $this->tag->id; ?>)">Submit</button>
                 <?php else: ?>
                     Please login or signup to join the discussion!
-                </div>
                 <?php endif; ?>
+                </div>
+                <ul id="comments">
+                </ul>
+            </div>
         </div> 
     </div>
 
@@ -116,6 +116,15 @@
         $("#show").click(function () {
             $("#document_img").show();
             $("#transcribe_copy").hide();
+        });
+        $(document).on('click', 'button', function (event)
+        {
+            if (event.target.name === "reply")
+            {
+                var NewContent = '<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event<?php echo ', '.$this->tag->id; ?>)" class="btn btn-default" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Submit</button></form>';
+                $("#" + event.target.id).after(NewContent);
+                $("#" + event.target.id).remove();
+            }
         });
     });
 
