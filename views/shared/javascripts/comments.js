@@ -1,7 +1,13 @@
 
-function getNewComments(documentId)
+var documentId = null;
+
+function getNewComments(docId)
 {
+    if (documentId == null && docId != null)
+        documentId = docId;
     //var documentId = <?php echo $this->transcription->id; ?>;
+
+    $('#comments').empty();
     var request = $.ajax({
         type: "POST",
         url: "http://localhost/m4j/incite/ajax/getcommentsdoc",
@@ -10,13 +16,9 @@ function getNewComments(documentId)
         {
             var commentsArray = JSON.parse(data);
 
-
             for (var i = 0; i < commentsArray.length; i++)
             {
-
                 var databaseDate = new Date(commentsArray[i]['question_timestamp']);
-
-
                 var format = compareDates(databaseDate);
                 var commentsArrayObject = {commentsArray};
                 var isSignedIn = $.ajax({

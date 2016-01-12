@@ -133,6 +133,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                             if (document.getElementById("onLogin") != null)
                                             {
                                                 $('#onLogin').load(document.URL + ' #onLogin');
+                                                getNewComments();
                                             }
                                         }
                                     })
@@ -173,8 +174,6 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             url: "http://localhost/m4j/incite/ajax/createaccount",
                             data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
                             success: function (data) {
-                                console.log('signup');
-                                console.log(data);
                                 if (data == "true")
                                 {
                                     alert("successful signup and login");
@@ -202,6 +201,13 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                             $('#login_modal').removeAttr('data-target');
                                             $('#login_modal')[0].setAttribute('onclick', 'logout()');
                                             $('#login_modal').prop('id', 'logout_button');
+
+
+                                            if (document.getElementById("onLogin") != null)
+                                            {
+                                                $('#onLogin').load(document.URL + ' #onLogin');
+                                                getNewComments();
+                                            }
 
                                         }
                                     })
@@ -243,6 +249,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     if (document.getElementById("onLogin") != null)
                     {
                         $('#onLogin').load(document.URL + ' #onLogin');
+                        getNewComments();
                     }
                 },
                 error: function (e) {
