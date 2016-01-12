@@ -59,7 +59,7 @@
                         <select class="category-select <?php echo ucwords(strtolower($entity['category'])); ?>"></select>
                     </td>
                     <td>
-                        <select class="subcategory-select <?php //echo implode(' ', $entity['subcategory']); ?>" multiple="multiple"></select>
+                        <select class="subcategory-select <?php echo implode(' ', $entity['subcategories']); ?>" multiple="multiple"></select>
                     </td>
                     <td>
                         <input class="form-control entity-details" type="text" value="<?php echo $entity['details']; ?>">
