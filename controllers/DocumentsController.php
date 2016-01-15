@@ -101,7 +101,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $userArray = $_SESSION['Incite']['USER_DATA'];
                     $GLOBALS['USERID'] = $userArray[0];
                 }
-                createTranscription($this->_getParam('id'), $GLOBALS['USERID'], $_POST['transcription'], $_POST['summary']);
+                createTranscription($this->_getParam('id'), $GLOBALS['USERID'], $_POST['transcription'], $_POST['summary'], $_POST['tone']);
                 $_SESSION['Incite']['previous_task'] = 'transcribe';
                 //Since we only need one copy now, we redirect the same user to next task of the same document.
                 $this->redirect('incite/documents/tag/' . $this->_getParam('id'));

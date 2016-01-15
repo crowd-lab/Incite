@@ -167,6 +167,7 @@ SQL
         `user_id`               int(11) NOT NULL,
         `transcribed_text`      varchar(20000) NOT NULL,
         `summarized_text`       varchar(1000) NOT NULL,
+        `tone`                  varchar(50) NOT NULL,
         `is_approved`           int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
         `timestamp_creation`    timestamp NOT NULL,
