@@ -61,6 +61,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         require_once("Incite_Users_Table.php");
         require_once("Incite_Questions_Table.php");
         require_once("Incite_Replies_Table.php");
+        require_once("Incite_Search.php");
         if (!DB_Connect::isLoggedIn()) {
             $GLOBALS['USERID'] = -1; //user is anonymous
         } else {
