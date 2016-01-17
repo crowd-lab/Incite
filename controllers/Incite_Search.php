@@ -75,4 +75,58 @@ function getAllDocumentsContainKeywords($keywords)
     return $item_ids;
 }
 
+function getSearchResultsViaGetQuery()
+{
+    $item_ids = array();
+    $further_search = true;
+    //Process location search
+    if ($further_search && isset($_GET['location']) && $_GET['location'] != "") {
+        $item_ids = getAllDocumentsContainLocation($_GET['location']);
+        if (count($item_ids) == 0)
+            $further_search = false;
+    }
+
+    //Process time search
+    if ($further_search && isset($_GET['time']) && $_GET['time'] != "") {
+        //format of time: "yyyy-mm-dd - yyyy-mm-dd"
+        $time_segs = explode(' - ', $_GET['time']);
+        if (count($time_segs) != 2) {
+            echo 'wrong time format';
+            die();
+        }
+        $start_time = $time_segs[0];
+        $end_time   = $time_segs[1];
+        if (count($item_ids) != 0)
+            $item_ids = array_intersect($item_ids, getAllDocumentsBetweenDates($start_time, $end_time));
+        else
+            $item_ids = getAllDocumentsBetweenDates($start_time, $end_time);
+
+        if (count($item_ids) == 0)
+            $further_search = false;
+    }
+
+    //Process keyword search
+    if ($further_search && isset($_GET['keywords']) && $_GET['keywords'] != "") {
+        $keywords = explode(' ', $_GET['keywords']);
+        if (count($item_ids) != 0)
+            $item_ids = array_intersect($item_ids, getAllDocumentsContainKeywords($keywords));
+        else
+            $item_ids = getAllDocumentsContainKeywords($keywords);
+
+        if (count($item_ids) == 0)
+            $further_search = false;
+    }
+
+    return $item_ids;
+}
+
+function isSearchQuerySpecifiedViaGet()
+{
+    return (isset($_GET['location']) && $_GET['location'] != "") ||
+           (isset($_GET['time']) && $_GET['time'] != "") ||
+           (isset($_GET['keyword']) && $_GET['keywords'] != "");
+}
+
+
 ?>
+

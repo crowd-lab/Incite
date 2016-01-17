@@ -136,9 +136,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $current_page = 1;
             if (isset($_GET['page']))
                 $current_page = $_GET['page'];
-            if (isset($_SESSION['Incite']['search']['final_items']))
-                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $_SESSION['Incite']['search']['final_items']), 0, 24);
-            else
+
+            if (isSearchQuerySpecifiedViaGet()) {
+                $searched_item_ids = getSearchResultsViaGetQuery();
+                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, 24);
+            } else
                 $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, 24);
 
             $max_records_to_show = 8;

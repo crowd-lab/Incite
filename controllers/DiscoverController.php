@@ -26,8 +26,10 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
             $_SESSION['Incite']['search'] = array();
             $item_ids = array();
             $is_search_used = false;
+            $query = "?";
             //Process location search
             if (isset($_GET['location']) && $_GET['location'] != "") {
+                $query .= (strlen($query) > 1 ? '&' : '').'location='.$_GET['location'];
                 $is_search_used = true;
                 $item_ids = getAllDocumentsContainLocation($_GET['location']);
                 $_SESSION['Incite']['search']['location'] = array('query' => $_GET['location'], 'item_ids' => $item_ids);
@@ -35,6 +37,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
 
             //Process time search
             if (isset($_GET['time']) && $_GET['time'] != "") {
+                $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time'];
                 $is_search_used = true;
                 $time_segs = explode(' - ', $_GET['time']);
                 if (count($time_segs) != 2) {
@@ -53,6 +56,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
 
             //Process keyword search
             if (isset($_GET['keywords']) && $_GET['keywords'] != "") {
+                $query .= (strlen($query) > 1 ? '&' : '').'keywords='.$_GET['keywords'];
                 $is_search_used = true;
                 $keywords = explode(' ', $_GET['keywords']);
                 if (count($item_ids) == 0)
@@ -69,20 +73,25 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
 
 
 
+            $redirect_action = '';
             //Go to the desired task based on the above result
 			if (isset($_GET['task'])) {
 				if ($_GET['task'] == "transcribe") {
-					$this->_redirect('/incite/documents/transcribe');
+                    $redirect_action = 'transcribe';
 				} else if ($_GET['task'] == "tag") {
-					$this->_redirect('/incite/documents/tag');
+                    $redirect_action = 'tag';
 				} else if ($_GET['task'] == "connect") {
-					$this->_redirect('/incite/documents/connect');
+                    $redirect_action = 'connect';
 				} else if ($_GET['task'] == "discuss") {
-					$this->_redirect('/incite/discussions');
+                    $redirect_action = 'discussions';
 				} else { //then...random! but currently need more transcriptions
-					$this->_redirect('/incite/documents/transcribe');
+                    $redirect_action = 'transcribe';
 				}
 			}
+            if (strlen($query) > 1)  //more than "?"
+                $this->_redirect('/incite/documents/'.$redirect_action.$query);
+            else
+                $this->_redirect('/incite/documents/'.$redirect_action);
 		}	
     }
 

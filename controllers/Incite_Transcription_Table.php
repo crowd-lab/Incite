@@ -231,6 +231,7 @@ function getDocumentsWithoutTranscription()
 {
     $db = DB_Connect::connectDB();
     $documents_with_transcription = array();
+    //document_id is actually item_id in omeka
     $stmt = $db->prepare("SELECT document_id FROM omeka_incite_transcriptions");
     $stmt->bind_result($result);
     $stmt->execute();
