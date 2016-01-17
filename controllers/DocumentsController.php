@@ -292,11 +292,19 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $current_page = 1;
             if (isset($_GET['page']))
                 $current_page = $_GET['page'];
+
+            if (isSearchQuerySpecifiedViaGet()) {
+                $searched_item_ids = getSearchResultsViaGetQuery();
+                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $searched_item_ids), 0, 24);
+            } else
+                $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
+            /*
             if (isset($_SESSION['Incite']['search']['final_items']))
                 $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $_SESSION['Incite']['search']['final_items']), 0, 24);
             else
                 $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
 
+            //*/
             $max_records_to_show = 8;
             $records_counter = 0;
             $records = array();
@@ -478,10 +486,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                 }
             }
+            if (isSearchQuerySpecifiedViaGet()) {
+                $searched_item_ids = getSearchResultsViaGetQuery();
+                $document_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, 24);
+            } else
+                $document_ids = array_slice(array_values($connectable_documents), 0, 24);
+            /*
             if (isset($_SESSION['Incite']['search']['final_items']))
                 $document_ids = array_slice(array_intersect(array_values($connectable_documents), $_SESSION['Incite']['search']['final_items']), 0, 24);
             else
                 $document_ids = array_slice(array_values($connectable_documents), 0, 24);
+            //*/
 
             $records = array();
             for ($i = 0; $i < count($document_ids); $i++) {
@@ -498,7 +513,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->total_pages = $total_pages;
             $this->view->current_page = $current_page;
 
-            //check if there is really exacit one image file for each item
+            //check if there is really exact one image file for each item
             if ($records != null) {
                 $this->view->assign(array('Connections' => $records));
             } else {
