@@ -20,6 +20,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         include("Incite_Replies_Table.php");
         include("Incite_Questions_Table.php");
         include("DiscoverController.php");
+        include("Incite_Search.php");
     }
     /**
      * Ajax function to check if a username and password does exist in the database and if they are valid.
