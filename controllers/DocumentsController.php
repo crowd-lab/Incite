@@ -131,7 +131,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //no such document so redirect to documents that need to be transcribed
                 $this->redirect('incite/documents/transcribe');
             }
-        } else {
+        } else {  //has_param
             //default: fetch documents that need to be transcribed
             $current_page = 1;
             if (isset($_GET['page']))
@@ -159,12 +159,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->current_page = $current_page;
 
             //Assign all documents that need to be transcribed to view!
-            if ($records != null) {
+            if ($records != null && count($records) > 0) {
                 $this->view->assign(array('Transcriptions' => $records));
             } else {
                 //no need to transcribe
-                echo 'no need to transcribe';
-                die();
+                $_SESSION['incite']['redirect'] = array(
+                        'status' => 'error', 
+                        'message' => 'Currently there is no document to transcribe. Please come back later. You will be redirected to homepage', 
+                        'url' => '/m4j/incite',
+                        'time' => '10');
+
+                $this->redirect('incite/documents/redirect');
             }
         }
     }
@@ -322,7 +327,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if ($records != null && count($records) > 0) {
                 $this->view->assign(array('Tags' => $records));
             } else {
-                //no need to transcribe
+                //no need to tag 
                 $_SESSION['incite']['redirect'] = array(
                         'status' => 'error', 
                         'message' => 'Currently there is no document to tag. Please come back later. You will be redirected to documents that need to be transcribed', 
@@ -467,7 +472,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //no such document
                 echo 'no such document';
             }
-        } else {
+        } else { //has_param
             //default view without id
 
             $all_tagged_documents = getAllTaggedDocuments();
@@ -519,10 +524,30 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->current_page = $current_page;
 
             //check if there is really exact one image file for each item
-            if ($records != null) {
+            if ($records != null && count($records) > 0) {
                 $this->view->assign(array('Connections' => $records));
             } else {
+                if (isSearchQuerySpecifiedViaGet()) {
+                    $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), getSearchResultsViaGetQuery()), 0, 24);
+                } else
+                    $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
+
+                if (count($document_ids) > 0) {
+                    $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be tagged';
+                    $url = '/m4j/incite/documents/tag';
+                } else {
+                    $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be transcribed';
+                    $url = '/m4j/incite/documents/transcribe';
+                }
+
                 //no need to transcribe
+                $_SESSION['incite']['redirect'] = array(
+                        'status' => 'error', 
+                        'message' => $message,
+                        'url' => $url,
+                        'time' => '10');
+
+                $this->redirect('incite/documents/redirect');
             }
         }
     }
