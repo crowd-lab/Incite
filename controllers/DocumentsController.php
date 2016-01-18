@@ -170,8 +170,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function tagAction() {
-
-
         if ($this->getRequest()->isPost()) {
             //save a tag to database
             if ($this->_hasParam('id')) {
@@ -287,7 +285,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //no such document
                 echo 'no such document';
             }
-        } else {
+        } else { //has_param
             //default view without id
             $current_page = 1;
             if (isset($_GET['page']))
@@ -321,10 +319,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
             }
 
-            if ($records != null) {
+            if ($records != null && count($records) > 0) {
                 $this->view->assign(array('Tags' => $records));
             } else {
                 //no need to transcribe
+                $_SESSION['incite']['redirect'] = array(
+                        'status' => 'error', 
+                        'message' => 'Currently there is no document to tag. Please come back later. You will be redirected to documents that need to be transcribed', 
+                        'url' => '/m4j/incite/documents/transcribe',
+                        'time' => '10');
+
+                $this->redirect('incite/documents/redirect');
             }
         }
     }
@@ -545,6 +550,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             } else {
                 //do something
             }
+        }//if has_param
+    }//discussAction()
+    public function redirectAction() {
+        if (isset($_SESSION['incite']['redirect'])) {
+            $this->view->redirect = $_SESSION['incite']['redirect'];
+            unset($_SESSION['incite']['redirect']);
+        } else {
+            //unknown error occur so we set default message
+            $this->view->redirect = array('status' => 'error', 
+                                          'message' => 'The server could not complete the request. You will be redirected to homepage', 
+                                          'url' => '/m4j/incite',
+                                          'time' => '5');
         }
     }
 }
