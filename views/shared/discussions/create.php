@@ -198,10 +198,12 @@ include(dirname(__FILE__).'/../common/header.php');
             selected_refs.each(function (idx) {
                 var doc_id = $(this).attr('data-id');
                 //if not referenced
-                var cur_doc = $(this);
-                var new_ref = $('<div class="col-md-1"><img style="width: 40px; height: 40px;" src="'+cur_doc.attr('data-uri')+'" data-id="'+cur_doc.attr('data-id')+'" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="'+cur_doc.attr('data-content')+'" data-title="'+cur_doc.attr('data-title')+'"></div>');
-                $('#references').append(new_ref);
-                new_ref.popover();
+                if ($('#references img[data-id='+doc_id+']').length == 0) {
+                    var cur_doc = $(this);
+                    var new_ref = $('<div class="col-md-2"><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+cur_doc.attr('data-uri')+'" data-id="'+cur_doc.attr('data-id')+'" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="'+cur_doc.attr('data-content')+'" data-title="'+cur_doc.attr('data-title')+'"></div>');
+                    $('#references').append(new_ref);
+                    new_ref.popover();
+                }
             });
             $('#references').append('<div class="clearfix"></div>');
         });
