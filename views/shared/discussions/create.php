@@ -62,7 +62,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
 </head>
 
-<body>
     <div class="modal fade" id="document-selector-dialog" tabindex="-1" role="dialog" aria-labelledby="document-selector-dialog-label">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -98,9 +97,23 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6" id="work-zone">
-            <div style="position: fixed; width: 35%;" id="work-view">
-            </div>
+        <div class="col-md-5 col-md-offset-1" id="work-zone">
+            <h3>Search Related References/Documents:</h3>
+            <form class="form-wrapper" method="post">
+                <div class="input-group col-md-11">
+                    <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+                <p>Results: </p>
+                <div id="search_results" class="col-md-11" style="background-color: #EBE5E5;">
+                    Results!
+                </div>
+                <br>
+                <br>
+                <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Add as Reference(s)</button>
+            </form>
         </div>
         <div class="col-md-5">
             <div class="row btn-group" data-toggle="buttons">
@@ -118,23 +131,12 @@ include(dirname(__FILE__).'/../common/header.php');
                     Title: <input name="title" type="text" style="margin-bottom: 10px;" id="search1" placeholder="How do Northerners vs Southerners write...." required>
                     <p>Content: </p>
                         <textarea name="content" rows="15" cols="75"> </textarea>
-
-
                     <h4>References: </h4>
                     <div id="images" style="white-space: nowrap;">
-                        <!--
-                        <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt=""/>
-                        <input name="ref_1" type="hidden" value="doc_id1" />
-                        <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
-                        <input name="ref_2" type="hidden" value="doc_id2" />
-                        <img src="https://www.gravatar.com/avatar/9f0fbed7dce3692d69b981b3b7bcbf40?s=32&d=identicon&r=PG&f=1" alt="" />
-                        <input name="ref_3" type="hidden" value="doc_id3" />
-                        -->
                     </div>
                     <br>
-                    <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Add Reference</button>
-                    
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Delete Selected Reference(s)</button>
+                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
                 </form>
             </div>
             <div class="row" id="content-2">
