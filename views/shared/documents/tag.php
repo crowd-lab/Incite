@@ -130,7 +130,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
 </script>
 
-<body onload="x();">
     <!-- Page Content -->
     <div class="container">
 
@@ -212,6 +211,7 @@ var tl = $('#timeline').jqtimeline({
                                 alert(event.desc);
                             }
                         });
+                x();
 
 });
 </script>

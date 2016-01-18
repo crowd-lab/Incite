@@ -4,7 +4,6 @@ include(dirname(__FILE__).'/../common/header.php');
 ?>
 
 
-<body>
 
 <h1><?php echo $this->redirect['message'].' in <span id="time">'.(isset($this->redirect['time']) ? $this->redirect['time'] : 10).'</span> seconds'; ?> (or you can click <a href="<?php echo $this->redirect['url']; ?>">here</a> to go now!)</h1>
 

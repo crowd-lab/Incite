@@ -129,7 +129,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
 </script>
 
-<body onload="x();">
     <!-- Page Content -->
     <div class="container">
 
@@ -199,34 +198,35 @@ include(dirname(__FILE__).'/../common/header.php');
 </div>
     <script type="text/javascript">
 
-    $('#map-div').ready( function (e) {
-        $('#map-div').height($('#map-div').width()/2);
-    });
+        $('#map-div').ready( function (e) {
+            $('#map-div').height($('#map-div').width()/2);
+        });
 
-$(document).ready( function (e) {
-    var ev = [
-<?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
-            {
-                id : <?php echo $i; ?>,
-                name : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Title')); ?>",
-                desc : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Description')); ?>",
-                on : new Date("<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Date')); ?>")
-            },
-<?php endfor; ?>
-    ]
+        $(document).ready( function (e) {
+            var ev = [
+        <?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
+                    {
+                        id : <?php echo $i; ?>,
+                        name : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Title')); ?>",
+                        desc : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Description')); ?>",
+                        on : new Date("<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Date')); ?>")
+                    },
+        <?php endfor; ?>
+            ]
 
-var tl = $('#timeline').jqtimeline({
-                            events : ev,
-							numYears: (1880-1845),
-							startYear: 1845,
-                            endYear: 1880,
-                            totalWidth: $('#timeline').width(),
-                            click:function(e,event){
-                                alert(event.desc);
-                            }
-                        });
+            var tl = $('#timeline').jqtimeline({
+                                    events : ev,
+                                    numYears: (1880-1845),
+                                    startYear: 1845,
+                                    endYear: 1880,
+                                    totalWidth: $('#timeline').width(),
+                                    click:function(e,event){
+                                        alert(event.desc);
+                                    }
+                                });
+            x();
 
-});
+        });
 </script>
 
 
