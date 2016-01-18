@@ -62,8 +62,9 @@
                         $("#search_results").empty();
                         var parsedData = JSON.parse(data);
                         $.each(parsedData, function (idx) {
-                            $('#search_results').append('<br><div><img style="width: 40px; height: 40px;" src="'+this.uri+'">'+this.title+' <span data-toggle="popover" data-trigger="hover" data-content="'+this.description+'"> (<u>summary</u>)</span></div><br>');
+                            $('#search_results').append('<br><div><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+this.uri+'"> '+this.title+' <span class="document_text" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+this.description+'" data-id="'+this.id+'" data-uri="'+this.uri+'" data-title="'+this.title+'"> (<u>summary</u>)</span></div><br>');
                         });
+                        $('#search_results').append('</select>');
                         $('#search_results span').each(function (idx) {
                             $(this).popover();
                         });
@@ -77,7 +78,8 @@
             }
         }
     </script>
-
+    <style>
+    </style>
 
     <?php
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'leaflet'));
@@ -136,11 +138,10 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
                 <p>Results: </p>
                 <div id="search_results" class="col-md-11" style="background-color: #EBE5E5;">
-                    Results!
                 </div>
                 <br>
                 <br>
-                <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Add as Reference(s)</button>
+                <button id="add_reference" type="button" class="btn btn-primary">Add Selected as Reference(s)</button>
             </form>
         </div>
         <div class="col-md-5">
@@ -160,7 +161,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <p>Content: </p>
                         <textarea name="content" rows="15" cols="75"> </textarea>
                     <h4>References: </h4>
-                    <div id="images" style="white-space: nowrap;">
+                    <div id="references" style="white-space: nowrap;">
                     </div>
                     <br>
                     <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Delete Selected Reference(s)</button>
@@ -188,6 +189,21 @@ include(dirname(__FILE__).'/../common/header.php');
                 e.preventDefault();
                 searchForDocuments2();
             }
+        });
+        $('#add_reference').on('click', function() {
+            //check if already referenced. If not, add it!
+            //var existing_refs = 
+            var selected_refs = $('#search_results input:checked').parent().find('span.document_text');
+            $('#references div.clearfix').remove()
+            selected_refs.each(function (idx) {
+                var doc_id = $(this).attr('data-id');
+                //if not referenced
+                var cur_doc = $(this);
+                var new_ref = $('<div class="col-md-1"><img style="width: 40px; height: 40px;" src="'+cur_doc.attr('data-uri')+'" data-id="'+cur_doc.attr('data-id')+'" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="'+cur_doc.attr('data-content')+'" data-title="'+cur_doc.attr('data-title')+'"></div>');
+                $('#references').append(new_ref);
+                new_ref.popover();
+            });
+            $('#references').append('<div class="clearfix"></div>');
         });
     });
     $('.btn-group .btn').on('click',function(){
