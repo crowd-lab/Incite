@@ -164,7 +164,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <div id="references" style="white-space: nowrap;">
                     </div>
                     <br>
-                    <button id="references_modal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#document-selector-dialog">Delete Selected Reference(s)</button>
+                    <button id="delete_reference" type="button" class="btn btn-primary">Delete Selected Reference(s)</button>
                     <button type="submit" class="btn btn-primary pull-right">Submit</button>
                 </form>
             </div>
@@ -206,6 +206,9 @@ include(dirname(__FILE__).'/../common/header.php');
                 }
             });
             $('#references').append('<div class="clearfix"></div>');
+        });
+        $('#delete_reference').on('click', function() {
+            var selected_refs = $('#references input:checked').parent().remove();
         });
     });
     $('.btn-group .btn').on('click',function(){
