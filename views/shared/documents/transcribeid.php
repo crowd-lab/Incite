@@ -40,11 +40,11 @@
             </div>
             <div class="col-md-6" id="submit-zone">
                 <form method="post" id="transcribe-form">
-                    <textarea name="transcription" rows="15" style="width: 100%;" placeholder="Transcription"></textarea>
-                    <textarea name="summary" rows="5" style="width: 100%;" placeholder="Summary"></textarea>
+                    <textarea id="transcription" name="transcription" rows="15" style="width: 100%;" placeholder="Transcription"></textarea>
+                    <textarea id="summary" name="summary" rows="5" style="width: 100%;" placeholder="Summary"></textarea>
                     <div class="form-group">
                         <label class="control-label">Tone of the document:</label>
-                        <select class="form-control" name="tone">
+                        <select id="tone" class="form-control" name="tone">
                             <option value=""></option>
                             <option value="anxiety">Anxiety</option>
                             <option value="optimism">Optimism</option>
@@ -53,7 +53,7 @@
                             <option value="aggression">Aggression</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-default">Done</button>
+                    <button id="submit_transcription" type="button" class="btn btn-default">Done</button>
                 </form>
 
                 <div id="container">
@@ -92,6 +92,22 @@
                     $("#" + event.target.id).after(NewContent);
                     $("#" + event.target.id).remove();
                 }
+            });
+
+            $('#submit_transcription').on('click', function(e) {
+                if ($('#transcription').val() === "") {
+                    alert('Transcription can not be empty');
+                    return;
+                }
+                if ($('#summary').val() === "") {
+                    alert('Summary can not be empty');
+                    return;
+                }
+                if ($('#tone').val() === "") {
+                    alert('Tone can not be empty');
+                    return;
+                }
+                $('#transcribe-form').submit();
             });
         });
 
