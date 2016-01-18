@@ -48,6 +48,34 @@
                 //clear selector
             }
         }
+        function searchForDocuments2()
+        {
+            var currentSearch = document.getElementById('search_query').value;
+            if (currentSearch !== "")
+            {
+                var request = $.ajax({
+                    type: "POST",
+                    url: "http://localhost/m4j/incite/ajax/searchkeyword2",
+                    data: {keyword: currentSearch},
+                    success: function(data)
+                    {
+                        $("#search_results").empty();
+                        var parsedData = JSON.parse(data);
+                        $.each(parsedData, function (idx) {
+                            $('#search_results').append('<br><div><img style="width: 40px; height: 40px;" src="'+this.uri+'">'+this.title+' <span data-toggle="popover" data-trigger="hover" data-content="'+this.description+'"> (<u>summary</u>)</span></div><br>');
+                        });
+                        $('#search_results span').each(function (idx) {
+                            $(this).popover();
+                        });
+                    }
+                });
+            }
+            else
+            {
+                $("#document_icons").empty();
+                //clear selector
+            }
+        }
     </script>
 
 
@@ -101,9 +129,9 @@ include(dirname(__FILE__).'/../common/header.php');
             <h3>Search Related References/Documents:</h3>
             <form class="form-wrapper" method="post">
                 <div class="input-group col-md-11">
-                    <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+                    <input type="text" class="form-control" placeholder="Search" name="srch-term" id="search_query">
                     <div class="input-group-btn">
-                        <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                        <button id="search_button" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
                 <p>Results: </p>
@@ -150,6 +178,18 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
     </div>
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#search_button').on('click', function() {
+            searchForDocuments2();
+        });
+        $('#search_query').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                searchForDocuments2();
+            }
+        });
+    });
     $('.btn-group .btn').on('click',function(){
         if($('input[name=options]:checked').val() == 'exist') {
             $("#content-2").hide(); 
