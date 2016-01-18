@@ -47,11 +47,18 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 <script>
+<?php
+    if (isset($_GET['time'])) {
+        $time_segs = explode(' - ', $_GET['time']);
+        $start_time = $time_segs[0];
+        $end_time   = $time_segs[1];
+    }
+?>
     $(document).ready(function () {
         $('#time_picker').daterangepicker({
             locale     : { format: 'YYYY-MM-DD'},
-            "startDate": "1830-01-01",   //could be dynamic or user's choice
-            "endDate"  : "1870-12-31",   //could be dynamic or user's choice
+            "startDate": "<?php echo (isset($start_time) ? $start_time : "1830-01-01"); ?>",   //could be dynamic or user's choice
+            "endDate"  : "<?php echo (isset($end_time) ? $end_time : "1870-12-31"); ?>",   //could be dynamic or user's choice
             "minDate"  : "1830-01-01",
             "maxDate"  : "1870-12-31",
             "opens"    : "center"
@@ -75,6 +82,8 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     usernameDiv.removeChild(x);
                 }
             });
+            $('#location').val("<?php echo (isset($_GET['location']) ? $_GET['location'] : ""); ?>");
+            $('#keywords').val("<?php echo (isset($_GET['keywords']) ? $_GET['keywords'] : ""); ?>");
         });
         $(document).ready(function () {
             $('#login-button').on('click', function (e) {
@@ -328,9 +337,9 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                 <ul class="nav navbar-nav">
                     <form class="navbar-form navbar-left" role="search" action="/m4j/incite/discover">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Location" name="location">
+                            <input id="location" type="text" class="form-control" placeholder="Location" name="location">
                             <input id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
-                            <input type="text" class="form-control" placeholder="Keywords" name="keywords">
+                            <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
                             <select class="form-control" name="task">
                                 <option value="random">Select a task</option>
                                 <option value="transcribe">Transcribe</option>
