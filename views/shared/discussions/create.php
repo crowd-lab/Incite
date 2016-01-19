@@ -159,7 +159,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <form class="form-wrapper" method="post">
                     Title: <input name="title" type="text" style="margin-bottom: 10px;" id="search1" placeholder="How do Northerners vs Southerners write...." required>
                     <p>Content: </p>
-                        <textarea name="content" rows="15" cols="75"> </textarea>
+                        <textarea name="content" style="width: 100%;" rows="10"> </textarea>
                     <h4>References: </h4>
                     <div id="references" style="white-space: nowrap;">
                     </div>
