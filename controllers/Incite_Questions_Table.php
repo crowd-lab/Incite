@@ -13,10 +13,10 @@ require_once("DB_Connect.php");
  * 4 --> General forum question, can tag multiple documents
  * @param type $question
  * @param type $user_id
- * @param type $document_id
+ * @param type $document_ids: references used in the question
  * @param type $type
  */
-function createQuestion($question, $user_id, $document_id, $type)
+function createQuestion($question, $user_id, $document_ids, $type)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_questions VALUES (DEFAULT, ?, ?, 1, CURRENT_TIMESTAMP, ?)");
@@ -26,14 +26,15 @@ function createQuestion($question, $user_id, $document_id, $type)
     $stmt->close();
     $db->close();
     $newdb = DB_Connect::connectDB();
-    for ($i = 0; $i < sizeof($document_id); $i++)
+    for ($i = 0; $i < sizeof($document_ids); $i++)
     {
-        $documentID = intval($document_id[$i]);
+        $documentID = intval($document_ids[$i]);
         $newstmt = $newdb->prepare("INSERT INTO omeka_incite_documents_questions_conjunction VALUES (DEFAULT, ?, ?)");
         $newstmt->bind_param("ii", $documentID, $insertedID);
         $newstmt->execute();
         $newstmt->close();
     }
+    return $insertedID;
 }
 
 function getAllQuestionsForUserID($user_id)
@@ -180,6 +181,7 @@ function getAllRepliesForQuestion($question_id)
     $idArray = array();
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_replies WHERE question_id = ? ORDER BY id");
+            print_r(explode(',', $_POST['references']));
     $stmt->bind_param("i", $question_id);
     $stmt->bind_result($id);
     $stmt->execute();

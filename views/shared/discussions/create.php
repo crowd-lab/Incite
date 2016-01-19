@@ -61,7 +61,7 @@
                     {
                         $("#search_results").empty();
                         var parsedData = JSON.parse(data);
-                        $('#number_of_results').text(" ("+parsedData.length+" document(s) found)");
+                        $('#result_info').text(" ("+parsedData.length+" document(s) found)");
                         $.each(parsedData, function (idx) {
                             $('#search_results').append('<br><div><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+this.uri+'"> '+this.title+' <span class="document_text" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+this.description+'" data-id="'+this.id+'" data-uri="'+this.uri+'" data-title="'+this.title+'"> (<u>summary</u>)</span></div><br>');
                         });
@@ -137,7 +137,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <button id="search_button" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
-                <p>Results: <span id="number_of_results"></span> </p>
+                <p>Results: <span id="result_info"></span> </p>
                 <div id="search_results" class="col-md-11" style="background-color: #EBE5E5;">
                 </div>
                 <br>
@@ -157,16 +157,17 @@ include(dirname(__FILE__).'/../common/header.php');
 
             <div class="row" id="content-1">
                 <h3>Create a New Discussion</h3>
-                <form class="form-wrapper" method="post">
-                    Title: <input name="title" type="text" style="margin-bottom: 10px;" id="search1" placeholder="How do Northerners vs Southerners write...." required>
+                <form id="discussion_form" class="form-wrapper" method="post">
+                    Title: <input id="discussion_title" name="title" type="text" style="margin-bottom: 10px; width: 100%;" id="search1" placeholder="How do Northerners vs Southerners write....">
                     <p>Content: </p>
-                        <textarea name="content" style="width: 100%;" rows="10"> </textarea>
+                        <textarea id="discussion_content" name="content" style="width: 100%;" rows="10" placeholder="Details of the discussion..."></textarea>
                     <h4>References: </h4>
                     <div id="references" style="white-space: nowrap;">
                     </div>
                     <br>
+                    <input type="hidden" id="discussion_references" name="references">
                     <button id="delete_reference" type="button" class="btn btn-primary">Delete Selected Reference(s)</button>
-                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                    <button id="submit_discussion" type="button" class="btn btn-primary pull-right">Submit</button>
                 </form>
             </div>
             <div class="row" id="content-2">
@@ -182,6 +183,33 @@ include(dirname(__FILE__).'/../common/header.php');
 <script type="text/javascript">
 
     $(document).ready(function () {
+        $('#discussion_title').on('keyup keypress', function(e) {
+            var code = e.keyCode || e.which;
+            if (code == 13) { 
+                e.preventDefault();
+                return false;
+            }
+        });
+        $('#submit_discussion').on('click', function(e) {
+            if ($('#discussion_title').val() === "") {
+                alert('The title of the discussion cannot be empty');
+                return;
+            }
+            if ($('#discussion_content').val() === "") {
+                alert('The content of the discussion cannot be empty');
+                return;
+            }
+
+            var refs = '';
+            $('#references .reference').each(function (idx) {
+                refs += this.dataset.id + ',';
+            });
+            if (refs.length > 0)
+                refs = refs.substring(0, refs.length-1);
+            $('#discussion_references').val(refs);
+            
+            $('#discussion_form').submit();
+        });
         $('#search_button').on('click', function() {
             searchForDocuments2();
         });
@@ -201,7 +229,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 //if not referenced
                 if ($('#references div[data-id='+doc_id+']').length == 0) {
                     var cur_doc = $(this);
-                    var new_ref = $('<div class="col-md-2" data-id="'+cur_doc.attr('data-id')+'" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="'+cur_doc.attr('data-content')+'" data-title="'+cur_doc.attr('data-title')+'"><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+cur_doc.attr('data-uri')+'"></div>');
+                    var new_ref = $('<div class="col-md-2 reference" data-id="'+cur_doc.attr('data-id')+'" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="'+cur_doc.attr('data-content')+'" data-title="'+cur_doc.attr('data-title')+'"><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+cur_doc.attr('data-uri')+'"></div>');
                     $('#references').append(new_ref);
                     new_ref.popover();
                 }
