@@ -61,6 +61,7 @@
                     {
                         $("#search_results").empty();
                         var parsedData = JSON.parse(data);
+                        $('#number_of_results').text(" ("+parsedData.length+" document(s) found)");
                         $.each(parsedData, function (idx) {
                             $('#search_results').append('<br><div><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+this.uri+'"> '+this.title+' <span class="document_text" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+this.description+'" data-id="'+this.id+'" data-uri="'+this.uri+'" data-title="'+this.title+'"> (<u>summary</u>)</span></div><br>');
                         });
@@ -136,7 +137,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <button id="search_button" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
-                <p>Results: </p>
+                <p>Results: <span id="number_of_results"></span> </p>
                 <div id="search_results" class="col-md-11" style="background-color: #EBE5E5;">
                 </div>
                 <br>
