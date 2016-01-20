@@ -57,8 +57,8 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                 $this->view->title = "Test Title!";
                 $this->view->discussions = array(array('id'=>1, 'username'=>'user1', 'content'=>'content1'),
                                                  array('id'=>2, 'username'=>'user2', 'content'=>'content2'));
-                $this->view->references  = array(array('id'=>1, 'uri'=>'http://localhost/m4j/files/original/9f26d259f721383a12a6ee670046ba12.jpg'),
-                                                 array('id'=>2, 'uri'=>'http://localhost/m4j/files/original/6bd33929bfa9813453cf6eda0cb57912.jpg'));
+                $this->view->references  = array(array('id'=>1, 'uri'=>'http://localhost/m4j/files/original/9f26d259f721383a12a6ee670046ba12.jpg', 'description'=>'des1'),
+                                                 array('id'=>2, 'uri'=>'http://localhost/m4j/files/original/6bd33929bfa9813453cf6eda0cb57912.jpg', 'description'=>'des2'));
 
                 //view probably needs the "discussion" and its references
             } else {

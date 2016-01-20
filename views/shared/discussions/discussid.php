@@ -79,7 +79,61 @@
             }
         }
     </script>
-    <style>
+    <style> 
+        .tabs-below > .nav-tabs,
+        .tabs-right > .nav-tabs,
+        .tabs-left > .nav-tabs {
+          border-bottom: 0;
+        }
+        
+        .tab-content > .tab-pane,
+        .pill-content > .pill-pane {
+          display: none;
+        }
+
+        .tab-content > .active,
+        .pill-content > .active {
+          display: block;
+        }
+
+        .tabs-below > .nav-tabs {
+          border-top: 1px solid #ddd;
+        }
+
+        .tabs-below > .nav-tabs > li {
+          margin-top: -1px;
+          margin-bottom: 0;
+        }
+
+        .tabs-below > .nav-tabs > li > a {
+          -webkit-border-radius: 0 0 4px 4px;
+             -moz-border-radius: 0 0 4px 4px;
+                  border-radius: 0 0 4px 4px;
+        }
+
+        .tabs-below > .nav-tabs > li > a:hover,
+        .tabs-below > .nav-tabs > li > a:focus {
+          border-top-color: #ddd;
+          border-bottom-color: transparent;
+        }
+
+        .tabs-below > .nav-tabs > .active > a,
+        .tabs-below > .nav-tabs > .active > a:hover,
+        .tabs-below > .nav-tabs > .active > a:focus {
+          border-color: transparent #ddd #ddd #ddd;
+        }
+
+        .reference-view {
+            width:100%;
+            overflow: scroll;
+        }
+
+        .nav-tabs > li .close {
+            margin: -3px 0 0 10px;
+            font-size: 18px;
+            padding: 5px 0;
+            float: right;
+        }
     </style>
 
     <?php
@@ -130,20 +184,12 @@ include(dirname(__FILE__).'/../common/header.php');
     <div class="row">
         <div class="col-md-5 col-md-offset-1" id="work-zone">
             <h3>Viewer for Reated References/Documents:</h3>
-            <form class="form-wrapper" method="post">
-                <div class="input-group col-md-11">
-                    <input type="text" class="form-control" placeholder="Search" name="srch-term" id="search_query">
-                    <div class="input-group-btn">
-                        <button id="search_button" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
-                    </div>
+            <div class="tabbable tabs-below" id="document-view">
+                <div class="tab-content" id="document-contents">
                 </div>
-                <p>Results: <span id="result_info"></span> </p>
-                <div id="search_results" class="col-md-11" style="background-color: #EBE5E5;">
-                </div>
-                <br>
-                <br>
-                <button id="add_reference" type="button" class="btn btn-primary">Add Selected as Reference(s)</button>
-            </form>
+                <ul class="nav nav-tabs" id="document-tabs">
+                </ul>
+            </div>
         </div>
         <div class="col-md-5">
             <div class="row btn-group" data-toggle="buttons">
@@ -170,7 +216,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <h4>References: </h4>
                     <div id="references" style="white-space: nowrap;">
 <?php foreach ((array) $this->references as $reference): ?>
-                        <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="test content" data-title="test title" data-placement="top" data-id="<?php echo $reference['id']; ?>">
+                        <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-title="test title" data-placement="top" data-id="<?php echo $reference['id']; ?>">
                             <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
                         </div>
 <? endforeach; ?>
@@ -193,6 +239,7 @@ include(dirname(__FILE__).'/../common/header.php');
 <script type="text/javascript">
 
     $(document).ready(function () {
+        $('.reference-view').height($(window).height()-$('#document-view').offset().top-$('#document-view ul.nav-tabs').height()-5); //-5 for buffer
         $('#discussion_title').on('keyup keypress', function(e) {
             var code = e.keyCode || e.which;
             if (code == 13) { 
@@ -252,8 +299,24 @@ include(dirname(__FILE__).'/../common/header.php');
         $('.reference').each(function (idx) {
             $(this).popover();
         });
+
         $('.reference').on('click', function (e) {
-            alert(this.dataset.id);
+            //case1: document is already in the viewer -> switch to the tab
+            //case2: document is not yet in the viewer -> add the document to the viewer
+            if ($('#doc-'+this.dataset.id).length <= 0) {
+                //Add tab
+                $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.id+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
+                //Add content
+                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">'+this.dataset.content+'</div>');
+                $('.reference-view').height($(window).height()-$('#document-view').offset().top-$('#document-view ul.nav-tabs').height()-5); //-5 for buffer
+            }
+            $('ul a[href=#doc-'+this.dataset.id+']').click();
+        });
+        $('#document-tabs').on('click', 'button.close', function (e) {
+            var content_id = $(this).parents('li').children('a').attr('href');
+            $(this).parents('li').remove();
+            $(content_id).remove();
+            $('#document-tabs a:last-child').click();
         });
     });
     $('.btn-group .btn').on('click',function(){
