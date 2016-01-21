@@ -183,12 +183,14 @@ include(dirname(__FILE__).'/../common/header.php');
     </div>
     <div class="row">
         <div class="col-md-5 col-md-offset-1" id="work-zone">
-            <h3>Viewer for Related References/Documents:</h3>
-            <div class="tabbable tabs-below" id="document-view">
-                <div class="tab-content" id="document-contents">
+            <div style="position: fixed;" id="work-view">
+                <h3 id="viewer-title">Viewer for Related References/Documents:</h3>
+                <div class="tabbable tabs-below" id="document-view">
+                    <div class="tab-content" id="document-contents">
+                    </div>
+                    <ul class="nav nav-tabs" id="document-tabs">
+                    </ul>
                 </div>
-                <ul class="nav nav-tabs" id="document-tabs">
-                </ul>
             </div>
         </div>
         <div class="col-md-5">
@@ -240,7 +242,7 @@ include(dirname(__FILE__).'/../common/header.php');
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('.reference-view').height($(window).height()-$('#document-view').offset().top-$('#document-view ul.nav-tabs').height()-5); //-5 for buffer
+        $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-view ul.nav-tabs').height()-35); //-35 for buffer
         $('#discussion_title').on('keyup keypress', function(e) {
             var code = e.keyCode || e.which;
             if (code == 13) { 
@@ -309,7 +311,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.id+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
                 //Add content
                 $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">'+this.dataset.transcription+'</div>');
-                $('.reference-view').height($(window).height()-$('#document-view').offset().top-$('#document-view ul.nav-tabs').height()-5); //-5 for buffer
+                $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-view ul.nav-tabs').height()-35); //-35 for buffer
             }
             $('ul a[href=#doc-'+this.dataset.id+']').click();
         });
@@ -319,6 +321,9 @@ include(dirname(__FILE__).'/../common/header.php');
             $(content_id).remove();
             $('#document-tabs a:last-child').click();
         });
+    });
+    $('#work-zone').ready(function() {
+        $('#work-view').width($('#work-zone').width());
     });
     $('.btn-group .btn').on('click',function(){
         if($('input[name=options]:checked').val() == 'exist') {
