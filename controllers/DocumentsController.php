@@ -474,8 +474,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $subject_related_documents = array();
                     if (count($subject_candidates) <= 0) {
                         //Need other method because there is no suggested subject
-                        echo 'no connection found!';
-                        die();
+                        $_SESSION['incite']['redirect'] = array(
+                                'status' => 'error_noConnection', 
+                                'message' => 'Unfortunately, no related documents were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results', 
+                                'url' => '/m4j/incite/documents/connect/',
+                                'time' => '10');
+
+                        $this->redirect('incite/documents/redirect');
+                        //echo 'no connection found!';
+                        //die();
                     } else {
                         for ($i = 0; $i < count($subject_candidates); $i++) {
                             if (!in_array($subject_candidates[$i]['subject'], $self_subjects)) {
