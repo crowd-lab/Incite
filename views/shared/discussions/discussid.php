@@ -183,7 +183,7 @@ include(dirname(__FILE__).'/../common/header.php');
     </div>
     <div class="row">
         <div class="col-md-5 col-md-offset-1" id="work-zone">
-            <h3>Viewer for Reated References/Documents:</h3>
+            <h3>Viewer for Related References/Documents:</h3>
             <div class="tabbable tabs-below" id="document-view">
                 <div class="tab-content" id="document-contents">
                 </div>
@@ -205,7 +205,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <h3><?php echo $this->title; ?></h3>
 <?php foreach ((array) $this->discussions as $discussion): ?>
                 <div style="margin: 10px; background-color: #AAAAAA; padding: 10px;">
-                    <b><?php echo $discussion['username']; ?>:</b><br>
+                    <b><?php echo $discussion['first_name']; ?>:</b><br>
                     <p><?php echo $discussion['content']; ?></p>
                 </div>
 
@@ -216,7 +216,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <h4>References: </h4>
                     <div id="references" style="white-space: nowrap;">
 <?php foreach ((array) $this->references as $reference): ?>
-                        <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-title="test title" data-placement="top" data-id="<?php echo $reference['id']; ?>">
+                        <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>">
                             <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
                         </div>
 <? endforeach; ?>
@@ -307,7 +307,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 //Add tab
                 $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.id+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
                 //Add content
-                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">'+this.dataset.content+'</div>');
+                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">'+this.dataset.transcription+'</div>');
                 $('.reference-view').height($(window).height()-$('#document-view').offset().top-$('#document-view ul.nav-tabs').height()-5); //-5 for buffer
             }
             $('ul a[href=#doc-'+this.dataset.id+']').click();

@@ -51,14 +51,32 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
     {
         if ($this->_hasParam('id')) {
             //Get discussion by given id from database
+            $this->_helper->db->setDefaultModelName('Item');
+            $discussion_id = $this->_getParam('id');
+            $discussion_title = getQuestionText($discussion_id);
+            $discussion_reply_ids = getAllRepliesForQuestion($discussion_id);
+            $discussion_reference_ids = getAllReferencedDocumentIdsForQuestion($discussion_id);
             $discussion_exists = true;
             if ($discussion_exists) {
                 $this->_helper->viewRenderer('discussid');
-                $this->view->title = "Test Title!";
-                $this->view->discussions = array(array('id'=>1, 'username'=>'user1', 'content'=>'content1'),
-                                                 array('id'=>2, 'username'=>'user2', 'content'=>'content2'));
-                $this->view->references  = array(array('id'=>1, 'uri'=>'http://localhost/m4j/files/original/9f26d259f721383a12a6ee670046ba12.jpg', 'description'=>'des1'),
-                                                 array('id'=>2, 'uri'=>'http://localhost/m4j/files/original/6bd33929bfa9813453cf6eda0cb57912.jpg', 'description'=>'des2'));
+                $this->view->title = $discussion_title;
+                $replies = array();
+                foreach ((array)$discussion_reply_ids as $reply_id) {
+                    $first_name = getUserDataID(getUserIdForReply($reply_id))[0];
+                    $replies[] = array('id' => $reply_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id));
+                }
+                $this->view->discussions = $replies;
+
+                $references = array();
+                foreach ((array)$discussion_reference_ids as $reference_id) {
+                    $record = $this->_helper->db->find($reference_id);
+                    $approved_transcriptions = getIsAnyTranscriptionApproved($reference_id);
+                    $transcription = "no transcription available";
+                    if ($approved_transcriptions != null) 
+                        $transcription = getTranscriptionText($approved_transcriptions[0]);
+                    $references[] = array('id' => $reference_id, 'uri' => $record->getFile()->getProperty('uri'), 'title' => metadata($record, array('Dublin Core', 'Title')), 'description' => metadata($record, array('Dublin Core', 'Description')), 'transcription' => $transcription);
+                }
+                $this->view->references = $references;
 
                 //view probably needs the "discussion" and its references
             } else {
