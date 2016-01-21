@@ -49,6 +49,9 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
 
 	public function discussAction()
     {
+        if ($this->getRequest()->isPost()) {
+            replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA'][0], $_POST['discussion_id'], array());
+        }
         if ($this->_hasParam('id')) {
             //Get discussion by given id from database
             $this->_helper->db->setDefaultModelName('Item');
@@ -57,6 +60,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
             $discussion_reply_ids = getAllRepliesForQuestion($discussion_id);
             $discussion_reference_ids = getAllReferencedDocumentIdsForQuestion($discussion_id);
             $discussion_exists = true;
+            $this->view->id = $discussion_id;
             if ($discussion_exists) {
                 $this->_helper->viewRenderer('discussid');
                 $this->view->title = $discussion_title;

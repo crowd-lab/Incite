@@ -223,6 +223,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <div class="clearfix"></div>
                     </div>
                     <br>
+                    <input type="hidden" name="discussion_id" value="<?php echo $this->id; ?>">
                     <button id="submit_discussion" type="button" class="btn btn-primary pull-right">Submit</button>
                 </form>
             </div>
