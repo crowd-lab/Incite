@@ -120,7 +120,7 @@ function getTimestamp($reply_id)
     $db->close();
     return $timestamp;
 }
-function getUserId($reply_id)
+function getUserIdForReply($reply_id)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT user_id FROM omeka_incite_replies WHERE id = ?");

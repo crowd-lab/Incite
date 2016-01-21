@@ -111,7 +111,7 @@ function getAllReferencedDocumentIdsForQuestion($question_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT document_id FROM omeka_incite_document_questions_conjunction WHERE question_id = ?");
+    $stmt = $db->prepare("SELECT document_id FROM omeka_incite_documents_questions_conjunction WHERE question_id = ?");
     $stmt->bind_param("i", $question_id);
     $stmt->bind_result($document_id);
     $stmt->execute();
@@ -181,7 +181,6 @@ function getAllRepliesForQuestion($question_id)
     $idArray = array();
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_replies WHERE question_id = ? ORDER BY id");
-            print_r(explode(',', $_POST['references']));
     $stmt->bind_param("i", $question_id);
     $stmt->bind_result($id);
     $stmt->execute();
