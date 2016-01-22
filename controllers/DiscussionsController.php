@@ -67,7 +67,8 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                 $this->view->title = $discussion_title;
                 $replies = array();
                 foreach ((array)$discussion_reply_ids as $reply_id) {
-                    $first_name = getUserDataID(getUserIdForReply($reply_id))[0];
+                    $userdata = getUserDataID(getUserIdForReply($reply_id));
+                    $first_name = $userdata[0];
                     $replies[] = array('id' => $reply_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id));
                 }
                 $this->view->discussions = $replies;
