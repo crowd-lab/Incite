@@ -161,7 +161,7 @@ function submitReply(event, documentId)
                type: "success",
                timeout: 2000
             });
-            document.getElementById('replyBox' + event.target.id.substring(6)).value = "";
+            //document.getElementById('replyBox' + event.target.id.substring(6)).value = "";
         }
     });
 }
@@ -184,6 +184,9 @@ function submitComment(documentId)
                timeout: 2000
             });
             document.getElementById('comment').value = "";
+        },
+        error: function (e) {
+            console.log(e);
         }
     })
 }

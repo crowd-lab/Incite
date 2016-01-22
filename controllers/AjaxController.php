@@ -192,7 +192,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $documentID = $_POST['documentId'];
             $text = $_POST['commentText'];
             $type = $_POST['type'];
-            createQuestion($text, $_SESSION['Incite']['USER_DATA'][0], array($documentID), $type);
+            createQuestion($text, $_SESSION['Incite']['USER_DATA']['id'], array($documentID), $type);
             return true;
         }
     }
@@ -203,7 +203,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $text = $_POST['replyText'];
             $questionID = $_POST['originalQuestionId'];
             $documentID = $_POST['documentId'];
-            replyToQuestion($text, $_SESSION['Incite']['USER_DATA'][0], $questionID, $documentID);
+            replyToQuestion($text, $_SESSION['Incite']['USER_DATA']['id'], $questionID, $documentID);
             return true;
         }
     }
@@ -224,7 +224,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     {
         if ($this->getRequest()->isPost())
         {
-            $text = array(array());
+            $text = array();
             $documentID = $_POST['documentId'];
             $questionIDs = pullQuestionsForDocumentOnly($documentID);
             $counter = 0;
@@ -241,7 +241,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
                 {
                     $text[$counter]['question_replies'][] = getReplyText(getAllRepliesForQuestion($questionIDs[$i])[$j]);
                     $text[$counter]['question_replies_timestamp'][] = getTimeStamp(getAllRepliesForQuestion($questionIDs[$i])[$j]);
-                    $text[$counter]['question_replies_user_data'][] = getUserDataID(getUserId(getAllRepliesForQuestion($questionIDs[$i])[$j]));
+                    $text[$counter]['question_replies_user_data'][] = getUserDataID(getUserIdForReply(getAllRepliesForQuestion($questionIDs[$i])[$j]));
                 }
                 $counter++;
             }
