@@ -174,11 +174,15 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             }
                         });
                     } else {
-                        alert('username and password are both required');
+                        alert('Username and Password are both required');
                     }
                 } else { //then #signup-tab is active
                     if ($('#newUsername').val() !== "" && $('#newPassword').val() !== "" && $('#confirmPassword').val() !== "" && $('#firstName').val !== "" && $('#lastName').val() !== "") {
                         //do signup
+                        if ($('#newPassword').val() !== $('#confirmPassword').val()) {
+                            alert('Password and Confirm Passowrd do not match!');
+                            return;
+                        }
                         var request = $.ajax({
                             type: "POST",
                             url: "http://localhost/m4j/incite/ajax/createaccount",
@@ -224,7 +228,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                     })
 
                                 } else if (data == "exists") {
-                                    alert("username already exists!");
+                                    alert("Username already exists!");
                                 } else {
                                     alert("Unable to Sign Up!");
                                 }
@@ -234,7 +238,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             }
                         });
                     } else {
-                        alert('all fields are required');
+                        alert('All fields are required');
                     }
                 }
             });
