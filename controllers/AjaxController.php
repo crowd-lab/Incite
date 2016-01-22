@@ -21,6 +21,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         include("Incite_Questions_Table.php");
         include("DiscoverController.php");
         include("Incite_Search.php");
+        require_once("Incite_System_Log.php");
+        require_once("Incite_Session.php");
     }
     /**
      * Ajax function to check if a username and password does exist in the database and if they are valid.
@@ -28,6 +30,32 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
      * If a guest account was being used previously, it is mapped to the logged in account
      */
     public function loginAction() {
+        if ($this->getRequest()->isPost()) {
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $isGuest = false;
+            $guestID = -1;
+            if (verifyUser($username, $password)) 
+            {
+                //If there is already a guest session, then combine the guest session with the verified user
+                if (isset($_SESSION['Incite']['Guest']) && $_SESSION['Incite']['Guest'] == true) {
+                    $guestID = $_SESSION['Incite']['USER_DATA']['id'];
+                    $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
+                    $_SESSION['Incite']['Guest'] = false;
+                    $_SESSION['Incite']['USER_DATA'] = getUserData($username);
+                    mapAccounts($guestID, $_SESSION['Incite']['USER_DATA']['id']);
+                } else {
+                    system_log('not a guest before login!');
+                }
+                echo 'true';
+            } 
+            else 
+            {
+                echo 'false';
+            }
+        }
+    }
+    public function loginoldAction() {
         if ($this->getRequest()->isPost()) {
             $username = $_POST['username'];
             $password = $_POST['password'];
@@ -78,6 +106,45 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $priv = $_POST['priv'];
             $exp = $_POST['exp'];
             $isGuest = false;
+            if (userExists($username)) {
+                echo 'exists';
+            } else if (createAccount($username, $password, $firstName, $lastName, $priv, $exp) != "failure") {
+                if (isset($_SESSION['Incite']['Guest']) && $_SESSION['Incite']['Guest'] == true) {
+                    $guestID = $_SESSION['Incite']['USER_DATA']['id'];
+                    $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
+                    $_SESSION['Incite']['Guest'] = false;
+                    $_SESSION['Incite']['USER_DATA'] = getUserData($username);
+                    mapAccounts($guestID, $_SESSION['Incite']['USER_DATA']['id']);
+                } else {
+                    system_log('not a guest before create account!');
+                }
+                echo 'true';
+                //success
+            } else {
+                system_log('failed to create account');
+                echo 'false';
+            }
+        }
+    }
+    /**
+     * Ajax function that creates accounts. This can be invoked in 2 ways
+     * 1) An action is done and the user is not logged in, an account is automatically created for said user.
+     * This account is a 'guest' account only meant for tracking any changes on the website
+     * 
+     * 2) The user wants to create an account on the website that is not a guest account. If a guest account was used,
+     * it is mapped back to the new account. On completion of making a new account, the user is automatically signed in.
+     * 
+     * This method will throw 'false' if an account already exists in the system
+     */
+    public function createaccountoldAction() {
+        if ($this->getRequest()->isPost()) {
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $firstName = $_POST['fName'];
+            $lastName = $_POST['lName'];
+            $priv = $_POST['priv'];
+            $exp = $_POST['exp'];
+            $isGuest = false;
             if (isset($_SESSION['Incite']) && isset($_SESSION['Incite']['USER_DATA']) && strpos($_SESSION['Incite']['USER_DATA'][1], "guest") !== false)
             {
                 //link guest and user accounts
@@ -107,6 +174,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
      */
     public function logoutAction() {
         $_SESSION['Incite'] = array();
+        setup_session();
         die();
     }
     /**

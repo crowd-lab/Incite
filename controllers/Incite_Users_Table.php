@@ -28,13 +28,31 @@ require_once("DB_Connect.php");
         $stmt->close();
         $db->close();
         if ($count == 1)
-        {
-            
             return true;
-        }
-        else
-        {
+        else if ($count == 0)
             return false;
+        else {
+            system_log('Incite_Users_Table:verifyUser:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
+        }
+        
+    }
+    function userExists($email)
+    {
+        $count = 0;
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $stmt->close();
+        $db->close();
+        if ($count == 1)
+            return true;
+        else if ($count == 0)
+            return false;
+        else {
+            system_log('Incite_Users_Table:userExists:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
         }
         
     }
@@ -280,11 +298,11 @@ require_once("DB_Connect.php");
             $stmt->bind_param("ssssii", $firstName, $lastName, $email, $hashedPassword, $privilege, $experienceLevel);
             $stmt->execute();
             $stmt->close();
-            return "Success";
+            return "success";
         }
         else
         {
-            return "Failure";
+            return "failure";
         }
     }
     /**
@@ -314,6 +332,15 @@ require_once("DB_Connect.php");
             $temp .= rand(0, 9);
         }
         return (int)$temp;
+    }
+    /**
+     * Generate a unique string by timestamps (microsecond). E.g. 0.738238001453434310
+     * anonymous cookie for unlogged-in users
+     * @return a 20-digit random string
+     */
+    function generateUniqueUserId()
+    {
+        return implode(explode(" ", microtime()));
     }
     
     function createGuestSession()

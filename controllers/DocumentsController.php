@@ -62,12 +62,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         require_once("Incite_Questions_Table.php");
         require_once("Incite_Replies_Table.php");
         require_once("Incite_Search.php");
-        if (!DB_Connect::isLoggedIn()) {
-            $GLOBALS['USERID'] = -1; //user is anonymous
-        } else {
-            $userArray = $_SESSION['Incite']['USER_DATA'];
-            $GLOBALS['USERID'] = $userArray[0];
-        }
+        require_once("Incite_Session.php");
+        setup_session();
     }
 
     public function indexAction() {
@@ -97,12 +93,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //save transcription and summary to database
             if ($this->_hasParam('id')) {
 
-                if ($GLOBALS['USERID'] == -1) {
-                    createGuestSession();
-                    $userArray = $_SESSION['Incite']['USER_DATA'];
-                    $GLOBALS['USERID'] = $userArray[0];
-                }
-                createTranscription($this->_getParam('id'), $GLOBALS['USERID'], $_POST['transcription'], $_POST['summary'], $_POST['tone']);
+                createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $_POST['transcription'], $_POST['summary'], $_POST['tone']);
                 $_SESSION['Incite']['previous_task'] = 'transcribe';
                 //Since we only need one copy now, we redirect the same user to next task of the same document.
                 //$this->redirect('incite/documents/tag/' . $this->_getParam('id'));
@@ -185,15 +176,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         if ($this->getRequest()->isPost()) {
             //save a tag to database
             if ($this->_hasParam('id')) {
-                if ($GLOBALS['USERID'] == -1) {
-                    createGuestSession();
-                    $userArray = $_SESSION['Incite']['USER_DATA'];
-                    $GLOBALS['USERID'] = $userArray[0];
-                }
                 $entities = json_decode($_POST["entities"], true);
                 removeAllTagsFromDocument($this->_getParam('id'));
                 for ($i = 0; $i < sizeof($entities); $i++) {
-                    createTag($GLOBALS['USERID'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
+                    createTag($_SESSION['Incite']['USER_DATA']['id'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
                 }
                 $_SESSION['Incite']['previous_task'] = 'tag';
                 //Since we only need one copy now, we redirect the same user to next task of the same document.
@@ -381,16 +367,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         if ($this->getRequest()->isPost()) {
             //save a connection to database
             if ($this->_hasParam('id')) {
-                if ($GLOBALS['USERID'] == -1) {
-                    createGuestSession();
-                    $userArray = $_SESSION['Incite']['USER_DATA'];
-                    $GLOBALS['USERID'] = $userArray[0];
-                }   //ready to connect subject to a document
-                $userID = -1;
                 if (isset($_POST['subject']) && $_POST['connection'] == 'true') {
-                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $userID, 1);
+                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 1);
                 } else if (isset($_POST['subject']) && $_POST['connection'] == 'false') {
-                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $userID, 0);
+                    addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 0);
                 } else {
                     
                 }
@@ -605,7 +585,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function discussAction() {
-        var_dump("hi");
         if ($this->hasParam($id)) {
             $this->_helper->db->setDefaultModelName('Item');
             $subjectConceptArray = getAllSubjectConcepts();

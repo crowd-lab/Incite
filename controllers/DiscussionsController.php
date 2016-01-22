@@ -18,7 +18,8 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
         include("Incite_Users_Table.php");
         include("Incite_Replies_Table.php");
         include("Incite_Questions_Table.php");
-        
+        require_once("Incite_Session.php");
+        setup_session();
     }
 
     public function indexAction()
@@ -50,7 +51,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
 	public function discussAction()
     {
         if ($this->getRequest()->isPost()) {
-            replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA'][0], $_POST['discussion_id'], array());
+            replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA']['id'], $_POST['discussion_id'], array());
         }
         if ($this->_hasParam('id')) {
             //Get discussion by given id from database
