@@ -212,22 +212,35 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
 
 <? endforeach; ?>
-                <form id="discussion_form" class="form-wrapper" method="post">
-                    <p>Reply: </p>
+                <div id="discussion_reply_form_container">
+                    <form id="discussion_form" class="form-wrapper" method="post">
+<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
+                        <p id="reply_title">Reply: </p>
                         <textarea id="discussion_content" name="content" style="width: 100%;" rows="5" placeholder="Your thoughts here..."></textarea>
-                    <h4>References: </h4>
-                    <div id="references" style="white-space: nowrap;">
+<?php else: ?>
+                        <p id="reply_title">Please login or signup to join the discussion!</p>
+                        <textarea id="discussion_content" name="content" style="width: 100%; display:none;" rows="5" placeholder="Your thoughts here..."></textarea>
+
+<?php endif; ?>
+                        <h4>References: </h4>
+                        <div id="references" style="white-space: nowrap;">
 <?php foreach ((array) $this->references as $reference): ?>
-                        <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>">
-                            <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
-                        </div>
+                            <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>">
+                                <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
+                            </div>
 <? endforeach; ?>
-                        <div class="clearfix"></div>
-                    </div>
-                    <br>
-                    <input type="hidden" name="discussion_id" value="<?php echo $this->id; ?>">
-                    <button id="submit_discussion" type="button" class="btn btn-primary pull-right">Submit</button>
-                </form>
+                            <div class="clearfix"></div>
+                        </div>
+                        <br>
+                        <input type="hidden" name="discussion_id" value="<?php echo $this->id; ?>">
+<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
+                        <button id="submit_discussion" type="button" class="btn btn-primary pull-right">Submit</button>
+<?php else: ?>
+                        <button id="submit_discussion" type="button" class="btn btn-primary pull-right" style="display:none;">Submit</button>
+<?php endif; ?>
+
+                    </form>
+                </div>
             </div>
             <div class="row" id="content-2">
                 <h3> Subjects of this document: <a href="">Nationalism</a>, 
@@ -250,7 +263,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 return false;
             }
         });
-        $('#submit_discussion').on('click', function(e) {
+        $(document).on('click', '#submit_discussion', function(e) {
             if ($('#discussion_title').val() === "") {
                 alert('The title of the discussion cannot be empty');
                 return;

@@ -145,6 +145,10 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                                 $('#onLogin').load(document.URL + ' #onLogin');
                                                 getNewComments();
                                             }
+                                            if (document.getElementById("discussion_reply_form_container") != null)
+                                            {
+                                                $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
+                                            }
                                         }
                                     })
 
@@ -223,6 +227,10 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                                 $('#onLogin').load(document.URL + ' #onLogin');
                                                 getNewComments();
                                             }
+                                            if (document.getElementById("discussion_reply_form_container") != null)
+                                            {
+                                                $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
+                                            }
 
                                         }
                                     })
@@ -266,6 +274,10 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     {
                         $('#onLogin').load(document.URL + ' #onLogin');
                         getNewComments();
+                    }
+                    if (document.getElementById("discussion_reply_form_container") != null)
+                    {
+                        $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
                     }
                 },
                 error: function (e) {
