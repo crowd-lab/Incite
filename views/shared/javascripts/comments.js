@@ -34,7 +34,6 @@ function getNewComments(docId)
 }
 function appendNewComment(dataArray)
 {
-    
     var parsedData = JSON.parse(dataArray);
     var commentsArray = parsedData[2];
     var format = parsedData[3];
@@ -66,20 +65,33 @@ function appendNewComment(dataArray)
             }
             string += "</ul>"
             dynamicDiv.innerHTML += (string + '<button type="button" name="reply" class="btn btn-default reply-comment" id="reply' + i + '" value="' + commentsArray[i]['question_id'] + '">Reply</button>');
-        } else
-        {
+        } else {
             dynamicDiv.innerHTML += '<button type="button" name="reply" class="btn btn-default reply-comment" id="reply' + i + '" value="' + commentsArray[i]['question_id'] + '">Reply</button>';
         }
 
         dynamicLi.appendChild(dynamicDiv);
         document.getElementById("comments").appendChild(dynamicLi);
-    } else
-    {
+    } else {
         var dynamicLi = document.createElement('li');
         dynamicLi.className = "cmmnt";
         var dynamicDiv = document.createElement('div');
         dynamicDiv.className = "cmmnt-content";
         dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+        if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
+        {
+            var string = "<ul><li><header><a href='javascript:void(0);' class='userlink'>";
+            for (var j = 0; j < commentsArrayReplies.length; j++)
+            {
+                var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
+                string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
+                if (j != commentsArrayReplies.length - 1)
+                {
+                    string += "<li><header><a href='javascript:void(0);' class='userlink'>";
+                }
+            }
+            string += "</ul>"
+            dynamicDiv.innerHTML += string;
+        }
         dynamicLi.appendChild(dynamicDiv);
         document.getElementById("comments").appendChild(dynamicLi);
     }
