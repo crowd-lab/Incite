@@ -56,6 +56,25 @@ require_once("DB_Connect.php");
         $stmt->close();
         $db->close();
         
+        $arr['id'] = $id;
+        $arr['first_name'] = $firstname;
+        $arr['last_name'] = $lastname;
+        $arr['privilege'] = $priv;
+        $arr['experience'] = $exp;
+        return $arr;
+    }
+    function getUserDataOld($email)
+    {
+        $arr = Array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT id, first_name, last_name, privilege_level, experience_level FROM omeka_incite_users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->bind_result($id, $firstname, $lastname, $priv, $exp);
+        $stmt->execute();
+        $stmt->fetch();
+        $stmt->close();
+        $db->close();
+        
         $arr[0] = $id;
         $arr[1] = $firstname;
         $arr[2] = $lastname;
