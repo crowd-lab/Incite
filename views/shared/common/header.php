@@ -129,7 +129,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
-                                            $('#welcome_message').text(dataArray[1]);
+                                            $('#welcome_message').text(dataArray['first_name']);
                                             $('#welcome_message').prop('href', "user_profile!");
                                             $('#welcome_message').prop('disabled', false);
                                             $('#welcome_message').prop('id', 'user_profile');
