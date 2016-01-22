@@ -94,7 +94,8 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             type: "POST",
                             url: "http://localhost/m4j/incite/ajax/login",
                             data: {"username": $('#username').val(), "password": $('#password').val()},
-                            success: function (data) {
+                            success: function (response) {
+                                data = response.trim();
                                 if (data == "true") {
                                     //alert("successful login");
                                     var loginDiv = document.getElementById("modal-footer");
@@ -182,7 +183,8 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             type: "POST",
                             url: "http://localhost/m4j/incite/ajax/createaccount",
                             data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
-                            success: function (data) {
+                            success: function (response) {
+                                data = response.trim();
                                 if (data == "true")
                                 {
                                     alert("successful signup and login");
@@ -221,7 +223,8 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                                         }
                                     })
 
-
+                                } else if (data == "exists") {
+                                    alert("username already exists!");
                                 } else {
                                     alert("Unable to Sign Up!");
                                 }
@@ -352,7 +355,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     </form>
                     <li> 
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-                        <button id="user_profile" type="button" class="btn btn-default"  href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA'][1]; //first name    ?></button>
+                        <button id="user_profile" type="button" class="btn btn-default"  href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA']['first_name']; //first name    ?></button>
                         <button id="logout_button" type="button" class="btn btn-default" onclick="logout()">Logout</button>
                 <?php else: ?>
                         <button id="welcome_message" type="button" class="btn btn-default" disabled>Welcome Guest</button>
