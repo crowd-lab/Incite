@@ -357,19 +357,17 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                     <form class="navbar-form navbar-left" role="search" action="/m4j/incite/discover">
                         <div class="form-group">
                             <input id="location" type="text" class="form-control" placeholder="Location" name="location">
-                            <input id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
+                            <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
                             <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
                             <select class="form-control" name="task">
                                 <option value="random">Select a task</option>
-                                <option value="transcribe"<?php if ($task == "transcribe") echo ' selected'; ?>>Transcribe</option>
-                                <option value="tag"<?php if ($task == "tag") echo ' selected'; ?>>Tag</option>
-                                <option value="connect"<?php if ($task == "connect") echo ' selected'; ?>>Connect</option>
-                                <option value="discuss"<?php if ($task == "discuss") echo ' selected'; ?>>Discuss</option>
+                                <option value="transcribe">Transcribe</option>
+                                <option value="tag">Tag</option>
+                                <option value="connect">Connect</option>
+                                <option value="discuss">Discuss</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-default">Discover</button>
-                    </form>
-                    <li> 
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                         <button id="user_profile" type="button" class="btn btn-default"  href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA']['first_name']; //first name    ?></button>
                         <button id="logout_button" type="button" class="btn btn-default" onclick="logout()">Logout</button>
@@ -378,6 +376,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                         <button id="login_modal" type="button" class="btn btn-default" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>
 
                 <?php endif; ?>
+                    </form>
                 </ul>
 
 
