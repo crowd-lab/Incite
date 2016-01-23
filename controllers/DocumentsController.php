@@ -309,8 +309,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if (isSearchQuerySpecifiedViaGet()) {
                 $searched_item_ids = getSearchResultsViaGetQuery();
                 $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $searched_item_ids), 0, 24);
-            } else
+                $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+            } else {
                 $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
+                $this->view->query_str = "";
+            }
             /*
             if (isset($_SESSION['Incite']['search']['final_items']))
                 $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $_SESSION['Incite']['search']['final_items']), 0, 24);
