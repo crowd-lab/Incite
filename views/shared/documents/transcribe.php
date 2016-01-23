@@ -129,61 +129,39 @@ include(dirname(__FILE__).'/../common/header.php');
 
 </script>
 
-<!--
-<?php $cf = 1; ?>
+    <!-- Page Content -->
+    <div id="map-div" style="width:500px;"></div>
+    <!-- <div id="list-view" style="width: 100px; float: left;"> -->
+    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 300px; height: 500px; background-color: white;">
+        <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
+        <br>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
         <div style="margin: 15px;">
-            <div style="height: 45px; width:45px; float: left;">
+            <div style="height: 40px; width:40px; float: left;">
                     <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
                     <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                     </a>
             </div>
-            <div style="height: 45px; width:225px; float: left;">
+            <div style="height: 40px; width:250px;">
                 <p style=""><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></p>
             </div>
         </div>
-    <?php if ($cf > 0 && $cf % 2 == 0): ?>
-    <?php endif; ?>
-    <?php $cf++; ?>
-<?php endforeach; ?>
-            </div>
+<? endforeach; ?>
+        <div id="pagination-bar" class="text-center">
+            <nav>
+              <ul class="pagination">
+                <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+    <?php for ($i = 0; $i < $this->total_pages; $i++): ?>
+                <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
+    <?php endfor; ?>
+                <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+              </ul>
+            </nav>
         </div>
--->
-    <!-- Page Content -->
-    <div id="map-div" style="width:500px;"></div>
-    <!-- <div id="list-view" style="width: 100px; float: left;"> -->
-    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 300px; height: 500px; border: 1px solid; background-color: white;">
-        <div id="list-view-switch" style="cursor: pointer; border:2px solid; float: left;">Show</div>
     </div>
     <div id="timeline" class="col-md-8"></div>
-    <div class="col-md-4 text-center">
-        <nav>
-          <ul class="pagination">
-            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-<?php for ($i = 0; $i < $this->total_pages; $i++): ?>
-            <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
-<?php endfor; ?>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-          </ul>
-        </nav>
-    </div>
-    </div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
-<!--
-<?php foreach ((array)$this->Transcriptions as $transcription): ?>
-    <div class="col-md-4">
-        <div class="thumbnail">
-             <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
-                <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 300px; height: 300px;">
-            </a>
-            <h3 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h3>
-            <p style="text-align: center;"> <?php echo metadata($transcription, array('Dublin Core', 'Description')); ?> </p>
-            <p style="text-align: center;"> <?php echo metadata($transcription, array('Item Type Metadata', 'Location')); ?> </p>
-        </div>
-    </div>
-<?php endforeach; ?>
--->
                      
 </div>
     <script type="text/javascript">
