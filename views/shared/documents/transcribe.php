@@ -129,41 +129,31 @@ include(dirname(__FILE__).'/../common/header.php');
 
 </script>
 
-    <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-             
-        </div>
-        <!-- /.row -->
-
-        <div class="row">
-            <p style="margin-left:0.5em;  display:inline-block;">Sort by: <a href="">completion</a>-<a href="">types</a>-<a href="">time</a>-<a href="">last updated</a> 
-                <form style=" display:inline-block; margin-left:27em;" action="">
-                        <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
-                </form>
-            </p>
-
-
-    <div id="map-div" class="col-md-8"></div>
-    <div class="col-md-4">
+<!--
 <?php $cf = 1; ?>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
-        <div class="col-md-12">
-            <div class="col-md-3">
+        <div style="margin: 15px;">
+            <div style="height: 45px; width:45px; float: left;">
                     <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
                     <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                     </a>
             </div>
-            <div class="col-md-9">
+            <div style="height: 45px; width:225px; float: left;">
                 <p style=""><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></p>
             </div>
         </div>
     <?php if ($cf > 0 && $cf % 2 == 0): ?>
-        <div class="clearfix"></div>
     <?php endif; ?>
     <?php $cf++; ?>
 <?php endforeach; ?>
+            </div>
+        </div>
+-->
+    <!-- Page Content -->
+    <div id="map-div" style="width:500px;"></div>
+    <!-- <div id="list-view" style="width: 100px; float: left;"> -->
+    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 300px; height: 500px; border: 1px solid; background-color: white;">
+        <div id="list-view-switch" style="cursor: pointer; border:2px solid; float: left;">Show</div>
     </div>
     <div id="timeline" class="col-md-8"></div>
     <div class="col-md-4 text-center">
@@ -197,12 +187,38 @@ include(dirname(__FILE__).'/../common/header.php');
                      
 </div>
     <script type="text/javascript">
+        function showListView() {
+            $('#list-view').animate({ left: $(window).width()-$('#list-view').width() }, 'slow', function() {
+                $('#list-view-switch').html('Hide');
+            });
+            $(this).one("click", hideListView);
+        }
+        
+        function hideListView() {
+            $('#list-view').animate({ left: $(window).width()-$('#list-view-switch').width()-5 }, 'slow', function() {
+                $('#list-view-switch').html('Show');
+            });
+            $(this).one("click", showListView);
+        }
 
         $('#map-div').ready( function (e) {
-            $('#map-div').height($('#map-div').width()/2);
+            $('#map-div').height($(window).height()-200);
         });
 
         $(document).ready( function (e) {
+            $('#map-div').width($(window).width());
+            document.getElementById('list-view').style.top = ($('#map-div').offset().top+20)+'px';
+            document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
+            document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+            $(window).on('resize', function(e) {
+                $('#map-div').width($(window).width());
+                $('#map-div').height($(window).height()-200);
+                document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
+                document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+                //$('#list-view').width($(window).width()*0.15);
+            });
+            $('#list-view-switch').one('click', showListView);
+
             var ev = [
         <?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
                     {
