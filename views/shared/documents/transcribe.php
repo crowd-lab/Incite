@@ -131,7 +131,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
     <!-- Page Content -->
     <div id="map-div" style="width:500px;"></div>
-    <!-- <div id="list-view" style="width: 100px; float: left;"> -->
     <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 300px; height: 500px; background-color: white;">
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
@@ -163,7 +162,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
                      
-</div>
+    </div>
     <script type="text/javascript">
         var ev, tl;
             ev = [
@@ -175,7 +174,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         on : new Date("<?php echo trim(metadata($this->Transcriptions[$i], array('Dublin Core', 'Date'))); ?>")
                     },
         <?php endfor; ?>
-            ]
+            ];
         function showListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view').width() }, 'slow', function() {
                 $('#list-view-switch').html('Hide');

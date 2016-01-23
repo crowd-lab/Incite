@@ -174,7 +174,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     on : new Date("<?php echo metadata($this->Tags[$i], array('Dublin Core', 'Date')); ?>")
                 },
 <?php endfor; ?>
-        ]
+        ];
         function showListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view').width() }, 'slow', function() {
                 $('#list-view-switch').html('Hide');
