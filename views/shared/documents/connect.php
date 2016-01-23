@@ -131,86 +131,99 @@ include(dirname(__FILE__).'/../common/header.php');
 </script>
 
     <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-             
-        </div>
-        <!-- /.row -->
-
-        <div class="row">
-            <p style="margin-left:0.5em;  display:inline-block;">Sort by: <a href="">completion</a>-<a href="">types</a>-<a href="">time</a>-<a href="">last updated</a> 
-                <form style=" display:inline-block; margin-left:27em;" action="">
-                        <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
-                </form>
-            </p>
-
-
-    <div id="map-div" class="col-md-8"></div>
-    <div class="col-md-4">
-<?php $cf = 1; ?>
+    <div id="map-div" style="width:500px;"></div>
+    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 300px; height: 500px; background-color: white;">
+        <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
+        <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
-        <div class="col-md-12">
-            <div class="col-md-3">
+        <div style="margin: 10px;">
+            <div style="height: 40px; width:40px; float: left;">
                     <a href="<?php echo 'connect/'.$connection->id; ?>">
                     <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                     </a>
             </div>
-            <div class="col-md-9">
+            <div style="height: 40px; width:250px;">
                 <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>
             </div>
         </div>
-    <?php if ($cf > 0 && $cf % 2 == 0): ?>
-        <div class="clearfix"></div>
-    <?php endif; ?>
-    <?php $cf++; ?>
-<?php endforeach; ?>
+<? endforeach; ?>
+        <div id="pagination-bar" class="text-center">
+            <nav>
+              <ul class="pagination">
+                <li class="<?php echo ($this->current_page == 1 ? "disabled" : ""); ?>"><a href="?page=<?php echo $this->current_page-1; ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+    <?php for ($i = 0; $i < $this->total_pages; $i++): ?>
+                <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
+    <?php endfor; ?>
+                <li class="<?php echo ($this->total_pages == $this->current_page ? "disabled" : ""); ?>"><a href="?page=<?php echo $this->current_page+1; ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+              </ul>
+            </nav>
+        </div>
     </div>
-    <div id="timeline" class="col-md-8"></div>
-    <div class="col-md-4 text-center">
-        <nav>
-          <ul class="pagination">
-            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-<?php for ($i = 0; $i < $this->total_pages; $i++): ?>
-            <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
-<?php endfor; ?>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-          </ul>
-        </nav>
-    </div>
-    </div>
+    <div id="timeline"></div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
                      
 </div>
     <script type="text/javascript">
-
-    $('#map-div').ready( function (e) {
-        $('#map-div').height($('#map-div').width()/2);
-    });
-
-$(document).ready( function (e) {
-    var ev = [
+            var ev = [
 <?php for ($i = 0; $i < count($this->Connections); $i++): ?>
-            {
-                id : <?php echo $i; ?>,
-                name : "<?php echo metadata($this->Connections[$i], array('Dublin Core', 'Title')); ?>",
-                desc : "<?php echo metadata($this->Connections[$i], array('Dublin Core', 'Description')); ?>",
-                on : new Date("<?php echo metadata($this->Connections[$i], array('Dublin Core', 'Date')); ?>")
-            },
+                {
+                    id : <?php echo $i; ?>,
+                    name : "<?php echo metadata($this->Connections[$i], array('Dublin Core', 'Title')); ?>",
+                    desc : "<?php echo metadata($this->Connections[$i], array('Dublin Core', 'Description')); ?>",
+                    on : new Date("<?php echo metadata($this->Connections[$i], array('Dublin Core', 'Date')); ?>")
+                },
 <?php endfor; ?>
-    ]
+            ];
+        function showListView() {
+            $('#list-view').animate({ left: $(window).width()-$('#list-view').width() }, 'slow', function() {
+                $('#list-view-switch').html('Hide');
+            });
+            $(this).one("click", hideListView);
+        }
+        
+        function hideListView() {
+            $('#list-view').animate({ left: $(window).width()-$('#list-view-switch').width()-5 }, 'slow', function() {
+                $('#list-view-switch').html('Show');
+            });
+            $(this).one("click", showListView);
+        }
+        
+        function buildTimeLine(evt) {
+            $('#timeline').empty();
+            tl = $('#timeline').jqtimeline({
+                                    events : evt,
+                                    numYears: (1880-1845),
+                                    startYear: 1845,
+                                    endYear: 1880,
+                                    totalWidth: $('#timeline').width(),
+                                    click:function(e,event){
+                                        alert(event.desc);
+                                    }});
+        }
 
-var tl = $('#timeline').jqtimeline({
-                            events : ev,
-							numYears: (1880-1845),
-							startYear: 1845,
-                            endYear: 1880,
-                            totalWidth: $('#timeline').width(),
-                            click:function(e,event){
-                                alert(event.desc);
-                            }
-                        });
+        $('#map-div').ready( function (e) {
+            $('#map-div').height($(window).height()-200);
+        });
+
+        $(document).ready( function (e) {
+            $('#map-div').width($(window).width());
+            $('#timeline').width($(window).width()-30);
+            document.getElementById('list-view').style.top = ($('#map-div').offset().top+20)+'px';
+            document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
+            document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+            buildTimeLine(ev);
+            $(window).on('resize', function(e) {
+                $('#map-div').width($(window).width());
+                $('#timeline').width($(window).width()-30);
+                $('#map-div').height($(window).height()-200);
+                document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
+                document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+                buildTimeLine(ev);
+                //$('#list-view').width($(window).width()*0.15);
+            });
+            $('#list-view-switch').one('click', showListView);
+
             x();
 
 });
