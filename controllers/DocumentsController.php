@@ -138,8 +138,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if (isSearchQuerySpecifiedViaGet()) {
                 $searched_item_ids = getSearchResultsViaGetQuery();
                 $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, 24);
-            } else
+                $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+            } else {
                 $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, 24);
+                $this->view->query_str = "";
+            }
 
             $max_records_to_show = 8;
             $total_pages = ceil(count($document_ids) / $max_records_to_show);
