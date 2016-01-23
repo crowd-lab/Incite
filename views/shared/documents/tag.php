@@ -107,6 +107,7 @@ function loc_to_lat_long($loc_str)
 <!DOCTYPE html>
 <html lang="en">
 <?php
+$task = "tag";
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
