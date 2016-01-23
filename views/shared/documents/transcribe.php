@@ -170,9 +170,9 @@ include(dirname(__FILE__).'/../common/header.php');
         <?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
                     {
                         id : <?php echo $i; ?>,
-                        name : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Title')); ?>",
-                        desc : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Description')); ?>",
-                        on : new Date("<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Date')); ?>")
+                        name : "<?php echo trim(metadata($this->Transcriptions[$i], array('Dublin Core', 'Title'))); ?>",
+                        desc : "<?php echo trim(metadata($this->Transcriptions[$i], array('Dublin Core', 'Description'))); ?>",
+                        on : new Date("<?php echo trim(metadata($this->Transcriptions[$i], array('Dublin Core', 'Date'))); ?>")
                     },
         <?php endfor; ?>
             ]
