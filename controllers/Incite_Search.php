@@ -127,6 +127,26 @@ function isSearchQuerySpecifiedViaGet()
            (isset($_GET['keyword']) && $_GET['keywords'] != "");
 }
 
+function getSearchQuerySpecifiedViaGetAsString()
+{
+    $query = "";
+    if (isset($_GET['location']) && $_GET['location'] != "")
+        $query .= 'location='.$_GET['location'];
+
+    if (isset($_GET['time']) && $_GET['time'] != "")
+        if ($query == "")
+            $query .= 'time='.$_GET['time'];
+        else
+            $query .= '&time='.$_GET['time'];
+
+    if (isset($_GET['keywords']) && $_GET['keywords'] != "")
+        if ($query == "")
+            $query .= 'keywords='.$_GET['keywords'];
+        else
+            $query .= '&keywords='.$_GET['keywords'];
+
+    return $query;
+}
 
 ?>
 
