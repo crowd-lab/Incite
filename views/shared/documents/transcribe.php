@@ -136,7 +136,7 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
-        <div style="margin: 15px;">
+        <div style="margin: 10px;">
             <div style="height: 40px; width:40px; float: left;">
                     <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
                     <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
@@ -159,12 +159,23 @@ include(dirname(__FILE__).'/../common/header.php');
             </nav>
         </div>
     </div>
-    <div id="timeline" class="col-md-8"></div>
+    <div id="timeline"></div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
                      
 </div>
     <script type="text/javascript">
+        var ev, tl;
+            ev = [
+        <?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
+                    {
+                        id : <?php echo $i; ?>,
+                        name : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Title')); ?>",
+                        desc : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Description')); ?>",
+                        on : new Date("<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Date')); ?>")
+                    },
+        <?php endfor; ?>
+            ]
         function showListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view').width() }, 'slow', function() {
                 $('#list-view-switch').html('Hide');
@@ -178,6 +189,19 @@ include(dirname(__FILE__).'/../common/header.php');
             });
             $(this).one("click", showListView);
         }
+        
+        function buildTimeLine(evt) {
+            $('#timeline').empty();
+            tl = $('#timeline').jqtimeline({
+                                    events : evt,
+                                    numYears: (1880-1845),
+                                    startYear: 1845,
+                                    endYear: 1880,
+                                    totalWidth: $('#timeline').width(),
+                                    click:function(e,event){
+                                        alert(event.desc);
+                                    }});
+        }
 
         $('#map-div').ready( function (e) {
             $('#map-div').height($(window).height()-200);
@@ -185,39 +209,23 @@ include(dirname(__FILE__).'/../common/header.php');
 
         $(document).ready( function (e) {
             $('#map-div').width($(window).width());
+            $('#timeline').width($(window).width()-30);
             document.getElementById('list-view').style.top = ($('#map-div').offset().top+20)+'px';
             document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
             document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+            buildTimeLine(ev);
             $(window).on('resize', function(e) {
                 $('#map-div').width($(window).width());
+                $('#timeline').width($(window).width()-30);
                 $('#map-div').height($(window).height()-200);
                 document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
                 document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+                buildTimeLine(ev);
                 //$('#list-view').width($(window).width()*0.15);
             });
             $('#list-view-switch').one('click', showListView);
 
-            var ev = [
-        <?php for ($i = 0; $i < count($this->Transcriptions); $i++): ?>
-                    {
-                        id : <?php echo $i; ?>,
-                        name : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Title')); ?>",
-                        desc : "<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Description')); ?>",
-                        on : new Date("<?php echo metadata($this->Transcriptions[$i], array('Dublin Core', 'Date')); ?>")
-                    },
-        <?php endfor; ?>
-            ]
 
-            var tl = $('#timeline').jqtimeline({
-                                    events : ev,
-                                    numYears: (1880-1845),
-                                    startYear: 1845,
-                                    endYear: 1880,
-                                    totalWidth: $('#timeline').width(),
-                                    click:function(e,event){
-                                        alert(event.desc);
-                                    }
-                                });
             x();
 
         });

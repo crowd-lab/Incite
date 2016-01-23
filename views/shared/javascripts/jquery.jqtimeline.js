@@ -162,8 +162,13 @@
 		var yn = d.getFullYear() - _this.options.startYear;
 		var mn = d.getMonth();
 		var totalMonths = (yn * 12) + mn;
+        var tmp = new Date(""+_this.options.startYear);
+        var startYear_unix = tmp.getTime()/1000;
+        tmp = new Date(""+_this.options.endYear);
+        var endYear_unix = tmp.getTime()/1000;
+        var now = d.getTime()/1000;
 		//var leftVal = Math.ceil(_this._offset_x + totalMonths * _this.options.gap + (_this.options.gap/31)*n - _this._eDotWidth/2);
-		var leftVal = Math.ceil(_this.options.totalWidth*(yn/(_this.options.endYear-_this.options.startYear)));
+		var leftVal = Math.ceil(_this.options.totalWidth*((now-startYear_unix)/(endYear_unix-startYear_unix)));
 
 		var $retHtml = $('<div class="event" id="event_'+e.id+'" style="left:'+leftVal+'px">&nbsp;</div>').data('event',e);
 		$retHtml.data('eventInfo',_this._aEvents[e.id]);
