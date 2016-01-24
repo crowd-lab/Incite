@@ -114,14 +114,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             if (isSearchQuerySpecifiedViaGet()) {
                 $searched_item_ids = getSearchResultsViaGetQuery();
-                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, 24);
+                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
                 $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
             } else {
-                $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, 24);
+                $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
                 $this->view->query_str = "";
             }
 
-            $max_records_to_show = 8;
+            $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $total_pages = ceil(count($document_ids) / $max_records_to_show);
             $records_counter = 0;
             $records = array();
@@ -285,20 +285,20 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             if (isSearchQuerySpecifiedViaGet()) {
                 $searched_item_ids = getSearchResultsViaGetQuery();
-                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $searched_item_ids), 0, 24);
+                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
                 $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
             } else {
-                $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
+                $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, MAXIMUM_SEARCH_RESULTS);
                 $this->view->query_str = "";
             }
             /*
             if (isset($_SESSION['Incite']['search']['final_items']))
-                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $_SESSION['Incite']['search']['final_items']), 0, 24);
+                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $_SESSION['Incite']['search']['final_items']), 0, MAXIMUM_SEARCH_RESULTS);
             else
-                $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
+                $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, MAXIMUM_SEARCH_RESULTS);
 
             //*/
-            $max_records_to_show = 8;
+            $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $records_counter = 0;
             $records = array();
             $total_pages = ceil(count($document_ids) / $max_records_to_show);
@@ -488,34 +488,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else { //has_param
             //default view without id
+            $connectable_documents = getConnectableDocuments();
 
-            $all_tagged_documents = getAllTaggedDocuments();
-            $connectable_documents = array();
-            for ($i = 0; $i < count($all_tagged_documents); $i++) {
-                $related_documents = findRelatedDocumentsViaAtLeastNCommonTags($all_tagged_documents[$i]);
-                if (count($related_documents) == 0)
-                    continue;
-
-                $subject_candidates = getBestSubjectCandidateList($related_documents);
-                if (count($subject_candidates) == 0)
-                    continue;
-
-                $self_subjects = getAllSubjectsOnId($all_tagged_documents[$i]);
-                for ($j = 0; $j < count($subject_candidates); $j++) {
-                    if (!in_array($subject_candidates[$j]['subject'], $self_subjects)) {
-                        if (count($subject_candidates[$j]['ids']) > 0) {
-                            $connectable_documents[] = $all_tagged_documents[$i];
-                            continue 2;
-                        }
-                    }
-                }
-            }
             if (isSearchQuerySpecifiedViaGet()) {
                 $searched_item_ids = getSearchResultsViaGetQuery();
-                $document_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, 24);
+                $document_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
                 $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
             } else {
-                $document_ids = array_slice(array_values($connectable_documents), 0, 24);
+                $document_ids = array_slice(array_values($connectable_documents), 0, MAXIMUM_SEARCH_RESULTS);
                 $this->view->query_str = "";
             }
 
@@ -529,7 +509,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                     $this->redirect(REDIRECTOR_URL);
                 } else
-                    $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
+                    $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, MAXIMUM_SEARCH_RESULTS);
 
                 if (count($document_ids) > 0) {
                     $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be tagged';
@@ -558,14 +538,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $current_page = 1;
             if (isset($_GET['page']))
                 $current_page = $_GET['page'];
-            $max_records_to_show = 8;
+            $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $records_counter = 0;
             $total_pages = ceil(count($connectable_documents) / $max_records_to_show);
 
             $this->view->total_pages = $total_pages;
             $this->view->current_page = $current_page;
 
-            //check if there is really exact one image file for each item
             if ($records != null && count($records) > 0) {
                 $this->view->assign(array('Connections' => $records));
             } else {
