@@ -519,6 +519,37 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->query_str = "";
             }
 
+            if (count($document_ids) <= 0) {
+                if (isSearchQuerySpecifiedViaGet()) {
+                    $_SESSION['incite']['redirect'] = array(
+                            'status' => 'error', 
+                            'message' => 'Unfortunately, there are no document that can be connected based on your search requirements. We are now searching documents that can be connected without any search requirements. You will be redirected to the search results',
+                            'url' => '/m4j/incite/documents/connect',
+                            'time' => '10');
+
+                    $this->redirect(REDIRECTOR_URL);
+                } else
+                    $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
+
+                if (count($document_ids) > 0) {
+                    $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be tagged';
+                    $url = '/m4j/incite/documents/tag';
+                } else {
+                    $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be transcribed';
+                    $url = '/m4j/incite/documents/transcribe';
+                }
+
+                //no need to transcribe
+                $_SESSION['incite']['redirect'] = array(
+                        'status' => 'error', 
+                        'message' => $message,
+                        'url' => $url,
+                        'time' => '10');
+
+                $this->redirect(REDIRECTOR_URL);
+                
+            }
+
             $records = array();
             for ($i = 0; $i < count($document_ids); $i++) {
                 $records[] = $this->_helper->db->find($document_ids[$i]);
@@ -538,27 +569,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if ($records != null && count($records) > 0) {
                 $this->view->assign(array('Connections' => $records));
             } else {
-                if (isSearchQuerySpecifiedViaGet()) {
-                    $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), getSearchResultsViaGetQuery()), 0, 24);
-                } else
-                    $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, 24);
-
-                if (count($document_ids) > 0) {
-                    $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be tagged';
-                    $url = '/m4j/incite/documents/tag';
-                } else {
-                    $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be transcribed';
-                    $url = '/m4j/incite/documents/transcribe';
-                }
-
-                //no need to transcribe
-                $_SESSION['incite']['redirect'] = array(
-                        'status' => 'error', 
-                        'message' => $message,
-                        'url' => $url,
-                        'time' => '10');
-
-                $this->redirect('incite/documents/redirect');
             }
         }
     }
