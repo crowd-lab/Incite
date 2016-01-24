@@ -4,6 +4,7 @@
  */
 require_once("DB_Connect.php");
 require_once("Incite_Document_Table.php");
+require_once("Incite_Env_Setting.php");
 
 /**
  * Creates a tag for a specific document.
@@ -434,11 +435,11 @@ function searchClosestMatch($id_array, $minimum_match)
     return $idAboveMinimum;
 }
 /**
- * Return an array of document ids that have the same matching tags as another document
+ * Return an array of document ids that have at least $minimum of the given tag names
  * @param array of tag id $tag_name_array to search against
  * @param int $minimum_match the minimum number of matches (common tags) per document you want to be included in the search
  */
-function searchClosestMatchByTagName($tag_name_array, $minimum_match)
+function findDocumentsWithAtLeastNofGivenTagNames($tag_name_array, $N)
 {
     $dictionary = array();
     for ($i = 0; $i < sizeof($tag_name_array); $i++)
@@ -466,15 +467,50 @@ function searchClosestMatchByTagName($tag_name_array, $minimum_match)
     
     $frequencyChart = array_count_values($allDocumentIDs);
     $idAboveMinimum = array();
-    foreach($frequencyChart as $key => $value)
+    foreach($frequencyChart as $doc_id => $num_of_tags)
     {
-        if ($value >= $minimum_match)
+        if ($num_of_tags >= $N)
         {
-            $idAboveMinimum[] = $key;
+            $idAboveMinimum[] = $doc_id;
         }
     }
     
     return $idAboveMinimum;
+}
+function findRelatedDocumentsViaAtLeastNCommonTags($self_id, $minimum_common_tags = MINIMUM_COMMON_TAGS_FOR_RELATED_DOCUMENTS) {
+    $tag_names = getTagNamesOnId($self_id);
+    $related = array();
+
+    if ($minimum_common_tags > count($tag_names))
+        return $related;
+
+    $related = findDocumentsWithAtLeastNofGivenTagNames($tag_names, $minimum_common_tags);
+
+    return array_values(array_diff($related, array($self_id)));
+}
+function findRelatedDocumentsViaTagsOld($self_id, $minimum_common_tags = 2) {
+    $entity_names = getTagNamesOnId($self_id);
+    //Targets
+    $target_minimum_common_tags = $minimum_common_tags;
+    $target_entities = $entity_names;
+
+    //Actual values
+    $actual_entities = $entity_names;
+    $actual_minimum_common_tags = $target_minimum_common_tags;
+    if ($actual_minimum_common_tags > count($actual_entities))
+        $actual_minimum_common_tags = count($actual_entities);
+
+    $related = array();
+    while (count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
+        $actual_minimum_common_tags--;
+    if ($actual_minimum_common_tags > 0) {
+        
+    } else if ($actual_minimum_common_tags == 0) {
+        //no documents with common tags
+    } else {
+        //error!
+    }
+    return array_values(array_diff($related, array($self_id)));
 }
 /**
  * Return an array of tag ids and names that are in common of given documents (by item_ids)

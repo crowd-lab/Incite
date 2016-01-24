@@ -47,27 +47,27 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
             <div class="col-md-6">
       
-            <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
-			<form method="post">
-				<button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
-				<button type="submit" class="btn btn-default" name="connection" value="false">No</button>
-                <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
-			</form>
+                <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
+                <form method="post">
+                    <button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
+                    <button type="submit" class="btn btn-default" name="connection" value="false">No</button>
+                    <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
+                </form>
 <?php if (count($this->related_documents) == 0): ?>
 <?php elseif (count($this->related_documents) == 1): ?>
-            <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
+                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
 <?php else: ?>
-            <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
+                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
 <?php endif; ?>
 <?php foreach($this->related_documents as $document): ?>
-            <div class="col-md-4">
-                <a href="/m4j/incite/documents/connect/<?php echo $document->id; ?>" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
-                     <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
-                </a>
-                <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
-            </div>
+                <div class="col-md-4">
+                    <a href="/m4j/incite/documents/connect/<?php echo $document->id; ?>" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
+                        <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
+                    </a>
+                    <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
+                </div>
 <?php endforeach; ?>
-            <div class="clearfix"></div>
+                <div class="clearfix"></div>
                 <div id="container">
                     <h3> Discussion </h3>
                     <div id="onLogin">

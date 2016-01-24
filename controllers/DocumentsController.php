@@ -27,30 +27,6 @@ function sort_strlen($str1, $str2) {
     return strlen($str2) - strlen($str1);
 }
 
-function findRelatedDocumentsViaTags($self_id, $minimum_common_tags = 2) {
-    $entity_names = getTagNamesOnId($self_id);
-    //Targets
-    $target_minimum_common_tags = $minimum_common_tags;
-    $target_entities = $entity_names;
-
-    //Actual values
-    $actual_entities = $entity_names;
-    $actual_minimum_common_tags = $target_minimum_common_tags;
-    if ($actual_minimum_common_tags > count($actual_entities))
-        $actual_minimum_common_tags = count($actual_entities);
-
-    $related = array();
-    while (count($related = searchClosestMatchByTagName($actual_entities, $actual_minimum_common_tags)) < 2 && $actual_minimum_common_tags > 0)
-        $actual_minimum_common_tags--;
-    if ($actual_minimum_common_tags > 0) {
-        
-    } else if ($actual_minimum_common_tags == 0) {
-        //no documents with common tags
-    } else {
-        //error!
-    }
-    return array_values(array_diff($related, array($self_id)));
-}
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController {
 
@@ -63,6 +39,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         require_once("Incite_Replies_Table.php");
         require_once("Incite_Search.php");
         require_once("Incite_Session.php");
+        require_once("Incite_Env_Setting.php");
         setup_session();
     }
 
@@ -389,7 +366,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         'url' => '/m4j/incite/documents/connect/'.$this->_getParam('id'),
                         'time' => '10');
 
-                $this->redirect('incite/documents/redirect');
+                $this->redirect(REDIRECTOR_URL);
             }
         }
 
@@ -427,23 +404,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $entity_names[] = $tag['tag_text'];
                         $entity_category[$tag['tag_text']] = $tag['category_name'];
                     }
+                    /* //replaced by user selection
                     usort($entity_names, 'sort_strlen');
                     foreach ((array) $entity_names as $name) {
                         $colored_transcription = str_replace($name, '<' . strtoupper($entity_category[$name]) . '>' . $name . '</' . strtoupper($entity_category[$name]) . '>', $colored_transcription);
                     }
+                    //*/
                     foreach ($categories as $category) {
                         $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
                     }
 
-                    $related_documents = findRelatedDocumentsViaTags($this->_getParam('id'));
+                    $related_documents = findRelatedDocumentsViaAtLeastNCommonTags($this->_getParam('id'));
                     if (count($related_documents) == 0) {
-                        //no connections at all so redirect to documents with at least some connections
-                        /*
-                        if ($_SESSION['Incite']['previous_task'] === 'tag')
-                            $this->redirect('incite/documents/transcribe');
-                        else
-                            $this->redirect('incite/documents/connect');
-                        */
                         //for this part, we can random the destination of the tasks!
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_noDocToConnect', 
@@ -451,7 +423,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                                 'url' => '/m4j/incite/documents/connect/',
                                 'time' => '10');
 
-                        $this->redirect('incite/documents/redirect');
+                        $this->redirect(REDIRECTOR_URL);
                     }
 
                     //Get subject candidates
@@ -459,14 +431,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $self_subjects = getAllSubjectsOnId($this->_getParam('id'));
                     $subject_related_documents = array();
                     if (count($subject_candidates) <= 0) {
-                        //Need other method because there is no suggested subject
+                        //None of the related documents have subjects!
                         $_SESSION['incite']['redirect'] = array(
-                                'status' => 'error_noConnection', 
-                                'message' => 'Unfortunately, no related documents were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results', 
+                                'status' => 'error_noSubjectCandidates', 
+                                'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results', 
                                 'url' => '/m4j/incite/documents/connect/',
                                 'time' => '10');
 
-                        $this->redirect('incite/documents/redirect');
+                        $this->redirect(REDIRECTOR_URL);
                         //echo 'no connection found!';
                         //die();
                     } else {
@@ -482,8 +454,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         }
                     }
                     if (count($subject_related_documents) == 0) {
-                        echo 'no connection needed';
-                        die();
+                        $_SESSION['incite']['redirect'] = array(
+                                'status' => 'error_allSubjectsConnected', 
+                                'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are other documents that you can help connect. You will be redirected to the results', 
+                                'url' => '/m4j/incite/documents/connect/',
+                                'time' => '10');
+
+                        $this->redirect(REDIRECTOR_URL);
                     }
                     $docs_for_common_tags = array_merge($subject_related_documents, array($this->_getParam('id')));
                     //fetch documents!    
@@ -494,16 +471,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                     $this->view->entities = $actual_entities;
                     $this->view->transcription = $colored_transcription;
-                } else {
-                    //$this->redirect('incite/documents/tag/' . $this->_getParam('id'));
+                } else {  //if (isDocumentTagged($this->_getParam('id')))
                     $_SESSION['incite']['redirect'] = array(
                             'status' => 'error_noTag', 
                             'message' => 'Unfortunately, this document has not been tagged so we are unable to find related documents. Please help tag this document first. You will be redirected to the tag page', 
                             'url' => '/m4j/incite/documents/tag/'.$this->_getParam('id'),
                             'time' => '10');
 
-                    $this->redirect('incite/documents/redirect');
-                }
+                    $this->redirect(REDIRECTOR_URL);
+                } //if (isDocumentTagged($this->_getParam('id')))
                 $this->_helper->viewRenderer('connectid');
                 $this->view->connection = $record;
             } else {
@@ -516,7 +492,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $all_tagged_documents = getAllTaggedDocuments();
             $connectable_documents = array();
             for ($i = 0; $i < count($all_tagged_documents); $i++) {
-                $related_documents = findRelatedDocumentsViaTags($all_tagged_documents[$i]);
+                $related_documents = findRelatedDocumentsViaAtLeastNCommonTags($all_tagged_documents[$i]);
                 if (count($related_documents) == 0)
                     continue;
 
@@ -524,7 +500,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if (count($subject_candidates) == 0)
                     continue;
 
-                $self_subjects = getAllSubjectsOnId($i);
+                $self_subjects = getAllSubjectsOnId($all_tagged_documents[$i]);
                 for ($j = 0; $j < count($subject_candidates); $j++) {
                     if (!in_array($subject_candidates[$j]['subject'], $self_subjects)) {
                         if (count($subject_candidates[$j]['ids']) > 0) {
@@ -542,12 +518,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $document_ids = array_slice(array_values($connectable_documents), 0, 24);
                 $this->view->query_str = "";
             }
-            /*
-            if (isset($_SESSION['Incite']['search']['final_items']))
-                $document_ids = array_slice(array_intersect(array_values($connectable_documents), $_SESSION['Incite']['search']['final_items']), 0, 24);
-            else
-                $document_ids = array_slice(array_values($connectable_documents), 0, 24);
-            //*/
 
             $records = array();
             for ($i = 0; $i < count($document_ids); $i++) {
