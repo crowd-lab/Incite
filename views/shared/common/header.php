@@ -2,6 +2,7 @@
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker'));
 $db = get_db();
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
+require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
 ?>
 
 <head>

@@ -138,7 +138,7 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
         <div style="margin: 10px;">
             <div style="height: 40px; width:40px; float: left;">
-                    <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
+                    <a href="<?php echo INCITE_PATH.'documents/transcribe/'.$transcription->id; ?>">
                     <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                     </a>
             </div>

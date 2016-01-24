@@ -139,7 +139,7 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php foreach ((array)$this->Tags as $tag): ?>
         <div style="margin: 10px;">
             <div style="height: 40px; width:40px; float: left;">
-                    <a href="<?php echo 'tag/'.$tag->id; ?>">
+                    <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id; ?>">
                     <img src="<?php echo $tag->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                     </a>
             </div>

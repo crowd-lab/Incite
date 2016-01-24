@@ -1,6 +1,7 @@
 <?php
 //Redirection
 define('REDIRECTOR_URL', 'incite/documents/redirect');
+define('INCITE_PATH', '/m4j/incite/');
 
 
 //Tag Task
