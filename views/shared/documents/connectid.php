@@ -23,7 +23,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <button type="button" class="btn btn-default">Guide</button>
             </div>
         </div>
-        <div class="container">
+        <div class="container-fluid">
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed; width: 35%;" id="work-view">
                     <h4>Information:</h4>
@@ -32,9 +32,11 @@ include(dirname(__FILE__).'/../common/header.php');
                         <div>Location: <?php echo metadata($this->connection, array('Item Type Metadata', 'Location')); ?></div>
                         <div>Description: <?php echo metadata($this->connection, array('Dublin Core', 'Description')); ?></div>
                     <h4>Transcription:</h4>
+                    <div>
 <?php foreach ($this->category_colors as $category => $color): ?>
-                    <div><span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span></div>
+                        <span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span>
 <?php endforeach; ?>
+                    </div>
                     <div style="border-style: solid;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                     <div class="wrapper">
                         <div id="document_img" class="viewer"></div>
@@ -118,23 +120,20 @@ $(document).ready(function(){
     });
 });
 </script>
-<script type="text/javascript">
-            var $ = jQuery;
+    <script type="text/javascript">
+            $('#work-zone').ready(function() {
+                $('#work-view').width($('#work-zone').width());
+            });
             $(document).ready(function(){
-    $('#work-zone').ready(function() {
-        $('#work-view').width($('#work-zone').width());
-    });
 
-                var iv2 = $("#document_img").iviewer(
-                {
+                var iv2 = $("#document_img").iviewer({
                     src: "<?php echo $this->connection->getFile()->getProperty('uri'); ?>"
                 });
-
+                $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+                $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
             });
-        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
-        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
 
-        </script>
+    </script>
 <style>
             .viewer
             {

@@ -14,69 +14,56 @@
 
 
     <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-            <div class="col-md-8">
-            </div>
-            <div class="col-md-4">
-                <button type="button" class="btn btn-default">Subscribe</button>
-                <button type="button" class="btn btn-default">Guide</button>
-            </div>
-        </div>
-        <div class="container">
-            <div class="col-md-6" id="work-zone">
-                <div style="position: fixed; width: 35%;" id="work-view">
-                    <div>Title: <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></div>
-                    <div>Date: <?php echo metadata($this->transcription, array('Dublin Core', 'Date')); ?></div>
-                    <div>Location: <?php echo metadata($this->transcription, array('Item Type Metadata', 'Location')); ?></div>
-                    <div>Description: <?php echo metadata($this->transcription, array('Dublin Core', 'Description')); ?></div>
-                    <div class="wrapper">
-                        <div id="viewer2" class="viewer"></div>
-<!--                        <img src="<?php echo $this->transcription->getFile()->getProperty('uri'); ?>" alt="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>">
-                        -->
-                    </div>
+    <div class="container-fluid">
+        <div class="col-md-6" id="work-zone">
+            <div style="position: fixed; width: 35%;" id="work-view">
+                <div>Title: <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></div>
+                <div>Date: <?php echo metadata($this->transcription, array('Dublin Core', 'Date')); ?></div>
+                <div>Location: <?php echo metadata($this->transcription, array('Item Type Metadata', 'Location')); ?></div>
+                <div>Description: <?php echo metadata($this->transcription, array('Dublin Core', 'Description')); ?></div>
+                <br>
+                <div class="wrapper">
+                    <div id="viewer2" class="viewer"></div>
                 </div>
             </div>
-            <div class="col-md-6" id="submit-zone">
-                <form method="post" id="transcribe-form">
-                    <textarea id="transcription" name="transcription" rows="15" style="width: 100%;" placeholder="Transcription"></textarea>
-                    <textarea id="summary" name="summary" rows="5" style="width: 100%;" placeholder="Summary"></textarea>
-                    <div class="form-group">
-                        <label class="control-label">Tone of the document:</label>
-                        <select id="tone" class="form-control" name="tone">
-                            <option value=""></option>
-                            <option value="anxiety">Anxiety</option>
-                            <option value="optimism">Optimism</option>
-                            <option value="sarcasm">Sarcasm</option>
-                            <option value="pride">Pride</option>
-                            <option value="aggression">Aggression</option>
-                        </select>
-                    </div>
-                    <button id="submit_transcription" type="button" class="btn btn-default">Done</button>
-                </form>
+        </div>
+        <div class="col-md-6" id="submit-zone">
+            <form method="post" id="transcribe-form">
+                <textarea id="transcription" name="transcription" rows="15" style="width: 100%;" placeholder="Transcription"></textarea>
+                <textarea id="summary" name="summary" rows="5" style="width: 100%;" placeholder="Summary"></textarea>
+                <div class="form-group">
+                    <label class="control-label">Tone of the document:</label>
+                    <select id="tone" class="form-control" name="tone">
+                        <option value=""></option>
+                        <option value="anxiety">Anxiety</option>
+                        <option value="optimism">Optimism</option>
+                        <option value="sarcasm">Sarcasm</option>
+                        <option value="pride">Pride</option>
+                        <option value="aggression">Aggression</option>
+                    </select>
+                </div>
+                <button id="submit_transcription" type="button" class="btn btn-default">Done</button>
+            </form>
 
-                <div id="container">
-                    <h3> Discussion </h3>
-                    <div id="onLogin">
+            <div id="container">
+                <h3> Discussion </h3>
+                <div id="onLogin">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
 
-                            <form id="discuss-form" method="POST">
-                                <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                                <button type="button" class="btn btn-default" onclick="submitComment(<?php echo $this->transcription->id; ?>)">Submit</button>
-                            </form>
+                        <form id="discuss-form" method="POST">
+                            <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
+                            <button type="button" class="btn btn-default" onclick="submitComment(<?php echo $this->transcription->id; ?>)">Submit</button>
+                        </form>
 
 <?php else: ?>
-                            Please login or signup to join the discussion!
+                        Please login or signup to join the discussion!
 
-                        <?php endif; ?>
-                    </div>
-                    <ul id="comments">
-
-                    </ul>
+                    <?php endif; ?>
                 </div>
-            </div> 
-        </div>
+                <ul id="comments">
+                </ul>
+            </div>
+        </div> 
     </div>
     <!-- /.container -->
     <script type="text/javascript">
@@ -116,15 +103,13 @@
         });
         var $ = jQuery;
         $(document).ready(function () {
+            var iv2 = $("#viewer2").iviewer({
+                src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
+            });
 
-            var iv2 = $("#viewer2").iviewer(
-                    {
-                        src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
-                    });
+            $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10);
 
         });
-        $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 60);
-        $('#transcribe_copy').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 60);
 
 
     </script>

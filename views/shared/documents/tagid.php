@@ -22,7 +22,7 @@
             <button type="button" class="btn btn-default">Guide</button>
         </div>
     </div>
-    <div class="container">
+    <div class="container-fluid">
         <div class="col-md-6" id="work-zone">
             <div style="position: fixed;" id="work-view">
                 <h4>Information:</h4>
@@ -31,9 +31,11 @@
                     <div>Location: <?php echo metadata($this->tag, array('Item Type Metadata', 'Location')); ?></div>
                     <div>Description: <?php echo metadata($this->tag, array('Dublin Core', 'Description')); ?></div>
                 <h4>Transcription:</h4>
+                <div>
 <?php foreach ((array)$this->category_colors as $category => $color): ?>
-                <div><span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span></div>
+                    <span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span>
 <?php endforeach; ?>
+                </div>
                 <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                 <div class="wrapper">
                     <div id="document_img" class="viewer"></div>
@@ -249,8 +251,8 @@
         //$('.SelectBox').SumoSelect();
         //$('.SelectBox').SumoSelect({placeholder: 'This is a placeholder', csvDispCount: 3 });
         $('#work-view').width($('#work-zone').width());
-    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
-    $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-60);
+        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
     });
 </script>
 <style>
