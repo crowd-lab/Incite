@@ -361,10 +361,10 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php')
                             <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
                             <select class="form-control" name="task">
                                 <option value="random">Select a task</option>
-                                <option value="transcribe" <?php if ($task == "transcribe") echo ' selected'; ?>>Transcribe</option>
-                                <option value="tag"<?php if ($task == "tag") echo ' selected'; ?>>Tag</option>
-                                <option value="connect"<?php if ($task == "connect") echo ' selected'; ?>>Connect</option>
-                                <option value="discuss"<?php if ($task == "discuss") echo ' selected'; ?>>Discuss</option>
+                                <option value="transcribe" <?php if (isset($task) && $task == "transcribe") echo ' selected'; ?>>Transcribe</option>
+                                <option value="tag"<?php if (isset($task) && $task == "tag") echo ' selected'; ?>>Tag</option>
+                                <option value="connect"<?php if (isset($task) && $task == "connect") echo ' selected'; ?>>Connect</option>
+                                <option value="discuss"<?php if (isset($task) && $task == "discuss") echo ' selected'; ?>>Discuss</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-default">Discover</button>
