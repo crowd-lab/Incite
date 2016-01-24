@@ -77,7 +77,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['incite']['redirect'] = array(
                         'status' => 'complete_transcribe', 
                         'message' => 'Congratulations! You just completed a transcription! Now, you are able to tag the document you just transcribed! You will be redirected to it', 
-                        'url' => '/m4j/incite/documents/tag/'.$this->_getParam('id'),
+                        'url' => INCITE_PATH.'documents/tag/'.$this->_getParam('id'),
                         'time' => '10');
 
                 $this->redirect('incite/documents/redirect');
@@ -121,6 +121,26 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->query_str = "";
             }
 
+            if (count($document_ids) <= 0 ) {
+                if (isSearchQuerySpecifiedViaGet()) {
+                    $_SESSION['incite']['redirect'] = array(
+                            'status' => 'errorNoTranscriptionWithQuery', 
+                            'message' => 'Unfortunately, there are no document that can be transcribed based on your search requirements. We are now searching documents that can be transcribed without any search requirements. You will be redirected to the search results',
+                            'url' => INCITE_PATH.'documents/transcribe',
+                            'time' => '10');
+
+                    $this->redirect(REDIRECTOR_URL);
+                } else {
+                    $_SESSION['incite']['redirect'] = array(
+                            'status' => 'errorNoTranscription', 
+                            'message' => 'Currently there are no documents to transcribe. Please come back later. You will be redirected to homepage', 
+                            'url' => '/m4j/incite',
+                            'time' => '10');
+
+                    $this->redirect(REDIRECTOR_URL);
+                }
+            }
+
             $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $total_pages = ceil(count($document_ids) / $max_records_to_show);
             $records_counter = 0;
@@ -141,13 +161,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->assign(array('Transcriptions' => $records));
             } else {
                 //no need to transcribe
-                $_SESSION['incite']['redirect'] = array(
-                        'status' => 'error', 
-                        'message' => 'Currently there is no document to transcribe. Please come back later. You will be redirected to homepage', 
-                        'url' => '/m4j/incite',
-                        'time' => '10');
-
-                $this->redirect('incite/documents/redirect');
             }
         }
     }
@@ -167,7 +180,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['incite']['redirect'] = array(
                         'status' => 'complete_tag', 
                         'message' => 'Congratulations! You just completed tagging! Now, we are searching to see if there are any related documents via the tags you just provided! You will be redirected to the results', 
-                        'url' => '/m4j/incite/documents/connect/'.$this->_getParam('id'),
+                        'url' => INCITE_PATH.'documents/connect/'.$this->_getParam('id'),
                         'time' => '10');
 
                 $this->redirect('incite/documents/redirect');
@@ -192,9 +205,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     //Redirect to transcribe task if there is no transcription available
                     //$this->redirect('incite/documents/transcribe/' . $this->_getParam('id'));
                     $_SESSION['incite']['redirect'] = array(
-                            'status' => 'error_noTranscription', 
+                            'status' => 'error_noTranscriptionForTag', 
                             'message' => 'Unfortunately, we could not find any transcription of this document for you to tag. Please help transcribe the document and then tag it! You will be redirected to the transcribe page',
-                            'url' => '/m4j/incite/documents/transcribe/'.$this->_getParam('id'),
+                            'url' => INCITE_PATH.'documents/transcribe/'.$this->_getParam('id'),
                             'time' => '10');
 
                     $this->redirect('incite/documents/redirect');
@@ -291,13 +304,27 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, MAXIMUM_SEARCH_RESULTS);
                 $this->view->query_str = "";
             }
-            /*
-            if (isset($_SESSION['Incite']['search']['final_items']))
-                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $_SESSION['Incite']['search']['final_items']), 0, MAXIMUM_SEARCH_RESULTS);
-            else
-                $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, MAXIMUM_SEARCH_RESULTS);
 
-            //*/
+            if (count($document_ids) <= 0) {
+                if (isSearchQuerySpecifiedViaGet()) {
+                    $_SESSION['incite']['redirect'] = array(
+                            'status' => 'error_noDocToTagWithQuery', 
+                            'message' => 'Unfortunately, there are no document that can be tagged based on your search requirements. We are now searching documents that can be tagged without any search requirements. You will be redirected to the search results',
+                            'url' => INCITE_PATH.'documents/tag',
+                            'time' => '10');
+
+                    $this->redirect(REDIRECTOR_URL);
+                } else {
+                    $_SESSION['incite']['redirect'] = array(
+                            'status' => 'error_noDocToTag', 
+                            'message' => 'Currently there are no documents to tag. Please come back later. You will be redirected to documents that need to be transcribed', 
+                            'url' => INCITE_PATH.'documents/transcribe',
+                            'time' => '10');
+
+                    $this->redirect(REDIRECTOR_URL);
+                }
+            }
+
             $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $records_counter = 0;
             $records = array();
@@ -318,13 +345,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->assign(array('Tags' => $records));
             } else {
                 //no need to tag 
-                $_SESSION['incite']['redirect'] = array(
-                        'status' => 'error_noDocToTag', 
-                        'message' => 'Currently there is no document to tag. Please come back later. You will be redirected to documents that need to be transcribed', 
-                        'url' => '/m4j/incite/documents/transcribe',
-                        'time' => '10');
-
-                $this->redirect('incite/documents/redirect');
             }
         }
     }
@@ -363,7 +383,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['incite']['redirect'] = array(
                         'status' => 'complete_connect', 
                         'message' => 'Congratulations! You just this document to a concept! Now, we are searching to see if there are still related documents that you can connect! You will be redirected to the results', 
-                        'url' => '/m4j/incite/documents/connect/'.$this->_getParam('id'),
+                        'url' => INCITE_PATH.'documents/connect/'.$this->_getParam('id'),
                         'time' => '10');
 
                 $this->redirect(REDIRECTOR_URL);
@@ -420,7 +440,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_noDocToConnect', 
                                 'message' => 'Unfortunately, we could not find related documents for this document at this moment. In the meanwhile, you can try connecting other documents or help transcribe/tag other documents so that we can find related documents! Now, we are searching to see if we can find documents that need connections. You will be redirected to the results', 
-                                'url' => '/m4j/incite/documents/connect/',
+                                'url' => INCITE_PATH.'documents/connect/',
                                 'time' => '10');
 
                         $this->redirect(REDIRECTOR_URL);
@@ -435,7 +455,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_noSubjectCandidates', 
                                 'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results', 
-                                'url' => '/m4j/incite/documents/connect/',
+                                'url' => INCITE_PATH.'documents/connect/',
                                 'time' => '10');
 
                         $this->redirect(REDIRECTOR_URL);
@@ -457,7 +477,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_allSubjectsConnected', 
                                 'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are other documents that you can help connect. You will be redirected to the results', 
-                                'url' => '/m4j/incite/documents/connect/',
+                                'url' => INCITE_PATH.'documents/connect/',
                                 'time' => '10');
 
                         $this->redirect(REDIRECTOR_URL);
@@ -475,7 +495,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $_SESSION['incite']['redirect'] = array(
                             'status' => 'error_noTag', 
                             'message' => 'Unfortunately, this document has not been tagged so we are unable to find related documents. Please help tag this document first. You will be redirected to the tag page', 
-                            'url' => '/m4j/incite/documents/tag/'.$this->_getParam('id'),
+                            'url' => INCITE_PATH.'documents/tag/'.$this->_getParam('id'),
                             'time' => '10');
 
                     $this->redirect(REDIRECTOR_URL);
@@ -504,7 +524,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $_SESSION['incite']['redirect'] = array(
                             'status' => 'error', 
                             'message' => 'Unfortunately, there are no document that can be connected based on your search requirements. We are now searching documents that can be connected without any search requirements. You will be redirected to the search results',
-                            'url' => '/m4j/incite/documents/connect',
+                            'url' => INCITE_PATH.'documents/connect',
                             'time' => '10');
 
                     $this->redirect(REDIRECTOR_URL);
@@ -513,10 +533,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                 if (count($document_ids) > 0) {
                     $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be tagged';
-                    $url = '/m4j/incite/documents/tag';
+                    $url = INCITE_PATH.'documents/tag';
                 } else {
                     $message = 'Currently there is no document to connect. Please come back later. You will be redirected to documents that need to be transcribed';
-                    $url = '/m4j/incite/documents/transcribe';
+                    $url = INCITE_PATH.'documents/transcribe';
                 }
 
                 //no need to transcribe
