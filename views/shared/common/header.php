@@ -93,7 +93,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                         //do login
                         var request = $.ajax({
                             type: "POST",
-                            url: "http://localhost/m4j/incite/ajax/login",
+                            url: "<?php echo INCITE_PATH.'ajax/login'; ?>",
                             data: {"username": $('#username').val(), "password": $('#password').val()},
                             success: function (response) {
                                 data = response.trim();
@@ -126,7 +126,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                                     
                                     var getDataArray = $.ajax({
                                         type: "POST",
-                                        url: "http://localhost/m4j/incite/ajax/getdata",
+                                        url: "<?php echo INCITE_PATH.'ajax/getdata'; ?>",
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
@@ -190,7 +190,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                         }
                         var request = $.ajax({
                             type: "POST",
-                            url: "http://localhost/m4j/incite/ajax/createaccount",
+                            url: "<?php echo INCITE_PATH.'ajax/createaccount'; ?>",
                             data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
                             success: function (response) {
                                 data = response.trim();
@@ -200,7 +200,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                                     $('#login-signup-dialog').modal('hide');
                                     var getDataArray = $.ajax({
                                         type: "POST",
-                                        url: "http://localhost/m4j/incite/ajax/getdata",
+                                        url: "<?php echo INCITE_PATH.'ajax/getdata'; ?>",
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
@@ -256,7 +256,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
         {
             var request = $.ajax({
                 type: "POST",
-                url: "http://localhost/m4j/incite/ajax/logout",
+                url: "<?php echo INCITE_PATH.'ajax/logout'; ?>",
                 success: function () 
                 {
                     alert("Logout Successfully!");
