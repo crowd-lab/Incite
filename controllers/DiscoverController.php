@@ -43,21 +43,21 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
             //Go to the desired task based on the above result
 			if (isset($_GET['task'])) {
 				if ($_GET['task'] == "transcribe") {
-                    $redirect_action = 'transcribe';
+                    $redirect_action = 'documents/transcribe';
 				} else if ($_GET['task'] == "tag") {
-                    $redirect_action = 'tag';
+                    $redirect_action = 'documents/tag';
 				} else if ($_GET['task'] == "connect") {
-                    $redirect_action = 'connect';
+                    $redirect_action = 'documents/connect';
 				} else if ($_GET['task'] == "discuss") {
-                    $redirect_action = 'discussions';
+                    $redirect_action = 'discussions/discuss';
 				} else { //then...random! but currently need more transcriptions
                     $redirect_action = 'transcribe';
 				}
 			}
             if (strlen($query) > 1)  //more than "?"
-                $this->_redirect('/incite/documents/'.$redirect_action.$query);
+                $this->_redirect('/incite/'.$redirect_action.$query);
             else
-                $this->_redirect('/incite/documents/'.$redirect_action);
+                $this->_redirect('/incite/'.$redirect_action);
 		}	
     }
 
