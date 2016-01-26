@@ -33,11 +33,17 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
         if ($this->getRequest()->isPost()) {
             //Discussion type is 4 (between-document)
             if (empty($_POST['references']))
-                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA'][0], array(), 4);
+                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], array(), 4);
             else
-                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA'][0], explode(',', $_POST['references']), 4);
+                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], explode(',', $_POST['references']), 4);
 
-            replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA'][0], $discussionID, array());
+            replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA']['id'], $discussionID, array());
+            $_SESSION['incite']['redirect'] = array(
+                    'status' => 'complete_create_discussion', 
+                    'message' => 'Congratulations! You just created a new discussion! You will be redirected to your discussion', 
+                    'url' => INCITE_PATH.'discussions/discuss/'.$this->_getParam('id'),
+                    'time' => '5');
+            $this->redirect('incite/documents/redirect');
             /*
             $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA'][0], explode(',', $POST['references']), 4);
             replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA'][0], $discussionID, array());
