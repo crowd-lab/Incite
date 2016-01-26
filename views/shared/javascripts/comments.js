@@ -10,7 +10,7 @@ function getNewComments(docId)
     $('#comments').empty();
     var request = $.ajax({
         type: "POST",
-        url: "http://localhost/m4j/incite/ajax/getcommentsdoc",
+        url: "/m4j/incite/ajax/getcommentsdoc",
         data: {documentId: documentId},
         success: function (data)
         {
@@ -23,7 +23,7 @@ function getNewComments(docId)
                 var commentsArrayObject = {commentsArray};
                 var isSignedIn = $.ajax({
                     type: 'POST',
-                    url: 'http://localhost/m4j/incite/ajax/issignedin',
+                    url: "/m4j/incite/ajax/issignedin',
                     async: false,
                     data: {loopVar: i, commentArray: commentsArray, format: format},
                     success: appendNewComment
@@ -161,7 +161,7 @@ function submitReply(event, documentId)
     //var documentId = <?php echo $this->transcription->id; ?>;
     var request = $.ajax({
         type: "POST",
-        url: "http://localhost/m4j/incite/ajax/postreply",
+        url: "/m4j/incite/ajax/postreply",
         data: {replyText: replyText, originalQuestionId: questionID, documentId: documentId},
         success: function (data)
         {
@@ -183,7 +183,7 @@ function submitComment(documentId)
     //var documentId = <?php echo $this->transcription->id; ?>;
     var request = $.ajax({
         type: "POST",
-        url: "http://localhost/m4j/incite/ajax/postcomment",
+        url: "/m4j/incite/ajax/postcomment",
         data: {documentId: documentId, commentText: commentText, type: 0},
         success: function ()
         {
