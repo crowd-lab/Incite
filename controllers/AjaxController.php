@@ -239,9 +239,10 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
                 $text[$counter]['question_replies_user'] = array();
                 for ($j = 0; $j < sizeof(getAllRepliesForQuestion($questionIDs[$i])); $j++)
                 {
-                    $text[$counter]['question_replies'][] = getReplyText(getAllRepliesForQuestion($questionIDs[$i])[$j]);
-                    $text[$counter]['question_replies_timestamp'][] = getTimeStamp(getAllRepliesForQuestion($questionIDs[$i])[$j]);
-                    $text[$counter]['question_replies_user_data'][] = getUserDataID(getUserIdForReply(getAllRepliesForQuestion($questionIDs[$i])[$j]));
+                    $allReplies = getAllRepliesForQuestion($questionIDs[$i]);
+                    $text[$counter]['question_replies'][] = getReplyText($allReplies[$j]);
+                    $text[$counter]['question_replies_timestamp'][] = getTimeStamp($allReplies[$j]);
+                    $text[$counter]['question_replies_user_data'][] = getUserDataID(getUserIdForReply($allReplies[$j]));
                 }
                 $counter++;
             }
