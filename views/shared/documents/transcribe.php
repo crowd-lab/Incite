@@ -75,6 +75,8 @@ function loc_to_lat_long($loc_str)
     } else if (count($elem) == 2) {
         $state = $states[trim(str_replace('State', '', str_replace('state', '', $elem[0])))];
         $city  = strstr(trim($elem[1]), ' Indep.', true);
+        if ($city == "")
+            $city = trim($elem[1]);
     } else {
         //Should send to log and to alert new format of location!
     }
@@ -110,23 +112,33 @@ $task = "transcribe";
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
+<style>
+    .no-map-marker {
+        background-color: gray;
+    }
+</style>
 
 <script type="text/javascript">
+    var map;
+    var markers_array = [];
+    var nomarkers_array = [];
     function x() {
         $('[data-toggle="popover"]').popover({ trigger: "hover" });
-        var map = L.map('map-div').setView([37.8, -96], 4);
+        map = L.map('map-div').setView([37.8, -96], 4);
           L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
               attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
+        var marker;
 <?php
     foreach((array)$this->Transcriptions as $transcription) {
         $lat_long = loc_to_lat_long(metadata($transcription, array('Item Type Metadata', 'Location')));
         if (count($lat_long) > 0) {
-            echo 'L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map).bindPopup('".metadata($transcription, array('Dublin Core', 'Title'))."');\n";
+            echo 'marker = L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map).bindPopup('".trim(strip_tags(metadata($transcription, array('Dublin Core', 'Title'))))." in ".metadata($transcription, array('Item Type Metadata', 'Location'))."');\n";
+            echo 'markers_array.push({id:'.$transcription->id.', marker: marker});';
+        } else {
+            echo 'nomarkers_array.push({id:'.$transcription->id.', marker: marker});';
         }
-    }
-?>
-    }
+    } ?> }
 
 </script>
 
@@ -136,7 +148,7 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
-        <div style="margin: 10px;">
+        <div id="list_id<?php echo $transcription->id; ?>" style="margin: 10px;" class="">
             <div style="height: 40px; width:40px; float: left;">
                     <a href="<?php echo INCITE_PATH.'documents/transcribe/'.$transcription->id; ?>">
                     <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
@@ -227,6 +239,10 @@ include(dirname(__FILE__).'/../common/header.php');
 
 
             x();
+
+            $.each(nomarkers_array, function (idx) {
+                $('#list_id'+this['id']).addClass('no-map-marker');
+            });
 
         });
 </script>

@@ -76,6 +76,8 @@ function loc_to_lat_long($loc_str)
     } else if (count($elem) == 2) {
         $state = $states[trim(str_replace('State', '', str_replace('state', '', $elem[0])))];
         $city  = strstr(trim($elem[1]), ' Indep.', true);
+        if ($city == "")
+            $city = trim($elem[1]);
     } else {
         //Should send to log and to alert new format of location!
     }
@@ -111,19 +113,31 @@ $task = "connect";
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
+<style>
+    .no-map-marker {
+        background-color: gray;
+    }
+</style>
 
 <script type="text/javascript">
+    var map;
+    var markers_array = [];
+    var nomarkers_array = [];
     function x() {
         $('[data-toggle="popover"]').popover({ trigger: "hover" });
-        var map = L.map('map-div').setView([37.8, -96], 4);
+        map = L.map('map-div').setView([37.8, -96], 4);
           L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
               attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
+        var marker;
 <?php
     foreach((array)$this->Connections as $connection) {
         $lat_long = loc_to_lat_long(metadata($connection, array('Item Type Metadata', 'Location')));
         if (count($lat_long) > 0) {
             echo 'L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map).bindPopup('".metadata($connection, array('Dublin Core', 'Title'))."');\n";
+            echo 'markers_array.push({id:'.$connection->id.', marker: marker});';
+        } else {
+            echo 'nomarkers_array.push({id:'.$connection->id.', marker: marker});';
         }
     }
 ?>
@@ -137,7 +151,7 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
-        <div style="margin: 10px;">
+        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;">
             <div style="height: 40px; width:40px; float: left;">
                     <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id; ?>">
                     <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
@@ -226,6 +240,9 @@ include(dirname(__FILE__).'/../common/header.php');
             $('#list-view-switch').one('click', showListView);
 
             x();
+            $.each(nomarkers_array, function (idx) {
+                $('#list_id'+this['id']).addClass('no-map-marker');
+            });
 
 });
 </script>
