@@ -76,6 +76,8 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                 $references = array();
                 foreach ((array)$discussion_reference_ids as $reference_id) {
                     $record = $this->_helper->db->find($reference_id);
+                    if ($record == null)
+                        continue;
                     $approved_transcriptions = getIsAnyTranscriptionApproved($reference_id);
                     $transcription = "no transcription available";
                     if ($approved_transcriptions != null) 
@@ -91,6 +93,37 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
         } else {
             //Get all discussions and list them!
             //$this->view->Discussions = ???
+            $current_page = 1;
+            if (isset($_GET['page']))
+                $current_page = $_GET['page'];
+            $discussions = getAllDiscussionsWithNumOfReplies();
+
+            //sort discussion by number of replies
+            $dis_id_to_num_of_replies = array();
+            foreach ((array)$discussions as $discussion) {
+                $dis_id_to_num_of_replies[$discussion['id']] = $discussion['num_of_replies'];
+            }
+            arsort($dis_id_to_num_of_replies);
+            $sorted_discussions = array();
+            foreach ((array)$dis_id_to_num_of_replies as $id => $num) {
+                $sorted_discussions[] = $discussions[$id];
+            }
+
+            $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
+            $total_pages = ceil(count($discussions) / $max_records_to_show);
+            $records_counter = 0;
+            $records = array();
+
+            if (count($discussions) > 0) {
+                for ($i = ($current_page - 1) * $max_records_to_show; $i < count($discussions); $i++) {
+                    if ($records_counter++ >= $max_records_to_show)
+                        break;
+                    $records[] = $sorted_discussions[$i];
+                }
+            }
+            $this->view->Discussions = $records;
+            $this->view->total_pages = $total_pages;
+            $this->view->current_page = $current_page;
         }
 
     }

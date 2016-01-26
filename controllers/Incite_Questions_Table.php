@@ -53,6 +53,46 @@ function getAllQuestionsForUserID($user_id)
     $db->close();
     return $idArray;
 }
+function getAllDiscussions()
+{
+    $discussions = array();
+    $db = DB_Connect::connectDB();
+    //question_type 4 is between-documents discussion
+    $stmt = $db->prepare("SELECT id, user_id, question_text, timestamp FROM omeka_incite_questions WHERE question_type = 4 ORDER BY timestamp DESC");
+    $stmt->bind_result($id, $user_id, $content, $time);
+    $stmt->execute();
+    while ($stmt->fetch())
+    {
+        $discussions[] = array('id' => $id, 'user_id' => $user_id, 'title' => $content, 'time' => $time);
+    }
+    $stmt->close();
+    $db->close();
+    return $discussions;
+}
+
+function getAllDiscussionsWithNumOfReplies()
+{
+    $discussions = array();
+    $db = DB_Connect::connectDB();
+    //question_type 4 is between-documents discussion
+    $stmt = $db->prepare("SELECT id, user_id, question_text, timestamp FROM omeka_incite_questions WHERE question_type = 4 ORDER BY timestamp DESC");
+    $stmt->bind_result($id, $user_id, $content, $time);
+    $stmt->execute();
+    $newdb = DB_Connect::connectDB();
+    while ($stmt->fetch())
+    {
+        $newstmt = $newdb->prepare("SELECT COUNT(*) FROM omeka_incite_replies WHERE is_active = 1 AND question_id = ?");
+        $newstmt->bind_param("i", $id);
+        $newstmt->bind_result($num_of_replies);
+        $newstmt->execute();
+        $newstmt->fetch();
+        $newstmt->close();
+        $discussions[$id] = array('id' => $id, 'user_id' => $user_id, 'title' => $content, 'time' => $time, 'num_of_replies' => $num_of_replies);
+    }
+    $stmt->close();
+    $db->close();
+    return $discussions;
+}
 
 function disableQuestion($id)
 {

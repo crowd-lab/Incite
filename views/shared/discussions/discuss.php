@@ -11,62 +11,32 @@ include(dirname(__FILE__).'/../common/header.php');
 
 
         <div class="row">
-            <p style="margin-left:0.5em;  display:inline-block;">Sort by: <a href="">completion</a>-<a href="">types</a>-<a href="">time</a>-<a href="">last updated</a> 
-                <form style=" display:inline-block; margin-left:27em;" action="">
-                        <input type="checkbox" name="vehicle" value="Bike"> - Map+Timeline
-                </form>
-            </p>
+            <div class="col-md-10 col-md-offset-1">
+                <h1>Join existing discussions or <a class="btn btn-primary" type="button" href="<?php echo INCITE_PATH.'discussions/create'; ?>">Create</a> your own!</h1>
+            </div>
 
-
-    <div class="col-md-4 col-md-offset-4">
-<?php $cf = 1; ?>
+            <div class="col-md-10 col-md-offset-1">
+                <ul class="list-group">
 <?php foreach ((array)$this->Discussions as $discussion): ?>
-        <div class="col-md-12">
-            <div class="col-md-3">
-                    <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
-                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
-                    </a>
-            </div>
-            <div class="col-md-9">
-                <p style=""><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></p>
-            </div>
-        </div>
-    <?php if ($cf > 0 && $cf % 2 == 0): ?>
-        <div class="clearfix"></div>
-    <?php endif; ?>
-    <?php $cf++; ?>
+                    <li class="list-group-item">
+                        <a href="<?php echo INCITE_PATH.'discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a><span class="badge"><?php echo $discussion['num_of_replies']; ?></span>
+                    </li>
 <?php endforeach; ?>
-    </div>
-    <div class="col-md-4 text-center">
-        <nav>
-          <ul class="pagination">
-            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                </ul>
+            </div>
+            <div class="col-md-12 text-center">
+                <nav>
+                    <ul class="pagination">
+                        <li class="<?php echo ($this->current_page == 1 ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == 1 ? "" : 'href="?page='.($this->current_page-1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
 <?php for ($i = 0; $i < $this->total_pages; $i++): ?>
-            <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
+                        <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
 <?php endfor; ?>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-          </ul>
-        </nav>
-    </div>
-    </div>
-    <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
-
-<!--
-<?php foreach ((array)$this->Transcriptions as $transcription): ?>
-    <div class="col-md-4">
-        <div class="thumbnail">
-             <a href="<?php echo 'transcribe/'.$transcription->id; ?>">
-                <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 300px; height: 300px;">
-            </a>
-            <h3 style="text-align: center;"><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></h3>
-            <p style="text-align: center;"> <?php echo metadata($transcription, array('Dublin Core', 'Description')); ?> </p>
-            <p style="text-align: center;"> <?php echo metadata($transcription, array('Item Type Metadata', 'Location')); ?> </p>
+                        <li class="<?php echo ($this->total_pages == $this->current_page ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == $this->total_pages ? "" : 'href="?page='.($this->current_page+1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                  </ul>
+                </nav>
+            </div>
         </div>
     </div>
-<?php endforeach; ?>
--->
-                     
-</div>
     <script type="text/javascript">
 
     $('#map-div').ready( function (e) {
