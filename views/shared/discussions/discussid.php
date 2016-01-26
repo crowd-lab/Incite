@@ -194,15 +194,6 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
         </div>
         <div class="col-md-5">
-            <div class="row btn-group" data-toggle="buttons">
-              <label class="btn btn-primary">
-                <input type="radio" name="options" id="option1" autocomplete="off" value="exist"> View existing discussions
-              </label>
-              <label class="btn btn-primary active">
-                <input type="radio" name="options" id="option2" value="new" autocomplete="off" checked> Create a new discussion
-              </label>
-            </div>
-
             <div class="row" id="content-1">
                 <h3><?php echo $this->title; ?></h3>
 <?php foreach ((array) $this->discussions as $discussion): ?>
