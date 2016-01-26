@@ -150,11 +150,11 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="pagination-bar" class="text-center">
             <nav>
               <ul class="pagination">
-                <li class="<?php echo ($this->current_page == 1 ? "disabled" : ""); ?>"><a href="?page=<?php echo $this->current_page-1; ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-    <?php for ($i = 0; $i < $this->total_pages; $i++): ?>
+                <li class="<?php echo ($this->current_page == 1 ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == 1 ? "" : 'href="?page='.($this->current_page-1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+<?php for ($i = 0; $i < $this->total_pages; $i++): ?>
                 <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
-    <?php endfor; ?>
-                <li class="<?php echo ($this->total_pages == $this->current_page ? "disabled" : ""); ?>"><a href="?page=<?php echo $this->current_page+1; ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+<?php endfor; ?>
+                <li class="<?php echo ($this->total_pages == $this->current_page ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == $this->total_pages ? "" : 'href="?page='.($this->current_page+1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Next"><span aria-hidden="true">»</span></a></li>
               </ul>
             </nav>
         </div>
