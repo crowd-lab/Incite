@@ -23,7 +23,7 @@ function getNewComments(docId)
                 var commentsArrayObject = {commentsArray};
                 var isSignedIn = $.ajax({
                     type: 'POST',
-                    url: "/m4j/incite/ajax/issignedin',
+                    url: "/m4j/incite/ajax/issignedin",
                     async: false,
                     data: {loopVar: i, commentArray: commentsArray, format: format},
                     success: appendNewComment
