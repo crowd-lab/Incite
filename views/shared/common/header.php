@@ -379,32 +379,6 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                 <?php endif; ?>
                     </form>
                 </ul>
-
-
-                <!-- discussion
-    <ul class="nav navbar-nav">
-    <li>
-        <a href="/m4j/incite/documents/transcribe">Transcribe</a>
-    </li>
-    <li>
-        <a href="/m4j/incite/documents/tag">Tag</a>
-    </li>
-    <li>
-        <a href="/m4j/incite/documents/connect">Connect</a>
-    </li>
-    <li>
-        <a href="/m4j/incite/discussions">Discuss</a>
-    </li>
-    <li> 
-        <a href="./discussions">Discuss</a>
-    </li>
-                -->
-                <!-- discover
-    <li> 
-    <a href="./discover">Discover</a>
-    </li>
-                -->
-                </ul>
             </div>
 
             <!-- /.navbar-collapse -->

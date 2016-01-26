@@ -15,23 +15,23 @@ include(dirname(__FILE__).'/../common/header.php');
 
         <div class="row"> 
         	<div class="jumbotron">
-        		            <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-                <h1>Welcome to Mapping The Fourth!</h1>
-                <p class="lead"> Help us better understand the history of our country.</p>
+                <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
+                    <h1>Welcome to Mapping The Fourth!</h1>
+                    <p class="lead"> Help us better understand the history of our country.</p>
 
-                <p style="margin-bottom: 20px;"> The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation’s borders lie? But it was on one particular day each year—July 4—that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p>
-                <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
-            </div> 
-        	<div class="row"> 
-	            <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-	                <h2>How You Can Help</h2>
-	                <p class="lead">There are three main tasks you can choose to contribute.</p>
-	                <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
-	            </div> 
-       		 </div>
+                    <p style="margin-bottom: 20px;"> The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation’s borders lie? But it was on one particular day each year—July 4—that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p>
+                    <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
+                </div> 
+                <div class="row"> 
+                    <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
+                        <h2>How You Can Help</h2>
+                        <p class="lead">There are three main tasks you can choose to contribute.</p>
+                        <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
+                    </div> 
+                </div>
         	</div>
         </div>
-
+    </div>
 
 <style>
 body { padding-top: 60px; 
@@ -94,7 +94,22 @@ body { padding-top: 60px;
 				<div class="col-lg-12 text-center" style="margin-bottom: 30px;">
 					<h2></h2>
 
-					<p style="margin-bottom: 30px; margin-top: 50px;">Based on the available information, we have found some documents you might be interested in. Click "Search" to start when you are ready. Or you can tell us what you are interested in by changing the pre-populated information and click "Search".</p>
+					<p style="margin-bottom: 30px; margin-top: 50px;">Based on the available information, we have found some search criteria for discovering documents you might be interested in. Click "Discover" to start when you are ready. Or you can tell us what you are interested in by changing the pre-populated information and click "Discover".</p>
+                    <form class="navbar-form" role="search" action="/m4j/incite/discover">
+                        <div class="form-group">
+                            <input id="location" type="text" class="form-control" placeholder="Location" name="location">
+                            <input style="width: 190px;" id="time_picker2" type="text" class="form-control" placeholder="Time" name="time" value="">
+                            <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
+                            <select class="form-control" name="task">
+                                <option value="random">Select a task</option>
+                                <option value="transcribe" selected>Transcribe</option>
+                                <option value="tag">Tag</option>
+                                <option value="connect">Connect</option>
+                                <option value="discuss">Discuss</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default">Discover</button>
+                    </form>
 					<!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
 				</div> 
 			</div>
@@ -120,6 +135,20 @@ body { padding-top: 60px;
     <script>
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
+    var d = new Date();
+    var mon = (d.getMonth()+1) < 10 ? ("0"+(d.getMonth()+1)) : d.getMonth();
+    var dat = (d.getDate() < 10) ? ("0"+d.getDate()) : d.getDate();
+    var today = ''+(1830+(Math.floor(Math.random()*(1870-1830))+1))+'-'+mon+'-'+dat;
+    $('#time_picker2').daterangepicker({
+        locale     : { format: 'YYYY-MM-DD'},
+        "startDate": today,   //could be dynamic or user's choice
+        "endDate"  : today,   //could be dynamic or user's choice
+        "minDate"  : "1830-01-01",
+        "maxDate"  : "1870-12-31",
+        "opens"    : "center"
+        }, 
+        function (start, end, label) {
+        });
 
 	$('#myCarousel').carousel({
 		interval:   4000
