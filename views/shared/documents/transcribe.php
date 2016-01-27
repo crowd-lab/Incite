@@ -237,7 +237,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 $('#map-div').height($(window).height()-200);
                 document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
                 document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
-            showListView();
+                showListView();
                 buildTimeLine(ev);
                 //$('#list-view').width($(window).width()*0.15);
             });

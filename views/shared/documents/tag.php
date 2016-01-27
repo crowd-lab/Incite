@@ -123,6 +123,8 @@ include(dirname(__FILE__).'/../common/header.php');
     var map;
     var markers_array = [];
     var nomarkers_array = [];
+    var marker_to_id = {};
+    var id_to_marker = {};
     function x() {
         $('[data-toggle="popover"]').popover({ trigger: "hover" });
         map = L.map('map-div').setView([37.8, -96], 4);
@@ -136,6 +138,8 @@ include(dirname(__FILE__).'/../common/header.php');
         if (count($lat_long) > 0) {
             echo 'marker = L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map).bindPopup('".metadata($tag, array('Dublin Core', 'Title'))."');\n";
             echo 'markers_array.push({id:'.$tag->id.', marker: marker});';
+            echo 'marker_to_id[marker._leaflet_id]='.$tag->id.';';
+            echo 'id_to_marker['.$tag->id.']= marker;';
         } else {
             echo 'nomarkers_array.push({id:'.$tag->id.', marker: marker});';
         }
@@ -147,12 +151,12 @@ include(dirname(__FILE__).'/../common/header.php');
 
     <!-- Page Content -->
     <div id="map-div" style="width:500px;"></div>
-    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 300px; height: 500px; background-color: white;">
+    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white;">
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Tags as $tag): ?>
         <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;">
-            <div style="height: 40px; width:40px; float: left;">
+            <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($tag, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($tag, array('Dublin Core', 'Title')); ?>" data-placement="right" data-id="<?php echo $tag->id; ?>">
                     <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id; ?>">
                     <img src="<?php echo $tag->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                     </a>
@@ -194,14 +198,14 @@ include(dirname(__FILE__).'/../common/header.php');
             $('#list-view').animate({ left: $(window).width()-$('#list-view').width() }, 'slow', function() {
                 $('#list-view-switch').html('Hide');
             });
-            $(this).one("click", hideListView);
+            $('#list-view-switch').one("click", hideListView);
         }
         
         function hideListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view-switch').width()-5 }, 'slow', function() {
                 $('#list-view-switch').html('Show');
             });
-            $(this).one("click", showListView);
+            $('#list-view-switch').one("click", showListView);
         }
         
         function buildTimeLine(evt) {
@@ -227,6 +231,7 @@ include(dirname(__FILE__).'/../common/header.php');
             document.getElementById('list-view').style.top = ($('#map-div').offset().top+20)+'px';
             document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
             document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+            showListView();
             buildTimeLine(ev);
             $(window).on('resize', function(e) {
                 $('#map-div').width($(window).width());
@@ -234,6 +239,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 $('#map-div').height($(window).height()-200);
                 document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
                 document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
+                showListView();
                 buildTimeLine(ev);
                 //$('#list-view').width($(window).width()*0.15);
             });
@@ -242,6 +248,29 @@ include(dirname(__FILE__).'/../common/header.php');
             x();
             $.each(nomarkers_array, function (idx) {
                 $('#list_id'+this['id']).addClass('no-map-marker');
+            });
+            $.each(markers_array, function (idx) {
+                this['marker'].on('mouseover', function (e) {
+                    $('div[data-id='+marker_to_id[this._leaflet_id]+']').popover('show');
+                    this.openPopup();
+                });
+                this['marker'].on('mouseout', function (e) {
+                    $('div[data-id='+marker_to_id[this._leaflet_id]+']').popover('hide');
+                    this.closePopup();
+                });
+                this['marker'].on('click', function (e) {
+                    this.openPopup();
+                });
+            });
+            $('[data-toggle="popover"]').each( function (idx) {
+                $(this).on('shown.bs.popover', function (e) {
+                    if (id_to_marker[this.dataset.id])
+                        id_to_marker[this.dataset.id].openPopup();
+                });
+                $(this).on('hidden.bs.popover', function (e) {
+                    if (id_to_marker[this.dataset.id])
+                        id_to_marker[this.dataset.id].closePopup();
+                });
             });
 
         });
