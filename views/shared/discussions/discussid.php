@@ -195,6 +195,7 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="col-md-5">
             <div class="row" id="content-1">
+                <a href="/m4j/incite/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
                 <h3><?php echo $this->title; ?></h3>
 <?php foreach ((array) $this->discussions as $discussion): ?>
                 <div style="margin: 10px; background-color: #AAAAAA; padding: 10px;">

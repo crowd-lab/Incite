@@ -147,6 +147,7 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="col-md-5">
             <div class="row" id="content-1">
+                <a href="/m4j/incite/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
                 <h3>Create a New Discussion</h3>
                 <form id="discussion_form" class="form-wrapper" method="post">
                     Title: <input id="discussion_title" name="title" type="text" style="margin-bottom: 10px; width: 100%;" id="search1" placeholder="How do Northerners vs Southerners write....">

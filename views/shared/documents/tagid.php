@@ -12,16 +12,12 @@
         });
     </script>
     <!-- Page Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-            </div>
-        </div>
-        <div class="col-md-4">
-            <button type="button" class="btn btn-default">Subscribe</button>
-            <button type="button" class="btn btn-default">Guide</button>
-        </div>
+    <div id="task_description" style="text-align: center;">
+        <h2 style="text-align: center;">Tag</h2>
+        <span style="text-align: center;">The system has tried to recognize some tag. Please help 1) ensure they are correct, 2) add tags that are not recognized by the system and 3) provide (sub)categories and details for the tags.
+        </span>
     </div>
+    <br>
     <div class="container-fluid">
         <div class="col-md-6" id="work-zone">
             <div style="position: fixed;" id="work-view">

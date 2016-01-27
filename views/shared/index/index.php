@@ -97,7 +97,7 @@ body { padding-top: 60px;
 					<p style="margin-bottom: 30px; margin-top: 50px;">Based on the available information, we have found some search criteria for discovering documents you might be interested in. Click "Discover" to start when you are ready. Or you can tell us what you are interested in by changing the pre-populated information and click "Discover".</p>
                     <form class="navbar-form" role="search" action="/m4j/incite/discover">
                         <div class="form-group">
-                            <input id="location" type="text" class="form-control" placeholder="Location" name="location">
+                            <input id="location" type="text" class="form-control" placeholder="Location" name="location" value="Virginia">
                             <input style="width: 190px;" id="time_picker2" type="text" class="form-control" placeholder="Time" name="time" value="">
                             <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
                             <select class="form-control" name="task">
@@ -136,13 +136,22 @@ body { padding-top: 60px;
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
     var d = new Date();
-    var mon = (d.getMonth()+1) < 10 ? ("0"+(d.getMonth()+1)) : d.getMonth();
+    var mon = (d.getMonth()+1) < 10 ? ("0"+(d.getMonth()+1)) : (d.getMonth()+1);
     var dat = (d.getDate() < 10) ? ("0"+d.getDate()) : d.getDate();
-    var today = ''+(1830+(Math.floor(Math.random()*(1870-1830))+1))+'-'+mon+'-'+dat;
+    //var today = ''+(1830+(Math.floor(Math.random()*(1870-1830))+1))+'-'+mon+'-'+dat;
+    var today = '1860-'+mon+'-'+dat;
+    var d = new Date();
+    d.setMonth(d.getMonth()-1);
+    var a_month_ago = (d.getMonth()+1) < 10 ? ("0"+(d.getMonth()+1)) : (d.getMonth()+1);
+    var start_year = d.getFullYear();
+    d = new Date();
+    var a_month_after = (d.getMonth()+2) < 10 ? ("0"+(d.getMonth()+2)) : (d.getMonth()+2);
+    var end_year = d.getFullYear();
+    var random_year = 1860;
     $('#time_picker2').daterangepicker({
         locale     : { format: 'YYYY-MM-DD'},
-        "startDate": today,   //could be dynamic or user's choice
-        "endDate"  : today,   //could be dynamic or user's choice
+        "startDate": '1855-12-01',
+        "endDate"  : '1865-2-28',
         "minDate"  : "1830-01-01",
         "maxDate"  : "1870-12-31",
         "opens"    : "center"

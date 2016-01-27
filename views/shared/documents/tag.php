@@ -150,6 +150,11 @@ include(dirname(__FILE__).'/../common/header.php');
 </script>
 
     <!-- Page Content -->
+    <div id="task_description" style="text-align: center;">
+        <h2 style="text-align: center;">Search Results of Taggable Documents</h2>
+        <span style="text-align: center;">You can mouse over the pins on the map or document thumbnails to see more details and click them to try tagging the document!
+        </span>
+    </div>
     <div id="map-div" style="width:500px;"></div>
     <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white;">
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
@@ -260,6 +265,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 });
                 this['marker'].on('click', function (e) {
                     this.openPopup();
+                    window.location.href="/m4j/incite/documents/tag/"+marker_to_id[this._leaflet_id];
                 });
             });
             $('[data-toggle="popover"]').each( function (idx) {

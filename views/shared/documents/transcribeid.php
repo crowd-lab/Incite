@@ -14,6 +14,12 @@
 
 
     <!-- Page Content -->
+    <div id="task_description" style="text-align: center;">
+        <h2 style="text-align: center;">Transcribe</h2>
+        <span style="text-align: center;">Please 1) transcribe the image document, 2) provide a summary of about 2 sentences and 3) specify the tone of the document.
+        </span>
+    </div>
+    <br>
     <div class="container-fluid">
         <div class="col-md-6" id="work-zone">
             <div style="position: fixed; width: 35%;" id="work-view">

@@ -14,15 +14,12 @@ include(dirname(__FILE__).'/../common/header.php');
     </script>
     <div class="container">
 
-        <div class="row">
-            <div class="col-md-8">
-            </div>
-            </div>
-            <div class="col-md-4">
-                <button type="button" class="btn btn-default">Subscribe</button>
-                <button type="button" class="btn btn-default">Guide</button>
-            </div>
+        <div id="task_description" style="text-align: center;">
+            <h2 style="text-align: center;">Connect</h2>
+            <span style="text-align: center;">The system has found some document(s) related to the document on the left. Please help check if they share the same subject.
+            </span>
         </div>
+        <br>
         <div class="container-fluid">
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed; width: 35%;" id="work-view">

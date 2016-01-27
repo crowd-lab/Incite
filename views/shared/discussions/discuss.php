@@ -19,7 +19,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <ul class="list-group">
 <?php foreach ((array)$this->Discussions as $discussion): ?>
                     <li class="list-group-item">
-                        <a href="<?php echo INCITE_PATH.'discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a><span class="badge"><?php echo $discussion['num_of_replies']; ?></span>
+                        <a href="<?php echo INCITE_PATH.'discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a><span class="badge">Replies: <?php echo $discussion['num_of_replies']; ?></span>
                     </li>
 <?php endforeach; ?>
                 </ul>
