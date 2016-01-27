@@ -262,7 +262,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/' . $this->_getParam('id') . ' > ' . '../tmp/ner/' . $this->_getParam('id') . '.ner');
                     }
                     $nered_file = fopen('../tmp/ner/' . $this->_getParam('id') . '.ner', "r");
-                    $parsed_text = fread($nered_file, filesize('../tmp/ner/' . $this->_getParam('id') . '.ner'));
+                    $nered_file_size = filesize('../tmp/ner/' . $this->_getParam('id') . '.ner');
+                    $parsed_text = "";
+                    if ($nered_file_size != 0)
+                        $parsed_text = fread($nered_file, $nered_file_size);
+
                     fclose($nered_file);
 
                     //parsing results
