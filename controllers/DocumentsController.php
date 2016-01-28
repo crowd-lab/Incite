@@ -374,6 +374,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         if ($this->getRequest()->isPost()) {
             //save a connection to database
             if ($this->_hasParam('id')) {
+                $all_subject_ids = getAllSubjectConceptIds();
+                if (isset($_POST['subjects']))
+                    foreach ((array) $all_subject_ids as $subject_id) {
+                        if (in_array($subject_id, $_POST['subjects']))
+                            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 1);
+                        else
+                            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 0);
+                    }
+                /*
                 if (isset($_POST['subject']) && $_POST['connection'] == 'true') {
                     addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 1);
                 } else if (isset($_POST['subject']) && $_POST['connection'] == 'false') {
@@ -381,6 +390,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 } else {
                     
                 }
+                */
                 $_SESSION['Incite']['previous_task'] = 'connect';
                 //Since we only need one copy now and connect is the final task, we redirect the same user to next document to start a new transcription
                 //$this->redirect('incite/documents/transcribe');
@@ -395,6 +405,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
 
         if ($this->_hasParam('id')) {
+            $is_connectable_by_tags = false;
             $record = $this->_helper->db->find($this->_getParam('id'));
             if ($record != null) {
                 if ($record->getFile() == null) {
@@ -440,7 +451,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                     $related_documents = findRelatedDocumentsViaAtLeastNCommonTags($this->_getParam('id'));
                     if (count($related_documents) == 0) {
+                        $this->_helper->viewRenderer('connectbymultiselection');
+                        $this->view->subjects = getAllSubjectConcepts();
+                        $this->view->connection = $record;
                         //for this part, we can random the destination of the tasks!
+                        /*
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_noDocToConnect', 
                                 'message' => 'Unfortunately, we could not find related documents for this document at this moment. In the meanwhile, you can try connecting other documents or help transcribe/tag other documents so that we can find related documents! Now, we are searching to see if we can find documents that need connections. You will be redirected to the results', 
@@ -448,6 +463,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                                 'time' => '10');
 
                         $this->redirect(REDIRECTOR_URL);
+                        //*/
                     }
 
                     //Get subject candidates
@@ -456,6 +472,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $subject_related_documents = array();
                     if (count($subject_candidates) <= 0) {
                         //None of the related documents have subjects!
+                        $this->_helper->viewRenderer('connectbymultiselection');
+                        $this->view->subjects = getAllSubjectConcepts();
+                        $this->view->connection = $record;
+                        /*
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_noSubjectCandidates', 
                                 'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results', 
@@ -463,6 +483,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                                 'time' => '10');
 
                         $this->redirect(REDIRECTOR_URL);
+                        //*/
                         //echo 'no connection found!';
                         //die();
                     } else {
@@ -478,6 +499,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         }
                     }
                     if (count($subject_related_documents) == 0) {
+                        $this->_helper->viewRenderer('connectbymultiselection');
+                        $this->view->subjects = getAllSubjectConcepts();
+                        $this->view->connection = $record;
+                        /*
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_allSubjectsConnected', 
                                 'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are other documents that you can help connect. You will be redirected to the results', 
@@ -485,6 +510,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                                 'time' => '10');
 
                         $this->redirect(REDIRECTOR_URL);
+                        //*/
                     }
                     $docs_for_common_tags = array_merge($subject_related_documents, array($this->_getParam('id')));
                     //fetch documents!    
@@ -504,8 +530,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                     $this->redirect(REDIRECTOR_URL);
                 } //if (isDocumentTagged($this->_getParam('id')))
-                $this->_helper->viewRenderer('connectid');
-                $this->view->connection = $record;
+                if ($is_connectable_by_tags) {
+                    $this->_helper->viewRenderer('connectbytags');
+                    $this->view->connection = $record;
+                }
             } else {
                 //no such document
                 echo 'no such document';

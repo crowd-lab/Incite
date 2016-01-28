@@ -98,7 +98,26 @@ function getAllSubjectConcepts()
     $stmt->execute();
     while ($stmt->fetch())
     {
-        $results[] = array($id, $name, $def);
+        $results[] = array('id' => $id, 'name' => $name, 'definition' => $def);
+    }
+    $stmt->close();
+    $db->close();
+    return $results;
+}
+/**
+ * Return all subject/concept ids from the database
+ * @return array of results
+ */
+function getAllSubjectConceptIds()
+{
+    $db = DB_Connect::connectDB();
+    $results = Array();
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_subject_concepts");
+    $stmt->bind_result($id);
+    $stmt->execute();
+    while ($stmt->fetch())
+    {
+        $results[] = $id;
     }
     $stmt->close();
     $db->close();
@@ -165,8 +184,8 @@ function addConceptToDocument($conceptID, $itemID, $userID, $positive)
         //store concept in conjunction table
         $db->close();
         $db = DB_Connect::connectDB();
-        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?)");
-        $newStmt->bind_param("iii", $documentID, $conceptID, $positive);
+        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        $newStmt->bind_param("iiii", $documentID, $conceptID, $positive, $userID);
         $newStmt->execute();
         $newStmt->close();
         
@@ -183,8 +202,8 @@ function addConceptToDocument($conceptID, $itemID, $userID, $positive)
         $newStmt->close();
         $db->close();
         $db = DB_Connect::connectDB();
-        $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?)");
-        $newStmt1->bind_param("iii",$documentID, $conceptID, $positive);
+        $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        $newStmt1->bind_param("iiii",$documentID, $conceptID, $positive, $userID);
         $newStmt1->execute();
         $newStmt1->close();
     }
