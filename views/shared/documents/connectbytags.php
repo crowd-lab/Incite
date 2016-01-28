@@ -56,7 +56,7 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php else: ?>
                 <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
 <?php endif; ?>
-<?php foreach($this->related_documents as $document): ?>
+<?php foreach((array)$this->related_documents as $document): ?>
                 <div class="col-md-4">
                     <a href="/m4j/incite/documents/connect/<?php echo $document->id; ?>" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
                         <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
