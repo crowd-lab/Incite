@@ -53,7 +53,7 @@ function appendNewComment(dataArray)
 
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
-            var string = "<ul><li><header><a href='javascript:void(0);' class='userlink'>";
+            var string = "<ul style='list-style: none;'><li><header><a href='javascript:void(0);' class='userlink'>";
             for (var j = 0; j < commentsArrayReplies.length; j++)
             {
                 var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);

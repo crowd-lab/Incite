@@ -15,19 +15,20 @@
 
     <!-- Page Content -->
     <div id="task_description" style="text-align: center;">
-        <h2 style="text-align: center;">Transcribe</h2>
-        <span style="text-align: center;">Please 1) transcribe the image document, 2) provide a summary of about 2 sentences and 3) specify the tone of the document.
-        </span>
+        <h1 style="text-align: center; margin-bottom: 40px; margin-top: 0px;">Transcribe</h1>
     </div>
     <br>
     <div class="container-fluid">
         <div class="col-md-6" id="work-zone">
             <div style="position: fixed; width: 35%;" id="work-view">
-                <div>Title: <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></div>
-                <div>Date: <?php echo metadata($this->transcription, array('Dublin Core', 'Date')); ?></div>
-                <div>Location: <?php echo metadata($this->transcription, array('Item Type Metadata', 'Location')); ?></div>
-                <div>Description: <?php echo metadata($this->transcription, array('Dublin Core', 'Description')); ?></div>
-                <br>
+                <div id="tombstone-metadata" style="border: solid 1px; margin-bottom: 4px;">
+                    <h3 style="text-align: center; margin-bottom: 0px; margin-top: 5px;">Known Document Information</h3>
+                    <div><p class="metadata"><b>Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></p></div>
+                    <div><p class="metadata"><b>Date:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Date')); ?></p></div>
+                    <div><p class="metadata"><b>Location:</b> <?php echo metadata($this->transcription, array('Item Type Metadata', 'Location')); ?></p></div>
+                    <div><p class="metadata" style="margin-bottom: 5px;"><b>Description:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Description')); ?></p></div>
+                </div>
+                <!-- br tag here maybe --> 
                 <div class="wrapper">
                     <div id="viewer2" class="viewer"></div>
                 </div>
@@ -35,12 +36,14 @@
         </div>
         <div class="col-md-6" id="submit-zone">
             <form method="post" id="transcribe-form">
-                <textarea id="transcription" name="transcription" rows="15" style="width: 100%;" placeholder="Transcription"></textarea>
-                <textarea id="summary" name="summary" rows="5" style="width: 100%;" placeholder="Summary"></textarea>
+                <p class="step" style="margin-top: -32px"><i><u>Step 1: Transcribe</u></i></p>
+                <textarea id="transcription" name="transcription" rows="15" style="width: 100%;" placeholder="Provide a 1:1 transcription of the document"></textarea>
+                <p class="step"><i><u>Step 2: Summarize</u></i></p>
+                <textarea id="summary" name="summary" rows="5" style="width: 100%; height: 66px;" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
                 <div class="form-group">
-                    <label class="control-label">Tone of the document:</label>
+                    <p class="step"><i><u>Step 3: Specify Tone</u></i></p>
                     <select id="tone" class="form-control" name="tone">
-                        <option value=""></option>
+                        <option value="" default selected>Select the tone of the document</option>
                         <option value="anxiety">Anxiety</option>
                         <option value="optimism">Optimism</option>
                         <option value="sarcasm">Sarcasm</option>
@@ -48,8 +51,11 @@
                         <option value="aggression">Aggression</option>
                     </select>
                 </div>
-                <button id="submit_transcription" type="button" class="btn btn-default">Done</button>
+                <button id="submit_transcription" type="button" class="btn btn-primary">Submit</button>
             </form>
+
+            <br>
+            <hr size=2 style="margin-top: 40px;">
 
             <div id="container">
                 <h3> Discussion </h3>
@@ -57,8 +63,8 @@
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
 
                         <form id="discuss-form" method="POST">
-                            <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                            <button type="button" class="btn btn-default" onclick="submitComment(<?php echo $this->transcription->id; ?>)">Submit</button>
+                            <textarea name="transcribe_text" cols="60" rows="10" id="comment" placeholder="Your comment" style="width: 100%; height: 80px; margin-bottom: 10px;"></textarea>
+                            <button type="button" class="btn btn-default" style="float: right;" onclick="submitComment(<?php echo $this->transcription->id; ?>)">Post Comment</button>
                         </form>
 
 <?php else: ?>
@@ -66,7 +72,7 @@
 
                     <?php endif; ?>
                 </div>
-                <ul id="comments">
+                <ul id="comments" style="list-style: none; padding-left: 0;">
                 </ul>
             </div>
         </div> 
@@ -112,24 +118,41 @@
             var iv2 = $("#viewer2").iviewer({
                 src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
             });
-
+            
+        
             $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10);
 
         });
 
 
     </script>
+
     <style>
-        .viewer
-        {
+        .metadata {
+            margin-bottom: 0px;
+            margin-left: 10px;
+        }
+
+        .step {
+            margin-top: 10px;
+        }
+
+        .viewer {
             width: 100%;
             border: 1px solid black;
             position: relative;
         }
 
-        .wrapper
-        {
+        .wrapper {
             overflow: hidden;
+        }
+
+        #tone option[default] {
+            display: none;
+        }
+
+        #submit_transcription {
+            float: right;
         }
     </style>
 

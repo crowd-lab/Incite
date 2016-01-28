@@ -160,16 +160,16 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
-        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;">
-            <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($connection, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($connection, array('Dublin Core', 'Title')); ?>" data-placement="right" data-id="<?php echo $connection->id; ?>">
-                    <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id; ?>">
+        <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id; ?>">
+            <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;">
+                <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($connection, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($connection, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $connection->id; ?>">
                     <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
-                    </a>
+                </div>
+                <div style="height: 40px; width:250px;">
+                    <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>
+                </div>
             </div>
-            <div style="height: 40px; width:250px;">
-                <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>
-            </div>
-        </div>
+        </a>
 <? endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>
