@@ -78,8 +78,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $_SESSION['incite']['message'] = 'Congratulations! You just completed transcribing a document! Now you can start tagging what you just transcribed! Or if you want to find another document to transcribe, please click <a href="/m4j/incite/documents/transcribe?'.$_POST['query_str'].'">here</a>.';
                     $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
                 } else {
-                    $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
                     $_SESSION['incite']['message'] = 'Congratulations! You just completed transcribing a document! Now you can start tagging what you just transcribed! Or if you want to find another document to transcribe, please click <a href="/m4j/incite/documents/transcribe">here</a>.';
+                    $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
                 }
             }
         }
@@ -531,6 +531,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //default view without id
             //Try connect by tags
             $connectable_documents = getConnectableDocuments();
+            $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
             if (isSearchQuerySpecifiedViaGet()) {
                 $searched_item_ids = getSearchResultsViaGetQuery();
@@ -544,6 +545,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if (count($document_ids) <= 0) {
                 //Try tagged documents
                 $connectable_documents = getDocumentsWithTags();
+                if (isSearchQuerySpecifiedViaGet()) {
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected baed on your search criteria. Please change your search criteria.';
+                } else {
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected now. Please come back later! Or you can try to find a document to <a href="/m4j/incite/documents/transcribe">Transcribe</a> or <a href="/m4j/incite/documents/tag">Tag</a>!';
+                }
 
                 if (isSearchQuerySpecifiedViaGet()) {
                     $searched_item_ids = getSearchResultsViaGetQuery();
