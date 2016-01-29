@@ -128,7 +128,7 @@ include(dirname(__FILE__).'/../common/header.php');
     var id_to_marker = {};
     function x() {
         $('[data-toggle="popover"]').popover({ trigger: "hover" });
-        map = L.map('map-div').setView([37.8, -96], 4);
+        map = L.map('map-div').setView([37.8, -70], 4);
           L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
               attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
@@ -161,16 +161,16 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Tags as $tag): ?>
-        <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;">
-            <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($tag, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($tag, array('Dublin Core', 'Title')); ?>" data-placement="right" data-id="<?php echo $tag->id; ?>">
-                    <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id; ?>">
-                    <img src="<?php echo $tag->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
-                    </a>
+        <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id; ?>">
+            <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($tag, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($tag, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $tag->id; ?>">
+                <div style="height: 40px; width:40px; float: left;">    
+                    <img src="<?php echo $tag->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">      
+                </div>
+                <div style="height: 40px; width:250px;">
+                    <p style=""><?php echo metadata($tag, array('Dublin Core', 'Title')); ?></p>
+                </div>
             </div>
-            <div style="height: 40px; width:250px;">
-                <p style=""><?php echo metadata($tag, array('Dublin Core', 'Title')); ?></p>
-            </div>
-        </div>
+        </a>
 <? endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>

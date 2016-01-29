@@ -127,7 +127,7 @@ include(dirname(__FILE__).'/../common/header.php');
     var id_to_marker = {};
     function x() {
         $('[data-toggle="popover"]').popover({ trigger: "hover" });
-        map = L.map('map-div').setView([37.8, -80], 4);
+        map = L.map('map-div').setView([37.8, -65], 4);
           L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
               attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
@@ -158,20 +158,20 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
-        <div id="list_id<?php echo $transcription->id; ?>" style="margin: 10px;" class="">
-            <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($transcription, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($transcription, array('Dublin Core', 'Title')); ?>" data-placement="right" data-id="<?php echo $transcription->id; ?>">
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
-                    <a href="<?php echo INCITE_PATH.'documents/transcribe/'.$transcription->id."?".$this->query_str; ?>">
+        <a href="<?php echo INCITE_PATH.'documents/transcribe/'.$transcription->id."?".$this->query_str; ?>">
 <?php else: ?>
-                    <a href="<?php echo INCITE_PATH.'documents/transcribe/'.$transcription->id; ?>">
+        <a href="<?php echo INCITE_PATH.'documents/transcribe/'.$transcription->id; ?>">
 <?php endif; ?>
-                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
-                    </a>
+            <div id="list_id<?php echo $transcription->id; ?>" style="margin: 10px;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($transcription, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($transcription, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $transcription->id; ?>">
+                <div style="height: 40px; width:40px; float: left;">
+                    <img src="<?php echo $transcription->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">    
+                </div>
+                <div style="height: 40px; width:250px;">
+                    <p style=""><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></p>
+                </div>
             </div>
-            <div style="height: 40px; width:250px;">
-                <p style=""><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></p>
-            </div>
-        </div>
+        </a>
 <? endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>

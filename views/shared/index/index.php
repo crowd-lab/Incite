@@ -47,48 +47,55 @@ body { padding-top: 60px;
     border-radius:0px;
 }
 </style>
-		<div class="container">
-			<div id="myCarousel" class="carousel slide" data-ride="carousel">
+	<div class="container">
+		<div id="myCarousel" class="carousel slide" data-ride="carousel">
 			
-			  <!-- Wrapper for slides -->
-			  <div class="carousel-inner">
+			<!-- Wrapper for slides -->
+			<div class="carousel-inner">
 			  
-		 
-				 <div class="item active">
-				   <img src="/m4j/plugins/Incite/views/shared/images/Transcribe.png">
-				   <div class="carousel-caption">
-					<h3>Transcribe</h3>
-					<p>Introduction to transcribe task.</p>
-				  </div>
+				<div class="item active">
+					<a href="./incite/documents/transcribe">
+				   		<img src="/m4j/plugins/Incite/views/shared/images/Transcribe.png">
+
+				    	<div class="carousel-caption">
+							<h3>Transcribe</h3>
+							<p>Introduction to transcribe task.</p>
+				  		</div>
+				  	</a>
 				</div><!-- End Item -->
 				
 				<div class="item">
-				  <img src="/m4j/plugins/Incite/views/shared/images/Tag.png">
-				   <div class="carousel-caption">
-					<h3>Tag</h3>
-					<p>Intro to Tag task. </p>
-				  </div>
+					<a href="./incite/documents/tag">
+						<img src="/m4j/plugins/Incite/views/shared/images/Tag.png">
+					
+						<div class="carousel-caption">
+							<h3>Tag</h3>
+							<p>Intro to Tag task. </p>
+					  	</div>
+				  	</a>
 				</div><!-- End Item -->
 				
 				<div class="item">
-				  <img src="/m4j/plugins/Incite/views/shared/images/Connect.png">
-				   <div class="carousel-caption">
-					<h3>Connect</h3>
-					<p>Introduction to connect task.</p>
-				  </div>
+					<a href="./incite/documents/connect">
+				  		<img src="/m4j/plugins/Incite/views/shared/images/Connect.png" href="./incite/documents/connect">
+				  	
+					   	<div class="carousel-caption">
+							<h3>Connect</h3>
+							<p>Introduction to connect task.</p>
+					  	</div>
+					</a>
 				</div><!-- End Item -->
 						
-			  </div><!-- End Carousel Inner -->
+			</div><!-- End Carousel Inner -->
 
 
-				<ul class="nav nav-pills nav-justified">
-				  <li data-target="#myCarousel" data-slide-to="0" class="active"><a href="#">Transcribe<small>Searchable texts</small></a></li>
-				  <li data-target="#myCarousel" data-slide-to="1"><a href="#">Tag<small>Find entities</small></a></li>
-				  <li data-target="#myCarousel" data-slide-to="2"><a href="#">Connect<small>Concepts of documents</small></a></li>
-				</ul>
+			<ul class="nav nav-pills nav-justified">
+				<li data-target="#myCarousel" data-slide-to="0" class="active"><a href="#">Transcribe<small>Searchable texts</small></a></li>
+				<li data-target="#myCarousel" data-slide-to="1"><a href="#">Tag<small>Find entities</small></a></li>
+				<li data-target="#myCarousel" data-slide-to="2"><a href="#">Connect<small>Concepts of documents</small></a></li>
+			</ul>
 
-
-			</div><!-- End Carousel -->
+		</div><!-- End Carousel -->
 
 			<div class="row"> 
 				<div class="col-lg-12 text-center" style="margin-bottom: 30px;">
@@ -158,18 +165,42 @@ $(document).ready(function(){
         }, 
         function (start, end, label) {
         });
+	
+
+	var hoverEvent = false;
+
+	var slideIndex = {
+		TRANSCRIBE: 0,
+		TAG: 1,
+		CONNECT: 2
+	};
 
 	$('#myCarousel').carousel({
 		interval:   4000
 	});
-	
-	var clickEvent = false;
-	$('#myCarousel').on('click', '.nav a', function() {
-			clickEvent = true;
-			$('.nav li').removeClass('active');
-			$(this).parent().addClass('active');		
+
+	$('#myCarousel').on('mouseenter', '.nav a', function() {
+		hoverEvent = true;
+		$('.nav li').removeClass('active');
+		$(this).parent().addClass('active');
+
+		var slideNumber = $(this).parent()[0].getAttribute('data-slide-to');
+		$("#myCarousel").carousel(parseInt(slideNumber));
+	}).on('click', '.nav a', function() {
+		var slideNumber;
+
+		slideNumber = $(this).parent()[0].getAttribute('data-slide-to');
+		slideNumber = parseInt(slideNumber);
+
+		if (slideNumber === slideIndex.TRANSCRIBE) {
+			window.location = './incite/documents/transcribe';
+		} else if (slideNumber === slideIndex.TAG) {
+			window.location = './incite/documents/tag';
+		} else if (slideNumber === slideIndex.CONNECT) {
+			window.location = './incite/documents/connect';
+		}
 	}).on('slid.bs.carousel', function(e) {
-		if(!clickEvent) {
+		if(!hoverEvent) {
 			var count = $('#myCarousel > .nav').children().length -1;
 			var current = $('.nav li.active');
 			current.removeClass('active').next().addClass('active');
@@ -178,9 +209,8 @@ $(document).ready(function(){
 				$('#myCarousel > .nav li').first().addClass('active');	
 			}
 		}
-		clickEvent = false;
+		hoverEvent = false;
 	});
-
 });
 </script>
 
