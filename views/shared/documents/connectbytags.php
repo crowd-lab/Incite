@@ -7,6 +7,7 @@ include(dirname(__FILE__).'/../common/header.php');
 
     <!-- Page Content -->
     <script type="text/javascript">
+    var msgbox;
         $(function ()
         {
             getNewComments(<?php echo $this->connection->id; ?>);
@@ -44,17 +45,18 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
             <div class="col-md-6">
       
-                <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
+                <h2>Does the document on the left talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
                 <form method="post">
                     <button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
                     <button type="submit" class="btn btn-default" name="connection" value="false">No</button>
                     <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
+                    <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>" />
                 </form>
 <?php if (count($this->related_documents) == 0): ?>
 <?php elseif (count($this->related_documents) == 1): ?>
-                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
+                <h3>The document on the left mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
 <?php else: ?>
-                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
+                <h3>The document on the left mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
 <?php endif; ?>
 <?php foreach((array)$this->related_documents as $document): ?>
                 <div class="col-md-4">
@@ -128,6 +130,14 @@ $(document).ready(function(){
                 });
                 $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
                 $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+<?php
+    if (isset($_SESSION['incite']['message'])) {
+        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
+        //echo "setTimeout(closeMsgBox, 3000);\n";
+        unset($_SESSION['incite']['message']);
+    }
+
+?>
             });
 
     </script>

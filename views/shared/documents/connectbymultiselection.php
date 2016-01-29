@@ -54,7 +54,8 @@ include(dirname(__FILE__).'/../common/header.php');
                     <input type="checkbox" name="no_subjects" value="-1">  
                     <label>None</label>
                     <br>
-                    <button type="submit" class="btn btn-primary pull-right" name="connection">Submit</button>
+                    <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
+                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
                 </form>
                 <br>
                 <br>
@@ -122,6 +123,13 @@ $(document).ready(function(){
                 });
                 $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
                 $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+<?php
+    if (isset($_SESSION['incite']['message'])) {
+        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
+        //echo "setTimeout(closeMsgBox, 3000);\n";
+        unset($_SESSION['incite']['message']);
+    }
+?>
             });
 
     </script>

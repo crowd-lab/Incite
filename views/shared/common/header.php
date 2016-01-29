@@ -1,5 +1,5 @@
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker'));
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min'));
 $db = get_db();
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
@@ -28,6 +28,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
     <?php echo js_tag('notifIt'); ?>
     <?php echo js_tag('image-picker.min'); ?>
     <?php echo js_tag('comments'); ?>
+    <?php echo js_tag('bootstrap-dialog.min'); ?>
     <?php echo head_css(); ?>
 
 
@@ -48,6 +49,13 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 <script>
+    var msgbox;
+    function closeMsgBox() {
+        msgbox.close();
+    }
+    function openMsgBox() {
+        msgbox.open();
+    }
 <?php
     if (isset($_GET['time'])) {
         $time_segs = explode(' - ', $_GET['time']);

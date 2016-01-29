@@ -21,6 +21,30 @@ function getTranscribableDocuments()
     
     return $documents_with_jpeg;
 }
+/**
+ * Gets all document id with tags
+ * @return an array of results
+ */
+function getDocumentsWithTags()
+{
+    $db = DB_Connect::connectDB();
+    $tagged_document_ids = array();
+    $stmt = $db->prepare("SELECT DISTINCT `omeka_incite_documents`.`item_id` FROM `omeka_incite_documents` INNER JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id`");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $tagged_document_ids[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+
+    //Select document that are untranscribed but transcribable. Since currently if there is not transcription for the document to be tagged, the user will be redirected to transcribe task.
+    //$taggable_documents = getTranscribableDocuments();
+
+    //Select documents that have approved transcriptions
+
+    return $tagged_document_ids;
+}
 
 /**
  * Gets all document id with out tags

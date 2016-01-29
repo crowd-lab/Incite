@@ -6,6 +6,7 @@
     
     ?>
     <script type="text/javascript">
+    var msgbox;
         $(function ()
         {
             getNewComments(<?php echo $this->transcription->id; ?>);
@@ -48,6 +49,7 @@
                         <option value="aggression">Aggression</option>
                     </select>
                 </div>
+                <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
                 <button id="submit_transcription" type="button" class="btn btn-default">Done</button>
             </form>
 
@@ -115,6 +117,13 @@
 
             $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10);
 
+<?php
+    if (isset($_SESSION['incite']['message'])) {
+        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
+        //echo "setTimeout(closeMsgBox, 3000);\n";
+        unset($_SESSION['incite']['message']);
+    }
+?>
         });
 
 
