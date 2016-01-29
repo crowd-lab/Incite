@@ -161,20 +161,20 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
+        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;">
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
-        <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id."?".$this->query_str; ?>">
+            <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id."?".$this->query_str; ?>">
 <?php else: ?>
-        <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id; ?>">
+            <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id; ?>">
 <?php endif; ?>
-            <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;">
                 <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($connection, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($connection, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $connection->id; ?>">
                     <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
-                <div style="height: 40px; width:250px;">
+                <div style="height: 40px; margin-left: 45px;">
                     <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
 <? endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>

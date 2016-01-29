@@ -161,16 +161,20 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Tags as $tag): ?>
-        <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id; ?>">
-            <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($tag, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($tag, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $tag->id; ?>">
+        <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($tag, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($tag, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $tag->id; ?>">
+<?php if (isset($this->query_str) && $this->query !== ""): ?>
+            <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id."?".$this->query_str; ?>">
+<?php else: ?>
+            <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id; ?>">
+<?php endif; ?>
                 <div style="height: 40px; width:40px; float: left;">    
                     <img src="<?php echo $tag->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">      
                 </div>
-                <div style="height: 40px; width:250px;">
+                <div style="height: 40px; margin-left: 45px;">
                     <p style=""><?php echo metadata($tag, array('Dublin Core', 'Title')); ?></p>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
 <? endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>
