@@ -121,6 +121,7 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <script type="text/javascript">
     var map;
+    var msgbox;
     var markers_array = [];
     var nomarkers_array = [];
     var marker_to_id = {};
@@ -278,6 +279,13 @@ include(dirname(__FILE__).'/../common/header.php');
                         id_to_marker[this.dataset.id].closePopup();
                 });
             });
+<?php
+    if (isset($_SESSION['incite']['message'])) {
+        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
+        //echo "setTimeout(closeMsgBox, 3000);\n";
+        unset($_SESSION['incite']['message']);
+    }
+?>
 
         });
 </script>

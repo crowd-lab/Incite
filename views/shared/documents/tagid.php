@@ -74,6 +74,7 @@
             <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
             <form id="entity-form" method="post">
                 <input id="entity-info" type="hidden" name="entities" />
+                <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
             </form>
             <div id="container">
                 <h3> Discussion </h3>
@@ -102,7 +103,8 @@
 
 <script type="text/javascript">
     //Global variable to store categories
-    var categories = <?php echo json_encode($category_object); ?>
+    var categories = <?php echo json_encode($category_object).";\n"; ?>
+    var msgbox;
     
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({trigger: "hover"});
@@ -249,6 +251,14 @@
         $('#work-view').width($('#work-zone').width());
         $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
         $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+<?php
+    if (isset($_SESSION['incite']['message'])) {
+        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
+        //echo "setTimeout(closeMsgBox, 3000);\n";
+        unset($_SESSION['incite']['message']);
+    }
+
+?>
     });
 </script>
 <style>
