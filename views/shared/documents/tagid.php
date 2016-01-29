@@ -34,19 +34,22 @@
                         More about this document..
                     </span>
                 </div> 
-                <div>
-                    Legends:
+                
+                <ul class="nav nav-tabs" style="display: inline-block; vertical-align: top;">
+                    <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
+                    <li role="presentation" id="show"><a href="#">Document</a></li>
+                </ul>
+                <div id="tag-legend" style="display: inline; float: right; position: relative; top: 10px;">
+                    <span><b>Tag Legend: </b></span>
 <?php foreach ((array)$this->category_colors as $category => $color): ?>
                     <span class="<?php echo strtolower($category); ?>"><?php echo ucfirst(strtolower($category)); ?></span>
 <?php endforeach; ?>
                     <span class="unknown">Unknown</span>
                 </div>
-                <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
+                <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                 <div class="wrapper">
                     <div id="document_img" class="viewer"></div>
                 </div>
-                <button type="button" class="btn btn-default" id="show">Document</button>
-                <button type="button" class="btn btn-default" id="hide">Transcription</button>
             </div>
         </div>
         <div class="col-md-7">
@@ -203,16 +206,23 @@
     var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
     var msgbox;
     
+    var selectTab = function (tabToSelect, tabToUnselect) {
+        tabToSelect.addClass("active");
+        tabToUnselect.removeClass("active");
+    };
+
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({trigger: "hover"});
         $("#document_img").hide();
         $("#hide").click(function () {
             $("#document_img").hide();
             $("#transcribe_copy").show();
+            selectTab($("#hide"), $("#show"));
         });
         $("#show").click(function () {
             $("#document_img").show();
             $("#transcribe_copy").hide();
+            selectTab($("#show"), $("#hide"));
         });
         $(document).on('click', 'button', function (event)
         {
@@ -437,6 +447,7 @@
     {
         overflow: hidden;
     }
+
     .location {
         background-color: yellow;
     }
@@ -452,9 +463,20 @@
     .unknown {
         background-color: gray;
     }
-        .discussion-seperation-line {
-            margin-top: 40px;
-        }
+    .discussion-seperation-line {
+        margin-top: 40px;
+    }
+
+    .tab {
+       border:none;
+       background-color:#807F83;
+       color:#FFFFFF;
+       font-weight:bold;
+    }
+
+    .tab-selected {
+        border: 4px solid #337AB7;
+    }
 </style>
 
 </body>
