@@ -23,7 +23,7 @@
         <div class="col-md-6" id="work-zone">
             <div id="work-view">
                 <div class="document-header">
-                    <span class="document-title"><b>Document Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></span>
+                    <span class="document-title"><b>Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></span>
                     <span class="document-additional-info" 
                         data-toggle="popover" data-html="true" data-trigger="hover" 
                         data-title="Additional Information" 
@@ -34,7 +34,7 @@
                                 . "<br><br> <strong>Description:</strong> " 
                                 . metadata($this->transcription, array('Dublin Core', 'Description')); ?>" 
                         data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
-                        See more document information..
+                        More about this document..
                     </span>
                 </div> 
                 <div class="wrapper">
@@ -44,14 +44,14 @@
         </div>
         <div class="col-md-6" id="submit-zone">
             <form method="post" id="transcribe-form">
-                <p class="header-step"><i><u>Step 1: Transcribe</u></i></p>
+                <p class="header-step"><i>Step 1: Transcribe</i></p>
                 <textarea id="transcription" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
-                <p class="step"><i><u>Step 2: Summarize</u></i></p>
+                <p class="step"><i>Step 2: Summarize</i></p>
                 <textarea id="summary" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
                 <div class="form-group">
-                    <p class="step"><i><u>Step 3: Specify Tone</u></i></p>
+                    <p class="step"><i>Step 3: Select the tone of the document</i></p>
                     <select id="tone" class="form-control" name="tone">
-                        <option value="" default selected>Select the tone of the document</option>
+                        <option value="informational" default selected>Informational</option>
                         <option value="anxiety">Anxiety</option>
                         <option value="optimism">Optimism</option>
                         <option value="sarcasm">Sarcasm</option>
@@ -181,10 +181,6 @@
 
         .wrapper {
             overflow: hidden;
-        }
-
-        #tone option[default] {
-            display: none;
         }
 
         #submit_transcription {
