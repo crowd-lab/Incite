@@ -196,7 +196,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
                 $this->view->transcription = "No transcription";
                 if ($transcription != null) {
-                    $this->view->transcription = getTranscriptionText($transcription[0]);
+                    $this->view->transcription = getTranscriptionText($transcription[count($transcription)-1]);
                 } else {
                     //Redirect to transcribe task if there is no transcription available
                     //$this->redirect('incite/documents/transcribe/' . $this->_getParam('id'));
@@ -249,13 +249,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     //running NER
                     $oldwd = getcwd();
                     chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-                    if (!file_exists('../tmp/ner/' . $this->_getParam('id'))) {
-                        $this->view->file = 'not exist';
-                        $ner_input = fopen('../tmp/ner/' . $this->_getParam('id'), "w") or die("unable to open transcription");
-                        fwrite($ner_input, $this->view->transcription);
-                        fclose($ner_input);
-                        system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/' . $this->_getParam('id') . ' > ' . '../tmp/ner/' . $this->_getParam('id') . '.ner');
-                    }
+
+                    $this->view->file = 'not exist';
+                    $ner_input = fopen('../tmp/ner/' . $this->_getParam('id'), "w") or die("unable to open transcription");
+                    fwrite($ner_input, $this->view->transcription);
+                    fclose($ner_input);
+                    system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/' . $this->_getParam('id') . ' > ' . '../tmp/ner/' . $this->_getParam('id') . '.ner');
+
                     $nered_file = fopen('../tmp/ner/' . $this->_getParam('id') . '.ner', "r");
                     $nered_file_size = filesize('../tmp/ner/' . $this->_getParam('id') . '.ner');
                     $parsed_text = "";
