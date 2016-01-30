@@ -133,10 +133,14 @@
     });
 
     $(document).ready(function () {
-
-        var iv2 = $("#document_img").iviewer({
-            src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>"
+        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+        $("#document_img").iviewer({
+            src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>",
+            zoom_min: 1,
+            zoom: "fit"
         });
+
         $('#add-more-button').on('click', function (e) {
             var new_entity = $('<tr><td><input type="text" class="form-control entity-name" value=""></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
             new_entity.find('.subcategory-select').multiselect({
@@ -249,8 +253,6 @@
         //$('.SelectBox').SumoSelect();
         //$('.SelectBox').SumoSelect({placeholder: 'This is a placeholder', csvDispCount: 3 });
         $('#work-view').width($('#work-zone').width());
-        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
-        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
 <?php
     if (isset($_SESSION['incite']['message'])) {
         echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";

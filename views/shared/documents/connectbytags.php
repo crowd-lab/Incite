@@ -35,7 +35,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span>
 <?php endforeach; ?>
                     </div>
-                    <div style="border-style: solid;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
+                    <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                     <div class="wrapper">
                         <div id="document_img" class="viewer"></div>
                     </div>
@@ -124,12 +124,13 @@ $(document).ready(function(){
                 $('#work-view').width($('#work-zone').width());
             });
             $(document).ready(function(){
-
-                var iv2 = $("#document_img").iviewer({
-                    src: "<?php echo $this->connection->getFile()->getProperty('uri'); ?>"
-                });
                 $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
                 $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+                $("#document_img").iviewer({
+                    src: "<?php echo $this->connection->getFile()->getProperty('uri'); ?>",
+                    zoom_min: 1,
+                    zoom: "fit"
+                });
 <?php
     if (isset($_SESSION['incite']['message'])) {
         echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";

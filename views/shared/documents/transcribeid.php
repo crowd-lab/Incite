@@ -117,12 +117,12 @@
         });
         var $ = jQuery;
         $(document).ready(function () {
-            var iv2 = $("#viewer2").iviewer({
-                src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>"
-            });
-            
-        
             $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10);
+            $("#viewer2").iviewer({
+                src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>",
+                zoom_min: 1,
+                zoom: "fit"
+            });
 
 <?php
     if (isset($_SESSION['incite']['message'])) {
