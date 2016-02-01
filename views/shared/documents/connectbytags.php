@@ -50,7 +50,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </div>
             <div class="col-md-6">
-                <p class="header-step"><i>Step 1: Read the summary of the following document(s), which all contain tags: <?php echo implode(', ', $this->entities);  ?></i></p>
+                <p class="header-step"><i>Step 1 of 2: Read the summary of the following document(s), which all contain tags: <?php echo implode(', ', $this->entities);  ?></i></p>
 <?php foreach((array)$this->related_documents as $document): ?>
                 <div class="col-md-4">
                     <a data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
@@ -63,7 +63,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <br>
                 <br>
                 <br>
-                <p class="header-step"><i>Step 2: Answer the following question </i></p>
+                <p class="header-step"><i>Step 2 of 2: Answer the following question </i></p>
                 <h4>Does the document on the left talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h4>
                 <form method="post">
                     <button type="submit" class="btn btn-default pull-right" name="connection" value="true">Yes</button>

@@ -51,7 +51,7 @@
         </div>
         <div class="col-md-7">
             <div class="col-md-12">
-                <p class="header-step"><i>Step 1: Verify and expand existing tags</i></p>
+                <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
                 <table class="table" id="entity-table">
                     <tr>
                         <th>Tag</th>
@@ -61,7 +61,7 @@
                         <th>Not a tag?</th></tr>
                 </table>
                 <br>
-                <p class="step"><i>Step 2: Add more tags (by selecting texts from the transcription on the left)</i></p>
+                <p class="step"><i>Step 2 of 2: Add more tags (by selecting texts from the transcription on the left)</i></p>
                 <table class="table" id="user-entity-table">
                     <tr>
                         <th>Tag</th>

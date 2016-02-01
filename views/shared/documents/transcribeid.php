@@ -43,12 +43,12 @@
         </div>
         <div class="col-md-6" id="submit-zone">
             <form method="post" id="transcribe-form">
-                <p class="header-step"><i>Step 1: Transcribe</i></p>
+                <p class="header-step"><i>Step 1 of 3: Transcribe</i></p>
                 <textarea id="transcription" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
-                <p class="step"><i>Step 2: Summarize</i></p>
+                <p class="step"><i>Step 2 of 3: Summarize</i></p>
                 <textarea id="summary" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
                 <div class="form-group">
-                    <p class="step"><i>Step 3: Select the tone of the document</i></p>
+                    <p class="step"><i>Step 3 of 3: Select the tone of the document</i></p>
                     <select id="tone" class="form-control" name="tone">
                         <option value="informational" default selected>Informational</option>
                         <option value="anxiety">Anxiety</option>
