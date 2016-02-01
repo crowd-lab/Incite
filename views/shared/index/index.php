@@ -91,7 +91,7 @@ body { padding-top: 60px;
 
 			<ul class="nav nav-pills nav-justified">
 				<li data-target="#myCarousel" data-slide-to="0" class="active"><a href="#">Transcribe<small>Searchable texts</small></a></li>
-				<li data-target="#myCarousel" data-slide-to="1"><a href="#">Tag<small>Find entities</small></a></li>
+				<li data-target="#myCarousel" data-slide-to="1"><a href="#">Tag<small>Find people, locations and organizations</small></a></li>
 				<li data-target="#myCarousel" data-slide-to="2"><a href="#">Connect<small>Concepts of documents</small></a></li>
 			</ul>
 
@@ -179,11 +179,11 @@ $(document).ready(function(){
 		slideNumber = parseInt(slideNumber);
 
 		if (slideNumber === slideIndex.TRANSCRIBE) {
-			window.location = './incite/documents/transcribe';
+			window.location = '/m4j/incite/documents/transcribe';
 		} else if (slideNumber === slideIndex.TAG) {
-			window.location = './incite/documents/tag';
+			window.location = '/m4j/incite/documents/tag';
 		} else if (slideNumber === slideIndex.CONNECT) {
-			window.location = './incite/documents/connect';
+			window.location = '/m4j/incite/documents/connect';
 		}
 	}).on('slid.bs.carousel', function(e) {
 		if(!hoverEvent) {
