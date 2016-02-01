@@ -21,7 +21,10 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         include("Incite_Questions_Table.php");
         include("DiscoverController.php");
         include("Incite_Search.php");
+        require_once("Incite_Tag_Table.php");
+        require_once("Incite_Transcription_Table.php");
         require_once("Incite_System_Log.php");
+        require_once("Incite_Subject_Concept_Table.php");
         require_once("Incite_Session.php");
     }
     /**
@@ -286,8 +289,9 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         //$documentID is item id
         $urlData = array();
         $x = getAllDocumentsContainKeyword($_POST['keyword']);
-        $documentID = array_values(array_unique($x));
-        for ($i = 0; $i < sizeof($documentID); $i++)
+        $docs_w_trans = getDocumentsWithApprovedTranscription();
+        $documentID = array_values(array_intersect(array_values(array_unique($x)), $docs_w_trans));
+        for ($i = 0; $i < count($documentID); $i++)
         {
             $record = get_record_by_id('item', $documentID[$i]);
             $file = $record->getFile();

@@ -86,8 +86,8 @@
                 <h3> Discussion </h3>
                 <div id="onLogin">
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
-                    <textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default" onclick="submitComment(<?php echo $this->tag->id; ?>)">Submit</button>
+                            <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
+                            <button type="button" class="btn btn-default submit-comment-btn" onclick="submitComment(<?php echo $this->tag->id; ?>)">Post Comment</button>
                 <?php else: ?>
                     Please login or signup to join the discussion!
                 <?php endif; ?>
@@ -184,7 +184,7 @@
                 } else {
                     subcategory_menu.multiselect('rebuild');
                 }
-            if (this.dataset.subs !== "") {
+            if (typeof this.dataset.subs !== typeof undefined && this.dataset.subs !== false && this.dataset.subs !== "") {
                 var selected_subs = this.dataset.subs.split(',');
                 for (i = 0; i < selected_subs.length; i++) {
                     $('#'+this.id+'_table .subcategory-select option[value='+selected_subs[i]+']').attr('selected', 'selected');

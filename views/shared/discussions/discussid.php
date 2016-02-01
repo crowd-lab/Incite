@@ -313,7 +313,7 @@ include(dirname(__FILE__).'/../common/header.php');
             //case2: document is not yet in the viewer -> add the document to the viewer
             if ($('#doc-'+this.dataset.id).length <= 0) {
                 //Add tab
-                $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.id+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
+                $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
                 //Add content
                 $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">'+this.dataset.transcription+'</div>');
                 $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-view ul.nav-tabs').height()-35); //-35 for buffer

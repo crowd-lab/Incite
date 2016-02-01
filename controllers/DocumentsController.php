@@ -414,10 +414,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //$this->redirect('incite/documents/transcribe');
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
                     $_SESSION['incite']['message'] = 'Congratulations! You just completed connecting a document! Now you can find a new document to work on from scratch by transcribing! Or if you want to find another document to connect, please click <a href="/m4j/incite/documents/connect?'.$_POST['query_str'].'">here</a>.';
-                    $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
+                    $this->redirect('/incite/documents/transcribe?'.$_POST['query_str']);
                 } else {
                     $_SESSION['incite']['message'] = 'Congratulations! You just completed connecting a document! Now you can find a new document to work on from scratch by transcribing! Or if you want to find another document to connect, please click <a href="/m4j/incite/documents/connect">here</a>.';
-                    $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
+                    $this->redirect('/incite/documents/transcribe');
                 }
             }
         }
@@ -440,8 +440,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
                 $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
-                if (isDocumentTagged($this->_getParam('id'))) {
-                    //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
+                if (hasTaggedTranscription($this->_getParam('id'))) {
+                    $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
+                    $this->view->transcription = $transcriptions[count($transcriptions)-1];
+/*
                     $allTags = getAllTagInformation($this->_getParam('id'));
                     $entities = array();
                     $entity_names = array();
@@ -464,9 +466,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $colored_transcription = str_replace($name, '<' . strtoupper($entity_category[$name]) . '>' . $name . '</' . strtoupper($entity_category[$name]) . '>', $colored_transcription);
                     }
                     //*/
-                    foreach ($categories as $category) {
-                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
-                    }
 
                     $related_documents = findRelatedDocumentsViaAtLeastNCommonTags($this->_getParam('id'));
                     if (count($related_documents) == 0) {
@@ -535,7 +534,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         }
                         $this->view->entities = $actual_entities;
                     }
-                    $this->view->transcription = $colored_transcription;
+                    //$this->view->transcription = $colored_transcription;
                 } else {  //if (isDocumentTagged($this->_getParam('id')))
                     if (isset($this->view->query_str) && $this->view->query_str !== "") {
                         $_SESSION['incite']['message'] = 'Unfortunately, the document has not been tagged yet. Please help tag the document first before connecting. Or if you want to find another document to connect, please click <a href="/m4j/incite/documents/connect?'.$this->view->query_str.'">here</a>.';

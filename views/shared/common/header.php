@@ -376,7 +376,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                                 <option value="discuss"<?php if (isset($task) && $task == "discuss") echo ' selected'; ?>>Discuss</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-default">Discover</button>
+                        <button id="navbar_go_button" type="submit" class="btn btn-default">Go</button>
                 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                         <button id="user_profile" type="button" class="btn btn-default"  href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA']['first_name']; //first name    ?></button>
                         <button id="logout_button" type="button" class="btn btn-default" onclick="logout()">Logout</button>

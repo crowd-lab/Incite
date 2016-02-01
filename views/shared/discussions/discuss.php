@@ -19,7 +19,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <ul class="list-group">
 <?php foreach ((array)$this->Discussions as $discussion): ?>
                     <li class="list-group-item">
-                        <a href="<?php echo INCITE_PATH.'discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a><span class="badge">Replies: <?php echo $discussion['num_of_replies']; ?></span>
+                        <a href="<?php echo INCITE_PATH.'discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a><span class='db_time'><?php echo $discussion['time']; ?></span><span class="badge">Replies: <?php echo $discussion['num_of_replies']; ?></span>
                     </li>
 <?php endforeach; ?>
                 </ul>
@@ -65,6 +65,15 @@ var tl = $('#timeline').jqtimeline({
                                 alert(event.desc);
                             }
                         });
+        $('.db_time').each(function (idx) {
+            $(this).text('    -    '+compareDates(new Date($(this).text())));
+        });
+
+<?php
+    if (count($this->Discussions) == 0)
+        echo "BootstrapDialog.alert({message:$('<div>Currently, there is no discussion. Be the first to create one!</div>')});\n";
+
+?>
 
 });
 </script>

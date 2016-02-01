@@ -102,21 +102,7 @@ body { padding-top: 60px;
 					<h2></h2>
 
 					<p style="margin-bottom: 30px; margin-top: 50px;">Based on the available information, we have found some search criteria for discovering documents you might be interested in. Click "Discover" to start when you are ready. Or you can tell us what you are interested in by changing the pre-populated information and click "Discover".</p>
-                    <form class="navbar-form" role="search" action="/m4j/incite/discover">
-                        <div class="form-group">
-                            <input id="location" type="text" class="form-control" placeholder="Location" name="location" value="Virginia">
-                            <input style="width: 190px;" id="time_picker2" type="text" class="form-control" placeholder="Time" name="time" value="">
-                            <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
-                            <select class="form-control" name="task">
-                                <option value="random">Select a task</option>
-                                <option value="transcribe" selected>Transcribe</option>
-                                <option value="tag">Tag</option>
-                                <option value="connect">Connect</option>
-                                <option value="discuss">Discuss</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-default">Discover</button>
-                    </form>
+                    <button class="btn btn-primary" onclick="$('#navbar_go_button').click();">Surprise Me!</button>
 					<!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
 				</div> 
 			</div>

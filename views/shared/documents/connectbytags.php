@@ -13,26 +13,32 @@ include(dirname(__FILE__).'/../common/header.php');
             getNewComments(<?php echo $this->connection->id; ?>);
         });
     </script>
+    <div id="task_description">
+        <h1 class="task-header">Connect</h1>
+    </div>
     <div class="container">
-
-        <div id="task_description" style="text-align: center;">
-            <h2 style="text-align: center;">Connect</h2>
-            <span style="text-align: center;">The system has found some document(s) related to the document on the left. Please help check if they share the same subject.
-            </span>
-        </div>
-        <br>
         <div class="container-fluid">
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed; width: 35%;" id="work-view">
-                    <h4>Information:</h4>
-                        <div>Title: <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?></div>
-                        <div>Date: <?php echo metadata($this->connection, array('Dublin Core', 'Date')); ?></div>
-                        <div>Location: <?php echo metadata($this->connection, array('Item Type Metadata', 'Location')); ?></div>
-                        <div>Description: <?php echo metadata($this->connection, array('Dublin Core', 'Description')); ?></div>
-                    <h4>Transcription:</h4>
+                    <div class="document-header">
+                        <span class="document-title"><b>Title:</b> <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?></span>
+                        <span class="document-additional-info" 
+                            data-toggle="popover" data-html="true" data-trigger="hover" 
+                            data-title="Additional Information" 
+                            data-content="<?php echo "<strong>Date:</strong> " 
+                                    . metadata($this->connection, array('Dublin Core', 'Date')) 
+                                    . "<br><br> <strong>Location:</strong> " 
+                                    . metadata($this->connection, array('Item Type Metadata', 'Location')) 
+                                    . "<br><br> <strong>Description:</strong> " 
+                                    . metadata($this->connection, array('Dublin Core', 'Description')); ?>" 
+                            data-placement="bottom" data-id="<?php echo $this->connection->id; ?>">
+                            More about this document..
+                        </span>
+                    </div> 
                     <div>
-<?php foreach ($this->category_colors as $category => $color): ?>
-                        <span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span>
+                    Legends:
+<?php foreach ((array)$this->category_colors as $category => $color): ?>
+                    <span class="<?php echo strtolower($category); ?>"><?php echo ucfirst(strtolower($category)); ?></span>
 <?php endforeach; ?>
                     </div>
                     <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
@@ -44,35 +50,34 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </div>
             <div class="col-md-6">
-      
-                <h2>Does the document on the left talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
-                <form method="post">
-                    <button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
-                    <button type="submit" class="btn btn-default" name="connection" value="false">No</button>
-                    <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
-                    <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>" />
-                </form>
-<?php if (count($this->related_documents) == 0): ?>
-<?php elseif (count($this->related_documents) == 1): ?>
-                <h3>The document on the left mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
-<?php else: ?>
-                <h3>The document on the left mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
-<?php endif; ?>
+                <p class="header-step"><i>Step 1: Read the summary of the following document(s), which all contain tags: <?php echo implode(', ', $this->entities);  ?></i></p>
 <?php foreach((array)$this->related_documents as $document): ?>
                 <div class="col-md-4">
-                    <a href="/m4j/incite/documents/connect/<?php echo $document->id; ?>" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
+                    <a data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
                         <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
                     </a>
                     <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
                 </div>
 <?php endforeach; ?>
                 <div class="clearfix"></div>
+                <br>
+                <br>
+                <br>
+                <p class="header-step"><i>Step 2: Answer the following question </i></p>
+                <h4>Does the document on the left talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h4>
+                <form method="post">
+                    <button type="submit" class="btn btn-default pull-right" name="connection" value="true">Yes</button>
+                    <button type="submit" class="btn btn-default pull-right" name="connection" value="false">No</button>
+                    <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
+                    <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>" />
+                </form>
+                <div class="clearfix"></div>
                 <div id="container">
                     <h3> Discussion </h3>
                     <div id="onLogin">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                    <textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default" onclick="submitComment(<?php echo $this->connection->id; ?>)">Submit</button>
+                            <textarea name="comment_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
+                            <button type="button" class="btn btn-default submit-comment-btn" onclick="submitComment(<?php echo $this->connection->id; ?>)">Post Comment</button>
 <?php else: ?>
                     Please login or signup to join the discussion!
 <?php endif; ?>
@@ -143,6 +148,49 @@ $(document).ready(function(){
 
     </script>
 <style>
+        .document-header {
+            margin-top: -30px;
+        }
+
+        .document-title {
+            font-size: 20px; 
+            position: relative; 
+            top: -5px;
+        }
+
+        .document-additional-info {
+            color: #0645AD; 
+            float: right;
+        }
+        .task-header {
+            text-align: center; 
+            margin-bottom: 40px; 
+            margin-top: 0px;
+        }
+        #task_description {
+            text-align: center;
+        }
+        .step {
+            margin-top: 10px;
+        }
+
+        .header-step {
+            margin-top: -32px;
+        }
+        .comment-textarea {
+            width: 100%; 
+            height: 80px; 
+            margin-bottom: 10px;
+        }
+
+        .submit-comment-btn {
+            float: right;
+        }
+
+        .comments-list {
+            list-style: none;
+            padding-left: 0;
+        }
             .viewer
             {
                 width: 100%;
@@ -154,6 +202,24 @@ $(document).ready(function(){
             {
                 overflow: hidden;
             }
+    .location {
+        background-color: yellow;
+    }
+    .organization {
+        background-color: red;
+    }
+    .person {
+        background-color: orange;
+    }
+    .event {
+        background-color: green;
+    }
+    .unknown {
+        background-color: gray;
+    }
+        .discussion-seperation-line {
+            margin-top: 40px;
+        }
         </style>
 
 </body>

@@ -12,28 +12,29 @@ include(dirname(__FILE__).'/../common/header.php');
             getNewComments(<?php echo $this->connection->id; ?>);
         });
     </script>
+    <div id="task_description">
+        <h1 class="task-header">Connect</h1>
+    </div>
     <div class="container">
-
-        <div id="task_description" style="text-align: center;">
-            <h2 style="text-align: center;">Connect</h2>
-            <span style="text-align: center;">The system has found some document(s) related to the document on the left. Please help check if they share the same subject.
-            </span>
-        </div>
         <br>
         <div class="container-fluid">
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed; width: 35%;" id="work-view">
-                    <h4>Information:</h4>
-                        <div>Title: <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?></div>
-                        <div>Date: <?php echo metadata($this->connection, array('Dublin Core', 'Date')); ?></div>
-                        <div>Location: <?php echo metadata($this->connection, array('Item Type Metadata', 'Location')); ?></div>
-                        <div>Description: <?php echo metadata($this->connection, array('Dublin Core', 'Description')); ?></div>
-                    <h4>Transcription:</h4>
-                    <div>
-<?php foreach ($this->category_colors as $category => $color): ?>
-                        <span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span>
-<?php endforeach; ?>
-                    </div>
+                    <div class="document-header">
+                        <span class="document-title"><b>Title:</b> <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?></span>
+                        <span class="document-additional-info" 
+                            data-toggle="popover" data-html="true" data-trigger="hover" 
+                            data-title="Additional Information" 
+                            data-content="<?php echo "<strong>Date:</strong> " 
+                                    . metadata($this->connection, array('Dublin Core', 'Date')) 
+                                    . "<br><br> <strong>Location:</strong> " 
+                                    . metadata($this->connection, array('Item Type Metadata', 'Location')) 
+                                    . "<br><br> <strong>Description:</strong> " 
+                                    . metadata($this->connection, array('Dublin Core', 'Description')); ?>" 
+                            data-placement="bottom" data-id="<?php echo $this->connection->id; ?>">
+                            More about this document..
+                        </span>
+                    </div> 
                     <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                     <div class="wrapper">
                         <div id="document_img" class="viewer"></div>
@@ -43,7 +44,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </div>
             <div class="col-md-6">
-                <h4>Please find out the subjects that this document talks about.</h4>
+                <p class="header-step"><i>Please find out the subjects that this document talks about</i></p>
 
                 <form id="subject-form" method="post">
 <?php foreach ((array)$this->subjects as $subject): ?>
@@ -134,7 +135,50 @@ $(document).ready(function(){
             });
 
     </script>
-<style>
+    <style>
+        .document-header {
+            margin-top: -30px;
+        }
+
+        .document-title {
+            font-size: 20px; 
+            position: relative; 
+            top: -5px;
+        }
+
+        .document-additional-info {
+            color: #0645AD; 
+            float: right;
+        }
+        .task-header {
+            text-align: center; 
+            margin-bottom: 40px; 
+            margin-top: 0px;
+        }
+        #task_description {
+            text-align: center;
+        }
+        .step {
+            margin-top: 10px;
+        }
+
+        .header-step {
+            margin-top: -32px;
+        }
+        .comment-textarea {
+            width: 100%; 
+            height: 80px; 
+            margin-bottom: 10px;
+        }
+
+        .submit-comment-btn {
+            float: right;
+        }
+
+        .comments-list {
+            list-style: none;
+            padding-left: 0;
+        }
             .viewer
             {
                 width: 100%;
@@ -146,6 +190,24 @@ $(document).ready(function(){
             {
                 overflow: hidden;
             }
+    .location {
+        background-color: yellow;
+    }
+    .organization {
+        background-color: red;
+    }
+    .person {
+        background-color: orange;
+    }
+    .event {
+        background-color: green;
+    }
+    .unknown {
+        background-color: gray;
+    }
+        .discussion-seperation-line {
+            margin-top: 40px;
+        }
         </style>
 
 </body>
