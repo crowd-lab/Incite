@@ -61,7 +61,7 @@
                         <th>Not a tag?</th></tr>
                 </table>
                 <br>
-                <p class="step"><i>Step 2 of 2: Add more tags (by selecting texts from the transcription on the left)</i></p>
+                <p class="step"><i>Step 2 of 2: Add missing tags (by selecting texts from the transcription on the left). (You may skip this step if you do not see any missing tags.)</i></p>
                 <table class="table" id="user-entity-table">
                     <tr>
                         <th>Tag</th>
