@@ -18,7 +18,6 @@
     <div id="task_description">
         <h1 class="task-header">Transcribe</h1>
     </div>
-    <br>
     <div class="container-fluid">
         <div class="col-md-6" id="work-zone">
             <div id="work-view">

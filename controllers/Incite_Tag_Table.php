@@ -144,6 +144,23 @@ function findTagOnCategory($category) {
  * Returns a list of all categories along with their subcategory information
  * @return an array of results
  */
+function getSubcategoryIdAndNames() {
+    $results = Array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT * FROM omeka_incite_tags_category");
+    $stmt->bind_result($id, $name);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $results[$id] = $name;
+    }
+    $stmt->close();
+    $db->close();
+    return $results;
+}
+/**
+ * Returns a list of all categories along with their subcategory information
+ * @return an array of results
+ */
 function getAllCategories() {
     $results = Array();
     $count = 0;
@@ -186,6 +203,47 @@ function getAllTaggedDocuments() {
     $stmt->close();
     $db->close();
     return $item_ids;
+}
+/**
+ * Returns true if a document is tagged, false otherwise
+ * @param int $itemID
+ * @return boolean
+ */
+function getAllTaggedTranscriptions($itemID) {
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $transcriptions = array();
+    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND is_approved = 1");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($transcription);
+    $stmt->execute();
+    while( $stmt->fetch() ) {
+        $transcriptions[] = $transcription;
+    }
+    $stmt->close();
+    $db->close();
+    return $transcriptions;
+}
+/**
+ * Returns true if a document is tagged, false otherwise
+ * @param int $itemID
+ * @return boolean
+ */
+function hasTaggedTranscription($itemID) {
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_tagged_transcriptions WHERE item_id = ?");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($count > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 /**
  * Returns true if a document is tagged, false otherwise
@@ -490,5 +548,14 @@ function getBestSubjectCandidateList($item_ids)
     foreach ($subjects_counts as $subject => $count)
         $results[] = array('subject' => $subject, 'subject_id' => $subject_and_id[$subject], 'subject_definition' => $subject_and_def[$subject], 'ids' => $subjects_ids[$subject], 'count' => $count);
     return $results;
+}
+
+function createTaggedTranscription($item_id, $transcription_id, $userID, $tagged_transcription) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
+    $stmt->bind_param("iiis", $item_id, $transcription_id, $userID, $tagged_transcription);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
 }
 ?>

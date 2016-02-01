@@ -34,7 +34,7 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
         `Timestamp`             timestamp NOT NULL,
   
         PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
 
@@ -45,7 +45,7 @@ SQL
         `timestamp`         timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
         get_db()->query(<<<SQL
@@ -57,7 +57,7 @@ SQL
         `user_id`               int(11) NOT NULL,
         `created_time`          timestamp NOT NULL,
         PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 SQL
                 );
         get_db()->query(<<<SQL
@@ -67,7 +67,7 @@ SQL
         `tag_id` int(11) NOT NULL,
                 
         PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;       
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;       
 SQL
         );
 
@@ -79,7 +79,7 @@ SQL
         `privilege`     int(11) NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
    
@@ -93,7 +93,7 @@ SQL
         `question_type`         int(11) NOT NULL,
   
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
 
@@ -107,7 +107,7 @@ SQL
         `timestamp`     timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
    
@@ -118,7 +118,7 @@ SQL
         `question_id`       int(11) NOT NULL,
    
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
    get_db()->query(<<<SQL
@@ -128,7 +128,7 @@ SQL
         `reply_id`           int(11) NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
    
@@ -140,7 +140,7 @@ SQL
         `definition`    varchar(500) NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;  
 SQL
         );
         get_db()->query(<<<SQL
@@ -158,7 +158,7 @@ SQL
         `description`           varchar(300) NOT NULL,
   
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
 
@@ -167,7 +167,7 @@ SQL
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
-        `transcribed_text`      varchar(20000) NOT NULL,
+        `transcribed_text`      varchar(200000) NOT NULL,
         `summarized_text`       varchar(1000) NOT NULL,
         `tone`                  varchar(50) NOT NULL,
         `is_approved`           int(11) NOT NULL,
@@ -175,10 +175,25 @@ SQL
         `timestamp_creation`    timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
 
+        get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tagged_transcriptions (
+        `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`               int(11) NOT NULL,
+        `transcription_id`      int(11) NOT NULL,
+        `user_id`               int(11) NOT NULL,
+        `tagged_transcription`  varchar(200000) NOT NULL,
+        `is_approved`           int(11) NOT NULL,
+        `timestamp_approval`    timestamp NULL DEFAULT NULL,
+        `timestamp_creation`    timestamp NOT NULL,
+        
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_users (
         `id`                int(11) NOT NULL AUTO_INCREMENT,
@@ -192,7 +207,7 @@ SQL
         `timestamp`         timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
         get_db()->query(<<<SQL
@@ -204,7 +219,7 @@ SQL
         `timestamp`         timestamp NOT NULL,
   
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
     );
         get_db()->query(<<<SQL
@@ -219,7 +234,7 @@ SQL
         `name`          varchar(30) NOT NULL,
   
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
 SQL
    );
         get_db()->query(<<<SQL
@@ -232,7 +247,7 @@ SQL
         `non_guest_id`  int(10) unsigned NOT NULL,
         `guest_id`      int(10) unsigned NOT NULL
                 
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;  
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
 SQL
     );
         get_db()->query(<<<SQL
@@ -240,7 +255,7 @@ SQL
         `tag_id`            int(11) NOT NULL,
         `subcategory_id`    int(11) NOT NULL
     
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
    
 SQL
     );    
@@ -285,6 +300,10 @@ SQL
         );
         get_db()->query(<<<SQL
       DROP TABLE IF EXISTS {$this->_db->prefix}incite_transcriptions
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_tagged_transcriptions
 SQL
         );
         get_db()->query(<<<SQL

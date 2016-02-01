@@ -23,6 +23,21 @@ function colorTextBetweenTags($string, $tagname, $color) {
     return $result;
 }
 
+function classifyTextWithinTagWithId($string, $tagname, $id) {
+    $result = $string;
+    $pos = strpos($result, '<' . $tagname . '>');
+    if ($pos !== false) {
+        $result = substr_replace($result, '<span id="tag_id_'.$id.'" class="' . strtolower($tagname) . '">', $pos, strlen('<' . $tagname . '>'));
+    }
+    $pos = strpos($result, '</' . $tagname . '>');
+    if ($pos !== false) {
+        $result = substr_replace($result, '</span>', $pos, strlen('</' . $tagname . '>'));
+    }
+    //$result = str_replace('<' . $tagname . '>', '<span id="tag_id_'.$id.'" class="' . strtolower($tagname) . '">', $result, 1);
+    //$result = str_replace('</' . $tagname . '>', '</span>', $result, 1);
+    return $result;
+}
+
 function sort_strlen($str1, $str2) {
     return strlen($str2) - strlen($str1);
 }
@@ -170,6 +185,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 for ($i = 0; $i < sizeof($entities); $i++) {
                     createTag($_SESSION['Incite']['USER_DATA']['id'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
                 }
+                createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $_POST['tagged_doc']); 
                 $_SESSION['Incite']['previous_task'] = 'tag';
 
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
@@ -184,6 +200,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         $this->_helper->db->setDefaultModelName('Item');
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+        $tag_id_counter = 0;
         if ($this->_hasParam('id')) {
             //$this->view->isTagged = isDocumentTagged($this->_getParam('id'));
             $record = $this->_helper->db->find($this->_getParam('id'));
@@ -196,7 +213,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
                 $this->view->transcription = "No transcription";
                 if ($transcription != null) {
-                    $this->view->transcription = getTranscriptionText($transcription[count($transcription)-1]);
+                    $this->view->transcription_id = $transcription[count($transcription)-1];
+                    $this->view->transcription = getTranscriptionText($this->view->transcription_id);
                 } else {
                     //Redirect to transcribe task if there is no transcription available
                     //$this->redirect('incite/documents/transcribe/' . $this->_getParam('id'));
@@ -215,10 +233,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //  2) (to be implemented) pull similar entities in the database based on searching in transcription
                 //  3) NER to get entities
                 //Initialize attributes for entities
-                $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
+                //$categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
+                $categories = getAllCategories();
                 $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
-                if (isDocumentTagged($this->_getParam('id'))) {
+                if (hasTaggedTranscription($this->_getParam('id'))) {
+                    $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
+                    //count($transcriptions) must > 0 since it has tagged transcription
+                    $this->view->transcription = $transcriptions[count($transcriptions)-1];
                     //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
+                    /*
                     $allTags = getAllTagInformation($this->_getParam('id'));
                     $entities = array();
                     $entity_names = array();
@@ -238,10 +261,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $colored_transcription = str_replace($name, '<' . strtoupper($entity_category[$name]) . '>' . $name . '</' . strtoupper($entity_category[$name]) . '>', $colored_transcription);
                     }
                     foreach ($categories as $category) {
-                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                        $colored_transcription = colorTextBetweenTags($colored_transcription, strtoupper($category['name']), $category_colors[$category]);
                     }
                     $this->view->entities = $entities;
                     $this->view->transcription = $colored_transcription;
+                    //*/
                 } else {
                     //NER: start
                     $ner_entity_table = array();
@@ -265,15 +289,21 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     fclose($nered_file);
 
                     //parsing results
-                    $colored_transcription = $parsed_text;
+                    $transformed_transcription = $parsed_text;
 
                     foreach ($categories as $category) {
-                        $entities = getTextBetweenTags($parsed_text, $category);
-                        $colored_transcription = colorTextBetweenTags($colored_transcription, $category, $category_colors[$category]);
+                        $entities = getTextBetweenTags($parsed_text, strtoupper($category['name']));
+                        $repitition = substr_count($parsed_text, '<'.strtoupper($category['name']).'>');
+//function classifyTextWithinTagWithId($string, $tagname, $color, $id) {
+                        for ($i = 0; $i < $repitition; $i++) {
+                            $transformed_transcription = classifyTextWithinTagWithId($transformed_transcription, strtoupper($category['name']), $tag_id_counter++);
+                        }
+                        $tag_id_counter -= $repitition;
                         if (isset($entities[1]) && count($entities[1]) > 0) {
-                            $uniq_entities = array_unique($entities[1]);
+                            //$uniq_entities = array_unique($entities[1]);
+                            $uniq_entities = $entities[1];
                             foreach ($uniq_entities as $entity) {
-                                $ner_entity_table[] = array('entity' => $entity, 'category' => $category, 'subcategories' => array(), 'details' => '', 'color' => $category_colors[$category]);
+                                $ner_entity_table[] = array('entity' => $entity, 'category' => strtoupper($category['name']), 'subcategories' => array(), 'details' => '', 'color' => $category_colors[strtoupper($category['name'])], 'tag_id' => $tag_id_counter++);
                             }
                         }
                     }
@@ -282,9 +312,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     //NER:end
 
                     $this->view->entities = $ner_entity_table;
-                    $this->view->transcription = $colored_transcription;
+                    $this->view->transcription = $transformed_transcription;
                 } //end of isDocumentTagged
                 $this->view->category_colors = $category_colors;
+                $this->view->tag_id_counter = $tag_id_counter;
             } else {
                 //no such document
                 $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please find a document from the taggable document list.';

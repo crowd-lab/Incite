@@ -4,6 +4,7 @@
     include(dirname(__FILE__) . '/../common/header.php');
     
     $category_object = getAllCategories();
+    $subcategory_id_name_table = getSubcategoryIdAndNames();
     ?>
     <script type="text/javascript">
         $(function ()
@@ -12,25 +13,33 @@
         });
     </script>
     <!-- Page Content -->
-    <div id="task_description" style="text-align: center;">
-        <h2 style="text-align: center;">Tag</h2>
-        <span style="text-align: center;">The system has tried to recognize some tag. Please help 1) ensure they are correct, 2) add tags that are not recognized by the system and 3) provide (sub)categories and details for the tags.
-        </span>
+    <div id="task_description">
+        <h1 class="task-header">Tag</h1>
     </div>
-    <br>
     <div class="container-fluid">
-        <div class="col-md-6" id="work-zone">
+        <div class="col-md-5" id="work-zone">
             <div style="position: fixed;" id="work-view">
-                <h4>Information:</h4>
-                    <div>Title: <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></div>
-                    <div>Date: <?php echo metadata($this->tag, array('Dublin Core', 'Date')); ?></div>
-                    <div>Location: <?php echo metadata($this->tag, array('Item Type Metadata', 'Location')); ?></div>
-                    <div>Description: <?php echo metadata($this->tag, array('Dublin Core', 'Description')); ?></div>
-                <h4>Transcription:</h4>
+                <div class="document-header">
+                    <span class="document-title"><b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></span>
+                    <span class="document-additional-info" 
+                        data-toggle="popover" data-html="true" data-trigger="hover" 
+                        data-title="Additional Information" 
+                        data-content="<?php echo "<strong>Date:</strong> " 
+                                . metadata($tag, array('Dublin Core', 'Date')) 
+                                . "<br><br> <strong>Location:</strong> " 
+                                . metadata($this->tag, array('Item Type Metadata', 'Location')) 
+                                . "<br><br> <strong>Description:</strong> " 
+                                . metadata($this->tag, array('Dublin Core', 'Description')); ?>" 
+                        data-placement="bottom" data-id="<?php echo $tag->id; ?>">
+                        More about this document..
+                    </span>
+                </div> 
                 <div>
+                    Legends:
 <?php foreach ((array)$this->category_colors as $category => $color): ?>
-                    <span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span>
+                    <span class="<?php echo strtolower($category); ?>"><?php echo ucfirst(strtolower($category)); ?></span>
 <?php endforeach; ?>
+                    <span class="unknown">Unknown</span>
                 </div>
                 <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                 <div class="wrapper">
@@ -40,42 +49,39 @@
                 <button type="button" class="btn btn-default" id="hide">Transcription</button>
             </div>
         </div>
-        <div class="col-md-6">
-            <table class="table" id="entity-table">
-                <tr>
-                    <th>Tag</th>
-                    <th>Category</th>
-                    <th>Subcategory</th>
-                    <th>Details</th>
-                    <th>Not a tag?</th></tr>
-<?php foreach ((array)$this->entities as $entity): ?>
-                <tr>
-                    <td>
-                        <input type="text" class="form-control entity-name" value="<?php echo $entity['entity']; ?>">
-                    </td>
-                    <td>
-                        <select class="category-select <?php echo ucwords(strtolower($entity['category'])); ?>"></select>
-                    </td>
-                    <td>
-                        <select class="subcategory-select <?php echo implode(' ', $entity['subcategories']); ?>" multiple="multiple"></select>
-                    </td>
-                    <td>
-                        <input class="form-control entity-details" type="text" value="<?php echo $entity['details']; ?>">
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align">
-                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                        </button>
-                    </td>
-                </tr>
-<?php endforeach; ?>
-            </table>
-            <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>
-            <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
-            <form id="entity-form" method="post">
-                <input id="entity-info" type="hidden" name="entities" />
-                <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
-            </form>
+        <div class="col-md-7">
+            <div class="col-md-12">
+                <p class="header-step"><i>Step 1: Verify and expand existing tags</i></p>
+                <table class="table" id="entity-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Details</th>
+                        <th>Not a tag?</th></tr>
+                </table>
+                <br>
+                <p class="step"><i>Step 2: Add more tags (by selecting texts from the transcription on the left)</i></p>
+                <table class="table" id="user-entity-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Details</th>
+                        <th>Not a tag?</th></tr>
+                    <tr>
+                </table>
+    <!--            <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>  -->
+                <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
+                <form id="entity-form" method="post">
+                    <input id="entity-info" type="hidden" name="entities" />
+                    <input id="tagged-doc" type="hidden" name="tagged_doc" />
+                    <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
+                    <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
+                </form>
+            </div>
+            <br>
+            <hr size=2 class="discussion-seperation-line">
             <div id="container">
                 <h3> Discussion </h3>
                 <div id="onLogin">
@@ -102,8 +108,99 @@
 <!-- /.container -->
 
 <script type="text/javascript">
+    var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
+    function addUserTag(text, span_id) {
+        var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+        new_entity.find('.subcategory-select').multiselect({
+            enableFiltering: true,
+            filterBehavior: 'text',
+            checkboxName: 'multiselect[]',
+            enableCaseInsensitiveFiltering: true,
+            disableIfEmpty: true,
+            numberDisplayed: 1
+        });
+        new_entity.find('.category-select').append('<option value="0">Unknown</option>');
+        <?php for ($i = 0; $i < sizeof($category_object); $i++){
+            echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
+        }
+        ?>
+        new_entity.find('.category-select').multiselect({
+            disableIfEmpty: true
+        });
+        $('.category-select').multiselect('rebuild');
+            
+        $('#user-entity-table').append(new_entity);
+        new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
+    }
+    function addExistingTags() {
+        $('#transcribe_copy span').each(function (idx) {
+            tagid_id_counter++;
+            var new_entity = $('<tr id="'+this.id+'_table" data-tagid="'+(""+this.id).replace("tag_id_", "")+'"><td><span class="entity-name">'+$(this).text()+'</span></td><td><select class="category-select '+this.className+'"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+            new_entity.find('.subcategory-select').multiselect({
+                enableFiltering: true,
+                filterBehavior: 'text',
+                checkboxName: 'multiselect[]',
+                enableCaseInsensitiveFiltering: true,
+                disableIfEmpty: true,
+                numberDisplayed: 1
+            });
+            new_entity.find('.category-select').append('<option value="0">Unknown</option>');
+            <?php for ($i = 0; $i < sizeof($category_object); $i++){
+                echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
+            }
+            ?>
+            new_entity.find('.category-select').multiselect({
+                disableIfEmpty: true
+            });
+            $('.category-select').multiselect('rebuild');
+                
+            $('#entity-table').append(new_entity);
+            new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
+            new_entity.find('.category-select')
+                //Location: 1, Event: 2, Person: 3, Organization 4
+                var cat = 1;
+                if (new_entity.find('.category-select').hasClass('location')) {
+                    new_entity.find('.category-select option[value=1]').attr('selected', 'selected');
+                } else if (new_entity.find('.category-select').hasClass('person')) {
+                    cat = 3;
+                    new_entity.find('.category-select option[value=3]').attr('selected', 'selected');
+                } else if (new_entity.find('.category-select').hasClass('organization')) {
+                    cat = 4;
+                    new_entity.find('.category-select option[value=4]').attr('selected', 'selected');
+                } else if (new_entity.find('.category-select').hasClass('event')) {
+                    cat = 2;
+                    new_entity.find('.category-select option[value=2]').attr('selected', 'selected');
+                } else {  //Unknown category!
+                    cat = 0;
+                    new_entity.find('.category-select option[value=0]').attr('selected', 'selected');
+                }
+                new_entity.find('.category-select').multiselect('rebuild');
+                var subcategory_menu = new_entity.find('.subcategory-select');
+                $(subcategory_menu).empty();
+                if (new_entity.find('.category-select option:selected').text() !== "Unknown") {
+                    $.each(categories[new_entity.find('.category-select').val()-1]['subcategory'], function (idx) {
+                        subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                    });
+                } else {
+                    subcategory_menu.multiselect('rebuild');
+                }
+            if (this.dataset.subs !== "") {
+                var selected_subs = this.dataset.subs.split(',');
+                for (i = 0; i < selected_subs.length; i++) {
+                    $('#'+this.id+'_table .subcategory-select option[value='+selected_subs[i]+']').attr('selected', 'selected');
+                }
+                    $('#'+this.id+'_table .subcategory-select').multiselect('rebuild');
+            }
+            if (this.dataset.details !== "") {
+                $('#'+this.id+'_table .entity-details').val(this.dataset.details);
+            }
+            
+        });
+    }
+
     //Global variable to store categories
     var categories = <?php echo json_encode($category_object).";\n"; ?>
+    var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
     var msgbox;
     
     $(document).ready(function () {
@@ -133,6 +230,7 @@
     });
 
     $(document).ready(function () {
+        addExistingTags();
         $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
         $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
         $("#document_img").iviewer({
@@ -141,81 +239,61 @@
             zoom: "fit"
         });
 
-        $('#add-more-button').on('click', function (e) {
-            var new_entity = $('<tr><td><input type="text" class="form-control entity-name" value=""></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
-            new_entity.find('.subcategory-select').multiselect({
-                enableFiltering: true,
-                filterBehavior: 'text',
-                checkboxName: 'multiselect[]',
-                enableCaseInsensitiveFiltering: true,
-                disableIfEmpty: true,
-                numberDisplayed: 1
-            });
-            <?php for ($i = 0; $i < sizeof($category_object); $i++){
-                echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
+        $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
+            $(this).parent().parent().remove();
+        });
+        $('#user-entity-table').on('change', '.category-select', function (e) {
+            var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
+            subcategory_menu.find('option').remove().end();
+            if ($(this).find('option:selected').text() !== "Unknown") {
+                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                });
+            } else {
+                subcategory_menu.multiselect('rebuild');
             }
-            ?>
-            new_entity.find('.category-select').multiselect({
-                disableIfEmpty: true
-            });
-            $('.category-select').multiselect('rebuild');
-                
-            $('#entity-table').append(new_entity);
-            //Initial so category must be 0
-            var subcategory_menu = new_entity.closest('tr').find('.subcategory-select');
-            $.each(categories[0]['subcategory'], function (idx) {
-                subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
-            });
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase());
+        });
+        $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).contents().unwrap();
+            $(this).parent().parent().remove();
         });
         $('#entity-table').on('click', '.remove-entity-button', function (e) {
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).contents().unwrap();
             $(this).parent().parent().remove();
         });
         $('#entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
-                subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
-            });
-        });
-        $('#entity-table').ready( function(e) {
-
-            //if first time, use ajax to fetch subcategories, add to .subcategory-select and rebuild .subcategory-select by $('#example-subcategory-select').multiselect('rebuild'). Also, the categories/subcategories should be stored to avoid frequent ajax calls
-            $('.category-select').empty();
-            <?php 
-                for ($i = 0; $i < sizeof($category_object); $i++)
-                {
-                    echo '$(\'.category-select\').append("<option value=\''.$category_object[$i]["id"].'\'>'.$category_object[$i]["name"].' </option>");';
-                }
-            ?>
-
-            $.each($('.category-select'), function (idx) {
-                //Location: 1, Event: 2, Person: 3, Organization 4
-                var cat = 1;
-                if ($(this).hasClass('Location')) {
-                    $($(this).find('option[value=1]')).attr('selected', 'selected');
-                } else if ($(this).hasClass('Person')) {
-                    cat = 3;
-                    $($(this).find('option[value=3]')).attr('selected', 'selected');
-                } else if ($(this).hasClass('Organization')) {
-                    cat = 4;
-                    $($(this).find('option[value=4]')).attr('selected', 'selected');
-                } else if ($(this).hasClass('Event')) {
-                    cat = 2;
-                    $($(this).find('option[value=2]')).attr('selected', 'selected');
-                } else {  //unexpected category!
-                }
-                var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
-                $.each(categories[cat-1]['subcategory'], function (idx) {
-                    var selected = "";
-                    if (subcategory_menu.hasClass(this['subcategory'].replace(/ /g, ''))) {
-                        selected = "selected=selected";
-                    }
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'"'+selected+'>'+this['subcategory']+'</option>').multiselect('rebuild');
+            if ($(this).find('option:selected').text() !== "Unknown") {
+                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
                 });
-            });
-            $('.category-select').multiselect('rebuild');
+            } else {
+                subcategory_menu.multiselect('rebuild');
+            }
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase());
         });
+/*
+            var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
+            subcategory_menu.find('option').remove().end();
+            if ($(this).find('option:selected').text() !== "Unknown") {
+                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                });
+            } else {
+                subcategory_menu.multiselect('rebuild');
+            }
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase());
+//*/
         $('#confirm-button').on('click', function (e) {
+            if ($('.category-select option:selected[value=0]').length > 0) {
+                alert('Category cannot be "Unknown"');
+                return;
+            }
             var entities = [];
             var rows = $('#entity-table tr').has("td");
             rows.each(function (idx) {
@@ -228,10 +306,28 @@
                 subcategories.each( function (idx) {
                     subcategories_array.push($(this).val());
                 });
-                entities.push({entity: $(name).val(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
+            });
+            rows = $('#user-entity-table tr').has("td");
+            rows.each(function (idx) {
+                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+                var name = $(this).find('.entity-name');
+                var details = $(this).find('.entity-details');
+                var category = $(this).find('.category-select option:selected');
+                var subcategories = $(this).find('.subcategory-select option:selected');
+                var subcategories_array = [];
+                subcategories.each( function (idx) {
+                    subcategories_array.push($(this).val());
+                });
+                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
             });
             //alert is for testing
             $('#entity-info').val(JSON.stringify(entities));
+            $('#tagged-doc').val($('#transcribe_copy').html());
             $('#entity-form').submit();
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
@@ -253,6 +349,29 @@
         //$('.SelectBox').SumoSelect();
         //$('.SelectBox').SumoSelect({placeholder: 'This is a placeholder', csvDispCount: 3 });
         $('#work-view').width($('#work-zone').width());
+
+
+        //Add entities by selection
+        $('#transcribe_copy').on('mouseup', function (e) {
+            var tag_selection = document.getSelection();
+            var tag_text = tag_selection.toString();
+            if (tag_selection.rangeCount && tag_text !== "") {
+                var tag_range = tag_selection.getRangeAt(0);
+                var tag_span = document.createElement('span');
+                tag_span.id = 'tag_id_'+tagid_id_counter;
+                tag_span.className = 'unknown';
+                tag_span.appendChild(document.createTextNode(tag_text));
+                tag_range.deleteContents();
+                tag_range.insertNode(tag_span);
+                addUserTag(tag_text, tagid_id_counter++);
+            }
+        });
+        $('#transcribe_copy').on('mouseenter', 'span', function (e) {
+            $('#'+this.id+'_table').toggleClass(this.className);
+        });
+        $('#transcribe_copy').on('mouseleave', 'span', function (e) {
+            $('#'+this.id+'_table').toggleClass(this.className);
+        });
 <?php
     if (isset($_SESSION['incite']['message'])) {
         echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
@@ -264,6 +383,49 @@
     });
 </script>
 <style>
+        .document-header {
+            margin-top: -30px;
+        }
+
+        .document-title {
+            font-size: 20px; 
+            position: relative; 
+            top: -5px;
+        }
+
+        .document-additional-info {
+            color: #0645AD; 
+            float: right;
+        }
+        .task-header {
+            text-align: center; 
+            margin-bottom: 40px; 
+            margin-top: 0px;
+        }
+        #task_description {
+            text-align: center;
+        }
+        .step {
+            margin-top: 10px;
+        }
+
+        .header-step {
+            margin-top: -32px;
+        }
+        .comment-textarea {
+            width: 100%; 
+            height: 80px; 
+            margin-bottom: 10px;
+        }
+
+        .submit-comment-btn {
+            float: right;
+        }
+
+        .comments-list {
+            list-style: none;
+            padding-left: 0;
+        }
     .viewer
     {
         width: 100%;
@@ -275,6 +437,24 @@
     {
         overflow: hidden;
     }
+    .location {
+        background-color: yellow;
+    }
+    .organization {
+        background-color: red;
+    }
+    .person {
+        background-color: orange;
+    }
+    .event {
+        background-color: green;
+    }
+    .unknown {
+        background-color: gray;
+    }
+        .discussion-seperation-line {
+            margin-top: 40px;
+        }
 </style>
 
 </body>
