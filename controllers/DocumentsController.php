@@ -436,6 +436,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if ($transcription != null) {
                     $this->view->transcription = getTranscriptionText($transcription[0]);
                 } else {
+                    if (isset($this->view->query_str) && $this->view->query_str !== "") {
+                        $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="/m4j/incite/documents/connect?'.$this->view->query_str.'">here</a>.';
+                        $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id').'?'.$this->view->query_str);
+                    } else {
+                        $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="/m4j/incite/documents/connect?'.$this->view->query_str.'">here</a>.';
+                        $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id'));
+                    }
                     
                 }
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
