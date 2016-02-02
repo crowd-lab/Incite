@@ -144,7 +144,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             if (count($document_ids) <= 0 ) {
                 if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed baed on your search criteria. Please change your search criteria.';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed based on your search criteria. Please change your search criteria.';
                     //$this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
                 } else {
                     $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed now. Please come back later! Or you can try to find a document to <a href="/m4j/incite/documents/tag">Tag</a> or <a href="/m4j/incite/documents/connect">Connect</a>!';
@@ -235,7 +235,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //Initialize attributes for entities
                 //$categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
                 $categories = getAllCategories();
-                $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
+                $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
                 if (hasTaggedTranscription($this->_getParam('id'))) {
                     $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                     //count($transcriptions) must > 0 since it has tagged transcription
@@ -583,7 +583,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //Try tagged documents
                 $connectable_documents = getDocumentsWithTags();
                 if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected baed on your search criteria. Please change your search criteria.';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Please change your search criteria.';
                 } else {
                     $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected now. Please come back later! Or you can try to find a document to <a href="/m4j/incite/documents/transcribe">Transcribe</a> or <a href="/m4j/incite/documents/tag">Tag</a>!';
                 }

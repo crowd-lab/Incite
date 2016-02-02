@@ -40,17 +40,18 @@
                         </span>
                     </div> 
                     
-                    <ul class="nav nav-tabs" style="display: inline-block; vertical-align: top;">
-                        <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
-                        <li role="presentation" id="show"><a href="#">Document</a></li>
-                    </ul>
+                    <div id="tabs-and-legend-container">
+                        <ul class="nav nav-tabs" style="display: inline-block; vertical-align: top;">
+                            <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
+                            <li role="presentation" id="show"><a href="#">Document</a></li>
+                        </ul>
 
-                    <div id="tag-legend" style="display: inline; float: right; position: relative; top: 10px;">
-                        <span><b>Tag Legend: </b></span>
-                        <?php foreach ((array)$this->category_colors as $category => $color): ?>
-                            <span class="<?php echo strtolower($category); ?>"><?php echo ucfirst(strtolower($category)); ?></span>
-                        <?php endforeach; ?>
-                        <span class="unknown">Unknown</span>
+                        <div id="tag-legend">
+                            <span><b>Tag Legend: </b></span>
+                            <?php foreach ((array)$this->category_colors as $category => $color): ?>
+                                <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
 
                     <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;">
@@ -272,7 +273,7 @@
                 subcategory_menu.multiselect('rebuild');
             }
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
-            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase());
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase() + " tagged-text");
         });
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).contents().unwrap();
@@ -374,23 +375,32 @@
         $('#transcribe_copy').on('mouseup', function (e) {
             var tag_selection = document.getSelection();
             var tag_text = tag_selection.toString();
+            var needs_extra_whitespace = tag_text.charAt(tag_text.length - 1) === ' ';
+            tag_text = tag_text.trim();
+
             if (tag_selection.rangeCount && tag_text !== "") {
                 var tag_range = tag_selection.getRangeAt(0);
-                var tag_span = document.createElement('span');
-                tag_span.id = 'tag_id_'+tagid_id_counter;
-                tag_span.className = 'unknown';
-                tag_span.appendChild(document.createTextNode(tag_text));
+                var tag_em = document.createElement('em');
+                tag_em.id = 'tag_id_'+tagid_id_counter;
+                tag_em.className = 'unknown tagged-text';
+                tag_em.appendChild(document.createTextNode(tag_text));
                 tag_range.deleteContents();
-                tag_range.insertNode(tag_span);
+
+                //If the user selects a tag with whitespace it will be trimmed, reinsert a space outside the tag
+                if (needs_extra_whitespace) {
+                    tag_range.insertNode(document.createElement('p').appendChild(document.createTextNode("\u00A0")));
+                }
+                tag_range.insertNode(tag_em);
                 addUserTag(tag_text, tagid_id_counter++);
+                tag_selection.removeAllRanges();
             }
         });
 
-        $('#transcribe_copy').on('mouseenter', 'span', function (e) {
-            $('#'+this.id+'_table').toggleClass(this.className);
+        $('#transcribe_copy').on('mouseenter', 'em', function (e) {
+            $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
-        $('#transcribe_copy').on('mouseleave', 'span', function (e) {
-            $('#'+this.id+'_table').toggleClass(this.className);
+        $('#transcribe_copy').on('mouseleave', 'em', function (e) {
+            $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
 <?php
     if (isset($_SESSION['incite']['message'])) {
@@ -418,11 +428,19 @@
         color: #0645AD; 
         float: right;
     }
+
+    #tag-legend {
+        display: inline; 
+        float: right;
+        position: relative; 
+        top: 10px;
+    }
     .task-header {
         text-align: center; 
         margin-bottom: 40px; 
         margin-top: 0px;
     }
+
     #task_description {
         text-align: center;
     }
@@ -460,23 +478,23 @@
     }
 
     .location {
-        background-color: yellow;
+        background-color: #FFFFBA;
     }
 
     .organization {
-        background-color: red;
+        background-color: #BAE1FF;
     }
 
     .person {
-        background-color: orange;
+        background-color: #FFD3B6;
     }
 
     .event {
-        background-color: green;
+        background-color: #A8E6CF;
     }
 
     .unknown {
-        background-color: gray;
+        background-color: #FF8B94;
     }
 
     .discussion-seperation-line {
@@ -520,6 +538,28 @@
 
     #tagging-container {
         padding-right: 0px;
+    }
+
+    .tagged-text {
+        border-radius: 6px;
+        padding: 2px;
+        cursor: pointer;
+        font-size: 15px;
+        box-sizing: border-box;
+        box-shadow: 2px 2px 2px #888;
+    }
+
+    .legend-item {
+        border-radius: 6px;
+        padding: 2px;
+        font-size: 13px;
+        box-sizing: border-box;
+        box-shadow: 2px 2px 2px #888;
+    }
+
+    #tabs-and-legend-container {
+        overflow: hidden;
+        height: 42px;
     }
 </style>
 
