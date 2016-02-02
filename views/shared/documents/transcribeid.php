@@ -95,7 +95,7 @@
             {
                 if (event.target.name === "reply")
                 {
-                    var NewContent = '<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event<?php echo ', '.$this->transcription->id; ?>)" class="btn btn-default" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Submit</button></form>';
+                    var NewContent = '<div class="reply-container"><form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" class="reply-box" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event<?php echo ', '.$this->transcription->id; ?>)" class="btn btn-default submit-reply" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Post Reply</button></form></div>';
                     $("#" + event.target.id).after(NewContent);
                     $("#" + event.target.id).remove();
                 }
@@ -221,6 +221,21 @@
 
         .discussion-seperation-line {
             margin-top: 40px;
+        }
+
+        .submit-reply {
+            float: right;
+        }
+
+        .reply-box {
+            margin-bottom: 10px;
+            width: 100%;
+            height: 80px;
+        }
+
+        .reply-container {
+            width: 50%;
+            margin-bottom: 30px;
         }
     </style>
 

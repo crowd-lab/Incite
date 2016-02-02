@@ -1,116 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
-    <?php
-    include(dirname(__FILE__) . '/../common/header.php');
-    
-    $category_object = getAllCategories();
-    $subcategory_id_name_table = getSubcategoryIdAndNames();
-    ?>
-    <script type="text/javascript">
-        $(function ()
-        {
-            getNewComments(<?php echo $this->tag->id; ?>);
-        });
-    </script>
-    <!-- Page Content -->
-    <div id="task_description">
-        <h1 class="task-header">Tag</h1>
-    </div>
-    <div class="container-fluid">
-        <div class="col-md-5" id="work-zone">
-            <div style="position: fixed;" id="work-view">
-                <div class="document-header">
-                    <span class="document-title"><b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></span>
-                    <span class="document-additional-info" 
-                        data-toggle="popover" data-html="true" data-trigger="hover" 
-                        data-title="Additional Information" 
-                        data-content="<?php echo "<strong>Date:</strong> " 
-                                . metadata($tag, array('Dublin Core', 'Date')) 
-                                . "<br><br> <strong>Location:</strong> " 
-                                . metadata($this->tag, array('Item Type Metadata', 'Location')) 
-                                . "<br><br> <strong>Description:</strong> " 
-                                . metadata($this->tag, array('Dublin Core', 'Description')); ?>" 
-                        data-placement="bottom" data-id="<?php echo $tag->id; ?>">
-                        More about this document..
-                    </span>
-                </div> 
-                <div>
-                    Legends:
-<?php foreach ((array)$this->category_colors as $category => $color): ?>
-                    <span class="<?php echo strtolower($category); ?>"><?php echo ucfirst(strtolower($category)); ?></span>
-<?php endforeach; ?>
-                    <span class="unknown">Unknown</span>
-                </div>
-                <div style="border-style: solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
-                <div class="wrapper">
-                    <div id="document_img" class="viewer"></div>
-                </div>
-                <button type="button" class="btn btn-default" id="show">Document</button>
-                <button type="button" class="btn btn-default" id="hide">Transcription</button>
-            </div>
+    <head>
+        <?php
+            include(dirname(__FILE__) . '/../common/header.php');
+        
+            $category_object = getAllCategories();
+            $subcategory_id_name_table = getSubcategoryIdAndNames();
+        ?>
+
+        <script type="text/javascript">
+            $(function ()
+            {
+                getNewComments(<?php echo $this->tag->id; ?>);
+            });
+        </script>
+    </head>
+
+    <body> <!-- Page Content -->
+        <div id="task_description" style="text-align: center;">
+            <h1 class="task-header" style="text-align: center;">Tag</h1>
         </div>
-        <div class="col-md-7">
-            <div class="col-md-12">
-                <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
-                <table class="table" id="entity-table">
-                    <tr>
-                        <th>Tag</th>
-                        <th>Category</th>
-                        <th>Subcategory</th>
-                        <th>Details</th>
-                        <th>Not a tag?</th></tr>
-                </table>
-                <br>
-                <p class="step"><i>Step 2 of 2: Add missing tags (by selecting texts from the transcription on the left). (You may skip this step if you do not see any missing tags.)</i></p>
-                <table class="table" id="user-entity-table">
-                    <tr>
-                        <th>Tag</th>
-                        <th>Category</th>
-                        <th>Subcategory</th>
-                        <th>Details</th>
-                        <th>Not a tag?</th></tr>
-                    <tr>
-                </table>
-    <!--            <button type="button" class="btn btn-primary" id="add-more-button">Add more</button>  -->
-                <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
-                <form id="entity-form" method="post">
-                    <input id="entity-info" type="hidden" name="entities" />
-                    <input id="tagged-doc" type="hidden" name="tagged_doc" />
-                    <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
-                    <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
-                </form>
-            </div>
-            <br>
-            <hr size=2 class="discussion-seperation-line">
-            <div id="container">
-                <h3> Discussion </h3>
-                <div id="onLogin">
-                <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
-                            <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
-                            <button type="button" class="btn btn-default submit-comment-btn" onclick="submitComment(<?php echo $this->tag->id; ?>)">Post Comment</button>
-                <?php else: ?>
-                    Please login or signup to join the discussion!
-                <?php endif; ?>
+
+        <div class="container-fluid">
+            <div class="col-md-5" id="work-zone">
+                <div style="position: fixed;" id="work-view">
+                    <div class="document-header">
+                        <span class="document-title"><b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></span>
+                        <span class="document-additional-info" 
+                            data-toggle="popover" data-html="true" data-trigger="hover" 
+                            data-title="Additional Information" 
+                            data-content="<?php echo "<strong>Date:</strong> " 
+                                    . metadata($tag, array('Dublin Core', 'Date')) 
+                                    . "<br><br> <strong>Location:</strong> " 
+                                    . metadata($this->tag, array('Item Type Metadata', 'Location')) 
+                                    . "<br><br> <strong>Description:</strong> " 
+                                    . metadata($this->tag, array('Dublin Core', 'Description')); ?>" 
+                            data-placement="bottom" data-id="<?php echo $tag->id; ?>">
+                            More about this document..
+                        </span>
+                    </div> 
+                    
+                    <ul class="nav nav-tabs" style="display: inline-block; vertical-align: top;">
+                        <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
+                        <li role="presentation" id="show"><a href="#">Document</a></li>
+                    </ul>
+
+                    <div id="tag-legend" style="display: inline; float: right; position: relative; top: 10px;">
+                        <span><b>Tag Legend: </b></span>
+                        <?php foreach ((array)$this->category_colors as $category => $color): ?>
+                            <span class="<?php echo strtolower($category); ?>"><?php echo ucfirst(strtolower($category)); ?></span>
+                        <?php endforeach; ?>
+                        <span class="unknown">Unknown</span>
+                    </div>
+
+                    <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;">
+                        <?php print_r($this->transcription); ?>
+                    </div>
+
+                    <div class="wrapper">
+                        <div id="document_img" class="viewer"></div>
+                    </div>
                 </div>
-                <ul id="comments">
-                </ul>
             </div>
-        </div> 
-    </div>
 
+            <div class="col-md-7">
+                <div class="col-md-12" id="tagging-container">
+                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
+                    <table class="table" id="entity-table">
+                        <tr>
+                            <th>Tag</th>
+                            <th>Category</th>
+                            <th>Subcategory</th>
+                            <th>Details</th>
+                            <th>Not a tag?</th></tr>
+                    </table>
+                    <br>
+                    <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                    <table class="table" id="user-entity-table">
+                        <tr>
+                            <th>Tag</th>
+                            <th>Category</th>
+                            <th>Subcategory</th>
+                            <th>Details</th>
+                            <th>Not a tag?</th></tr>
+                        <tr>
+                    </table>
+                    <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
+                    <form id="entity-form" method="post">
+                        <input id="entity-info" type="hidden" name="entities" />
+                        <input id="tagged-doc" type="hidden" name="tagged_doc" />
+                        <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
+                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
+                    </form>
 
+                    <hr size=2 class="discussion-seperation-line">
+                </div>
 
+                <div id="container" style="padding-left: 15px;">
+                    <h3> Discussion </h3>
 
+                    <div id="onLogin">
+                    <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
+                                <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
+                                <button type="button" class="btn btn-default submit-comment-btn" onclick="submitComment(<?php echo $this->tag->id; ?>)">Post Comment</button>
+                    <?php else: ?>
+                        Please login or signup to join the discussion!
+                    <?php endif; ?>
+                    </div>
 
-</div>
-
-</div>
-<!-- /.container -->
+                    <ul id="comments" class="comments-list"></ul>
+                </div>
+            </div> 
+        </div>
+    <!-- End work container -->
 
 <script type="text/javascript">
+    //Global variable to store categories/counters
+    var categories = <?php echo json_encode($category_object).";\n"; ?>
+    var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
+    var msgbox;
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
+
     function addUserTag(text, span_id) {
         var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+        
         new_entity.find('.subcategory-select').multiselect({
             enableFiltering: true,
             filterBehavior: 'text',
@@ -120,18 +133,20 @@
             numberDisplayed: 1
         });
         new_entity.find('.category-select').append('<option value="0">Unknown</option>');
-        <?php for ($i = 0; $i < sizeof($category_object); $i++){
+
+        <?php for ($i = 0; $i < sizeof($category_object); $i++) {
             echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
-        }
-        ?>
+        }?>
+
         new_entity.find('.category-select').multiselect({
             disableIfEmpty: true
         });
-        $('.category-select').multiselect('rebuild');
-            
+
+        $('.category-select').multiselect('rebuild');    
         $('#user-entity-table').append(new_entity);
         new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
     }
+
     function addExistingTags() {
         $('#transcribe_copy span').each(function (idx) {
             tagid_id_counter++;
@@ -198,27 +213,31 @@
         });
     }
 
-    //Global variable to store categories
-    var categories = <?php echo json_encode($category_object).";\n"; ?>
-    var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
-    var msgbox;
-    
+    var selectTab = function (tabToSelect, tabToUnselect) {
+        tabToSelect.addClass("active");
+        tabToUnselect.removeClass("active");
+    };
+
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({trigger: "hover"});
         $("#document_img").hide();
+
         $("#hide").click(function () {
             $("#document_img").hide();
             $("#transcribe_copy").show();
+            selectTab($("#hide"), $("#show"));
         });
         $("#show").click(function () {
             $("#document_img").show();
             $("#transcribe_copy").hide();
+            selectTab($("#show"), $("#hide"));
         });
+
         $(document).on('click', 'button', function (event)
         {
             if (event.target.name === "reply")
             {
-                var NewContent = '<form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event<?php echo ', '.$this->tag->id; ?>)" class="btn btn-default" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Submit</button></form>';
+                var NewContent = '<div class="reply-container"><form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" class="reply-box" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event<?php echo ', '.$this->tag->id; ?>)" class="btn btn-default submit-reply" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Post Reply</button></form>';
                 $("#" + event.target.id).after(NewContent);
                 $("#" + event.target.id).remove();
             }
@@ -366,6 +385,7 @@
                 addUserTag(tag_text, tagid_id_counter++);
             }
         });
+
         $('#transcribe_copy').on('mouseenter', 'span', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className);
         });
@@ -382,50 +402,51 @@
 ?>
     });
 </script>
+
 <style>
-        .document-header {
-            margin-top: -30px;
-        }
+    .document-header {
+        margin-top: -30px;
+    }
 
-        .document-title {
-            font-size: 20px; 
-            position: relative; 
-            top: -5px;
-        }
+    .document-title {
+        font-size: 20px; 
+        position: relative; 
+        top: -5px;
+    }
 
-        .document-additional-info {
-            color: #0645AD; 
-            float: right;
-        }
-        .task-header {
-            text-align: center; 
-            margin-bottom: 40px; 
-            margin-top: 0px;
-        }
-        #task_description {
-            text-align: center;
-        }
-        .step {
-            margin-top: 10px;
-        }
+    .document-additional-info {
+        color: #0645AD; 
+        float: right;
+    }
+    .task-header {
+        text-align: center; 
+        margin-bottom: 40px; 
+        margin-top: 0px;
+    }
+    #task_description {
+        text-align: center;
+    }
+    .step {
+        margin-top: 10px;
+    }
 
-        .header-step {
-            margin-top: -32px;
-        }
-        .comment-textarea {
-            width: 100%; 
-            height: 80px; 
-            margin-bottom: 10px;
-        }
+    .header-step {
+        margin-top: -32px;
+    }
+    .comment-textarea {
+        width: 100%; 
+        height: 80px; 
+        margin-bottom: 10px;
+    }
 
-        .submit-comment-btn {
-            float: right;
-        }
+    .submit-comment-btn {
+        float: right;
+    }
 
-        .comments-list {
-            list-style: none;
-            padding-left: 0;
-        }
+    .comments-list {
+        list-style: none;
+        padding-left: 0;
+    }
     .viewer
     {
         width: 100%;
@@ -437,24 +458,69 @@
     {
         overflow: hidden;
     }
+
     .location {
         background-color: yellow;
     }
+
     .organization {
         background-color: red;
     }
+
     .person {
         background-color: orange;
     }
+
     .event {
         background-color: green;
     }
+
     .unknown {
         background-color: gray;
     }
-        .discussion-seperation-line {
-            margin-top: 40px;
+
+    .discussion-seperation-line {
+        margin-top: 100px;
+    }
+
+    .document-header {
+            margin-top: -30px;
         }
+
+    .document-title {
+        font-size: 20px; 
+        position: relative; 
+        top: -5px;
+    }
+
+    .document-additional-info {
+        color: #0645AD; 
+        float: right;
+    }
+
+    .comments-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .submit-reply {
+        float: right;
+    }
+
+    .reply-box {
+        margin-bottom: 10px;
+        width: 100%;
+        height: 80px;
+    }
+
+    .reply-container {
+        width: 50%;
+        margin-bottom: 30px;
+    }
+
+    #tagging-container {
+        padding-right: 0px;
+    }
 </style>
 
 </body>
