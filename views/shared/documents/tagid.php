@@ -47,7 +47,7 @@
                         </ul>
 
                         <div id="tag-legend">
-                            <span><b>Tag Legend: </b></span>
+                            <span><b>Legend: </b></span>
                             <?php foreach ((array)$this->category_colors as $category => $color): ?>
                                 <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
                             <?php endforeach; ?>
@@ -430,8 +430,7 @@
     }
 
     #tag-legend {
-        display: inline; 
-        float: right;
+        display: inline-block; 
         position: relative; 
         top: 10px;
     }
