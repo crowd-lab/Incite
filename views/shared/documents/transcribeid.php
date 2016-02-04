@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <?php
-    include(dirname(__FILE__) . '/../common/header.php');
-//$this->transcription must exist because controller has ensured it. If it doesn't exist, then controller should've redirected it to the right place!
-    
+        include(dirname(__FILE__) . '/../common/header.php');
+        include(dirname(__FILE__) . '/../common/progress_indicator.php');
+        //$this->transcription must exist because controller has ensured it. If it doesn't exist, then controller should've redirected it to the right place!
     ?>
+
     <script type="text/javascript">
     var msgbox;
         $(function ()
@@ -22,7 +23,7 @@
         <div class="col-md-6" id="work-zone">
             <div id="work-view">
                 <div class="document-header">
-                    <span class="document-title"><b>Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></span>
+                    <span class="document-title" title="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>" ><b>Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></span>
                     <span class="document-additional-info" 
                         data-toggle="popover" data-html="true" data-trigger="hover" 
                         data-title="Additional Information" 
@@ -122,24 +123,24 @@
             $('#work-view').width($('#work-zone').width());
         });
         var $ = jQuery;
+
         $(document).ready(function () {
-            $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10);
+            $('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
+
             $("#viewer2").iviewer({
                 src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>",
                 zoom_min: 1,
                 zoom: "fit"
             });
 
-<?php
-    if (isset($_SESSION['incite']['message'])) {
-        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
-        //echo "setTimeout(closeMsgBox, 3000);\n";
-        unset($_SESSION['incite']['message']);
-    }
-?>
+            <?php
+                if (isset($_SESSION['incite']['message'])) {
+                    echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
+                    //echo "setTimeout(closeMsgBox, 3000);\n";
+                    unset($_SESSION['incite']['message']);
+                }
+            ?>
         });
-
-
     </script>
 
     <style>
@@ -151,6 +152,9 @@
             font-size: 20px; 
             position: relative; 
             top: -5px;
+            display: inline-block;
+            overflow: hidden;
+            width: 75%;
         }
 
         .document-additional-info {
@@ -220,7 +224,8 @@
         }
 
         .discussion-seperation-line {
-            margin-top: 40px;
+            margin-top: 35px;
+            margin-bottom: 0px;
         }
 
         .submit-reply {

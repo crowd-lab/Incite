@@ -2,6 +2,7 @@
 <html lang="en">
 <?php
 include(dirname(__FILE__).'/../common/header.php');
+include(dirname(__FILE__).'/../common/progress_indicator.php');
 ?>
 
 

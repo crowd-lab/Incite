@@ -3,6 +3,7 @@
     <head>
         <?php
             include(dirname(__FILE__) . '/../common/header.php');
+            include(dirname(__FILE__) . '/../common/progress_indicator.php');
         
             $category_object = getAllCategories();
             $subcategory_id_name_table = getSubcategoryIdAndNames();
@@ -25,7 +26,9 @@
             <div class="col-md-5" id="work-zone">
                 <div style="position: fixed;" id="work-view">
                     <div class="document-header">
-                        <span class="document-title"><b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></span>
+                        <span class="document-title" title="<?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?>">
+                            <b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?>
+                        </span>
                         <span class="document-additional-info" 
                             data-toggle="popover" data-html="true" data-trigger="hover" 
                             data-title="Additional Information" 
@@ -41,7 +44,7 @@
                     </div> 
                     
                     <div id="tabs-and-legend-container">
-                        <ul class="nav nav-tabs" style="display: inline-block; vertical-align: top;">
+                        <ul class="nav nav-tabs document-display-type-tabs">
                             <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
                             <li role="presentation" id="show"><a href="#">Document</a></li>
                         </ul>
@@ -251,8 +254,8 @@
 
     $(document).ready(function () {
         addExistingTags();
-        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
-        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
+        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
         $("#document_img").iviewer({
             src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>",
             zoom_min: 1,
@@ -422,6 +425,9 @@
         font-size: 20px; 
         position: relative; 
         top: -5px;
+        overflow: hidden;
+        display: inline-block;
+        width: 75%;
     }
 
     .document-additional-info {
@@ -433,7 +439,10 @@
         display: inline-block; 
         position: relative; 
         top: 10px;
+        width: 70%;
+        text-align: right;
     }
+
     .task-header {
         text-align: center; 
         margin-bottom: 40px; 
@@ -443,6 +452,7 @@
     #task_description {
         text-align: center;
     }
+
     .step {
         margin-top: 10px;
     }
@@ -450,6 +460,7 @@
     .header-step {
         margin-top: -32px;
     }
+
     .comment-textarea {
         width: 100%; 
         height: 80px; 
@@ -500,21 +511,6 @@
         margin-top: 100px;
     }
 
-    .document-header {
-            margin-top: -30px;
-        }
-
-    .document-title {
-        font-size: 20px; 
-        position: relative; 
-        top: -5px;
-    }
-
-    .document-additional-info {
-        color: #0645AD; 
-        float: right;
-    }
-
     .comments-list {
         list-style: none;
         padding-left: 0;
@@ -559,6 +555,12 @@
     #tabs-and-legend-container {
         overflow: hidden;
         height: 42px;
+    }
+
+    .document-display-type-tabs {
+        display: inline-block; 
+        vertical-align: top;
+        width: 29%;
     }
 </style>
 
