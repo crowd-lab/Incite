@@ -174,6 +174,7 @@
 
         .header-step {
             margin-top: -32px;
+            margin-bottom: 13px;
         }
 
         .viewer {

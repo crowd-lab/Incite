@@ -387,7 +387,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->related_documents = array();
 
         //From tagAction
-        $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
+        $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
         $this->view->category_colors = $category_colors;
 
         if ($this->getRequest()->isPost()) {
@@ -446,7 +446,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     
                 }
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
-                $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
+                $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
                 if (hasTaggedTranscription($this->_getParam('id'))) {
                     $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                     $this->view->transcription = $transcriptions[count($transcriptions)-1];
