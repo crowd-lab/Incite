@@ -3,6 +3,7 @@
     <head>
         <?php
             include(dirname(__FILE__) . '/../common/header.php');
+            include(dirname(__FILE__) . '/../common/progress_indicator.php');
         
             $category_object = getAllCategories();
             $subcategory_id_name_table = getSubcategoryIdAndNames();
@@ -17,15 +18,17 @@
     </head>
 
     <body> <!-- Page Content -->
-        <div id="task_description" style="text-align: center;">
-            <h1 class="task-header" style="text-align: center;">Tag</h1>
+        <div id="task_description">
+            <h1 class="task-header">Tag</h1>
         </div>
 
         <div class="container-fluid">
             <div class="col-md-5" id="work-zone">
                 <div style="position: fixed;" id="work-view">
                     <div class="document-header">
-                        <span class="document-title"><b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?></span>
+                        <span class="document-title" title="<?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?>">
+                            <b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?>
+                        </span>
                         <span class="document-additional-info" 
                             data-toggle="popover" data-html="true" data-trigger="hover" 
                             data-title="Additional Information" 
@@ -41,7 +44,7 @@
                     </div> 
                     
                     <div id="tabs-and-legend-container">
-                        <ul class="nav nav-tabs" style="display: inline-block; vertical-align: top;">
+                        <ul class="nav nav-tabs document-display-type-tabs">
                             <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
                             <li role="presentation" id="show"><a href="#">Document</a></li>
                         </ul>
@@ -251,8 +254,8 @@
 
     $(document).ready(function () {
         addExistingTags();
-        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
-        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-50);
+        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
+        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
         $("#document_img").iviewer({
             src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>",
             zoom_min: 1,
@@ -371,34 +374,49 @@
         $('#work-view').width($('#work-zone').width());
 
 
+        //Bug fix - can't tag anything outside the transcription
+        $('#transcribe_copy').on('mousedown', function (e) {
+            document.getSelection().removeAllRanges();
+        });
+
         //Add entities by selection
         $('#transcribe_copy').on('mouseup', function (e) {
-            var tag_selection = document.getSelection();
-            var tag_text = tag_selection.toString();
-            var needs_extra_whitespace = tag_text.charAt(tag_text.length - 1) === ' ';
-            tag_text = tag_text.trim();
+            var parentOffset = $(this).offset(); 
+            var relX = e.pageX - parentOffset.left;
+            var relY = e.pageY - parentOffset.top;
 
-            if (tag_selection.rangeCount && tag_text !== "") {
-                var tag_range = tag_selection.getRangeAt(0);
-                var tag_em = document.createElement('em');
-                tag_em.id = 'tag_id_'+tagid_id_counter;
-                tag_em.className = 'unknown tagged-text';
-                tag_em.appendChild(document.createTextNode(tag_text));
-                tag_range.deleteContents();
+            //Bug fix - make sure the selection is still within the transcription on mouseup
+            //so you can't tag anything outside the transcription. Can't just check for hover here 
+            //due to selection weirdness
+            if (relX >= 0 && relY >= 0) {
+                var tag_selection = document.getSelection();
+                var tag_text = tag_selection.toString();
+                var needs_extra_whitespace = tag_text.charAt(tag_text.length - 1) === ' ';
+                tag_text = tag_text.trim();
 
-                //If the user selects a tag with whitespace it will be trimmed, reinsert a space outside the tag
-                if (needs_extra_whitespace) {
-                    tag_range.insertNode(document.createElement('p').appendChild(document.createTextNode("\u00A0")));
+                if (tag_selection.rangeCount && tag_text !== "") {
+                    var tag_range = tag_selection.getRangeAt(0);
+                    var tag_em = document.createElement('em');
+                    tag_em.id = 'tag_id_'+tagid_id_counter;
+                    tag_em.className = 'unknown tagged-text';
+                    tag_em.appendChild(document.createTextNode(tag_text));
+                    tag_range.deleteContents();
+
+                    //If the user selects a tag with whitespace it will be trimmed, reinsert a space outside the tag
+                    if (needs_extra_whitespace) {
+                        tag_range.insertNode(document.createElement('p').appendChild(document.createTextNode("\u00A0")));
+                    }
+                    tag_range.insertNode(tag_em);
+                    addUserTag(tag_text, tagid_id_counter++);
+                    tag_selection.removeAllRanges();
                 }
-                tag_range.insertNode(tag_em);
-                addUserTag(tag_text, tagid_id_counter++);
-                tag_selection.removeAllRanges();
             }
         });
 
         $('#transcribe_copy').on('mouseenter', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
+
         $('#transcribe_copy').on('mouseleave', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
@@ -422,6 +440,9 @@
         font-size: 20px; 
         position: relative; 
         top: -5px;
+        overflow: hidden;
+        display: inline-block;
+        width: 75%;
     }
 
     .document-additional-info {
@@ -433,7 +454,10 @@
         display: inline-block; 
         position: relative; 
         top: 10px;
+        width: 70%;
+        text-align: right;
     }
+
     .task-header {
         text-align: center; 
         margin-bottom: 40px; 
@@ -443,6 +467,7 @@
     #task_description {
         text-align: center;
     }
+
     .step {
         margin-top: 10px;
     }
@@ -450,6 +475,7 @@
     .header-step {
         margin-top: -32px;
     }
+
     .comment-textarea {
         width: 100%; 
         height: 80px; 
@@ -500,21 +526,6 @@
         margin-top: 100px;
     }
 
-    .document-header {
-            margin-top: -30px;
-        }
-
-    .document-title {
-        font-size: 20px; 
-        position: relative; 
-        top: -5px;
-    }
-
-    .document-additional-info {
-        color: #0645AD; 
-        float: right;
-    }
-
     .comments-list {
         list-style: none;
         padding-left: 0;
@@ -559,6 +570,12 @@
     #tabs-and-legend-container {
         overflow: hidden;
         height: 42px;
+    }
+
+    .document-display-type-tabs {
+        display: inline-block; 
+        vertical-align: top;
+        width: 29%;
     }
 </style>
 
