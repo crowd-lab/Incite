@@ -18,8 +18,8 @@ function getTextBetweenTags($string, $tagname) {
 
 function colorTextBetweenTags($string, $tagname, $color) {
     $result = $string;
-    $result = str_replace('<' . $tagname . '>', '<span style="background-color:' . $color . ';">', $result);
-    $result = str_replace('</' . $tagname . '>', '</span>', $result);
+    $result = str_replace('<' . $tagname . '>', '<em style="background-color:' . $color . ';">', $result);
+    $result = str_replace('</' . $tagname . '>', '</em>', $result);
     return $result;
 }
 
@@ -27,11 +27,11 @@ function classifyTextWithinTagWithId($string, $tagname, $id) {
     $result = $string;
     $pos = strpos($result, '<' . $tagname . '>');
     if ($pos !== false) {
-        $result = substr_replace($result, '<span id="tag_id_'.$id.'" class="' . strtolower($tagname) . '">', $pos, strlen('<' . $tagname . '>'));
+        $result = substr_replace($result, '<em id="tag_id_'.$id.'" class="' . strtolower($tagname) . ' tagged-text">', $pos, strlen('<' . $tagname . '>'));
     }
     $pos = strpos($result, '</' . $tagname . '>');
     if ($pos !== false) {
-        $result = substr_replace($result, '</span>', $pos, strlen('</' . $tagname . '>'));
+        $result = substr_replace($result, '</em>', $pos, strlen('</' . $tagname . '>'));
     }
     //$result = str_replace('<' . $tagname . '>', '<span id="tag_id_'.$id.'" class="' . strtolower($tagname) . '">', $result, 1);
     //$result = str_replace('</' . $tagname . '>', '</span>', $result, 1);
