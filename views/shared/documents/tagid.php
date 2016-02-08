@@ -419,6 +419,25 @@
 
         $('#transcribe_copy').on('mouseenter', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
+            var view_baseline = $('#work-view').position().top;
+            //var view_baseline = $('#task_description').position().top+$('#task_description').height();
+            var vis_top = $('#work-view').offset().top;
+            var vis_bottom = vis_top+$('#work-view').height();
+            var tag_top = $("#"+this.id+'_table').offset().top;
+            var tag_bottom = tag_top+$("#"+this.id+'_table').height();
+
+            if (tag_top < vis_top) {
+                $('html, body').animate({
+                    scrollTop: $('#'+this.id+'_table').offset().top-view_baseline
+                }, 500);
+            } else if (tag_bottom > vis_bottom) {
+                $('html, body').animate({
+                    scrollTop: $('#'+this.id+'_table').offset().top-view_baseline-(vis_bottom-vis_top)+(tag_bottom-tag_top)
+                }, 500);
+            } else {
+                //element is already in the visible area
+            }
+
         });
 
         $('#transcribe_copy').on('mouseleave', 'em', function (e) {
