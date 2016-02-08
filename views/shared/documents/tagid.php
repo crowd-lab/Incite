@@ -395,6 +395,10 @@
                 tag_text = tag_text.trim();
 
                 if (tag_selection.rangeCount && tag_text !== "") {
+                    if (tag_text.length > 30) {
+                        alert ('The length of a tag should be shorter than 30 characters');
+                        return;
+                    }
                     var tag_range = tag_selection.getRangeAt(0);
                     var tag_em = document.createElement('em');
                     tag_em.id = 'tag_id_'+tagid_id_counter;
