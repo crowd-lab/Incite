@@ -61,9 +61,9 @@
 	    	$("#success-indicator-bar").width("66.66%");
 	    	$("#progress-indicator-bar").width("33.33%");
 
-	    	$("#transcribe-progress-section").addClass("success-shadow");;
-	    	$("#tag-progress-section").addClass("success-shadow");;
-	    	$("#connect-progress-section").addClass("progress-shadow");;
+	    	$("#transcribe-progress-section").addClass("success-shadow");
+	    	$("#tag-progress-section").addClass("success-shadow");
+	    	$("#connect-progress-section").addClass("progress-shadow");
 
 	    	$("#transcribe-progress-section").prop('title', 'This document has been successfully transcribed!');
 	    	$("#tag-progress-section").prop('title', 'This document has been successfully tagged!');
@@ -78,6 +78,31 @@
 	    	$("#tag-progress-glyph-span").css("color", "#5CB85C");
 
 	    	$("#connect-progress-glyph-span").css("color", "#F0AD4E");
+	    }
+
+	    /*
+	     * Styles the bar such that everything is green and checked, adds a delay
+	     * so user can see the effect
+	     */
+	    function styleProgressIndicatorForCompletion() {
+	    	$("#success-indicator-bar").width("100%");
+	    	$("#progress-indicator-bar").width("0%");
+
+	    	$("#transcribe-progress-section").addClass("success-shadow");
+	    	$("#tag-progress-section").addClass("success-shadow");
+	    	$("#connect-progress-section").addClass("success-shadow");
+
+	    	$("#transcribe-progress-glyph-span").removeClass("glyphicon-unchecked");
+	    	$("#transcribe-progress-glyph-span").addClass("glyphicon-check");
+	    	$("#transcribe-progress-glyph-span").css("color", "#5CB85C");
+
+	    	$("#tag-progress-glyph-span").removeClass("glyphicon-unchecked");
+	    	$("#tag-progress-glyph-span").addClass("glyphicon-check");
+	    	$("#tag-progress-glyph-span").css("color", "#5CB85C");
+
+	    	$("#connect-progress-glyph-span").removeClass("glyphicon-unchecked");
+	    	$("#connect-progress-glyph-span").addClass("glyphicon-check");
+	    	$("#connect-progress-glyph-span").css("color", "#5CB85C");
 	    }
 	</script>
 </head>

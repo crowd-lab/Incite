@@ -152,7 +152,7 @@
     }
 
     function addExistingTags() {
-        $('#transcribe_copy span').each(function (idx) {
+        $('#transcribe_copy em').each(function (idx) {
             tagid_id_counter++;
             var new_entity = $('<tr id="'+this.id+'_table" data-tagid="'+(""+this.id).replace("tag_id_", "")+'"><td><span class="entity-name">'+$(this).text()+'</span></td><td><select class="category-select '+this.className+'"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
             new_entity.find('.subcategory-select').multiselect({
@@ -297,7 +297,7 @@
                 subcategory_menu.multiselect('rebuild');
             }
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
-            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase());
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase() + " tagged-text");
         });
 /*
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');

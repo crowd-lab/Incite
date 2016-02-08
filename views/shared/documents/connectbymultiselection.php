@@ -25,7 +25,7 @@
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed;" id="work-view">
                     <div class="document-header">
-                        <span class="document-title">
+                        <span class="document-title" title="<?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?>">
                             <b>Title:</b> <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?>
                         </span>
                         <span class="document-additional-info" 
@@ -78,7 +78,7 @@
                     <label>None</label>
                     <br>
                     <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
-                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                    <button type="submit" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
                 </form>
 
                 <hr size=2 class="discussion-seperation-line">
@@ -166,6 +166,11 @@
                     unset($_SESSION['incite']['message']);
                 }
             ?>
+
+            $("#submit-selection-btn").click(function() {
+                //from progress_indicator.php
+                styleProgressIndicatorForCompletion();
+            });
         });
     </script>
 
@@ -178,6 +183,9 @@
             font-size: 20px; 
             position: relative; 
             top: -5px;
+            display: inline-block;
+            overflow: hidden;
+            width: 75%;
         }
 
         .document-additional-info {

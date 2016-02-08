@@ -27,7 +27,7 @@
             <div class="col-md-6" id="work-zone">
                 <div style="position: fixed;" id="work-view">
                     <div class="document-header">
-                        <span class="document-title">
+                        <span class="document-title" title="<?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?>">
                             <b>Title:</b> <?php echo metadata($this->connection, array('Dublin Core', 'Title')); ?>
                         </span>
 
@@ -165,6 +165,11 @@
                     unset($_SESSION['incite']['message']);
                 }
             ?>
+
+            $(".true-false-button").click(function() {
+                //from progress_indicator.php
+                styleProgressIndicatorForCompletion();
+            });
         });
     </script>   
     <style>
@@ -176,6 +181,9 @@
             font-size: 20px; 
             position: relative; 
             top: -5px;
+            display: inline-block;
+            overflow: hidden;
+            width: 75%;
         }
 
         .document-additional-info {
