@@ -14,7 +14,7 @@
 	        } else if (pathname.indexOf("/connect/") > -1) {
 	        	styleForConnect();
 	        } else {
-	        	alert("Using progress indicator on incorrect page");
+	        	alert("Using progress indicator on incorrect page, please contact the developers");
 	        }
 	    });
 

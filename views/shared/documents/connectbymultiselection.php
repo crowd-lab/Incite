@@ -79,7 +79,7 @@
                     <label>None</label>
                     <br>
                     <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
-                    <button type="submit" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
+                    <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
                 </form>
 
                 <hr size=2 class="discussion-seperation-line">
@@ -164,15 +164,21 @@
 
             <?php
                 if (isset($_SESSION['incite']['message'])) {
-                    echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
-                    //echo "setTimeout(closeMsgBox, 3000);\n";
+                    echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
             ?>
 
             $("#submit-selection-btn").click(function() {
+                if ($('input[type="checkbox"]:checked').length === 0) {
+                    notifyOfErrorInForm("At least one category must be selected")
+                    return;
+                }
+
                 //from progress_indicator.php
                 styleProgressIndicatorForCompletion();
+
+                $("#subject-form").submit();
             });
         });
     </script>

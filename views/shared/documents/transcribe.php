@@ -285,8 +285,13 @@ include(dirname(__FILE__).'/../common/header.php');
             });
 <?php
     if (isset($_SESSION['incite']['message'])) {
-        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
-        //echo "setTimeout(closeMsgBox, 3000);\n";
+
+        if (strpos($_SESSION["incite"]["message"], 'Unfortunately') !== false) {
+            echo "notifyOfRedirect('" . $_SESSION["incite"]["message"] . "');";
+        } else {
+            echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
+        }
+
         unset($_SESSION['incite']['message']);
     }
 ?>

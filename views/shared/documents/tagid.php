@@ -316,7 +316,7 @@
 //*/
         $('#confirm-button').on('click', function (e) {
             if ($('.category-select option:selected[value=0]').length > 0) {
-                alert('Category cannot be "Unknown"');
+                notifyOfErrorInForm('Tag category cannot be set to "Unknown"');
                 return;
             }
             var entities = [];
@@ -446,19 +446,9 @@
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
 
-        function notifyUserOfSuccessfulTranscription(displayMessage) {
-            notif({
-                msg: displayMessage,
-                type: "success",
-                clickable: true,
-                autohide: false,
-                multiline: true
-            });
-        };
-
         <?php
             if (isset($_SESSION['incite']['message'])) {
-                echo "notifyUserOfSuccessfulTranscription('" . $_SESSION["incite"]["message"] . "');";
+                echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                 unset($_SESSION['incite']['message']);
             }
         ?>

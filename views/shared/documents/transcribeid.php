@@ -107,15 +107,15 @@
 
             $('#submit_transcription').on('click', function(e) {
                 if ($('#transcription').val() === "") {
-                    alert('Transcription can not be empty');
+                    notifyOfErrorInForm('Please provide a transcription of the document');
                     return;
                 }
                 if ($('#summary').val() === "") {
-                    alert('Summary can not be empty');
+                    notifyOfErrorInForm('Please provide a summary of the document');
                     return;
                 }
                 if ($('#tone').val() === "") {
-                    alert('Tone can not be empty');
+                    notifyOfErrorInForm('Please select the tone of the document');
                     return;
                 }
                 $('#transcribe-form').submit();
@@ -138,8 +138,7 @@
 
             <?php
                 if (isset($_SESSION['incite']['message'])) {
-                    echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
-                    //echo "setTimeout(closeMsgBox, 3000);\n";
+                    echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
             ?>

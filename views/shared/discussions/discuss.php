@@ -70,9 +70,10 @@ var tl = $('#timeline').jqtimeline({
         });
 
 <?php
-    if (count($this->Discussions) == 0)
-        echo "BootstrapDialog.alert({message:$('<div>Currently, there is no discussion. Be the first to create one!</div>')});\n";
-
+    if (count($this->Discussions) == 0) {
+        $displayMessage = 'No dicussions currently exist. Be the first to <a href="/m4j/incite/discussions/create">create one!</a>';
+        echo "notifyOfRedirect('" . $displayMessage . "');";
+    }
 ?>
 
 });

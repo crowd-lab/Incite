@@ -120,7 +120,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
             } else {
                 //to such document so redirect to documents that need to be transcribed
-                $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please find a document from the transcribable document list.';
+                $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select another document to transcribe from the list below.';
 
                 if (isset($this->view->query_str) && $this->view->query_str !== "")
                     $this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
@@ -144,10 +144,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             if (count($document_ids) <= 0 ) {
                 if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed based on your search criteria. Please change your search criteria.';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed based on your search criteria. Change your search criteria and try again.';
                     //$this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
                 } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed now. Please come back later! Or you can try to find a document to <a href="/m4j/incite/documents/tag">Tag</a> or <a href="/m4j/incite/documents/connect">Connect</a>!';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are currently no documents that can be transcribed. Please come back later or try to find a document to <a href="/m4j/incite/documents/tag">tag</a> or <a href="/m4j/incite/documents/connect">connect</a>!';
                 }
             }
 
@@ -189,10 +189,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['Incite']['previous_task'] = 'tag';
 
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
-                    $_SESSION['incite']['message'] = 'Congratulations! You just completed tagging a document!\nNow you can start connecting the document to some subjects! Or if you want to find another document to tag, please click <a href="/m4j/incite/documents/tag?'.$_POST['query_str'].'">here</a>.';
+                    $_SESSION['incite']['message'] = 'Tagging successful! Connect this document now, or find another document to tag by clicking <a href="/m4j/incite/documents/tag?'.$_POST['query_str'].'">here</a>.';
                     $this->redirect('/incite/documents/connect/'.$this->_getParam('id').'?'.$_POST['query_str']);
                 } else {
-                    $_SESSION['incite']['message'] = 'Congratulations! You just completed tagging a document!\nNow you can start connecting the document to some subjects! Or if you want to find another document to tag, please click <a href="/m4j/incite/documents/tag">here</a>.';
+                    $_SESSION['incite']['message'] = 'Tagging successful! Connect this document now, or find another document to tag by clicking <a href="/m4j/incite/documents/tag">here</a>.';
                     $this->redirect('/incite/documents/connect/'.$this->_getParam('id'));
                 }
             }
@@ -318,7 +318,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->tag_id_counter = $tag_id_counter;
             } else {
                 //no such document
-                $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please find a document from the taggable document list.';
+                $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select a new document from the taggable document list below.';
 
                 if (isset($this->view->query_str) && $this->view->query_str !== "")
                     $this->redirect('/incite/documents/tag?'.$this->view->query_str);
@@ -342,9 +342,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             if (count($document_ids) <= 0) {
                 if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged based on your search criteria right now. Please change your search criteria.';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged based on your search criteria right now. Change your search criteria and try again.';
                 } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged right now. Please come back later. Or you can try to find a document to <a href="/m4j/incite/documents/transcribe?">Transcribe</a> or <a href="/m4j/incite/documents/connect">Connect</a>!';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged right now. Please come back later or find a document to <a href="/m4j/incite/documents/transcribe?">transcribe</a> or <a href="/m4j/incite/documents/connect">connect</a>!';
                 }
             }
 
@@ -413,10 +413,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //Since we only need one copy now and connect is the final task, we redirect the same user to next document to start a new transcription
                 //$this->redirect('incite/documents/transcribe');
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
-                    $_SESSION['incite']['message'] = 'Congratulations! You just completed connecting a document! Now you can find a new document to work on from scratch by transcribing! Or if you want to find another document to connect, please click <a href="/m4j/incite/documents/connect?'.$_POST['query_str'].'">here</a>.';
+                    $_SESSION['incite']['message'] = 'Connecting successful! You can now select a document to transcribe from the list below or find a document to <a href="/m4j/incite/documents/tag?'.$_POST['query_str'].'">tag</a> or <a href="/m4j/incite/documents/connect?'.$_POST['query_str'].'">connect</a>.';
                     $this->redirect('/incite/documents/transcribe?'.$_POST['query_str']);
                 } else {
-                    $_SESSION['incite']['message'] = 'Congratulations! You just completed connecting a document! Now you can find a new document to work on from scratch by transcribing! Or if you want to find another document to connect, please click <a href="/m4j/incite/documents/connect">here</a>.';
+                    $_SESSION['incite']['message'] = 'Connecting successful! You can now select a document to transcribe from the list below or find a document to <a href="/m4j/incite/documents/tag">tag</a> or <a href="/m4j/incite/documents/connect">connect</a>.';
                     $this->redirect('/incite/documents/transcribe');
                 }
             }
@@ -557,7 +557,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
             } else {
                 //no such document
-                $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please find a document from the connectable document list.';
+                $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select another document from the connectable document list below.';
 
                 if (isset($this->view->query_str) && $this->view->query_str !== "")
                     $this->redirect('/incite/documents/connect?'.$this->view->query_str);
@@ -583,9 +583,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //Try tagged documents
                 $connectable_documents = getDocumentsWithTags();
                 if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Please change your search criteria.';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Change your search criteria and try again.';
                 } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected now. Please come back later! Or you can try to find a document to <a href="/m4j/incite/documents/transcribe">Transcribe</a> or <a href="/m4j/incite/documents/tag">Tag</a>!';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="/m4j/incite/documents/transcribe">transcribe</a> or <a href="/m4j/incite/documents/tag">tag</a>!';
                 }
 
                 if (isSearchQuerySpecifiedViaGet()) {
