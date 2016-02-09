@@ -280,9 +280,15 @@ include(dirname(__FILE__).'/../common/header.php');
                 //Add tab
                 $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
                 //Add content
-                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'"><ul class="nav nav-tabs" role="tablist"><li class="active"><a href="#document-'+this.dataset.id+'" role="tab" data-toggle="tab">Document</a></li><li><a href="#transcription-'+this.dataset.id+'" role="tab" data-toggle="tab">Transcription</a></li></ul><div class="tab-content"><div class="tab-pane fade active in viewer" id="document-'+this.dataset.id+'"></div><div class="tab-pane fade" id="transcription-'+this.dataset.id+'">'+this.dataset.transcription+'</div></div>');
+                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'"><ul class="nav nav-tabs" role="tablist"><li class="active"><a class="doc-tab" href="#document-'+this.dataset.id+'" role="tab" data-toggle="tab">Document</a></li><li><a class="transcription-tab" href="#transcription-'+this.dataset.id+'" role="tab" data-toggle="tab">Transcription</a></li></ul><div class="tab-content"><div class="tab-pane fade active in viewer" id="document-'+this.dataset.id+'"></div><div class="tab-pane fade" id="transcription-'+this.dataset.id+'">'+this.dataset.transcription+'</div></div>');
                 $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-tabs').height()-35); //-35 for buffer
-                $('.viewer').height($('.reference-view').height()-$('#document-tabs').height()-5);//-5 for buffer
+                //if there is transcription, show transcription first.
+                if (this.dataset.transcription !== "no transcription available")
+                    $('#doc-'+this.dataset.id+' a.transcription-tab').click();
+
+                //$('.reference-view ul.nav-tabs').height() sometimes doesn't render in time
+                var tab_height = $('.reference-view ul.nav-tabs').height() > 40 ? $('.reference-view ul.nav-tabs').height() : 41;
+                $('.viewer').height($('.reference-view').height()-tab_height-5);//-5 for buffer
                 $('.viewer').width($('.reference-view').width()-2); //-2 for border
                 $("#document-"+this.dataset.id).iviewer({
                     src: this.dataset.uri,
