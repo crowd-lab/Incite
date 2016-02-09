@@ -8,6 +8,7 @@
 
     <script type="text/javascript">
     var msgbox;
+    var comment_type = 0;
         $(function ()
         {
             getNewComments(<?php echo $this->transcription->id; ?>);
@@ -67,7 +68,7 @@
             <hr size=2 class="discussion-seperation-line">
 
             <div id="container">
-                <h3> Discussion </h3>
+                <h3> Comment </h3>
                 <div id="onLogin">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
 
@@ -81,6 +82,8 @@
 
                     <?php endif; ?>
                 </div>
+                <br>
+                <br>
                 <ul id="comments" class="comments-list">
                 </ul>
             </div>

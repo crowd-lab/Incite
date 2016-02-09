@@ -234,6 +234,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             for ($i = sizeof($questionIDs) - 1; $i >= 0; $i--)
             {
                 $text[$counter]['question_text'] = getQuestionText($questionIDs[$i]);
+                $text[$counter]['question_type'] = getQuestionType($questionIDs[$i]);
                 $text[$counter]['question_id'] = $questionIDs[$i];
                 $text[$counter]['question_timestamp'] = getQuestionTimestamp($questionIDs[$i]);
                 $text[$counter]['user_info'] = getUserDataID(getQuestionUser($questionIDs[$i]));

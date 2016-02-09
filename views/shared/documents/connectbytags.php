@@ -10,6 +10,7 @@
     <!-- Page Content -->
     <script type="text/javascript">
         var msgbox;
+        var comment_type = 2;
 
         $(function ()
         {
@@ -95,7 +96,7 @@
                 <hr size=2 class="discussion-seperation-line">
 
                 <div id="container">
-                    <h3> Discussion </h3>
+                    <h3> Comment </h3>
                     <div id="onLogin">
                         <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
                             <textarea name="comment_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
@@ -104,6 +105,8 @@
                             Please login or signup to join the discussion!
                         <?php endif; ?>
                     </div>
+                    <br>
+                    <br>
                     <ul id="comments" class="comments-list">
                     </ul>
                 </div>

@@ -168,7 +168,7 @@ function pullQuestionsForDocumentOnly($document_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT question_id FROM omeka_incite_documents_questions_conjunction INNER JOIN omeka_incite_questions ON omeka_incite_questions.id = omeka_incite_documents_questions_conjunction.question_id WHERE question_type = 0 AND document_id = ? ORDER BY timestamp");
+    $stmt = $db->prepare("SELECT question_id FROM omeka_incite_documents_questions_conjunction INNER JOIN omeka_incite_questions ON omeka_incite_questions.id = omeka_incite_documents_questions_conjunction.question_id WHERE (question_type = 0 OR question_type = 1 OR question_type = 2) AND document_id = ? ORDER BY timestamp");
     $stmt->bind_param("i", $document_id);
     $stmt->bind_result($question_id);
     $stmt->execute();
@@ -191,6 +191,18 @@ function getQuestionText($question_id)
     $stmt->close();
     $db->close();
     return $text;
+}
+function getQuestionType($question_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT question_type FROM omeka_incite_questions WHERE id = ?");
+    $stmt->bind_param("i", $question_id);
+    $stmt->bind_result($type);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $type;
 }
 function getQuestionUser($question_id)
 {

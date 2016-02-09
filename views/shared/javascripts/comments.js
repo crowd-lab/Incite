@@ -32,6 +32,17 @@ function getNewComments(docId)
         }
     });
 }
+function commentTypeToTypeName(type)
+{
+    if (type == 0)
+        return "Transcribe";
+    else if (type == 1)
+        return "Tag";
+    else if (type == 2)
+        return "Connect";
+    else
+        return "Unknown";
+}
 function appendNewComment(dataArray)
 {
     var parsedData = JSON.parse(dataArray);
@@ -43,13 +54,14 @@ function appendNewComment(dataArray)
     var commentsArrayReplies = commentsArray[i]['question_replies'];
     var commentsArrayRepliesTimestamp = commentsArray[i]['question_replies_timestamp'];
     var commentsArrayRepliesUserData = commentsArray[i]['question_replies_user_data'];
+    var commentType = commentsArray[i]['question_type'];
     if (boolean)
     {
         var dynamicLi = document.createElement('li');
         dynamicLi.className = "cmmnt";
         var dynamicDiv = document.createElement('div');
         dynamicDiv.className = "cmmnt-content";
-        dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+        dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> on <span class="comment-type" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+' task</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
 
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
@@ -100,7 +112,7 @@ function compareDates(databaseDate)
 {
     var currentDate = new Date();
     var differenceDate = Math.ceil((currentDate.getTime() - databaseDate.getTime()) / 1000);
-    var format = "posted ";
+    var format = "commented ";
     if (differenceDate < 60)
     {
         format += differenceDate + " second ago";
@@ -184,7 +196,7 @@ function submitComment(documentId)
     var request = $.ajax({
         type: "POST",
         url: "/m4j/incite/ajax/postcomment",
-        data: {documentId: documentId, commentText: commentText, type: 0},
+        data: {documentId: documentId, commentText: commentText, type: comment_type},
         success: function ()
         {
             $("#comments").empty();
