@@ -4,50 +4,6 @@
 <head>
     <script type="text/javascript">
         var selectedReferences = null;
-        function searchForDocuments()
-        {
-            var currentSearch = document.getElementById('searchDocuments').value;
-            if (currentSearch !== "")
-            {
-                var request = $.ajax({
-                    type: "POST",
-                    url: "http://localhost/m4j/incite/ajax/searchkeyword",
-                    data: {keyword: currentSearch},
-                    success: function(data)
-                    {
-                        $("#document_icons").empty();
-                        var parsedData = JSON.parse(data);
-                        for (var i = 0; i < parsedData.length; i += 3)
-                        {
-                            var optionTag = document.createElement('option');
-                            optionTag.setAttribute("data-img-src", parsedData[i]);
-                            optionTag.className = "thumbnail";
-                            optionTag.value = parsedData[i + 1];
-                            $("#document_icons").append(optionTag);
-                        }                        
-                        $("#document_icons").imagepicker();
-                        var count = 0;
-                        $("img").each(function()
-                        {
-                            $(this).css('width', '40px');
-                            $(this).css('height', '40px');
-                            $(this).attr("data-toggle","popover");
-                            $(this).attr("data-trigger", "hover");
-                            $(this).attr("data-content", "" + parsedData[count + 2]);
-                            $(this).attr("document-id", "" + parsedData[count + 1])
-                            $(this).popover();
-                            count += 3;
-                            
-                        });
-                    }
-                });
-            }
-            else
-            {
-                $("#document_icons").empty();
-                //clear selector
-            }
-        }
         function searchForDocuments2()
         {
             var currentSearch = document.getElementById('search_query').value;
@@ -134,6 +90,12 @@
             padding: 5px 0;
             float: right;
         }
+        .viewer
+        {
+            width: 100%;
+            border: 1px solid black;
+            position: relative;
+        }
     </style>
 
     <?php
@@ -217,7 +179,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <h4>References: </h4>
                         <div id="references" style="white-space: nowrap;">
 <?php foreach ((array) $this->references as $reference): ?>
-                            <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>">
+                            <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>">
                                 <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
                             </div>
 <? endforeach; ?>
@@ -246,6 +208,9 @@ include(dirname(__FILE__).'/../common/header.php');
     </div>
 <script type="text/javascript">
 
+    $('#work-zone').ready(function() {
+        $('#work-view').width($('#work-zone').width());
+    });
     $(document).ready(function () {
         $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-view ul.nav-tabs').height()-35); //-35 for buffer
         $('#discussion_title').on('keyup keypress', function(e) {
@@ -315,8 +280,15 @@ include(dirname(__FILE__).'/../common/header.php');
                 //Add tab
                 $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
                 //Add content
-                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">'+this.dataset.transcription+'</div>');
-                $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-view ul.nav-tabs').height()-35); //-35 for buffer
+                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'"><ul class="nav nav-tabs" role="tablist"><li class="active"><a href="#document-'+this.dataset.id+'" role="tab" data-toggle="tab">Document</a></li><li><a href="#transcription-'+this.dataset.id+'" role="tab" data-toggle="tab">Transcription</a></li></ul><div class="tab-content"><div class="tab-pane fade active in viewer" id="document-'+this.dataset.id+'"></div><div class="tab-pane fade" id="transcription-'+this.dataset.id+'">'+this.dataset.transcription+'</div></div>');
+                $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-tabs').height()-35); //-35 for buffer
+                $('.viewer').height($('.reference-view').height()-$('#document-tabs').height()-5);//-5 for buffer
+                $('.viewer').width($('.reference-view').width()-2); //-2 for border
+                $("#document-"+this.dataset.id).iviewer({
+                    src: this.dataset.uri,
+                    zoom_min: 1,
+                    zoom: "fit"
+                });
             }
             $('ul a[href=#doc-'+this.dataset.id+']').click();
         });

@@ -4,50 +4,6 @@
 <head>
     <script type="text/javascript">
         var selectedReferences = null;
-        function searchForDocuments()
-        {
-            var currentSearch = document.getElementById('searchDocuments').value;
-            if (currentSearch !== "")
-            {
-                var request = $.ajax({
-                    type: "POST",
-                    url: "http://localhost/m4j/incite/ajax/searchkeyword",
-                    data: {keyword: currentSearch},
-                    success: function(data)
-                    {
-                        $("#document_icons").empty();
-                        var parsedData = JSON.parse(data);
-                        for (var i = 0; i < parsedData.length; i += 3)
-                        {
-                            var optionTag = document.createElement('option');
-                            optionTag.setAttribute("data-img-src", parsedData[i]);
-                            optionTag.className = "thumbnail";
-                            optionTag.value = parsedData[i + 1];
-                            $("#document_icons").append(optionTag);
-                        }                        
-                        $("#document_icons").imagepicker();
-                        var count = 0;
-                        $("img").each(function()
-                        {
-                            $(this).css('width', '40px');
-                            $(this).css('height', '40px');
-                            $(this).attr("data-toggle","popover");
-                            $(this).attr("data-trigger", "hover");
-                            $(this).attr("data-content", "" + parsedData[count + 2]);
-                            $(this).attr("document-id", "" + parsedData[count + 1])
-                            $(this).popover();
-                            count += 3;
-                            
-                        });
-                    }
-                });
-            }
-            else
-            {
-                $("#document_icons").empty();
-                //clear selector
-            }
-        }
         function searchForDocuments2()
         {
             var currentSearch = document.getElementById('search_query').value;
@@ -204,6 +160,10 @@ include(dirname(__FILE__).'/../common/header.php');
             $('#discussion_form').submit();
         });
         $('#search_button').on('click', function() {
+            if ($('#search_query').val() === "" ) {
+                alert('Please enter some keywords in order to start the search.');
+                return;
+            }
             searchForDocuments2();
         });
         $('#search_query').on('keypress', function (e) {

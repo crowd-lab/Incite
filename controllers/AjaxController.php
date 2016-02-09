@@ -266,26 +266,24 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         echo json_encode($array);
     }
     
-    public function searchkeywordAction()
+    public function searchkeyword2Action()
     {
         //$documentID is item id
         $urlData = array();
         $x = getAllDocumentsContainKeyword($_POST['keyword']);
         $documentID = array_values(array_unique($x));
-        for ($i = 0; $i < sizeof($documentID); $i++)
+        for ($i = 0; $i < count($documentID); $i++)
         {
             $record = get_record_by_id('item', $documentID[$i]);
             $file = $record->getFile();
             if ($file != null)
             {
-                 $urlData[] = $file->getProperty('uri');
-                 $urlData[] = $documentID[$i];
-                 $urlData[] = metadata($record, array('Dublin Core', 'Description'));
+                $urlData[] = array('uri' => $file->getProperty('uri'), 'id' => $documentID[$i], 'description' => metadata($record, array('Dublin Core', 'Description')), 'title' => metadata($record, array('Dublin Core', 'Title')));
             }
         }
         echo json_encode($urlData);
     }
-    public function searchkeyword2Action()
+    public function searchkeyword22Action()
     {
         //$documentID is item id
         $urlData = array();
