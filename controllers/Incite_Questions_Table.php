@@ -81,13 +81,14 @@ function getAllDiscussionsWithNumOfReplies()
     $newdb = DB_Connect::connectDB();
     while ($stmt->fetch())
     {
+        $user_data = getUserDataID($user_id);
         $newstmt = $newdb->prepare("SELECT COUNT(*) FROM omeka_incite_replies WHERE is_active = 1 AND question_id = ?");
         $newstmt->bind_param("i", $id);
         $newstmt->bind_result($num_of_replies);
         $newstmt->execute();
         $newstmt->fetch();
         $newstmt->close();
-        $discussions[$id] = array('id' => $id, 'user_id' => $user_id, 'title' => $content, 'time' => $time, 'num_of_replies' => $num_of_replies);
+        $discussions[$id] = array('id' => $id, 'user_id' => $user_id, 'user_first_name' => $user_data[0], 'title' => $content, 'time' => $time, 'num_of_replies' => $num_of_replies);
     }
     $stmt->close();
     $db->close();

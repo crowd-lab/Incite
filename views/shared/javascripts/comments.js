@@ -69,7 +69,7 @@ function appendNewComment(dataArray)
             for (var j = 0; j < commentsArrayReplies.length; j++)
             {
                 var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
-                string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
+                string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">commented ' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
                 if (j != commentsArrayReplies.length - 1)
                 {
                     string += "<li><header><a href='javascript:void(0);' class='userlink'>";
@@ -95,7 +95,7 @@ function appendNewComment(dataArray)
             for (var j = 0; j < commentsArrayReplies.length; j++)
             {
                 var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
-                string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
+                string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">commented ' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
                 if (j != commentsArrayReplies.length - 1)
                 {
                     string += "<li><header><a href='javascript:void(0);' class='userlink'>";
@@ -112,7 +112,7 @@ function compareDates(databaseDate)
 {
     var currentDate = new Date();
     var differenceDate = Math.ceil((currentDate.getTime() - databaseDate.getTime()) / 1000);
-    var format = "commented ";
+    var format = "";
     if (differenceDate < 60)
     {
         format += differenceDate + " second ago";
