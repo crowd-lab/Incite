@@ -1,4 +1,3 @@
-
 var documentId = null;
 
 function getNewComments(docId)

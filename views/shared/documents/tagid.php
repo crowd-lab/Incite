@@ -445,14 +445,23 @@
         $('#transcribe_copy').on('mouseleave', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
-<?php
-    if (isset($_SESSION['incite']['message'])) {
-        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
-        //echo "setTimeout(closeMsgBox, 3000);\n";
-        unset($_SESSION['incite']['message']);
-    }
 
-?>
+        function notifyUserOfSuccessfulTranscription(displayMessage) {
+            notif({
+                msg: displayMessage,
+                type: "success",
+                clickable: true,
+                autohide: false,
+                multiline: true
+            });
+        };
+
+        <?php
+            if (isset($_SESSION['incite']['message'])) {
+                echo "notifyUserOfSuccessfulTranscription('" . $_SESSION["incite"]["message"] . "');";
+                unset($_SESSION['incite']['message']);
+            }
+        ?>
     });
 </script>
 
