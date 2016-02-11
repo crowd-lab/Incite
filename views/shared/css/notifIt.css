@@ -1,4 +1,5 @@
 #ui_notifIt{
+    margin-top: 45px;
     position: fixed;
     top: 10px;
     right: 10px;
@@ -24,6 +25,11 @@
     padding: 0;
     margin: 0;
 }
+
+#ui_notifIt a{
+    font-weight: bold;
+}
+
 #notifIt_close{
 	position: absolute;
 	color: #FFF;
@@ -38,11 +44,11 @@
 /* Color setup */
 /* You are free to change all of this */
 #ui_notifIt.success{
-    background-color: yellowgreen;
+    background-color: #5CB85C;
     color: white;
 }
 #ui_notifIt.error{
-    background-color: orangered;
+    background-color: #D9534F;
     color: white;
 }
 #ui_notifIt.warning{
@@ -50,7 +56,7 @@
     color: white;
 }
 #ui_notifIt.info{
-    background-color: deepskyblue;
+    background-color:  #5BC0DE;
     color: white;
 }
 #ui_notifIt.default{

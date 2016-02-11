@@ -1,5 +1,5 @@
 <?php
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min'));
+queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles'));
 $db = get_db();
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
@@ -28,6 +28,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
     <?php echo js_tag('notifIt'); ?>
     <?php echo js_tag('image-picker.min'); ?>
     <?php echo js_tag('comments'); ?>
+    <?php echo js_tag('notifications'); ?>
     <?php echo js_tag('bootstrap-dialog.min'); ?>
     <?php echo head_css(); ?>
 
@@ -82,19 +83,48 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
     <script type="text/javascript">
         $(document).ready(function ()
         {
-            $("#signup-tab").on('click', function ()
-            {
-                if (document.getElementById("errorMessage") !== null)
-                {
+            function deleteErrorMessageFromModal() {
+
+                if (document.getElementById("errorMessage") !== null) {
                     var x = document.getElementById("errorMessage");
                     var usernameDiv = document.getElementById("modal-footer");
                     usernameDiv.removeChild(x);
                 }
-            });
+            };
+
+            $("#signup-tab").on('click', deleteErrorMessageFromModal);
+            $("#login-tab").on('click', deleteErrorMessageFromModal);
+            $("#login_modal").on('click', deleteErrorMessageFromModal);
+
             $('#location').val("<?php echo (isset($_GET['location']) ? $_GET['location'] : ""); ?>");
             $('#keywords').val("<?php echo (isset($_GET['keywords']) ? $_GET['keywords'] : ""); ?>");
         });
         $(document).ready(function () {
+
+            function createAlertInLoginModal(displayMessage, isError) {
+                var loginDiv = document.getElementById("modal-footer");
+                if (document.getElementById("errorMessage") !== null)
+                {
+                    var x = document.getElementById("errorMessage");
+                    loginDiv.removeChild(x);
+                }
+                var usernameError = document.createElement('div');
+                var textNode = document.createTextNode(displayMessage);
+                usernameError.style.textAlign = "center";
+                usernameError.appendChild(textNode);
+
+                usernameError.id = "errorMessage";
+
+                if (isError) {
+                    usernameError.className = "alert alert-block alert-danger messages error";
+                } else {
+                    usernameError.className = "alert alert-block alert-success messages status";
+                }
+                
+                var submitButton = document.getElementById("login-button");
+                loginDiv.insertBefore(usernameError, submitButton);
+            };
+
             $('#login-button').on('click', function (e) {
                 if ($('#login-tab').hasClass('active')) {
                     if ($('#username').val() !== "" && $('#password').val() !== "") {
@@ -105,32 +135,14 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                             data: {"username": $('#username').val(), "password": $('#password').val()},
                             success: function (response) {
                                 data = response.trim();
+
                                 if (data == "true") {
-                                    //alert("successful login");
-                                    var loginDiv = document.getElementById("modal-footer");
-                                    if (document.getElementById("errorMessage") !== null)
-                                    {
-                                        var x = document.getElementById("errorMessage");
-                                        loginDiv.removeChild(x);
-                                    }
-                                    var usernameError = document.createElement('div');
-                                    var textNode = document.createTextNode("Login Successfully!");
-                                    usernameError.style.textAlign = "center";
-                                    usernameError.appendChild(textNode);
+                                    createAlertInLoginModal("Login successful!", false);
 
-                                    usernameError.id = "errorMessage";
-                                    usernameError.className = "alert alert-block alert-success messages status";
-                                    var submitButton = document.getElementById("login-button");
-                                    loginDiv.insertBefore(usernameError, submitButton);
-                                    
-                                    //$('#login_button').attr('visiblity', 'hidden');
-
-                                    setTimeout(function ()
-                                    {
-                                        
+                                    setTimeout(function () {
                                         $('#login-signup-dialog').modal('hide');
                                         loginDiv.removeChild(usernameError);
-                                    }, 2000);
+                                    }, 1000);
                                     
                                     var getDataArray = $.ajax({
                                         type: "POST",
@@ -160,26 +172,8 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                                             }
                                         }
                                     })
-
-
                                 } else {
-                                    //alert("wrong username or password");
-
-                                    var loginDiv = document.getElementById("modal-footer");
-                                    if (document.getElementById("errorMessage") !== null)
-                                    {
-                                        var x = document.getElementById("errorMessage");
-                                        loginDiv.removeChild(x);
-                                    }
-                                    var usernameError = document.createElement('div');
-                                    var textNode = document.createTextNode("Wrong Username or Password");
-                                    usernameError.style.textAlign = "center";
-                                    usernameError.appendChild(textNode);
-
-                                    usernameError.id = "errorMessage";
-                                    usernameError.className = "alert alert-block alert-danger messages error";
-                                    var submitButton = document.getElementById("login-button");
-                                    loginDiv.insertBefore(usernameError, submitButton);
+                                    createAlertInLoginModal("Wrong username or password", true);
                                 }
                             },
                             error: function (e) {
@@ -187,13 +181,13 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                             }
                         });
                     } else {
-                        alert('Username and Password are both required');
+                        createAlertInLoginModal("Username and Password are both required", true);
                     }
                 } else { //then #signup-tab is active
                     if ($('#newUsername').val() !== "" && $('#newPassword').val() !== "" && $('#confirmPassword').val() !== "" && $('#firstName').val !== "" && $('#lastName').val() !== "") {
                         //do signup
                         if ($('#newPassword').val() !== $('#confirmPassword').val()) {
-                            alert('Password and Confirm Passowrd do not match!');
+                            createAlertInLoginModal('"Password" and "Confirm Password" fields do not match', true);
                             return;
                         }
                         var request = $.ajax({
@@ -204,8 +198,13 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                                 data = response.trim();
                                 if (data == "true")
                                 {
-                                    alert("successful signup and login");
-                                    $('#login-signup-dialog').modal('hide');
+                                    createAlertInLoginModal("Successful signup and login!", false);
+
+                                    setTimeout(function () {
+                                        $('#login-signup-dialog').modal('hide');
+                                        loginDiv.removeChild(usernameError);
+                                    }, 1000);
+
                                     var getDataArray = $.ajax({
                                         type: "POST",
                                         url: "<?php echo INCITE_PATH.'ajax/getdata'; ?>",
@@ -245,9 +244,9 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                                     })
 
                                 } else if (data == "exists") {
-                                    alert("Username already exists!");
+                                    createAlertInLoginModal("Username already exists", true);
                                 } else {
-                                    alert("Unable to Sign Up!");
+                                    createAlertInLoginModal("Unable to sign up!", true);
                                 }
                             },
                             error: function (e) {
@@ -255,7 +254,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                             }
                         });
                     } else {
-                        alert('All fields are required');
+                        createAlertInLoginModal('All fields are required', true);
                     }
                 }
             });
@@ -267,7 +266,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
                 url: "<?php echo INCITE_PATH.'ajax/logout'; ?>",
                 success: function () 
                 {
-                    alert("Logout Successfully!");
+                    notifyOfSuccessfulActionWithTimeout("You've logged out!");
                     
                     $('#user_profile').text('Welcome Guest');
                     $('#user_profile').attr('href', '');

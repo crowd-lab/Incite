@@ -222,11 +222,11 @@ include(dirname(__FILE__).'/../common/header.php');
         });
         $(document).on('click', '#submit_discussion', function(e) {
             if ($('#discussion_title').val() === "") {
-                alert('The title of the discussion cannot be empty');
+                notifyOfErrorInForm('The title of the discussion cannot be empty');
                 return;
             }
             if ($('#discussion_content').val() === "") {
-                alert('The content of the discussion cannot be empty');
+                notifyOfErrorInForm('The content of the discussion cannot be empty');
                 return;
             }
 

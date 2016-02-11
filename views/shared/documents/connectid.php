@@ -5,7 +5,6 @@
     include(dirname(__FILE__).'/../common/progress_indicator.php');
 ?>
 
-
     <!-- Page Content -->
     <script type="text/javascript">
         $(function ()

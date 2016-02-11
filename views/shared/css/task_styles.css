@@ -1,0 +1,36 @@
+.location {
+    background-color: #FFFFBA;
+}
+
+.organization {
+    background-color: #BAE1FF;
+}
+
+.person {
+    background-color: #FFD3B6;
+}
+
+.event {
+    background-color: #A8E6CF;
+}
+
+.unknown {
+    background-color: #FF8B94;
+}
+
+.tagged-text {
+    border-radius: 6px;
+    padding: 2px;
+    cursor: pointer;
+    font-size: 15px;
+    box-sizing: border-box;
+    box-shadow: 2px 2px 2px #888;
+}
+
+.step {
+    margin-top: 10px;
+}
+
+.header-step {
+    margin-top: -32px;
+}
