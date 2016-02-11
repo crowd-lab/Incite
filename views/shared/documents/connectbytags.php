@@ -6,7 +6,6 @@
         include(dirname(__FILE__).'/../common/progress_indicator.php');
     ?>
 
-
     <!-- Page Content -->
     <script type="text/javascript">
         var msgbox;
@@ -15,9 +14,9 @@
 </head>
 
 <body>
-    <div id="task_description">
-        <h1 class="task-header">Connect</h1>
-    </div>
+    <?php
+        include(dirname(__FILE__) . '/../common/task_header.php');
+    ?>
     <div class="container-fluid">
         <div class="container-fluid" styl="padding-left: 0px; padding-right: 0px;">
             <div class="col-md-6" id="work-zone">
@@ -78,58 +77,8 @@
         });
     </script>   
     <style>
-        .task-header {
-            text-align: center; 
-            margin-bottom: 40px; 
-            margin-top: 0px;
-        }
-
-        #task_description {
-            text-align: center;
-        }
-
-        .step {
-            margin-top: 10px;
-        }
-
-        .header-step {
-            margin-top: -32px;
-        }
-
-        .wrapper {
-            overflow: hidden;
-        }
-
-        .location {
-            background-color: #FFFFBA;
-        }
-
-        .organization {
-            background-color: #BAE1FF;
-        }
-
-        .person {
-            background-color: #FFD3B6;
-        }
-
-        .event {
-            background-color: #A8E6CF;
-        }
-
-        .unknown {
-            background-color: #FF8B94;
-        }
-
         .discussion-seperation-line {
             margin-top: 70px;
-        }
-
-        .tagged-text {
-            border-radius: 6px;
-            padding: 2px;
-            font-size: 15px;
-            box-sizing: border-box;
-            box-shadow: 2px 2px 2px #888;
         }
 
         .true-false-button {

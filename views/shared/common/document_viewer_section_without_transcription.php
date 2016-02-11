@@ -1,7 +1,3 @@
-<?php
-	queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
-?>
-
 <head>
 	<script type="text/javascript">
         $('#work-zone').ready(function () {

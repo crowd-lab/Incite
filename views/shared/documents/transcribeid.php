@@ -12,9 +12,9 @@
     </script>
 
     <!-- Page Content -->
-    <div id="task_description">
-        <h1 class="task-header">Transcribe</h1>
-    </div>
+    <?php
+        include(dirname(__FILE__) . '/../common/task_header.php');
+    ?>
     <div class="container-fluid">
         <?php
             include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
@@ -22,7 +22,7 @@
 
         <div class="col-md-6" id="submit-zone">
             <form method="post" id="transcribe-form">
-                <p class="header-step"><i>Step 1 of 3: Transcribe</i></p>
+                <p class="header-step" style="margin-bottom: 13px;"><i>Step 1 of 3: Transcribe</i></p>
                 <textarea id="transcription" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
                 <p class="step"><i>Step 2 of 3: Summarize</i></p>
                 <textarea id="summary" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
@@ -51,7 +51,7 @@
     </div>
     <!-- /.container -->
     <script type="text/javascript">
-        $(function () {
+        $(document).ready(function () {
             $('#submit_transcription').on('click', function(e) {
                 if ($('#transcription').val() === "") {
                     notifyOfErrorInForm('Please provide a transcription of the document');
@@ -67,9 +67,7 @@
                 }
                 $('#transcribe-form').submit();
             });
-        });
 
-        $(document).ready(function () {
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -80,27 +78,8 @@
     </script>
 
     <style>
-        .task-header {
-            text-align: center; 
-            margin-bottom: 40px; 
-            margin-top: 0px;
-        }
-
-        .step {
-            margin-top: 10px;
-        }
-
-        .header-step {
-            margin-top: -32px;
-            margin-bottom: 13px;
-        }
-
         #submit_transcription {
             float: right;
-        }
-
-        #task_description {
-            text-align: center;
         }
 
         #transcription {

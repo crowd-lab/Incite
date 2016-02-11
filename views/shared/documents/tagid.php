@@ -16,9 +16,9 @@
     </head>
 
     <body> <!-- Page Content -->
-        <div id="task_description">
-            <h1 class="task-header">Tag</h1>
-        </div>
+        <?php
+            include(dirname(__FILE__) . '/../common/task_header.php');
+        ?>
 
         <div class="container-fluid">
             <div class="col-md-5" id="work-zone">
@@ -351,59 +351,12 @@
 </script>
 
 <style>
-    .task-header {
-        text-align: center; 
-        margin-bottom: 40px; 
-        margin-top: 0px;
-    }
-
-    #task_description {
-        text-align: center;
-    }
-
-    .step {
-        margin-top: 10px;
-    }
-
-    .header-step {
-        margin-top: -32px;
-    }
-
-    .location {
-        background-color: #FFFFBA;
-    }
-
-    .organization {
-        background-color: #BAE1FF;
-    }
-
-    .person {
-        background-color: #FFD3B6;
-    }
-
-    .event {
-        background-color: #A8E6CF;
-    }
-
-    .unknown {
-        background-color: #FF8B94;
-    }
-
     .discussion-seperation-line {
         margin-top: 100px;
     }
 
     #tagging-container {
         padding-right: 0px;
-    }
-
-    .tagged-text {
-        border-radius: 6px;
-        padding: 2px;
-        cursor: pointer;
-        font-size: 15px;
-        box-sizing: border-box;
-        box-shadow: 2px 2px 2px #888;
     }
 
     .comments-section-container {
