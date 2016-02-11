@@ -43,6 +43,12 @@
                             More about this document..
                         </span>
                     </div> 
+                        <div id="tag-legend">
+                            <span><b>Legend: </b></span>
+                            <?php foreach ((array)$this->category_colors as $category => $color): ?>
+                                <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
+                            <?php endforeach; ?>
+                        </div>
                     
                     <div id="tabs-and-legend-container">
                         <ul class="nav nav-tabs document-display-type-tabs">
@@ -50,12 +56,6 @@
                             <li role="presentation" id="show"><a href="#">Document</a></li>
                         </ul>
 
-                        <div id="tag-legend">
-                            <span><b>Legend: </b></span>
-                            <?php foreach ((array)$this->category_colors as $category => $color): ?>
-                                <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
-                            <?php endforeach; ?>
-                        </div>
                     </div>
 
                     <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;">
@@ -100,22 +100,7 @@
 
                     <hr size=2 class="discussion-seperation-line">
                 </div>
-
-                <div id="container" style="padding-left: 15px;">
-                    <h3> Comment </h3>
-
-                    <div id="onLogin">
-                    <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
-                                <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
-                                <button type="button" class="btn btn-default submit-comment-btn" onclick="submitComment(<?php echo $this->tag->id; ?>)">Post Comment</button>
-                    <?php else: ?>
-                        Please login or signup to join the discussion!
-                    <?php endif; ?>
-                    </div>
-                    <br>
-                    <br>
-                    <ul id="comments" class="comments-list"></ul>
-                </div>
+                <?php include(dirname(__FILE__) . '/../common/comment_fragment.php'); ?>
             </div> 
         </div>
     <!-- End work container -->
@@ -467,7 +452,6 @@
         top: -5px;
         overflow: hidden;
         display: inline-block;
-        width: 75%;
     }
 
     .document-additional-info {
@@ -476,10 +460,10 @@
     }
 
     #tag-legend {
-        display: inline-block; 
-        position: relative; 
-        top: 10px;
-        width: 70%;
+        display: block;
+        float: right
+        width: 100%;
+        margin-bottom: 5px;
         text-align: right;
     }
 
@@ -587,7 +571,7 @@
     .legend-item {
         border-radius: 6px;
         padding: 2px;
-        font-size: 13px;
+        font-size: 12px;
         box-sizing: border-box;
         box-shadow: 2px 2px 2px #888;
     }
@@ -600,7 +584,6 @@
     .document-display-type-tabs {
         display: inline-block; 
         vertical-align: top;
-        width: 29%;
     }
 </style>
 
