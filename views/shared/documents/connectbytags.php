@@ -163,8 +163,7 @@
 
             <?php
                 if (isset($_SESSION['incite']['message'])) {
-                    echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
-                    //echo "setTimeout(closeMsgBox, 3000);\n";
+                    echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
             ?>

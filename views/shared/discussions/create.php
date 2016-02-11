@@ -141,11 +141,11 @@ include(dirname(__FILE__).'/../common/header.php');
         });
         $('#submit_discussion').on('click', function(e) {
             if ($('#discussion_title').val() === "") {
-                alert('The title of the discussion cannot be empty');
+                notifyOfErrorInForm('The title of the discussion cannot be empty');
                 return;
             }
             if ($('#discussion_content').val() === "") {
-                alert('The content of the discussion cannot be empty');
+                notifyOfErrorInForm('The content of the discussion cannot be empty');
                 return;
             }
 
@@ -161,7 +161,7 @@ include(dirname(__FILE__).'/../common/header.php');
         });
         $('#search_button').on('click', function() {
             if ($('#search_query').val() === "" ) {
-                alert('Please enter some keywords in order to start the search.');
+                notifyOfErrorInForm('Please enter some keywords in order to start the search.');
                 return;
             }
             searchForDocuments2();

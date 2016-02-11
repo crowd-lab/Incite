@@ -316,7 +316,7 @@
 //*/
         $('#confirm-button').on('click', function (e) {
             if ($('.category-select option:selected[value=0]').length > 0) {
-                alert('Category cannot be "Unknown"');
+                notifyOfErrorInForm('Tag category cannot be set to "Unknown"');
                 return;
             }
             var entities = [];
@@ -445,14 +445,13 @@
         $('#transcribe_copy').on('mouseleave', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
-<?php
-    if (isset($_SESSION['incite']['message'])) {
-        echo "msgbox = BootstrapDialog.alert({message:$('<div>".$_SESSION['incite']['message']."</div>')});\n";
-        //echo "setTimeout(closeMsgBox, 3000);\n";
-        unset($_SESSION['incite']['message']);
-    }
 
-?>
+        <?php
+            if (isset($_SESSION['incite']['message'])) {
+                echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
+                unset($_SESSION['incite']['message']);
+            }
+        ?>
     });
 </script>
 
