@@ -10,11 +10,8 @@
         ?>
 
         <script type="text/javascript">
+            var msgbox;
             var comment_type = 1;
-            $(function ()
-            {
-                getNewComments(<?php echo $this->tag->id; ?>);
-            });
         </script>
     </head>
 
@@ -25,47 +22,9 @@
 
         <div class="container-fluid">
             <div class="col-md-5" id="work-zone">
-                <div style="position: fixed;" id="work-view">
-                    <div class="document-header">
-                        <span class="document-title" title="<?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?>">
-                            <b>Title:</b> <?php echo metadata($this->tag, array('Dublin Core', 'Title')); ?>
-                        </span>
-                        <span class="document-additional-info" 
-                            data-toggle="popover" data-html="true" data-trigger="hover" 
-                            data-title="Additional Information" 
-                            data-content="<?php echo "<strong>Date:</strong> " 
-                                    . metadata($tag, array('Dublin Core', 'Date')) 
-                                    . "<br><br> <strong>Location:</strong> " 
-                                    . metadata($this->tag, array('Item Type Metadata', 'Location')) 
-                                    . "<br><br> <strong>Description:</strong> " 
-                                    . metadata($this->tag, array('Dublin Core', 'Description')); ?>" 
-                            data-placement="bottom" data-id="<?php echo $tag->id; ?>">
-                            More about this document..
-                        </span>
-                    </div> 
-                    
-                    <div id="tabs-and-legend-container">
-                        <ul class="nav nav-tabs document-display-type-tabs">
-                            <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
-                            <li role="presentation" id="show"><a href="#">Document</a></li>
-                        </ul>
-
-                        <div id="tag-legend">
-                            <span><b>Legend: </b></span>
-                            <?php foreach ((array)$this->category_colors as $category => $color): ?>
-                                <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;">
-                        <?php print_r($this->transcription); ?>
-                    </div>
-
-                    <div class="wrapper">
-                        <div id="document_img" class="viewer"></div>
-                    </div>
-                </div>
+                <?php
+                    include(dirname(__FILE__) . '/../common/document_viewer_section_with_transcription.php');
+                ?>
             </div>
 
             <div class="col-md-7">
@@ -101,21 +60,9 @@
                     <hr size=2 class="discussion-seperation-line">
                 </div>
 
-                <div id="container" style="padding-left: 15px;">
-                    <h3> Comment </h3>
-
-                    <div id="onLogin">
-                    <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
-                                <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
-                                <button type="button" class="btn btn-default submit-comment-btn" onclick="submitComment(<?php echo $this->tag->id; ?>)">Post Comment</button>
-                    <?php else: ?>
-                        Please login or signup to join the discussion!
-                    <?php endif; ?>
-                    </div>
-                    <br>
-                    <br>
-                    <ul id="comments" class="comments-list"></ul>
-                </div>
+                <?php
+                    include(dirname(__FILE__) . '/../common/task_comments_section.php');
+                ?>
             </div> 
         </div>
     <!-- End work container -->
@@ -124,7 +71,6 @@
     //Global variable to store categories/counters
     var categories = <?php echo json_encode($category_object).";\n"; ?>
     var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
-    var msgbox;
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
     function addUserTag(text, span_id) {
@@ -219,54 +165,15 @@
         });
     }
 
-    var selectTab = function (tabToSelect, tabToUnselect) {
-        tabToSelect.addClass("active");
-        tabToUnselect.removeClass("active");
-    };
-
-    $(document).ready(function () {
-        $('[data-toggle="popover"]').popover({trigger: "hover"});
-        $("#document_img").hide();
-
-        $("#hide").click(function () {
-            $("#document_img").hide();
-            $("#transcribe_copy").show();
-            selectTab($("#hide"), $("#show"));
-        });
-        $("#show").click(function () {
-            $("#document_img").show();
-            $("#transcribe_copy").hide();
-            selectTab($("#show"), $("#hide"));
-        });
-
-        $(document).on('click', 'button', function (event)
-        {
-            if (event.target.name === "reply")
-            {
-                var NewContent = '<div class="reply-container"><form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" class="reply-box" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event<?php echo ', '.$this->tag->id; ?>)" class="btn btn-default submit-reply" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Post Reply</button></form>';
-                $("#" + event.target.id).after(NewContent);
-                $("#" + event.target.id).remove();
-            }
-        });
-    });
-
-    $('#work-zone').ready(function() {
-        $('#work-view').width($('#work-zone').width());
-    });
+    
 
     $(document).ready(function () {
         addExistingTags();
-        $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
-        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
-        $("#document_img").iviewer({
-            src: "<?php echo $this->tag->getFile()->getProperty('uri'); ?>",
-            zoom_min: 1,
-            zoom: "fit"
-        });
-
+        
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
         });
+
         $('#user-entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
@@ -280,14 +187,17 @@
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase() + " tagged-text");
         });
+
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).contents().unwrap();
             $(this).parent().parent().remove();
         });
+
         $('#entity-table').on('click', '.remove-entity-button', function (e) {
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).contents().unwrap();
             $(this).parent().parent().remove();
         });
+
         $('#entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
@@ -301,19 +211,7 @@
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase() + " tagged-text");
         });
-/*
-            var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
-            subcategory_menu.find('option').remove().end();
-            if ($(this).find('option:selected').text() !== "Unknown") {
-                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
-                });
-            } else {
-                subcategory_menu.multiselect('rebuild');
-            }
-            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
-            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase());
-//*/
+
         $('#confirm-button').on('click', function (e) {
             if ($('.category-select option:selected[value=0]').length > 0) {
                 notifyOfErrorInForm('Tag category cannot be set to "Unknown"');
@@ -356,6 +254,7 @@
             $('#entity-form').submit();
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
+
         $('.subcategory-select').each(function (idx) {
             $(this).multiselect({
                 enableFiltering: true,
@@ -366,15 +265,12 @@
                 numberDisplayed: 1
             });
         });
+
         $('.category-select').each(function (idx) {
             $(this).multiselect({
                 disableIfEmpty: true
             });
         });
-        //$('.SelectBox').SumoSelect();
-        //$('.SelectBox').SumoSelect({placeholder: 'This is a placeholder', csvDispCount: 3 });
-        $('#work-view').width($('#work-zone').width());
-
 
         //Bug fix - can't tag anything outside the transcription
         $('#transcribe_copy').on('mousedown', function (e) {
@@ -422,7 +318,6 @@
         $('#transcribe_copy').on('mouseenter', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
             var view_baseline = $('#work-view').position().top;
-            //var view_baseline = $('#task_description').position().top+$('#task_description').height();
             var vis_top = $('#work-view').offset().top;
             var vis_bottom = vis_top+$('#work-view').height();
             var tag_top = $("#"+this.id+'_table').offset().top;
@@ -500,20 +395,6 @@
         margin-top: -32px;
     }
 
-    .comment-textarea {
-        width: 100%; 
-        height: 80px; 
-        margin-bottom: 10px;
-    }
-
-    .submit-comment-btn {
-        float: right;
-    }
-
-    .comments-list {
-        list-style: none;
-        padding-left: 0;
-    }
     .viewer
     {
         width: 100%;
@@ -550,26 +431,6 @@
         margin-top: 100px;
     }
 
-    .comments-list {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    .submit-reply {
-        float: right;
-    }
-
-    .reply-box {
-        margin-bottom: 10px;
-        width: 100%;
-        height: 80px;
-    }
-
-    .reply-container {
-        width: 50%;
-        margin-bottom: 30px;
-    }
-
     #tagging-container {
         padding-right: 0px;
     }
@@ -600,6 +461,10 @@
         display: inline-block; 
         vertical-align: top;
         width: 29%;
+    }
+
+    .comments-section-container {
+        padding-left: 15px;
     }
 </style>
 

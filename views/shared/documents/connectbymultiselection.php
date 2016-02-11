@@ -11,9 +11,6 @@
     <!-- Page Content -->
     <script type="text/javascript">
         var comment_type = 2;
-        $(function () {   
-            getNewComments(<?php echo $this->connection->id; ?>);
-        });
     </script>
 </head>
 <body>
@@ -84,21 +81,9 @@
 
                 <hr size=2 class="discussion-seperation-line">
 
-                <div id="container">
-                    <h3> Comment </h3>
-                    <div id="onLogin">
-                        <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
-                            <textarea name="comment_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
-                            <button type="button" class="btn btn-default submit-comment-btn" onclick="submitComment(<?php echo $this->connection->id; ?>)">Post Comment</button>
-                        <?php else: ?>
-                            Please login or signup to join the discussion!
-                        <?php endif; ?>
-                    </div>
-                    <br>
-                    <br>
-                    <ul id="comments" class="comments-list">
-                    </ul>
-                </div>
+                <?php
+                    include(dirname(__FILE__) . '/../common/task_comments_section.php');
+                ?>
             </div> 
 
         </div>
@@ -142,16 +127,6 @@
                 $(".subject-checkbox").each(function(index, checkbox) {
                     $(this).prop('checked', false);
                 });
-            });
-
-            $(document).on('click', 'button', function (event)
-            {
-                if (event.target.name === "reply")
-                {
-                    var NewContent = '<div class="reply-container"><form id="reply-form" method="POST"><textarea name="transcribe_text" cols="60" rows="10" class="reply-box" id="replyBox' + event.target.id.substring(5) + '" placeholder="Your Reply"></textarea><button type="button" onclick="submitReply(event<?php echo ', '.$this->connection->id; ?>)" class="btn btn-default submit-reply" id="submit' + event.target.id.substring(5) + '" value="' + event.target.value + '">Post Reply</button></form>';
-                    $("#" + event.target.id).after(NewContent);
-                    $("#" + event.target.id).remove();
-                }
             });
 
             $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
@@ -220,21 +195,6 @@
             margin-top: -32px;
         }
 
-        .comment-textarea {
-            width: 100%; 
-            height: 80px; 
-            margin-bottom: 10px;
-        }
-
-        .submit-comment-btn {
-            float: right;
-        }
-
-        .comments-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
         .viewer {
             width: 100%;
             border: 1px solid black;
@@ -294,21 +254,6 @@
             display: inline-block; 
             vertical-align: top;
             width: 29%;
-        }
-
-        .submit-reply {
-            float: right;
-        }
-
-        .reply-box {
-            margin-bottom: 10px;
-            width: 100%;
-            height: 80px;
-        }
-
-        .reply-container {
-            width: 50%;
-            margin-bottom: 30px;
         }
 
         .tagged-text {
