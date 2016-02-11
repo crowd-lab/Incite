@@ -36,7 +36,7 @@
                                         <br>
                     <?php endforeach; ?>
                     <input type="checkbox" class="none-checkbox" name="no_subjects" value="-1">  
-                    <label>None</label>
+                    <label>None of the above topics applied</label>
                     <br>
                     <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
                     <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
