@@ -34,11 +34,11 @@ function getNewComments(docId)
 function commentTypeToTypeName(type)
 {
     if (type == 0)
-        return "Transcribe";
+        return "Transcribing";
     else if (type == 1)
-        return "Tag";
+        return "Tagging";
     else if (type == 2)
-        return "Connect";
+        return "Connecting";
     else
         return "Unknown";
 }
@@ -60,7 +60,16 @@ function appendNewComment(dataArray)
         dynamicLi.className = "cmmnt";
         var dynamicDiv = document.createElement('div');
         dynamicDiv.className = "cmmnt-content";
-        dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> on <span class="comment-type" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+' task</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+        var label_color = 'gray';
+        if (commentType == 0)  //transcribe
+            label_color = 'red';
+        else if (commentType == 1) //tag
+            label_color = 'blue';
+        else if (commentType == 2) //connect
+            label_color = 'green';
+        else
+            label_color = 'gray';
+        dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span style="background-color: '+label_color+';" class="comment-type label label-primary label-pill" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
 
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
