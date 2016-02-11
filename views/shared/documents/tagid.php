@@ -169,7 +169,7 @@
 
     $(document).ready(function () {
         addExistingTags();
-        
+
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
         });
@@ -351,32 +351,6 @@
 </script>
 
 <style>
-    .document-header {
-        margin-top: -30px;
-    }
-
-    .document-title {
-        font-size: 20px; 
-        position: relative; 
-        top: -5px;
-        overflow: hidden;
-        display: inline-block;
-        width: 75%;
-    }
-
-    .document-additional-info {
-        color: #0645AD; 
-        float: right;
-    }
-
-    #tag-legend {
-        display: inline-block; 
-        position: relative; 
-        top: 10px;
-        width: 70%;
-        text-align: right;
-    }
-
     .task-header {
         text-align: center; 
         margin-bottom: 40px; 
@@ -393,18 +367,6 @@
 
     .header-step {
         margin-top: -32px;
-    }
-
-    .viewer
-    {
-        width: 100%;
-        border: 1px solid black;
-        position: relative;
-    }
-
-    .wrapper
-    {
-        overflow: hidden;
     }
 
     .location {
@@ -442,25 +404,6 @@
         font-size: 15px;
         box-sizing: border-box;
         box-shadow: 2px 2px 2px #888;
-    }
-
-    .legend-item {
-        border-radius: 6px;
-        padding: 2px;
-        font-size: 13px;
-        box-sizing: border-box;
-        box-shadow: 2px 2px 2px #888;
-    }
-
-    #tabs-and-legend-container {
-        overflow: hidden;
-        height: 42px;
-    }
-
-    .document-display-type-tabs {
-        display: inline-block; 
-        vertical-align: top;
-        width: 29%;
     }
 
     .comments-section-container {
