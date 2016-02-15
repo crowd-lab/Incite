@@ -146,7 +146,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div class="row">
         <div class="col-md-5 col-md-offset-1" id="work-zone">
             <div style="position: fixed;" id="work-view">
-                <h3 id="viewer-title">Viewer for Related References/Documents:</h3>
+                <h3 id="viewer-title">Related Documents:</h3>
                 <div class="tabbable tabs-below" id="document-view">
                     <div class="tab-content" id="document-contents">
                     </div>
@@ -159,9 +159,19 @@ include(dirname(__FILE__).'/../common/header.php');
             <div class="row" id="content-1">
                 <a href="/m4j/incite/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
                 <h3><?php echo $this->title; ?></h3>
+                <br>
+                <h4>Related documents (click the thumbnail to open): </h4>
+                <div id="references" style="white-space: nowrap;">
+<?php foreach ((array) $this->references as $reference): ?>
+                    <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>">
+                        <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
+                    </div>
+<? endforeach; ?>
+                    <div class="clearfix"></div>
+                </div>
 <?php foreach ((array) $this->discussions as $discussion): ?>
-                <div style="margin: 10px; background-color: #AAAAAA; padding: 10px;">
-                    <b><?php echo $discussion['first_name']; ?>:</b><br>
+                <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
+                    <b><?php echo $discussion['first_name']; ?> commented on <?php echo $discussion['time']; ?>:</b><br>
                     <p><?php echo $discussion['content']; ?></p>
                 </div>
 
@@ -176,15 +186,6 @@ include(dirname(__FILE__).'/../common/header.php');
                         <textarea id="discussion_content" name="content" style="width: 100%; display:none;" rows="5" placeholder="Your thoughts here..."></textarea>
 
 <?php endif; ?>
-                        <h4>References: </h4>
-                        <div id="references" style="white-space: nowrap;">
-<?php foreach ((array) $this->references as $reference): ?>
-                            <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>">
-                                <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
-                            </div>
-<? endforeach; ?>
-                            <div class="clearfix"></div>
-                        </div>
                         <br>
                         <input type="hidden" name="discussion_id" value="<?php echo $this->id; ?>">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
@@ -195,14 +196,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
                     </form>
                 </div>
-            </div>
-            <div class="row" id="content-2">
-                <h3> Subjects of this document: <a href="">Nationalism</a>, 
-                    <a href="">Freedom</a>, 
-                    <a href="">Revolution</a> </h3>
-                <h3>Related Discussions: </h3>
-                <p>Number: <a href="">URL</a></p>
-
             </div>
         </div>
     </div>

@@ -84,6 +84,3 @@ var tl = $('#timeline').jqtimeline({
     <!-- /.container -->
 
 </body>
-
-
-<

@@ -15,9 +15,9 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
     {
                         //echo '<div style="color:red">Documents Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
         require_once("Incite_Transcription_Table.php");
-        include("Incite_Users_Table.php");
-        include("Incite_Replies_Table.php");
-        include("Incite_Questions_Table.php");
+        require_once("Incite_Users_Table.php");
+        require_once("Incite_Replies_Table.php");
+        require_once("Incite_Questions_Table.php");
         require_once("Incite_Session.php");
         setup_session();
     }
@@ -75,7 +75,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                 foreach ((array)$discussion_reply_ids as $reply_id) {
                     $userdata = getUserDataID(getUserIdForReply($reply_id));
                     $first_name = $userdata[0];
-                    $replies[] = array('id' => $reply_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id));
+                    $replies[] = array('id' => $reply_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id), 'time' => getReplyTimestamp($reply_id));
                 }
                 $this->view->discussions = $replies;
 
