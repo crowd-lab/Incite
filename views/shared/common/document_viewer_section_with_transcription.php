@@ -55,7 +55,7 @@
 	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
 
 	        $("#document_img").iviewer({
-	            src: "<?php echo $currentTask->getFile()->getProperty('uri'); ?>",
+	            src: "<?php echo $this->image_url; ?>",
 	            zoom_min: 1,
 	            zoom: "fit"
         	});

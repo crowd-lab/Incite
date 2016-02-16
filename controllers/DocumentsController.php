@@ -10,6 +10,65 @@
  *
  * @package Incite 
  */
+function get_image_url_for_item($item) {
+    $url_path = (isset($_SERVER['HTTPS']) ? "https" : "http") . '://'. $_SERVER['HTTP_HOST'] . '/m4j/files/original/';
+    if ($item == null)
+        return '';
+
+    $files = $item->getFiles();
+    if (count($files) <= 0)
+        return '';
+    else if (count($files) == 1)
+        return $item->getFile()->getProperty('uri');
+    else {
+        $filenames = get_jpeg_filenames_from_item($item);
+        merge_images($filenames, 'incite_'.$item->id.'.jpeg');
+        return $url_path.'incite_'.$item->id.'.jpeg';
+    }
+}
+function get_jpeg_filenames_from_item($item) {
+    $filenames = array();
+    $files = $item->getFiles();
+    for ($i = 0; $i < count($files); $i++) {
+        if ($files[$i]['mime_type'] === "image/jpeg")
+            $filenames[] = $files[$i]['filename'];
+    }
+    return $filenames;
+}
+function merge_images($filenames, $filename_result) {
+
+    if (count($filenames) <= 0)
+        return false;
+
+    $path = getcwd().'/files/original/';
+    $widths = array();
+    $heights = array();
+    for ($i = 0; $i < count($filenames); $i++) {
+        list($width, $height) = getimagesize($path.$filenames[$i]);
+        $widths[] = $width;
+        $heights[] = $height;
+    }
+
+    $final_width = max($widths);
+    $final_height = array_sum($heights);
+
+    $final_image = imagecreatetruecolor($final_width, $final_height);
+
+    $acc_height = 0;
+    for ($i = 0; $i < count($filenames); $i++) {
+        $image = imagecreatefromjpeg($path.$filenames[$i]);
+        list($width, $height) = getimagesize($path.$filenames[$i]);
+        imagecopy($final_image, $image, 0, $acc_height, 0, 0, $width, $height);
+        $acc_height += $height;
+        imagedestroy($image);
+    }
+
+    imagejpeg($final_image, $path.$filename_result);
+    imagedestroy($final_image);
+
+    return true;
+
+}
 function getTextBetweenTags($string, $tagname) {
     $pattern = "/<$tagname>(.*?)<\/$tagname>/";
     preg_match_all($pattern, $string, $matches);
@@ -117,6 +176,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
                 $this->_helper->viewRenderer('transcribeid');
                 $this->view->transcription = $record;
+                $this->view->image_url = get_image_url_for_item($record);
                 $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
             } else {
                 //to such document so redirect to documents that need to be transcribed
@@ -227,6 +287,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
                 $this->_helper->viewRenderer('tagid');
                 $this->view->tag = $record;
+                $this->view->image_url = get_image_url_for_item($record);
 
                 //Check entities:
                 //  1) is tagged already?  Yes: skip the task; No: do the following
@@ -480,6 +541,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->_helper->viewRenderer('connectbymultiselection');
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
+                        $this->view->image_url = get_image_url_for_item($record);
                         //for this part, we can random the destination of the tasks!
                         /*
                         $_SESSION['incite']['redirect'] = array(
@@ -502,6 +564,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->_helper->viewRenderer('connectbymultiselection');
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
+                        $this->view->image_url = get_image_url_for_item($record);
                         /*
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_noSubjectCandidates', 
@@ -530,6 +593,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->_helper->viewRenderer('connectbymultiselection');
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
+                        $this->view->image_url = get_image_url_for_item($record);
                     } else {
                         $subject_related_documents = array_unique($subject_related_documents);
                         $docs_for_common_tags = array_merge(array_unique($subject_related_documents), array($this->_getParam('id')));
@@ -554,6 +618,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if ($is_connectable_by_tags) {
                     $this->_helper->viewRenderer('connectbytags');
                     $this->view->connection = $record;
+                    $this->view->image_url = get_image_url_for_item($record);
                 }
             } else {
                 //no such document
@@ -622,28 +687,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function discussAction() {
-        if ($this->hasParam($id)) {
-            $this->_helper->db->setDefaultModelName('Item');
-            $subjectConceptArray = getAllSubjectConcepts();
-            $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
-            $subject_id = 1;
-            $subjectName = getSubjectConceptOnId($randomSubjectInt);
-            $subjectDef = getDefinition($subjectName[0]);
-
-            //Choosing a subject to test with some fake data to test view
-            $this->view->subject = $subjectName[0];
-            $this->view->subject_definition = $subjectDef;
-            $this->view->entities = array('liberty', 'independence');
-            $this->view->related_documents = array();
-
-            $record = $this->_helper->db->find($this->_getParam('id'));
-            $isReply = $_POST['IS_REPLY'];
-            if ($isReply == 0) {
-                $_questionText = $POST['QUESTION_TEXT'];
-            } else {
-                //do something
-            }
-        }//if has_param
+        //testing controller
     }//discussAction()
     public function redirectAction() {
         if (isset($_SESSION['incite']['redirect'])) {

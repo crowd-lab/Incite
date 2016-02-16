@@ -10,7 +10,7 @@
 			$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
 
             $("#viewer2").iviewer({
-                src: "<?php echo $this->transcription->getFile()->getProperty('uri'); ?>",
+                src: "<?php echo $this->image_url; ?>",
                 zoom_min: 1,
                 zoom: "fit"
             });
