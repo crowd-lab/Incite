@@ -172,7 +172,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </a>
         </div>
-<? endforeach; ?>
+<?php endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>
               <ul class="pagination">

@@ -173,7 +173,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <h4>Related documents (click the thumbnail to open): </h4>
                 <div id="references" style="white-space: nowrap;">
 <?php foreach ((array) $this->references as $reference): ?>
-                    <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>" data-data="<?php echo $reference['date']; ?>" data-location="<?php echo $reference['location']; ?>">
+                    <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-description="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>" data-data="<?php echo $reference['date']; ?>" data-location="<?php echo $reference['location']; ?>">
                         <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
                     </div>
 <? endforeach; ?>
@@ -185,7 +185,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <p><?php echo $discussion['content']; ?></p>
                 </div>
 
-<? endforeach; ?>
+<?php endforeach; ?>
                 <div id="discussion_reply_form_container">
                     <form id="discussion_form" class="form-wrapper" method="post">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
