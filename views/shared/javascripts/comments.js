@@ -13,7 +13,6 @@ function getNewComments(docId)
         data: {documentId: documentId},
         success: function (data)
         {
-            console.log(data);
             var commentsArray = JSON.parse(data);
 
             for (var i = 0; i < commentsArray.length; i++)
