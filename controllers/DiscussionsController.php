@@ -19,6 +19,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
         require_once("Incite_Replies_Table.php");
         require_once("Incite_Questions_Table.php");
         require_once("Incite_Session.php");
+        require_once('Incite_Helpers.php');
         setup_session();
     }
 
@@ -88,7 +89,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                     $transcription = "no transcription available";
                     if ($approved_transcriptions != null) 
                         $transcription = getTranscriptionText($approved_transcriptions[0]);
-                    $references[] = array('id' => $reference_id, 'uri' => $record->getFile()->getProperty('uri'), 'title' => metadata($record, array('Dublin Core', 'Title')), 'description' => metadata($record, array('Dublin Core', 'Description')), 'transcription' => $transcription);
+                    $references[] = array('id' => $reference_id, 'uri' => get_image_url_for_item($record), 'title' => metadata($record, array('Dublin Core', 'Title')), 'description' => metadata($record, array('Dublin Core', 'Description')), 'transcription' => $transcription, 'date' => metadata($record, array('Dublin Core', 'Date')), 'location' => metadata($record, array('Item Type Metadata', 'Location')));
                 }
                 $this->view->references = $references;
 

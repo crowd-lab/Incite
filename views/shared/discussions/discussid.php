@@ -96,6 +96,16 @@
             border: 1px solid black;
             position: relative;
         }
+    #document-info-glphicon {
+        color: #337AB7; 
+        font-size: 20px;
+        top: 8px;
+        left: 15px;
+    }
+
+    .popover {
+    	max-width: 100%;
+    }
     </style>
 
     <?php
@@ -163,7 +173,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <h4>Related documents (click the thumbnail to open): </h4>
                 <div id="references" style="white-space: nowrap;">
 <?php foreach ((array) $this->references as $reference): ?>
-                    <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>">
+                    <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>" data-data="<?php echo $reference['date']; ?>" data-location="<?php echo $reference['location']; ?>">
                         <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
                     </div>
 <? endforeach; ?>
@@ -273,7 +283,25 @@ include(dirname(__FILE__).'/../common/header.php');
                 //Add tab
                 $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
                 //Add content
-                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'"><ul class="nav nav-tabs" role="tablist"><li class="active"><a class="doc-tab" href="#document-'+this.dataset.id+'" role="tab" data-toggle="tab">Document</a></li><li><a class="transcription-tab" href="#transcription-'+this.dataset.id+'" role="tab" data-toggle="tab">Transcription</a></li></ul><div class="tab-content"><div class="tab-pane fade active in viewer" id="document-'+this.dataset.id+'"></div><div class="tab-pane fade" id="transcription-'+this.dataset.id+'">'+this.dataset.transcription+'</div></div>');
+                var content = '<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">';
+                content += '<ul class="nav nav-tabs" role="tablist">';
+                content += '<li class="active"><a class="doc-tab" href="#document-'+this.dataset.id+'" role="tab" data-toggle="tab">Document</a></li>';
+                content += '<li><a class="transcription-tab" href="#transcription-'+this.dataset.id+'" role="tab" data-toggle="tab">Transcription</a></li>';
+                content += '<span class="glyphicon glyphicon-info-sign" id="document-info-glphicon" aria-hidden="true" data-trigger="hover" data-toggle="popover" data-html="true" data-viewport=".tabbable" '
+                content += 'data-title="Document Information" data-content="'
+                content += '<strong>Title:</strong>'
+                content += this.dataset.title;
+                content += '<br><br><strong>Date:</strong><br>'
+                content += this.dataset.data;
+                content += '<br><br><strong>Location:</strong><br>'
+                content += this.dataset.location;
+                content += '<br><br><strong>Description:</strong><br>'
+                content += this.dataset.description;
+                content += '"></span></ul>';
+                content += '<div class="tab-content"><div class="tab-pane fade active in viewer" id="document-'+this.dataset.id+'"></div>';
+                content += '<div class="tab-pane fade" id="transcription-'+this.dataset.id+'">'+this.dataset.transcription+'</div></div>';
+                $('#document-contents').append(content);
+                $('.glyphicon').popover();
                 $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-tabs').height()-35); //-35 for buffer
                 //if there is transcription, show transcription first.
                 if (this.dataset.transcription !== "no transcription available")
