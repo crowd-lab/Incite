@@ -27,7 +27,16 @@
             </div>
 
             <div class="col-md-6">
-                <p class="header-step"><i>Step 1 of 1: Mark all categories that apply to this document</i></p>
+                <p class="header-step">
+                    <i>Step 1 of 1: Mark all categories that apply to this document</i>
+                    <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                        aria-hidden="true" data-trigger="hover"
+                        data-toggle="popover" data-html="true"
+                        data-title="<strong>Marking Categories</strong>" 
+                        data-content="<?php echo "Simply choose all of the categories you think apply to this document. If none apply, select 'None of the above topics applied'." ?>" 
+                        data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                    </span>
+                </p>
 
                 <form id="subject-form" method="post">
                     <?php foreach ((array)$this->subjects as $subject): ?>

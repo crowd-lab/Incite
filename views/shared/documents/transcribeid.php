@@ -22,12 +22,43 @@
 
         <div class="col-md-6" id="submit-zone">
             <form method="post" id="transcribe-form">
-                <p class="header-step" style="margin-bottom: 13px;"><i>Step 1 of 3: Transcribe</i></p>
+                <p class="header-step" style="margin-bottom: 13px;">
+                    <i>Step 1 of 3: Transcribe</i>
+                    <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                        aria-hidden="true" data-trigger="hover"
+                        data-toggle="popover" data-html="true"
+                        data-title="<strong>Transcribing a document</strong>" 
+                        data-content="<?php echo "<ul>"
+                        . "<li>Copy the text exactly as is, including misspellings and abbreviations.</li>"
+                        . "<li>You don't need to account for formatting (e.g. spacing, line breaks, alignment).</li>"
+                        . "<li>If you can't make out a word replace it with '[illegible]'.</li>" 
+                        . "<li>If you are uncertain about a word surround it with square brackets, e.g. '[town?]'</li>"?>" 
+                        data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                    </span>
+                </p>
                 <textarea id="transcription" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
-                <p class="step"><i>Step 2 of 3: Summarize</i></p>
+                <p class="step">
+                    <i>Step 2 of 3: Summarize</i>
+                    <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                        aria-hidden="true" data-trigger="hover"
+                        data-toggle="popover" data-html="true"
+                        data-title="<strong>Summarizing a document</strong>" 
+                        data-content="<?php echo "Summarize the document in 1-2 sentences." ?>" 
+                        data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                    </span>
+                </p>
                 <textarea id="summary" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
                 <div class="form-group">
-                    <p class="step"><i>Step 3 of 3: Select the tone of the document</i></p>
+                    <p class="step">
+                        <i>Step 3 of 3: Select the tone of the document</i>
+                        <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                            aria-hidden="true" data-trigger="hover"
+                            data-toggle="popover" data-html="true"
+                            data-title="<strong>Selecting document tone</strong>" 
+                            data-content="<?php echo "Choose the tone from the dropdown that most accurately categorizes the overall tone of the document." ?>" 
+                            data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                        </span>
+                    </p>
                     <select id="tone" class="form-control" name="tone">
                         <option value="informational" default selected>Informational</option>
                         <option value="anxiety">Anxiety</option>

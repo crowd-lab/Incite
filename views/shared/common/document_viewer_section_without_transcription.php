@@ -23,7 +23,7 @@
         <div id="work-view">
             <div class="document-header">
                 <span class="document-title" title="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>" ><b>Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></span>
-                <span class="glyphicon glyphicon-info-sign" id="document-info-glphicon"
+                <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
                 	aria-hidden="true" data-trigger="hover"
                     data-toggle="popover" data-html="true"
                     data-viewport=".document-header"  
@@ -79,7 +79,7 @@
         text-overflow: ellipsis;
     }
 
-    #document-info-glphicon {
+    #document-info-glyphicon {
         color: #337AB7; 
         font-size: 20px;
         top: -6px;

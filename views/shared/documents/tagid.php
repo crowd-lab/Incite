@@ -32,20 +32,98 @@
                     <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
                     <table class="table" id="entity-table">
                         <tr>
-                            <th>Tag</th>
-                            <th>Category</th>
-                            <th>Subcategory</th>
-                            <th>Details</th>
+                            <th>
+                                Tag
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-viewport="#tagging-container";
+                                    data-title="<strong>Creating a tag</strong>" 
+                                    data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>" 
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
+                            <th>
+                                Category
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-viewport="#tagging-container";
+                                    data-title="<strong>Selecting a category</strong>" 
+                                    data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>" 
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
+                            <th>
+                                Subcategory
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-viewport="#tagging-container";
+                                    data-title="<strong>Selecting a subcategory</strong>" 
+                                    data-content="<?php echo "The computer has tried to identify the subcategories for this tag, please ensure they are accurate and change them if needed." ?>" 
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
+                            <th>
+                                Details
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-viewport="#tagging-container";
+                                    data-title="<strong>Adding details</strong>" 
+                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
                             <th>Not a tag?</th></tr>
                     </table>
                     <br>
                     <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
                     <table class="table" id="user-entity-table">
                         <tr>
-                            <th>Tag</th>
-                            <th>Category</th>
-                            <th>Subcategory</th>
-                            <th>Details</th>
+                            <th>
+                                Tag
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-title="<strong>Creating a tag</strong>"
+                                    data-viewport="#tagging-container"; 
+                                    data-content="<?php echo "Computers can't always recognize tags, so we need your help! Highlighting a word in the transcription box to the left will generate a new tag." ?>" 
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
+                            <th>
+                                Category
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-title="<strong>Selecting a category</strong>" 
+                                    data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than 'unknown' to be accepted." ?>" 
+                                    data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
+                            <th>
+                                Subcategory
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-title="<strong>Selecting a subcategory</strong>" 
+                                    data-content="<?php echo "For the given tag and category, select the appropriate subcategories, if any. If it doesn't fall into any subcategories simply leave none selected." ?>" 
+                                    data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
+                            <th>
+                                Details
+                                <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                                    aria-hidden="true" data-trigger="hover"
+                                    data-toggle="popover" data-html="true"
+                                    data-viewport="#tagging-container";
+                                    data-title="<strong>Adding details</strong>" 
+                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                </span>
+                            </th>
                             <th>Not a tag?</th></tr>
                         <tr>
                     </table>
@@ -111,7 +189,7 @@
                 disableIfEmpty: true,
                 numberDisplayed: 1
             });
-            new_entity.find('.category-select').append('<option value="0">Unknown</option>');
+            
             <?php for ($i = 0; $i < sizeof($category_object); $i++){
                 echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
             }
