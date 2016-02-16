@@ -169,5 +169,8 @@
     .document-display-type-tabs {
         display: inline-block; 
         vertical-align: top;
+        font-size: 12px;
+        position: relative;
+        top: 5px;
     }
 </style>
