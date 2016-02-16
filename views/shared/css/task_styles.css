@@ -34,3 +34,8 @@
 .header-step {
     margin-top: -32px;
 }
+
+.step-instruction-glyphicon {
+    color: #337AB7;
+    top: 3px;
+}

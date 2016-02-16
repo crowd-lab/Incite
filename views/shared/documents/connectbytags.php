@@ -26,7 +26,16 @@
             </div>
 
             <div class="col-md-6">
-                <p class="header-step"><i>Step 1 of 2: Read the summary of the following document(s), which all contain the common tags: <?php echo implode(', ', $this->entities);  ?></i></p>
+                <p class="header-step">
+                    <i>Step 1 of 2: Read the summary of the following document(s), which all contain the common tags: <?php echo implode(', ', $this->entities);  ?></i>
+                    <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                        aria-hidden="true" data-trigger="hover"
+                        data-toggle="popover" data-html="true"
+                        data-title="<strong>Reading document summaries</strong>" 
+                        data-content="<?php echo "Mouse over a document's image to trigger a popover with the summary of that document." ?>" 
+                        data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                    </span>
+                </p>
                 <?php foreach((array)$this->related_documents as $document): ?>
                     <div class="col-md-4">
                         <a data-toggle="popover" data-placement="bottom" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
@@ -39,7 +48,16 @@
                 <br>
                 <br>
                 <br>
-                <p class="header-step"><i>Step 2 of 2: Answer the following question </i></p>
+                <p class="header-step">
+                    <i>Step 2 of 2: Answer the following question</i>
+                    <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
+                        aria-hidden="true" data-trigger="hover"
+                        data-toggle="popover" data-html="true"
+                        data-title="<strong>Answering yes/no questions about a document</strong>" 
+                        data-content="<?php echo "After completing step 1 and looking at the above documents answer the question below by clicking the 'yes' button or the 'no' button." ?>" 
+                        data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                    </span>
+                </p>
                 <h4>Does the document on the left talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h4>
                 <form method="post">
                     <button type="submit" class="btn btn-success pull-right true-false-button" name="connection" value="true">Yes</button>
