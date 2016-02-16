@@ -13,6 +13,7 @@ function getNewComments(docId)
         data: {documentId: documentId},
         success: function (data)
         {
+            console.log(data);
             var commentsArray = JSON.parse(data);
 
             for (var i = 0; i < commentsArray.length; i++)
@@ -99,7 +100,7 @@ function appendNewComment(dataArray)
         dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
-            var string = "<ul><li><header><a href='javascript:void(0);' class='userlink'>";
+            var string = "<ul style='list-style: outside none none;'><li><header><a href='javascript:void(0);' class='userlink'>";
             for (var j = 0; j < commentsArrayReplies.length; j++)
             {
                 var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
