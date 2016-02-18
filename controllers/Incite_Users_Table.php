@@ -79,6 +79,7 @@ require_once("DB_Connect.php");
         $arr['last_name'] = $lastname;
         $arr['privilege'] = $priv;
         $arr['experience'] = $exp;
+        $arr['email'] = $email;
         return $arr;
     }
     function getUserDataOld($email)
