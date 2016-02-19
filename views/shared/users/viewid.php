@@ -6,6 +6,8 @@
     ?>
 
     <script type="text/javascript">
+        var filters = [];
+
         $(document).ready(function () {
             <?php
                 if (isset($_SESSION['incite']['message'])) {
@@ -14,10 +16,59 @@
                 }
             ?>
 
+            addListenersToOverview();
             populateGroups();
             populateActivityOverview();
             populateActivityFeed();
         });
+
+        function addListenersToOverview() {
+            $('.overview-section').click(function(event) {
+                var id = this.id;
+
+                if (id === "transcribe-overview-section") {
+                    $(this).toggleClass("transcribe-color");
+                    toggleFilter("transcribe");
+                } else if (id === "tag-overview-section") {
+                    $(this).toggleClass("tag-color");
+                    toggleFilter("tag");
+                } else if (id === "connect-overview-section") {
+                    $(this).toggleClass("connect-color");
+                    toggleFilter("connect");
+                } else if (id === "discuss-overview-section") {
+                    $(this).toggleClass("discuss-color");
+                    toggleFilter("discuss");
+                }
+            });
+        }
+
+        function toggleFilter(filter) {
+            if (filters.indexOf(filter) > -1) {
+                filters.splice(filters.indexOf(filter), 1);
+            } else {
+                filters.push(filter);
+            }
+
+            filterActivityFeed();
+        }
+
+        function filterActivityFeed() {
+            $("#userprofile-activity-feed-table tr").each(function(index, row) {
+                if (filters.length === 0) {
+                    $(row).show();
+                    return;
+                }
+
+                if (filters.indexOf("transcribe") > -1 && $(row).hasClass("transcribe-color") ||
+                    filters.indexOf("tag") > -1 && $(row).hasClass("tag-color") ||
+                    filters.indexOf("connect") > -1 && $(row).hasClass("connect-color") ||
+                    filters.indexOf("discuss") > -1 && $(row).hasClass("discuss-color")) {
+                    $(row).show();
+                } else {
+                    $(row).hide();
+                }
+            });
+        }
 
         function populateGroups() {
             var link = createGroupLink("Class 101");
@@ -106,7 +157,7 @@
             display: inline-block;
             height: 100%;
             text-align: center;
-            cursor: help;
+            cursor: pointer;
         }
 
         .task-description {
@@ -117,10 +168,6 @@
 
         .activity-title {
             text-align: center;
-        }
-
-        #userprofile-activity-overview-title {
-
         }
 
         #transcribe-overview-section {
