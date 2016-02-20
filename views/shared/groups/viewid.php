@@ -20,48 +20,54 @@
         });
 
         function populateGroupMembers() {
-            //TODO generate a link for each user and append it
-            var span = $('<span class="group-member-link"></span>');
-            span.append(createProfileLink("Seth"));
+            var span;
+<?php foreach ((array)$this->users as $user): ?>
+            span = $('<span class="group-member-link"></span>');
+            span.append(createProfileLink("<?php echo $user['email']; ?>", <?php echo $user['id']; ?>));
             $("#groupprofile-list-of-members").append(span);
+<?php endforeach; ?>
 
-            var span = $('<span class="group-member-link"></span>');
-            span.append(createProfileLink("adss"));
-            $("#groupprofile-list-of-members").append(span);
         };
 
-        //TODO generate user profile link from username and whatever else you need
-        function createProfileLink(username) {
-            return $('<a href="" target="_BLANK">' + username + '</a>')
+        function createProfileLink(username, userid) {
+            return $('<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userid+'" target="_BLANK">' + username + '</a>')
         };
 
         function populateActivityFeed() {
-            //TODO put this in a loop for each user in group
-            var table1 = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), "Seth");
-
-                //TODO for each user, put a nested loop here that fills in their activity data
-                generateAndAppendUserActivityRow(table1, "Transcribed", 2);
-                generateAndAppendUserActivityRow(table1, "Tagged", 2);
-                generateAndAppendUserActivityRow(table1, "Connected", 2);
-                generateAndAppendUserActivityRow(table1, "Discussed", 2);
+            var table; 
+<?php foreach ((array)$this->users as $user): ?>
+                table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), "<?php echo $user['email']; ?>", <?php echo $user['id']; ?>);
+                generateAndAppendUserActivityRow(table, "Transcribed", <?php echo $user['transcribed_doc_count']; ?>);
+                generateAndAppendUserActivityRow(table, "Tagged", <?php echo $user['tagged_doc_count']; ?>);
+                generateAndAppendUserActivityRow(table, "Connected", <?php echo $user['connected_doc_count']; ?>);
+                generateAndAppendUserActivityRow(table, "Discussed", <?php echo $user['discussion_count']; ?>);
+<?php endforeach; ?>
         };
 
-        function generateAndAppendUserRow(table, username) {
+        function generateAndAppendUserRow(table, username, userid) {
             var userRow = $('<tr class="user-row">' + 
                 '<td class="user-table-data"><span class="user-data"></span></td>' + 
                 '<td class="embedded-user-table-cell"><table class="user-table"></table</td>' +
                 '</tr>');
 
-            userRow.find(".user-data").append(createProfileLink(username));
+            userRow.find(".user-data").append(createProfileLink(username, userid));
             table.append(userRow);
             return userRow.find(".user-table");
         };
 
         function generateAndAppendUserActivityRow(table, task, number) {
-            var emptyRow = $('<tr>' + 
-                '<td><span class="task-data">' + task + '</span></td>' + 
-                '<td><span class="number-data">' + number + ' documents</span></td>' +
-                '</tr>');
+            var emptyRow;
+                if (task === "Discussed") {
+                    emptyRow = $('<tr>' + 
+                    '<td><span class="task-data">' + task + '</span></td>' + 
+                    '<td><span class="number-data">' + number + ' discussion(s)</span></td>' +
+                    '</tr>');
+                } else {
+                    emptyRow = $('<tr>' + 
+                    '<td><span class="task-data">' + task + '</span></td>' + 
+                    '<td><span class="number-data">' + number + ' document(s)</span></td>' +
+                    '</tr>');
+                }
 
 
             if (task === "Transcribed") {
@@ -171,8 +177,8 @@
 <body>
     <div id="groupprofile-header">
         <?php
-            echo '<h1> Group: ' . $_SESSION['Incite']['USER_DATA']['first_name'] . '</h1>';
-            echo '<h3> Group Owner: <a href="" target="_BLANK">' . $_SESSION['Incite']['USER_DATA']['email'] . '</a></h3>';
+            echo '<h1> Group: Group ' . $this->group_id . '</h1>';
+            echo '<h3> Group Owner: <a href="" target="_BLANK">Unknown</a></h3>';
         ?>
     </div>
 

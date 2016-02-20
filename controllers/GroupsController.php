@@ -17,18 +17,26 @@ class Incite_GroupsController extends Omeka_Controller_AbstractActionController 
         require_once("Incite_Session.php");
         require_once("Incite_Env_Setting.php");
         require_once('Incite_Helpers.php');
+        require_once('Incite_Groups_Table.php');
         setup_session();
     }
 
     public function indexAction() {
-        
         $this->_helper->viewRenderer->setNoRender(TRUE);
-        echo 'hi';
+        $group_id = 1;
+        $g = getMembersWithActivityOverviewByGroupId($group_id);
+
+        echo '<pre>';
+        print_r($g);
+        echo '</pre>';
     }
 
     public function viewAction() {
         if ($this->_hasParam('id')) {
             $this->_helper->viewRenderer('viewid');
+            $group_id = $this->_getParam('id');
+            $this->view->users = getMembersWithActivityOverviewByGroupId($group_id);
+            $this->view->group_id = $group_id;
         } else {
             $this->view->users = "";
         }

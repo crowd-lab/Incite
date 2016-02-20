@@ -214,7 +214,7 @@
 <body>
     <div id="userprofile-header">
         <?php
-            echo '<h1> Username: '. $_SESSION['Incite']['USER_DATA']['email'] . '</h1>';
+            echo '<h1> Username: '. $this->user['email'] . '</h1>';
         ?>
         <div>
             <p id="groups-list">Belongs to groups: </p>

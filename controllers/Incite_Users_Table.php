@@ -126,6 +126,26 @@ require_once("DB_Connect.php");
         $arr[4] = $exp;
         return $arr;
     }
+    function getUserDataByUserId($id)
+    {
+        $arr = Array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT first_name, last_name, email, privilege_level, experience_level FROM omeka_incite_users WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->bind_result($firstname, $lastname, $email, $priv, $exp);
+        $stmt->execute();
+        $stmt->fetch();
+        $stmt->close();
+        $db->close();
+        
+        $arr['first_name'] = $firstname;
+        $arr['last_name'] = $lastname;
+        $arr['email'] = $email;
+        $arr['privilege'] = $priv;
+        $arr['experience'] = $exp;
+        $arr['id'] = $id;
+        return $arr;
+    }
     /**
      * Check if the user is active. If the user is inactive, return false else
      * return true. We check this by selecting the 'is_active' column in the
@@ -445,6 +465,17 @@ require_once("DB_Connect.php");
         return $docs;
     }
 
+    function getTranscribedDocumentCountByUserId($userid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT document_id) from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
     function getTaggedDocumentsByUserId($userid) {
         $docs = array();
         $db = DB_Connect::connectDB();
@@ -458,6 +489,17 @@ require_once("DB_Connect.php");
         }
         $db->close();
         return $docs;
+    }
+    function getTaggedDocumentCountByUserId($userid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_timestamp, text) FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
     }
 
 
@@ -476,6 +518,17 @@ require_once("DB_Connect.php");
         return $docs;
     }
 
+    function getConnectedDocumentCountByUserId($userid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_time, text) from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
     function getDiscussionsByUserId($userid) {
         $diss = array();
         $db = DB_Connect::connectDB();
@@ -488,6 +541,17 @@ require_once("DB_Connect.php");
         }
         $db->close();
         return $diss;
+    }
+    function getDiscussionCountByUserId($userid) {
+        $diss = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT COUNT(*) from omeka_incite_questions WHERE user_id = ? AND question_type = 4");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
     }
     function getGroupsByUserId($userid) {
         $groups = array();
