@@ -65,7 +65,8 @@
                     filters.indexOf("discuss") > -1 && $(row).hasClass("discuss-color")) {
                     $(row).show();
                 } else {
-                    $(row).hide();
+                    if (!$(row).hasClass("activity-feed-table-header"))
+                        $(row).hide();
                 }
             });
         }
@@ -262,12 +263,12 @@
         <div id="userprofile-activity-feed">
             <h2 class="activity-title">Activity Feed</h2>
             <table class="table" id="userprofile-activity-feed-table">
-                <tr>
+                <tr class="activity-feed-table-header">
                     <th>
                         Task
                     </th>
                     <th>
-                        Document
+                        Document/Discussion
                     </th>
                     <th>
                         Date 
