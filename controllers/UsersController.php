@@ -3,6 +3,7 @@
 
 
 
+
 class Incite_UsersController extends Omeka_Controller_AbstractActionController {
 
     public function init() {
@@ -22,12 +23,47 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
     public function indexAction() {
         
         $this->_helper->viewRenderer->setNoRender(TRUE);
-        echo 'hi';
+        $user_id = 3;
+            $tran = getTranscribedDocumentsByUserId($user_id);
+            addKeyValueToArray($tran, 'activity_type', 'Transcribe');
+            $tag = getTaggedDocumentsByUserId($user_id);
+            addKeyValueToArray($tag, 'activity_type', 'Tag');
+            $con = getConnectedDocumentsByUserId($user_id);
+            addKeyValueToArray($con, 'activity_type', 'Connect');
+            $dis = getDiscussionsByUserId($user_id);
+            addKeyValueToArray($dis, 'activity_type', 'Discuss');
+            $activities = array_merge($tran, $tag, $con, $dis);
+            usort($activities, "customizedTimeCmpFuncDESC");
+            $this->view->activities = $activities;
+        echo '<pre>';
+        print_r($tran);
+        print_r($tag);
+        print_r($con);
+        echo '</pre>';
     }
 
     public function viewAction() {
         if ($this->_hasParam('id')) {
             $this->_helper->viewRenderer('viewid');
+            $user_id = $this->_getParam('id');
+            $this->view->transcribed_docs = getTranscribedDocumentsByUserId($user_id);
+            $this->view->tagged_docs = getTaggedDocumentsByUserId($user_id);
+            $this->view->connected_docs = getConnectedDocumentsByUserId($user_id);
+            $this->view->discussions = getDiscussionsByUserId($user_id);
+            $this->view->groups = getGroupsByUserId($user_id);
+
+            //Get all activities together, add activity_type and sort them based on time
+            $tran = getTranscribedDocumentsByUserId($user_id);
+            addKeyValueToArray($tran, 'activity_type', 'Transcribe');
+            $tag = getTaggedDocumentsByUserId($user_id);
+            addKeyValueToArray($tag, 'activity_type', 'Tag');
+            $con = getConnectedDocumentsByUserId($user_id);
+            addKeyValueToArray($con, 'activity_type', 'Connect');
+            $dis = getDiscussionsByUserId($user_id);
+            addKeyValueToArray($dis, 'activity_type', 'Discuss');
+            $activities = array_merge($tran, $tag, $con, $dis);
+            usort($activities, "customizedTimeCmpFuncDESC");
+            $this->view->activities = $activities;
         } else {
             $this->view->users = "";
         }

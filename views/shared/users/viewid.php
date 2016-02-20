@@ -71,38 +71,37 @@
         }
 
         function populateGroups() {
-            var link = createGroupLink("Class 101");
-            $("#groups-list").append(link);
-            
-            var link = createGroupLink("Class 201");
-            $("#groups-list").append(link);
+
+<?php foreach ((array) $this->groups as $group): ?>
+            $('#groups-list').append(createGroupLink("Group "+"<?php echo $group; ?>", <?php echo $group; ?>));
+<?php endforeach; ?>
         };
 
         //TODO generate user profile link from username and whatever else you need
-        function createGroupLink(groupname) {
-            return $('<span class="group-link"><a href="" target="_BLANK">' + groupname + '</a></span>');
+        function createGroupLink(groupname, groupid) {
+            return $('<span class="group-link"><a href="<?php echo getFullInciteUrl(); ?>/groups/view/'+groupid+'" target="_BLANK">' + groupname + '</a></span>');
         };
 
         function populateActivityOverview() {
-            $("#number-transcribed").html("Echo number here " + "documents");
-            $("#number-tagged").html("Echo number here " + "documents");
-            $("#number-connected").html("Echo number here " + "documents");
-            $("#number-discussed").html("Echo number here " + "documents");
+            $("#number-transcribed").html("<?php echo count($this->transcribed_docs); ?>" + " document(s)");
+            $("#number-tagged").html("<?php echo count($this->tagged_docs); ?>" + " document(s)");
+            $("#number-connected").html("<?php echo count($this->connected_docs); ?>" + " document(s)");
+            $("#number-discussed").html("<?php echo count($this->discussions); ?>" + " discussion(s)");
         };
 
         function populateActivityFeed() {
-            //TODO put this in a loop for each activity
-            generateAndAppendRow($("#userprofile-activity-feed-table"), "Discuss", "MyDoc", 5, "Feb 1");
-            generateAndAppendRow($("#userprofile-activity-feed-table"), "Tag", "MyDoc", 5, "Feb 1");
-            generateAndAppendRow($("#userprofile-activity-feed-table"), "Connect", "MyDoc", 5, "Feb 1");
-            generateAndAppendRow($("#userprofile-activity-feed-table"), "Transcribe", "MyDoc", 5, "Feb 1");
+<?php foreach ((array)$this->activities as $activity): ?>
+            generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+<?php endforeach; ?>
         };
 
         //TODO generate document link from docID
         function generateAndAppendRow(table, task, docTitle, docID, date) {
             var emptyRow = $('<tr>' + 
                 '<td><span class="task-data">' + task + '</span></td>' + 
-                '<td><span class="document-data"><a href="" target="_BLANK">' + docTitle + '</a></span></td>' +
+                '<td><span class="document-data"><a href="<?php echo getFullInciteUrl(); ?>'+
+                (task === 'Discuss' ? '/discussions/discuss/' : '/documents/view/') +
+                docID+'" target="_BLANK">' + docTitle + '</a></span></td>' +
                 '<td><span class="date-data">' + date + '</span></td>' +
                 '</tr>');
 

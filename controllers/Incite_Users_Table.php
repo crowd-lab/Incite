@@ -400,4 +400,107 @@ require_once("DB_Connect.php");
             $db->close();
         }
     }
+
+    function getAllUsers() {
+        $users = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT id, first_name, last_name FROM omeka_incite_users");
+        $stmt->bind_result($id, $fname, $lname);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $users[] = array('id' => $id, 'first_name' => $fname, 'last_name' => $lname);
+        }
+        $stmt->close();
+        $db->close();
+        return $users;
+    }
+
+    function getAllActiveUsers() {
+        $users = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT id, first_name, last_name FROM omeka_incite_users WHERE is_active = 1");
+        $stmt->bind_result($id, $fname, $lname);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $users[] = array('id' => $id, 'first_name' => $fname, 'last_name' => $lname);
+        }
+        $stmt->close();
+        $db->close();
+        return $users;
+    }
+
+
+    function getTranscribedDocumentsByUserId($userid) {
+        $docs = array();
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT document_id, timestamp_creation, text from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY document_id");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+        }
+        $db->close();
+        return $docs;
+    }
+
+    function getTaggedDocumentsByUserId($userid) {
+        $docs = array();
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT DISTINCT item_id, created_timestamp, text FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+        }
+        $db->close();
+        return $docs;
+    }
+
+
+    function getConnectedDocumentsByUserId($userid) {
+        $docs = array();
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT DISTINCT item_id, created_time, text from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+        }
+        $db->close();
+        return $docs;
+    }
+
+    function getDiscussionsByUserId($userid) {
+        $diss = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT id, timestamp, question_text from omeka_incite_questions WHERE user_id = ? AND question_type = 4");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($dis, $time, $dis_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $diss[] = array('time' => $time, 'discussion_id' => $dis, 'discussion_title' => $dis_title);
+        }
+        $db->close();
+        return $diss;
+    }
+    function getGroupsByUserId($userid) {
+        $groups = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT group_id from omeka_incite_group_members WHERE user_id = ?");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($group);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $groups[] = $group;
+        }
+        $db->close();
+        return $groups;
+    }
+
 ?>

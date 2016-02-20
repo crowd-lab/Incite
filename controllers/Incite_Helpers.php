@@ -60,6 +60,60 @@ function merge_images($filenames, $filename_result) {
 
 }
 
+function customizedTimeCmpFuncASC($a, $b)
+{
+    if ($a['time'] < $b['time'])
+        return -1;
+    else if ($a['time'] == $b['time'])
+        return 0;
+    else
+        return 1;
+}
 
+function customizedTimeCmpFuncDESC($a, $b)
+{
+    if ($a['time'] < $b['time'])
+        return 1;
+    else if ($a['time'] == $b['time'])
+        return 0;
+    else
+        return -1;
+}
+function addKeyValueToArray(&$a, $key, $val)
+{
+    $len = count($a);
+    for ($i = 0; $i < $len; $i++)
+        $a[$i][$key] = $val;
+}
+
+function getOmekaFolderName()
+{
+    //Get omeka directory indirectly via "controllers" folder where this file is located!
+    //omake_dir/plugins/Incite/controllers
+    $omeka_folder_name = basename(realpath(dirname(__FILE__).'/../../..'));
+    return $omeka_folder_name;
+}
+
+function getOmekaUrl()
+{
+    $host = $_SERVER['HTTP_HOST'];
+    return $host . '/' . getOmekaFolderName();
+}
+
+function getInciteUrl()
+{
+    return getOmekaUrl() . '/' . 'incite';
+}
+
+function getFullOmekaUrl()
+{
+    $host = $_SERVER['HTTP_HOST'];
+    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $host . '/' . getOmekaFolderName();
+}
+
+function getFullInciteUrl()
+{
+    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . getOmekaUrl() . '/' . 'incite';
+}
 
 ?>
