@@ -42,7 +42,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
             $_SESSION['incite']['redirect'] = array(
                     'status' => 'complete_create_discussion', 
                     'message' => 'Congratulations! You just created a new discussion! You will be redirected to your discussion', 
-                    'url' => INCITE_PATH.'discussions/discuss/'.$this->_getParam('id'),
+                    'url' => getFullInciteUrl().'/discussions/discuss/'.$this->_getParam('id'),
                     'time' => '5');
             $this->redirect('incite/discussions/discuss/'.$discussionID);
             /*

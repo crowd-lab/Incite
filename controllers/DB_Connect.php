@@ -23,7 +23,7 @@ class DB_Connect
     {
         $root = $_SERVER['DOCUMENT_ROOT']; // 
         $db = get_db();
-        $ini_array = parse_ini_file($root. '/m4j/db.ini');
+        $ini_array = parse_ini_file($root. getOmekaPath(). '/db.ini');
         $dbhost = $ini_array["host"];
         $dbuser = $ini_array["username"];
         $dbpass = $ini_array["password"];

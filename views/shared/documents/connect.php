@@ -163,9 +163,9 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php foreach ((array)$this->Connections as $connection): ?>
         <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;">
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
-            <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id."?".$this->query_str; ?>">
+            <a href="<?php echo getFullInciteUrl().'/documents/connect/'.$connection->id."?".$this->query_str; ?>">
 <?php else: ?>
-            <a href="<?php echo INCITE_PATH.'documents/connect/'.$connection->id; ?>">
+            <a href="<?php echo getFullInciteUrl().'/documents/connect/'.$connection->id; ?>">
 <?php endif; ?>
                 <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($connection, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($connection, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $connection->id; ?>">
                     <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">

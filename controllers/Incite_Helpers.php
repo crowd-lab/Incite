@@ -94,10 +94,15 @@ function getOmekaFolderName()
     return $omeka_folder_name;
 }
 
+function getOmekaPath()
+{
+    return dirname($_SERVER['PHP_SELF']);
+}
+
 function getOmekaUrl()
 {
     $host = $_SERVER['HTTP_HOST'];
-    return $host . '/' . getOmekaFolderName();
+    return $host . getOmekaPath();
 }
 
 function getInciteUrl()

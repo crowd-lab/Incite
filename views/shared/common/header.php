@@ -92,7 +92,7 @@
         function logout() {
             var request = $.ajax({
                 type: "POST",
-                url: "<?php echo INCITE_PATH.'ajax/logout'; ?>",
+                url: "<?php echo getFullInciteUrl().'/ajax/logout'; ?>",
                 success: function () 
                 {
                     notifyOfSuccessfulActionWithTimeout("You've logged out!");
@@ -155,7 +155,7 @@
                         //do login
                         var request = $.ajax({
                             type: "POST",
-                            url: "<?php echo INCITE_PATH.'ajax/login'; ?>",
+                            url: "<?php echo getFullInciteUrl().'/ajax/login'; ?>",
                             data: {"username": $('#username').val(), "password": $('#password').val()},
                             success: function (response) {
                                 data = response.trim();
@@ -170,7 +170,7 @@
                                     
                                     var getDataArray = $.ajax({
                                         type: "POST",
-                                        url: "<?php echo INCITE_PATH.'ajax/getdata'; ?>",
+                                        url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
@@ -216,7 +216,7 @@
                         }
                         var request = $.ajax({
                             type: "POST",
-                            url: "<?php echo INCITE_PATH.'ajax/createaccount'; ?>",
+                            url: "<?php echo getFullInciteUrl().'/ajax/createaccount'; ?>",
                             data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
                             success: function (response) {
                                 data = response.trim();
@@ -231,7 +231,7 @@
 
                                     var getDataArray = $.ajax({
                                         type: "POST",
-                                        url: "<?php echo INCITE_PATH.'ajax/getdata'; ?>",
+                                        url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
