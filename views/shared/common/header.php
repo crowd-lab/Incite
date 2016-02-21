@@ -1,4 +1,5 @@
 <?php
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Helpers.php');
     queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles'));
     $db = get_db();
 
