@@ -297,12 +297,12 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="/m4j/incite">Mapping the Fourth</a>
+                <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">Mapping the Fourth</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form navbar-left" role="search" action="/m4j/incite/discover">
+                <form class="navbar-form navbar-left" role="search" action="<?php echo getFullInciteUrl(); ?>/discover">
                     <div class="form-group">
                         <input id="location" type="text" class="form-control" placeholder="Location" name="location">
                         <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">

@@ -16,6 +16,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
 {
     public function init()
     {
+        require_once("Incite_Helpers.php");
         require_once("Incite_Search.php");
     }
 
