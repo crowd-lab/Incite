@@ -124,6 +124,7 @@ require_once("DB_Connect.php");
         $arr[2] = $email;
         $arr[3] = $priv;
         $arr[4] = $exp;
+        $arr[5] = $id;
         return $arr;
     }
     function getUserDataByUserId($id)

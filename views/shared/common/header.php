@@ -48,6 +48,7 @@
     <![endif]-->
     <script>
         var msgbox;
+        var fullInciteUrl = "<?php echo getFullInciteUrl(); ?>";
 
         function closeMsgBox() {
             msgbox.close();
@@ -149,6 +150,10 @@
             $('#location').val("<?php echo (isset($_GET['location']) ? $_GET['location'] : ""); ?>");
             $('#keywords').val("<?php echo (isset($_GET['keywords']) ? $_GET['keywords'] : ""); ?>");
 
+            $('#user_profile').on('click', function (e) {
+                window.location.href = fullInciteUrl+'/users/view/<?php echo $_SESSION['Incite']['USER_DATA']['id']; ?>';
+            });
+
             $('#login-button').on('click', function (e) {
                 if ($('#login-tab').hasClass('active')) {
                     if ($('#username').val() !== "" && $('#password').val() !== "") {
@@ -165,7 +170,7 @@
 
                                     setTimeout(function () {
                                         $('#login-signup-dialog').modal('hide');
-                                        loginDiv.removeChild(usernameError);
+                                        //loginDiv.removeChild(usernameError);
                                     }, 1000);
                                     
                                     var getDataArray = $.ajax({
@@ -226,7 +231,7 @@
 
                                     setTimeout(function () {
                                         $('#login-signup-dialog').modal('hide');
-                                        loginDiv.removeChild(usernameError);
+                                        //loginDiv.removeChild(usernameError);
                                     }, 1000);
 
                                     var getDataArray = $.ajax({

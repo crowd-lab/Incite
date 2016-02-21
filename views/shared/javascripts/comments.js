@@ -9,10 +9,11 @@ function getNewComments(docId)
     $('#comments').empty();
     var request = $.ajax({
         type: "POST",
-        url: "/m4j/incite/ajax/getcommentsdoc",
+        url: fullInciteUrl+"/ajax/getcommentsdoc",
         data: {documentId: documentId},
         success: function (data)
         {
+            console.log(data);
             var commentsArray = JSON.parse(data);
 
             for (var i = 0; i < commentsArray.length; i++)
@@ -22,7 +23,7 @@ function getNewComments(docId)
                 var commentsArrayObject = {commentsArray};
                 var isSignedIn = $.ajax({
                     type: 'POST',
-                    url: "/m4j/incite/ajax/issignedin",
+                    url: fullInciteUrl+"/ajax/issignedin",
                     async: false,
                     data: {loopVar: i, commentArray: commentsArray, format: format},
                     success: appendNewComment
@@ -69,13 +70,13 @@ function appendNewComment(dataArray)
             label_color = 'green';
         else
             label_color = 'gray';
-        dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span style="background-color: '+label_color+';" class="comment-type label label-primary label-pill" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+        dynamicDiv.innerHTML = '<header><a href="'+fullInciteUrl+'/users/view/'+commentsArray[i]['user_info'][5]+'" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span style="background-color: '+label_color+';" class="comment-type label label-primary label-pill" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
 
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
-            var string = "<ul style='list-style: none;'><li><header><a href='javascript:void(0);' class='userlink'>";
             for (var j = 0; j < commentsArrayReplies.length; j++)
             {
+                var string = "<ul style='list-style: none;'><li><header><a href='"+fullInciteUrl+"/users/view/"+commentsArrayRepliesUserData[j][5]+"' class='userlink'>";
                 var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
                 string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">commented ' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
                 if (j != commentsArrayReplies.length - 1)
@@ -181,7 +182,7 @@ function submitReply(event, documentId)
     //var documentId = <?php echo $this->transcription->id; ?>;
     var request = $.ajax({
         type: "POST",
-        url: "/m4j/incite/ajax/postreply",
+        url: fullInciteUrl+"/ajax/postreply",
         data: {replyText: replyText, originalQuestionId: questionID, documentId: documentId},
         success: function (data)
         {
@@ -203,7 +204,7 @@ function submitComment(documentId)
     //var documentId = <?php echo $this->transcription->id; ?>;
     var request = $.ajax({
         type: "POST",
-        url: "/m4j/incite/ajax/postcomment",
+        url: fullInciteUrl+"/ajax/postcomment",
         data: {documentId: documentId, commentText: commentText, type: comment_type},
         success: function ()
         {

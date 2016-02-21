@@ -16,11 +16,12 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     public function init() {
         //Since this is for ajax purpose, we don't need to render any views!
         $this->_helper->viewRenderer->setNoRender(TRUE);
-        include("Incite_Users_Table.php");
-        include("Incite_Replies_Table.php");
-        include("Incite_Questions_Table.php");
-        include("DiscoverController.php");
-        include("Incite_Search.php");
+        require_once("Incite_Helpers.php");
+        require_once("Incite_Users_Table.php");
+        require_once("Incite_Replies_Table.php");
+        require_once("Incite_Questions_Table.php");
+        require_once("DiscoverController.php");
+        require_once("Incite_Search.php");
         require_once("Incite_Tag_Table.php");
         require_once("Incite_Transcription_Table.php");
         require_once("Incite_System_Log.php");
