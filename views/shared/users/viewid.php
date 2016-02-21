@@ -74,11 +74,10 @@
         function populateGroups() {
 
 <?php foreach ((array) $this->groups as $group): ?>
-            $('#groups-list').append(createGroupLink("Group "+"<?php echo $group; ?>", <?php echo $group; ?>));
+            $('#groups-list').append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
 <?php endforeach; ?>
         };
 
-        //TODO generate user profile link from username and whatever else you need
         function createGroupLink(groupname, groupid) {
             return $('<span class="group-link"><a href="<?php echo getFullInciteUrl(); ?>/groups/view/'+groupid+'" target="_BLANK">' + groupname + '</a></span>');
         };
@@ -218,7 +217,7 @@
             echo '<h1> Username: '. $this->user['email'] . '</h1>';
         ?>
         <div>
-            <p id="groups-list">Belongs to groups: </p>
+            <p id="groups-list">Belongs to group(s): </p>
         </div>
     </div>
 

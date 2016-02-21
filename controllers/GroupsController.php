@@ -36,7 +36,7 @@ class Incite_GroupsController extends Omeka_Controller_AbstractActionController 
             $this->_helper->viewRenderer('viewid');
             $group_id = $this->_getParam('id');
             $this->view->users = getMembersWithActivityOverviewByGroupId($group_id);
-            $this->view->group_id = $group_id;
+            $this->view->group = getGroupInfoByGroupId($group_id);
         } else {
             $this->view->users = "";
         }

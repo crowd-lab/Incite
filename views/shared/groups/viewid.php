@@ -177,8 +177,8 @@
 <body>
     <div id="groupprofile-header">
         <?php
-            echo '<h1> Group: Group ' . $this->group_id . '</h1>';
-            echo '<h3> Group Owner: <a href="" target="_BLANK">Unknown</a></h3>';
+            echo '<h1> Group: ' . $this->group['name'] . '</h1>';
+            echo '<h3> Group Owner: <a href="" target="_BLANK">'.$this->group['creator']['email'].'</a></h3>';
         ?>
     </div>
 
@@ -191,8 +191,8 @@
         <div id="groupprofile-overview">
             <h2 class="activity-title" id="groupprofile-overview-title">Group Overview</h2>
             <div id="groupprofile-overview-details">
-                <p id="groupprofile-list-of-members"><strong>Members: </strong></p>
-                <p id="groupprofile-date-created"><strong>Date Created: </strong></p>
+                <p id="groupprofile-list-of-members"><strong>Member(s): </strong></p>
+                <p id="groupprofile-date-created"><strong>Date Created: <?php echo $this->group['created_time']; ?></strong></p>
             </div>
         </div>
 

@@ -3,6 +3,7 @@
  * API for Incite_Users_Table
  */
 require_once("DB_Connect.php");
+require_once("Incite_Groups_Table.php");
     /**
      * Verify the username and password combination. Use a prepare object to
      * sanitize user-submitted text. Fetch the number of times where the username
@@ -562,7 +563,8 @@ require_once("DB_Connect.php");
         $stmt->bind_result($group);
         $stmt->execute();
         while ($stmt->fetch()) {
-            $groups[] = $group;
+            $group_info = getGroupInfoByGroupId($group);
+            $groups[] = $group_info;
         }
         $db->close();
         return $groups;

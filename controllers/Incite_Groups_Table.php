@@ -33,6 +33,20 @@ function getMembersWithActivityOverviewByGroupId($groupid)
     return $users;
 }
 
+function getGroupInfoByGroupId($groupid)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT name, creator, group_type, timestamp from omeka_incite_groups WHERE id = ?");
+    $stmt->bind_param("i", $groupid);
+    $stmt->bind_result($name, $creator, $group_type, $time);
+    $stmt->execute();
+    $stmt->fetch();
+    $user = getUserDataByUserId($creator);
+    $group_info = array('id' => $groupid, 'name' => $name, 'creator' => $user, 'type' => $group_type, 'created_time' => $time);
+    $db->close();
+    return $group_info;
+    
+}
 
 
 ?>
