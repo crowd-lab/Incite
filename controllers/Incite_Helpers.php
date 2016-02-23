@@ -1,7 +1,8 @@
 <?php
 
 function get_image_url_for_item($item) {
-    $url_path = (isset($_SERVER['HTTPS']) ? "https" : "http") . '://'. $_SERVER['HTTP_HOST'] . '/m4j/files/original/';
+    //$url_path = (isset($_SERVER['HTTPS']) ? "https" : "http") . '://'. $_SERVER['HTTP_HOST'] . '/m4j/files/original/';
+    $url_path = getFullOmekaUrl().'/files/original/';
     if ($item == null)
         return '';
 
