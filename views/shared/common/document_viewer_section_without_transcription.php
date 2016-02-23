@@ -27,7 +27,7 @@
                 	aria-hidden="true" data-trigger="hover"
                     data-toggle="popover" data-html="true"
                     data-viewport=".document-header"  
-                    data-title="Document Information" 
+                    data-title="<strong>Document Information</strong>" 
                     data-content="<?php echo "<strong>Title:</strong> "
                     		. metadata($transcription, array('Dublin Core', 'Title'))
                     		. "<br><br> <strong>Date:</strong> " 
@@ -36,7 +36,7 @@
                             . metadata($this->transcription, array('Item Type Metadata', 'Location')) 
                             . "<br><br> <strong>Description:</strong> " 
                             . metadata($this->transcription, array('Dublin Core', 'Description')); ?>" 
-                    data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                 </span>
             </div> 
             <div class="wrapper">
@@ -73,8 +73,8 @@
         top: -5px;
         display: inline-block;
         overflow: hidden;
-        max-width: 70%;
-        height: 30px;
+        max-width: 90%;
+        height: 32px;
         white-space: nowrap;
         text-overflow: ellipsis;
     }
@@ -82,7 +82,7 @@
     #document-info-glyphicon {
         color: #337AB7; 
         font-size: 20px;
-        top: -6px;
+        top: -8px;
     }
 
     .popover {

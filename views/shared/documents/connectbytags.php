@@ -33,7 +33,7 @@
                         data-toggle="popover" data-html="true"
                         data-title="<strong>Reading document summaries</strong>" 
                         data-content="<?php echo "Mouse over a document's image to trigger a popover with the summary of that document." ?>" 
-                        data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                        data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                 </p>
                 <?php foreach((array)$this->related_documents as $document): ?>
