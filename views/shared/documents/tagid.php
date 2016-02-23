@@ -98,9 +98,10 @@
                                 <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
+                                    data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a category</strong>" 
                                     data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than 'unknown' to be accepted." ?>" 
-                                    data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                                 </span>
                             </th>
                             <th>
@@ -108,9 +109,10 @@
                                 <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
+                                    data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a subcategory</strong>" 
                                     data-content="<?php echo "For the given tag and category, select the appropriate subcategories, if any. If it doesn't fall into any subcategories simply leave none selected." ?>" 
-                                    data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                                 </span>
                             </th>
                             <th>
