@@ -64,16 +64,16 @@ function appendNewComment(dataArray)
         dynamicDiv.className = "cmmnt-content";
         var label_color = 'gray';
         if (commentType == 0)  //transcribe
-            label_color = 'red';
+            label_color = 'transcribe-color'; //'#D9534F';
         else if (commentType == 1) //tag
-            label_color = 'blue';
+            label_color = 'tag-color';
         else if (commentType == 2) //connect
-            label_color = 'green';
+            label_color = 'connect-color';
         else if (commentType == 3) //viewing
-            label_color = 'orange';
+            label_color = 'view-color';
         else
             label_color = 'gray';
-        dynamicDiv.innerHTML = '<header><a href="'+fullInciteUrl+'/users/view/'+commentsArray[i]['user_info'][5]+'" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span style="background-color: '+label_color+';" class="comment-type label label-primary label-pill" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+        dynamicDiv.innerHTML = '<header><a href="'+fullInciteUrl+'/users/view/'+commentsArray[i]['user_info'][5]+'" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span class="comment-type label label-primary label-pill '+label_color+'" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
 
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
