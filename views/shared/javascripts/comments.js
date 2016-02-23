@@ -13,9 +13,9 @@ function getNewComments(docId)
         data: {documentId: documentId},
         success: function (data)
         {
-            console.log(data);
             var commentsArray = JSON.parse(data);
 
+            console.log(commentsArray);
             for (var i = 0; i < commentsArray.length; i++)
             {
                 var databaseDate = new Date(commentsArray[i]['question_timestamp']);
@@ -40,6 +40,8 @@ function commentTypeToTypeName(type)
         return "Tagging";
     else if (type == 2)
         return "Connecting";
+    else if (type == 3) 
+        return "Viewing";
     else
         return "Unknown";
 }
@@ -68,6 +70,8 @@ function appendNewComment(dataArray)
             label_color = 'blue';
         else if (commentType == 2) //connect
             label_color = 'green';
+        else if (commentType == 2) //viewing
+            label_color = 'yellow';
         else
             label_color = 'gray';
         dynamicDiv.innerHTML = '<header><a href="'+fullInciteUrl+'/users/view/'+commentsArray[i]['user_info'][5]+'" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span style="background-color: '+label_color+';" class="comment-type label label-primary label-pill" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
@@ -202,6 +206,8 @@ function submitComment(documentId)
 {
     var commentText = document.getElementById('comment').value;
     //var documentId = <?php echo $this->transcription->id; ?>;
+    console.log(documentId + " " + commentText + " " + comment_type);
+
     var request = $.ajax({
         type: "POST",
         url: fullInciteUrl+"/ajax/postcomment",

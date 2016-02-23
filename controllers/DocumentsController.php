@@ -643,4 +643,55 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                                           'time' => '5');
         }
     }
+
+    public function viewAction() {
+        $this->_helper->db->setDefaultModelName('Item');
+
+        $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+        $this->view->category_colors = $category_colors;
+
+        if ($this->_hasParam('id')) {
+            $this->_helper->viewRenderer('viewid');
+
+            //make sure the document is valid
+            $document_id = $this->_getParam('id');
+            $this->view->documentId = $document_id;
+            $document = $this->_helper->db->find($document_id);
+
+            if ($document != null) {
+                $this->view->document = $document;
+                $this->view->image_url = get_image_url_for_item($document);
+            }
+
+            //find the transcription for the document
+            $transcription = getIsAnyTranscriptionApproved($document_id);
+            $this->view->hasTranscription = false;
+
+            if ($transcription != null) {
+                $this->view->hasTranscription = true;
+                $this->view->transcription_id = $transcription[count($transcription)-1];
+                $this->view->transcription = getTranscriptionText($this->view->transcription_id);
+            }
+
+            //find the tagged transcription of the document
+            $this->view->hasTaggedTranscription = false;
+
+            if (hasTaggedTranscription($document_id)) {
+                $taggedTranscriptions = getAllTaggedTranscriptions($document_id);
+                $this->view->taggedTranscription = $taggedTranscriptions[count($taggedTranscriptions)-1];
+                $this->view->hasTaggedTranscription = true;
+            }
+
+            //find if a document has been connected
+            $this->view->hasBeenConnected = false;
+            $subjectsForDocument = getAllSubjectsOnId($document_id);
+
+            if (!empty($subjectsForDocument)) {
+                $this->view->hasBeenConnected = true;
+                $this->view->subjects = $subjectsForDocument;
+            }
+        }
+    }
+
+    
 }

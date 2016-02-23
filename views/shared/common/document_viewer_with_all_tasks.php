@@ -15,9 +15,12 @@
 	?>
 
 	<script type="text/javascript">
-		var selectTab = function (tabToSelect, tabToUnselect) {
+		var selectTab = function (tabToSelect, tabsToUnselect) {
 		    tabToSelect.addClass("active");
-		    tabToUnselect.removeClass("active");
+
+            tabsToUnselect.forEach(function(tab) {
+                tab.removeClass("active");
+            });
 		};
 
 		var setLegendWidth = function() {
@@ -36,25 +39,51 @@
 
 		$(document).ready(function () {
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
-		    $("#document_img").hide();
 
-		    $("#hide").click(function () {
+
+		    $("#transcribe_copy").hide();
+            $("#tagged_transcribe_copy").hide();
+            $("#connect_subjects_copy").hide();
+
+		    $("#transcriptionTab").click(function () {
 		        $("#document_img").hide();
-		        $("#transcribe_copy").show();
-		        selectTab($("#hide"), $("#show"));
+                $("#transcribe_copy").show();
+                $("#tagged_transcribe_copy").hide();
+                $("#connect_subjects_copy").hide();
+		        selectTab($("#transcriptionTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#connectTab")]);
 		    });
 
-		    $("#show").click(function () {
+		    $("#documentTab").click(function () {
 		        $("#document_img").show();
 		        $("#transcribe_copy").hide();
-		        selectTab($("#show"), $("#hide"));
+                $("#tagged_transcribe_copy").hide();
+                $("#connect_subjects_copy").hide();
+		        selectTab($("#documentTab"), [$("#transcriptionTab"), $("#taggedTranscriptionTab"), $("#connectTab")]);
 		    });
+
+            $("#taggedTranscriptionTab").click(function () {
+                $("#document_img").hide();
+                $("#transcribe_copy").hide();
+                $("#tagged_transcribe_copy").show();
+                $("#connect_subjects_copy").hide();
+                selectTab($("#taggedTranscriptionTab"), [$("#documentTab"), $("#transcriptionTab"), $("#connectTab")]);
+            });
+
+            $("#connectTab").click(function () {
+                $("#document_img").hide();
+                $("#transcribe_copy").hide();
+                $("#tagged_transcribe_copy").hide();
+                $("#connect_subjects_copy").show();
+                selectTab($("#connectTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#taggedTranscriptionTab")]);
+            });
 
 		    setLegendWidth();
 
-		    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
+		    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
 
-	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
+	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
+            $('#tagged_transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
+            $('#connect_subjects_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
 
 	        $("#document_img").iviewer({
 	            src: "<?php echo $this->image_url; ?>",
@@ -87,22 +116,32 @@
             </span>
         </div> 
         
+        <div id="legend-container">
+            <span><b>Legend: </b></span>
+            <?php foreach ((array)$this->category_colors as $category => $color): ?>
+                <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
+            <?php endforeach; ?>
+        </div>
+
         <div id="tabs-and-legend-container">
             <ul class="nav nav-tabs document-display-type-tabs">
-                <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
-                <li role="presentation" id="show"><a href="#">Document</a></li>
+                <li role="presentation" class="active" id="documentTab"><a href="#">Document</a></li>
+                <li role="presentation" id="transcriptionTab"><a href="#">Transcription</a></li>
+                <li role="presentation" id="taggedTranscriptionTab"><a href="#">Tagged Transcription</a></li>
+                <li role="presentation" id="connectTab"><a href="#">Connected Subjects</a></li>
             </ul>
-
-            <div id="legend-container">
-                <span><b>Legend: </b></span>
-                <?php foreach ((array)$this->category_colors as $category => $color): ?>
-                    <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
-                <?php endforeach; ?>
-            </div>
         </div>
 
         <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;">
             <?php print_r($this->transcription); ?>
+        </div>
+
+        <div style="border: 1px solid; overflow: scroll;" name="tagged_transcribe_text" rows="10" id="tagged_transcribe_copy" style="width: 100%;">
+            <?php print_r($this->taggedTranscription); ?>
+        </div>
+
+        <div style="border: 1px solid; overflow: scroll;" name="connect_subjects_text" rows="10" id="connect_subjects_copy" style="width: 100%;">
+            <?php print_r($this->subjects); ?>
         </div>
 
         <div class="wrapper">
@@ -139,10 +178,8 @@
     }
 
     #legend-container {
-        display: inline-block; 
-        position: relative; 
-        top: 10px;
-        text-align: right;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .viewer {

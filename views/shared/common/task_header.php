@@ -11,6 +11,8 @@
 		    	currentTask = "Tag";
 		    } else if (pathname.indexOf("/connect/") > -1) {
 		    	currentTask = "Connect";
+		    } else if (pathname.indexOf("/view/") > -1) {
+		    	currentTask = "View Document Details"; 
 		    } else {
 		    	alert("Using task headers on a non-task page");
 		    }

@@ -8,7 +8,9 @@
 		    $currentTaskID = $this->tag->id;
 		} else if (strpos($currentURL, "/connect/") !== false) {
 		    $currentTaskID = $this->connection->id;
-		} else {
+		} else if (strpos($currentURL, "/view/") !== false) {
+            $currentTaskID = $this->document->id;
+        } else {
 			echo "Comments not on a task page";
 			die();
 		}
