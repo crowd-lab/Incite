@@ -32,9 +32,10 @@
                     <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
                         aria-hidden="true" data-trigger="hover"
                         data-toggle="popover" data-html="true"
+                        data-viewport="#subject-form";
                         data-title="<strong>Marking Categories</strong>" 
                         data-content="<?php echo "Simply choose all of the categories you think apply to this document. If none apply, select 'None of the above topics applied'." ?>" 
-                        data-placement="right" data-id="<?php echo $transcription->id; ?>">
+                        data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                 </p>
 

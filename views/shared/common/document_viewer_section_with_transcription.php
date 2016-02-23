@@ -72,7 +72,7 @@
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
                 data-toggle="popover" data-html="true" data-trigger="hover"
                 data-viewport=".document-header" aria-hidden="true"
-                data-title="Document Information" 
+                data-title="<strong>Document Information</strong>" 
                 data-content="<?php echo "<strong>Title:</strong> "
                     	. metadata($currentTask, array('Dublin Core', 'Title'))
                 		. "<br><br> <strong>Date:</strong> " 
@@ -81,7 +81,7 @@
                         . metadata($currentTask, array('Item Type Metadata', 'Location')) 
                         . "<br><br> <strong>Description:</strong> " 
                         . metadata($currentTask, array('Dublin Core', 'Description')); ?>" 
-                data-placement="right" data-id="<?php echo $currentTask->id; ?>">
+                data-placement="bottom" data-id="<?php echo $currentTask->id; ?>">
             </span>
         </div> 
         
@@ -120,8 +120,8 @@
         top: -5px;
         overflow: hidden;
         display: inline-block;
-        max-width: 70%;
-        height: 30px;
+        max-width: 90%;
+        height: 32px;
         white-space: nowrap;
         text-overflow: ellipsis;
     }
@@ -129,7 +129,7 @@
      #document-info-glphicon {
         color: #337AB7; 
         font-size: 20px;
-        top: -6px;
+        top: -8px;
     }
 
     .popover {
