@@ -6,9 +6,7 @@
 		    $currentTask = $this->tag;
 		} else if (strpos($currentURL, "/connect/") !== false) {
 		    $currentTask = $this->connection;
-		} else if (strpos($currentURL, "/view/") !== false) {
-            $currentTask = $this->document;
-        } else {
+		} else {
 			echo "Not on a connection or tagging page";
 			die();
 		}

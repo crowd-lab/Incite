@@ -2,18 +2,18 @@
 	<?php
 		$currentURL = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
-		if (strpos($currentURL, "/transcribe/") !== false) {
-		    $currentTaskID = $this->transcription->id;
-		} else if (strpos($currentURL, "/tag/") !== false) {
-		    $currentTaskID = $this->tag->id;
-		} else if (strpos($currentURL, "/connect/") !== false) {
-		    $currentTaskID = $this->connection->id;
-		} else if (strpos($currentURL, "/view/") !== false) {
+        if (strpos($currentURL, "/transcribe/") !== false) {
+            $currentTaskID = $this->transcription->id;
+        } else if (strpos($currentURL, "/tag/") !== false) {
+            $currentTaskID = $this->tag->id;
+        } else if (strpos($currentURL, "/connect/") !== false) {
+            $currentTaskID = $this->connection->id;
+        } else if (strpos($currentURL, "/view/") !== false) {
             $currentTaskID = $this->document->id;
         } else {
-			echo "Comments not on a task page";
-			die();
-		}
+            echo "Comments not on a task page";
+            die();
+        }
 	?>
 
 	<script type="text/javascript">
