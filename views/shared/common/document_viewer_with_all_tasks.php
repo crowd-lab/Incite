@@ -2,64 +2,59 @@
 	<?php
 		$currentURL = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
-		if (strpos($currentURL, "/tag/") !== false) {
-		    $currentTask = $this->tag;
-		} else if (strpos($currentURL, "/connect/") !== false) {
-		    $currentTask = $this->connection;
-		} else if (strpos($currentURL, "/view/") !== false) {
+        if (strpos($currentURL, "/view/") !== false) {
             $currentTask = $this->document;
         } else {
-			echo "Not on a connection or tagging page";
-			die();
-		}
+            echo "Not on view page";
+            die();
+        }
 	?>
 
 	<script type="text/javascript">
-		var selectTab = function (tabToSelect, tabsToUnselect) {
-		    tabToSelect.addClass("active");
+        var selectTab = function (tabToSelect, tabsToUnselect) {
+            tabToSelect.addClass("active");
 
             tabsToUnselect.forEach(function(tab) {
                 tab.removeClass("active");
             });
-		};
+        };
 
-		var setLegendWidth = function() {
-			$('#legend-container').width(
-				$('#tabs-and-legend-container').width()
-				-
-				$(".document-display-type-tabs").width()
-				-
-				7 //so it doesn't overflow
-			); 
-		};
+        var setLegendWidth = function() {
+            $('#legend-container').width(
+                $('#tabs-and-legend-container').width()
+                -
+                $(".document-display-type-tabs").width()
+                -
+                7 //so it doesn't overflow
+            ); 
+        };
 
-		$('#work-zone').ready(function() {
-		    $('#work-view').width($('#work-zone').width());
-		});
+        $('#work-zone').ready(function() {
+            $('#work-view').width($('#work-zone').width());
+        });
 
-		$(document).ready(function () {
-		    $('[data-toggle="popover"]').popover({trigger: "hover"});
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover({trigger: "hover"});
 
-
-		    $("#transcribe_copy").hide();
+            $("#transcribe_copy").hide();
             $("#tagged_transcribe_copy").hide();
             $("#connect_subjects_copy").hide();
 
-		    $("#transcriptionTab").click(function () {
-		        $("#document_img").hide();
+            $("#transcriptionTab").click(function () {
+                $("#document_img").hide();
                 $("#transcribe_copy").show();
                 $("#tagged_transcribe_copy").hide();
                 $("#connect_subjects_copy").hide();
-		        selectTab($("#transcriptionTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#connectTab")]);
-		    });
+                selectTab($("#transcriptionTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#connectTab")]);
+            });
 
-		    $("#documentTab").click(function () {
-		        $("#document_img").show();
-		        $("#transcribe_copy").hide();
+            $("#documentTab").click(function () {
+                $("#document_img").show();
+                $("#transcribe_copy").hide();
                 $("#tagged_transcribe_copy").hide();
                 $("#connect_subjects_copy").hide();
-		        selectTab($("#documentTab"), [$("#transcriptionTab"), $("#taggedTranscriptionTab"), $("#connectTab")]);
-		    });
+                selectTab($("#documentTab"), [$("#transcriptionTab"), $("#taggedTranscriptionTab"), $("#connectTab")]);
+            });
 
             $("#taggedTranscriptionTab").click(function () {
                 $("#document_img").hide();
@@ -77,20 +72,20 @@
                 selectTab($("#connectTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#taggedTranscriptionTab")]);
             });
 
-		    setLegendWidth();
+            setLegendWidth();
 
-		    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
+            $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
 
-	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
+            $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
             $('#tagged_transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
             $('#connect_subjects_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
 
-	        $("#document_img").iviewer({
-	            src: "<?php echo $this->image_url; ?>",
-	            zoom_min: 1,
-	            zoom: "fit"
-        	});
-		});
+            $("#document_img").iviewer({
+                src: "<?php echo $this->image_url; ?>",
+                zoom_min: 1,
+                zoom: "fit"
+            });
+        });
 	</script>
 </head>
 
@@ -106,7 +101,7 @@
                 data-title="<strong>Document Information</strong>" 
                 data-content="<?php echo "<strong>Title:</strong> "
                     	. metadata($currentTask, array('Dublin Core', 'Title'))
-                		. "<br><br> <strong>Date:</strong> " 
+                        . "<br><br> <strong>Date:</strong> " 
                         . metadata($currentTask, array('Dublin Core', 'Date')) 
                         . "<br><br> <strong>Location:</strong> " 
                         . metadata($currentTask, array('Item Type Metadata', 'Location')) 
@@ -171,11 +166,11 @@
 </body>
 
 <style>
-	.document-header {
+    .document-header {
         margin-top: -30px;
     }
 
-	.document-title {
+    .document-title {
         font-size: 25px; 
         position: relative; 
         top: -5px;
@@ -187,14 +182,14 @@
         text-overflow: ellipsis;
     }
 
-     #document-info-glphicon {
+    #document-info-glphicon {
         color: #337AB7; 
         font-size: 20px;
         top: -8px;
     }
 
     .popover {
-    	max-width: 100%;
+        max-width: 100%;
     }
 
     #legend-container {
