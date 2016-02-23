@@ -19,16 +19,6 @@
             });
         };
 
-        var setLegendWidth = function() {
-            $('#legend-container').width(
-                $('#tabs-and-legend-container').width()
-                -
-                $(".document-display-type-tabs").width()
-                -
-                7 //so it doesn't overflow
-            ); 
-        };
-
         $('#work-zone').ready(function() {
             $('#work-view').width($('#work-zone').width());
         });
@@ -71,8 +61,6 @@
                 $("#connect_subjects_copy").show();
                 selectTab($("#connectTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#taggedTranscriptionTab")]);
             });
-
-            setLegendWidth();
 
             $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);
 
