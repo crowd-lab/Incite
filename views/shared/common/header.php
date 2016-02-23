@@ -105,10 +105,11 @@
                     $('#welcome_message').prop("disabled", true);
                     
                     $('#logout_button').text('Login/Sign-up');
-                    $('#logout_button').removeAttr('onclick');
-                    $('#logout_button')[0].setAttribute('data-toggle', 'modal')
-                    $('#logout_button')[0].setAttribute('data-target', '#login-signup-dialog');
+                    $('#logout_button').removeAttr('onClick');
+                    $('#logout_button').attr('data-toggle', 'modal')
+                    $('#logout_button').attr('data-target', '#login-signup-dialog');
                     $('#logout_button').prop('id', 'login_modal');
+
                     if (document.getElementById("onLogin") != null)
                     {
                         $('#onLogin').load(document.URL + ' #onLogin');
@@ -125,6 +126,20 @@
             });
         }
 
+        function setProfileLinkOnClick(documentId) {
+            if (documentId) {
+                $('#user_profile').on('click', function (e) {
+                    window.location.href = fullInciteUrl+'/users/view/'+documentId;
+                });
+            } else {
+                <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
+                    $('#user_profile').on('click', function (e) {
+                        window.location.href = fullInciteUrl+'/users/view/<?php echo $_SESSION['Incite']['USER_DATA']['id']; ?>';
+                    });
+                <?php endif; ?>
+            }
+        }
+
         <?php
             if (isset($_GET['time'])) {
                 $time_segs = explode(' - ', $_GET['time']);
@@ -134,6 +149,8 @@
         ?>
 
         $(document).ready(function () {
+            setProfileLinkOnClick();
+
             $('#time_picker').daterangepicker({
                 locale     : { format: 'YYYY-MM-DD'},
                 "startDate": "<?php echo (isset($start_time) ? $start_time : "1830-01-01"); ?>",   //could be dynamic or user's choice
@@ -150,12 +167,6 @@
 
             $('#location').val("<?php echo (isset($_GET['location']) ? $_GET['location'] : ""); ?>");
             $('#keywords').val("<?php echo (isset($_GET['keywords']) ? $_GET['keywords'] : ""); ?>");
-
-<?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
-            $('#user_profile').on('click', function (e) {
-                window.location.href = fullInciteUrl+'/users/view/<?php echo $_SESSION['Incite']['USER_DATA']['id']; ?>';
-            });
-<?php endif; ?>
 
             $('#login-button').on('click', function (e) {
                 if ($('#login-tab').hasClass('active')) {
@@ -182,10 +193,11 @@
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
+
                                             $('#welcome_message').text(dataArray['first_name']);
-                                            $('#welcome_message').prop('href', "user_profile!");
                                             $('#welcome_message').prop('disabled', false);
                                             $('#welcome_message').prop('id', 'user_profile');
+                                            setProfileLinkOnClick(dataArray['id']);
                                             
                                             $('#login_modal').text("Logout");
                                             $('#login_modal').removeAttr('data-toggle');
@@ -243,22 +255,18 @@
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
-                                            //console.log(dataArray);
-                                            var navBarElement = $('ul[class="nav navbar-nav navbar-right"]');
-                                            navBarElement.find('li').each(function ()
-                                            {
-                                                $(this).remove();
-                                            });
-                                            
-                                            
+
                                             $('#welcome_message').text(dataArray['first_name']);
-                                            $('#welcome_message').prop('href', "user_profile!");
+                                            $('#welcome_message').removeAttr('disabled');
                                             $('#welcome_message').prop('id', 'user_profile');
-                                            
+                                            setProfileLinkOnClick(dataArray['id']);
+
                                             $('#login_modal').text("Logout");
                                             $('#login_modal').removeAttr('data-toggle');
                                             $('#login_modal').removeAttr('data-target');
-                                            $('#login_modal')[0].setAttribute('onclick', 'logout()');
+                                            $('#login_modal').click(function() {
+                                                logout();
+                                            });
                                             $('#login_modal').prop('id', 'logout_button');
 
 
@@ -326,7 +334,7 @@
                 <ul class="nav navbar-nav navbar-right" style="position: relative; right: 5px;">
                     <li>
                         <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-                            <button id="user_profile" type="button" class="btn btn-default navbar-btn"  href="user_profile!"><?php echo $_SESSION['Incite']['USER_DATA']['first_name']; //first name    ?></button>
+                            <button id="user_profile" type="button" class="btn btn-default navbar-btn"><?php echo $_SESSION['Incite']['USER_DATA']['first_name']; //first name    ?></button>
                             <button id="logout_button" type="button" class="btn btn-default navbar-btn" onclick="logout()">Logout</button>
                         <?php else: ?>
                             <button id="welcome_message" type="button" class="btn btn-default navbar-btn" disabled>Welcome Guest</button>
