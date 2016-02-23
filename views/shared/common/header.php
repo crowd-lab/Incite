@@ -151,7 +151,7 @@
             $('#location').val("<?php echo (isset($_GET['location']) ? $_GET['location'] : ""); ?>");
             $('#keywords').val("<?php echo (isset($_GET['keywords']) ? $_GET['keywords'] : ""); ?>");
 
-<?php if (isset($_SESSION['Incite']['USER_DATA']['id']): ?>
+<?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
             $('#user_profile').on('click', function (e) {
                 window.location.href = fullInciteUrl+'/users/view/<?php echo $_SESSION['Incite']['USER_DATA']['id']; ?>';
             });
