@@ -589,11 +589,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if (count($document_ids) <= 0) {
                 //Try tagged documents
                 $connectable_documents = getDocumentsWithTags();
-                if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Change your search criteria and try again.';
-                } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="/m4j/incite/documents/transcribe">transcribe</a> or <a href="/m4j/incite/documents/tag">tag</a>!';
-                }
 
                 if (isSearchQuerySpecifiedViaGet()) {
                     $searched_item_ids = getSearchResultsViaGetQuery();
@@ -605,10 +600,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
             }
 
-            $records = array();
-            for ($i = 0; $i < count($document_ids); $i++) {
-                $records[] = $this->_helper->db->find($document_ids[$i]);
+            if (count($document_ids) <= 0) {
+                if (isSearchQuerySpecifiedViaGet()) {
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Change your search criteria and try again.';
+                } else {
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="/m4j/incite/documents/transcribe">transcribe</a> or <a href="/m4j/incite/documents/tag">tag</a>!';
+                }
             }
+
 
             $current_page = 1;
             if (isset($_GET['page']))
@@ -616,6 +615,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $records_counter = 0;
             $total_pages = ceil(count($connectable_documents) / $max_records_to_show);
+            $records = array();
+            if (count($document_ids) > 0) {
+                for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
+                    if ($records_counter++ >= $max_records_to_show)
+                        break;
+                    $records[] = $this->_helper->db->find($document_ids[$i]);
+                }
+            }
 
             $this->view->total_pages = $total_pages;
             $this->view->current_page = $current_page;
