@@ -56,6 +56,10 @@
         .glyphicon-unchecked {
             color: #F0AD4E;
         }
+
+        #discussion-seperation-line {
+            margin-top: -6px;
+        }
     </style>
 </head>
     
@@ -63,6 +67,7 @@
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
     ?>
+
     <div class="container-fluid">
         <div class="container-fluid" style="padding: 0px;">
 
@@ -114,6 +119,8 @@
                         ?>
                     </ul>
                 </div>
+
+                <hr size=2 id="discussion-seperation-line">
 
                 <?php
                     include(dirname(__FILE__) . '/../common/task_comments_section.php');

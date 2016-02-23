@@ -141,7 +141,27 @@
         </div>
 
         <div style="border: 1px solid; overflow: scroll;" name="connect_subjects_text" rows="10" id="connect_subjects_copy" style="width: 100%;">
-            <?php print_r($this->subjects); ?>
+            <div id="subjects-list">
+                <h3 id="positive-subjects-header">Subjects marked as relating to this document</h3>
+                <?php 
+                    forEach($this->subjects as $subject) {
+                        if ($subject['is_positive']) {
+                            echo "<p class='positive-subject'>".$subject['subject_name']."<p>";
+                        }
+                    }
+                ?>
+
+                <hr size=2>
+
+                <h3 id="negative-subjects-header">Subjects marked as not relating to this document</h3>
+                <?php 
+                    forEach($this->subjects as $subject) {
+                        if (!$subject['is_positive']) {
+                            echo "<p class='negative-subject'>".$subject['subject_name']."<p>";
+                        }
+                    }
+                ?>
+            </div>
         </div>
 
         <div class="wrapper">
@@ -211,5 +231,17 @@
         font-size: 12px;
         position: relative;
         top: 5px;
+    }
+
+    #subjects-list {
+        text-align: center;
+    }
+
+    #positive-subjects-header {
+        color: #5CB85C;
+    }
+
+    #negative-subjects-header {
+        color: #D9534F;
     }
 </style>
