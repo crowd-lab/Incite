@@ -86,6 +86,7 @@
     <!-- /.container -->
     <script type="text/javascript">
         $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
                 if ($('#transcription').val() === "") {
                     notifyOfErrorInForm('Please provide a transcription of the document');
@@ -129,6 +130,10 @@
             margin-top: 35px;
             margin-bottom: 0px;
         }
+        .tooltip {
+            position: fixed;
+        }
+
     </style>
 
 </body>

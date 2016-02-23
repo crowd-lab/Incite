@@ -11,11 +11,11 @@
 }
 
 .iviewer_cursor {
-    cursor: url(/m4j/plugins/Incite/views/shared/images/hand.cur) 6 8, pointer;
+    cursor: url(../images/hand.cur) 6 8, pointer;
 }
 
 .iviewer_drag_cursor {
-    cursor: url(/m4j/plugins/Incite/views/shared/images/grab.cur) 6 8, pointer;
+    cursor: url(../images/grab.cur) 6 8, pointer;
 }
 
 .iviewer_button {
@@ -27,22 +27,22 @@
 
 .iviewer_zoom_in {
     left: 20px;
-    background: url(/m4j/plugins/Incite/views/shared/images/iviewer.zoom_in.gif);
+    background: url(../images/iviewer.zoom_in.gif);
 }
 
 .iviewer_zoom_out {
     left: 55px;
-    background: url(/m4j/plugins/Incite/views/shared/images/iviewer.zoom_out.gif);
+    background: url(../images/iviewer.zoom_out.gif);
 }
 
 .iviewer_zoom_zero {
     left: 90px;
-    background: url(/m4j/plugins/Incite/views/shared/images/iviewer.zoom_zero.gif);
+    background: url(../images/iviewer.zoom_zero.gif);
 }
 
 .iviewer_zoom_fit {
     left: 125px;
-    background: url(/m4j/plugins/Incite/views/shared/images/iviewer.zoom_fit.gif);
+    background: url(../images/iviewer.zoom_fit.gif);
 }
 
 .iviewer_zoom_status {
@@ -56,10 +56,10 @@
 
 .iviewer_rotate_left {
     left: 227px;
-    background: #fff url(/m4j/plugins/Incite/views/shared/images/iviewer.rotate_left.png) center center no-repeat;
+    background: #fff url(../images/iviewer.rotate_left.png) center center no-repeat;
 }
 
 .iviewer_rotate_right {
     left: 262px;
-    background: #fff url(/m4j/plugins/Incite/views/shared/images/iviewer.rotate_right.png) center center no-repeat;
+    background: #fff url(../images/iviewer.rotate_right.png) center center no-repeat;
 }

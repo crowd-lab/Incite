@@ -800,30 +800,30 @@ $.widget( "ui.iviewer", $.ui.mouse, {
     {
         var me=this;
 
-        $("<div>", { 'class': "iviewer_zoom_in iviewer_common iviewer_button"})
+        $('<div title="Zoom In" class="iviewer_zoom_in iviewer_common iviewer_button">')
                     .bind('mousedown touchstart',function(){me.zoom_by(1); return false;})
                     .appendTo(this.container);
 
-        $("<div>", { 'class': "iviewer_zoom_out iviewer_common iviewer_button"})
+        $('<div title="Zoom Out" class="iviewer_zoom_out iviewer_common iviewer_button">')
                     .bind('mousedown touchstart',function(){me.zoom_by(- 1); return false;})
                     .appendTo(this.container);
 
-        $("<div>", { 'class': "iviewer_zoom_zero iviewer_common iviewer_button"})
+        $('<div title="Original Image Size" class="iviewer_zoom_zero iviewer_common iviewer_button">')
                     .bind('mousedown touchstart',function(){me.set_zoom(100); return false;})
                     .appendTo(this.container);
 
-        $("<div>", { 'class': "iviewer_zoom_fit iviewer_common iviewer_button"})
+        $('<div title="Fit image in the viewer" class="iviewer_zoom_fit iviewer_common iviewer_button">')
                     .bind('mousedown touchstart',function(){me.fit(this); return false;})
                     .appendTo(this.container);
 
         this.zoom_object = $("<div>").addClass("iviewer_zoom_status iviewer_common")
                                     .appendTo(this.container);
 
-        $("<div>", { 'class': "iviewer_rotate_left iviewer_common iviewer_button"})
+        $('<div title="Rotate Left" class="iviewer_rotate_left iviewer_common iviewer_button">')
                     .bind('mousedown touchstart',function(){me.angle(-90); return false;})
                     .appendTo(this.container);
 
-        $("<div>", { 'class': "iviewer_rotate_right iviewer_common iviewer_button" })
+        $('<div title="Rotate Right" class="iviewer_rotate_right iviewer_common iviewer_button">')
                     .bind('mousedown touchstart',function(){me.angle(90); return false;})
                     .appendTo(this.container);
 
