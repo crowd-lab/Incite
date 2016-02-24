@@ -6,7 +6,7 @@
 
 	<body>
 	====
-		Latest Version of User Instructions for Incite: 02/01/2016 (<a href="User instructions - 2016-02-01.docx">Download</a>)
+		Latest Version of User Instructions for Incite: 02/23/2016 (<a href="User instructions - 2016-02-23.docx">Download</a>)
 	====
 
 		<br>
