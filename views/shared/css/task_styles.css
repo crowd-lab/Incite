@@ -39,3 +39,23 @@
     color: #337AB7;
     top: 3px;
 }
+
+.transcribe-color {
+    color: #000000;
+    background-color: #F7F2C5;
+}
+
+.tag-color {
+    color: #000000;
+    background-color: #F7D1C5;
+}
+
+.connect-color {
+    color: #000000;
+    background-color: #C9D1F8;
+} 
+
+.discuss-color {
+    color: #000000;
+    background-color: #C5F7EB;
+}
