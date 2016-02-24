@@ -4,36 +4,6 @@
 <head>
     <script type="text/javascript">
         var selectedReferences = null;
-        function searchForDocuments2()
-        {
-            var currentSearch = document.getElementById('search_query').value;
-            if (currentSearch !== "")
-            {
-                var request = $.ajax({
-                    type: "POST",
-                    url: "http://localhost/m4j/incite/ajax/searchkeyword2",
-                    data: {keyword: currentSearch},
-                    success: function(data)
-                    {
-                        $("#search_results").empty();
-                        var parsedData = JSON.parse(data);
-                        $('#result_info').text(" ("+parsedData.length+" document(s) found)");
-                        $.each(parsedData, function (idx) {
-                            $('#search_results').append('<br><div><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+this.uri+'"> '+this.title+' <span class="document_text" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+this.description+'" data-id="'+this.id+'" data-uri="'+this.uri+'" data-title="'+this.title+'"> (<u>summary</u>)</span></div><br>');
-                        });
-                        $('#search_results').append('</select>');
-                        $('#search_results span').each(function (idx) {
-                            $(this).popover();
-                        });
-                    }
-                });
-            }
-            else
-            {
-                $("#document_icons").empty();
-                //clear selector
-            }
-        }
     </script>
     <style> 
         .tabs-below > .nav-tabs,
@@ -167,10 +137,10 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="col-md-5">
             <div class="row" id="content-1">
-                <a href="/m4j/incite/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
+                <a href="<?php echo getFullInciteUrl(); ?>/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
                 <h3><?php echo $this->title; ?></h3>
                 <br>
-                <h4>Related documents (click the thumbnail to open): </h4>
+                <h4>Related documents: </h4>
                 <div id="references" style="white-space: nowrap;">
 <?php foreach ((array) $this->references as $reference): ?>
                     <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-description="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>" data-data="<?php echo $reference['date']; ?>" data-location="<?php echo $reference['location']; ?>">
@@ -223,6 +193,20 @@ include(dirname(__FILE__).'/../common/header.php');
                 return false;
             }
         });
+        $(document).on('mouseenter', '#document-tabs a', function(e) {
+            var pos = this.href.indexOf('#doc-');
+            if (pos != -1) {
+                pos += 5;
+                $('div[data-id='+this.href.substring(pos)+']').popover('show');
+            }
+        });
+        $(document).on('mouseleave', '#document-tabs a', function(e) {
+            var pos = this.href.indexOf('#doc-');
+            if (pos != -1) {
+                pos += 5;
+                $('div[data-id='+this.href.substring(pos)+']').popover('hide');
+            }
+        });
         $(document).on('click', '#submit_discussion', function(e) {
             if ($('#discussion_title').val() === "") {
                 notifyOfErrorInForm('The title of the discussion cannot be empty');
@@ -243,45 +227,19 @@ include(dirname(__FILE__).'/../common/header.php');
             
             $('#discussion_form').submit();
         });
-        $('#search_button').on('click', function() {
-            searchForDocuments2();
-        });
-        $('#search_query').on('keypress', function (e) {
-            if (e.keyCode == 13) {
-                e.preventDefault();
-                searchForDocuments2();
-            }
-        });
-        $('#add_reference').on('click', function() {
-            //check if already referenced. If not, add it!
-            //var existing_refs = 
-            var selected_refs = $('#search_results input:checked').parent().find('span.document_text');
-            $('#references div.clearfix').remove()
-            selected_refs.each(function (idx) {
-                var doc_id = $(this).attr('data-id');
-                //if not referenced
-                if ($('#references div[data-id='+doc_id+']').length == 0) {
-                    var cur_doc = $(this);
-                    var new_ref = $('<div class="col-md-2 reference" data-id="'+cur_doc.attr('data-id')+'" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="'+cur_doc.attr('data-content')+'" data-title="'+cur_doc.attr('data-title')+'"><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+cur_doc.attr('data-uri')+'"></div>');
-                    $('#references').append(new_ref);
-                    new_ref.popover();
-                }
-            });
-            $('#references').append('<div class="clearfix"></div>');
-        });
-        $('#delete_reference').on('click', function() {
-            var selected_refs = $('#references input:checked').parent().remove();
-        });
         $('.reference').each(function (idx) {
             $(this).popover();
         });
 
         $('.reference').on('click', function (e) {
-            //case1: document is already in the viewer -> switch to the tab
-            //case2: document is not yet in the viewer -> add the document to the viewer
+            //case 1 of 2: document is not yet in the viewer -> add the document to the viewer
             if ($('#doc-'+this.dataset.id).length <= 0) {
+                while ($('#document-tabs').children().length >= 3) {
+                    $($('#document-tabs').children()[0]).remove();
+                    $($('#document-contents').children()[0]).remove();
+                }
                 //Add tab
-                $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
+                $('#document-tabs').append('<li style="width: 33%;"><a href="#doc-'+this.dataset.id+'" data-toggle="tab"><div style="overflow:hidden; height: 20px; text-overflow: ellipsis;">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></div></a></li>');
                 //Add content
                 var content = '<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">';
                 content += '<ul class="nav nav-tabs" role="tablist">';
@@ -317,6 +275,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     zoom: "fit"
                 });
             }
+            //case 2 of 2: document is already in the viewer -> switch to the tab
             $('ul a[href=#doc-'+this.dataset.id+']').click();
         });
         $('#document-tabs').on('click', 'button.close', function (e) {
