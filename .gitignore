@@ -1,0 +1,5 @@
+.DS_Store
+*.backup
+*.swp
+tmp/
+stanford-ner-2015-04-20/

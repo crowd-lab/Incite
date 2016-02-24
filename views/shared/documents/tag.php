@@ -163,9 +163,9 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php foreach ((array)$this->Tags as $tag): ?>
         <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($tag, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($tag, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $tag->id; ?>">
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
-            <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id."?".$this->query_str; ?>">
+            <a href="<?php echo getFullInciteUrl().'/documents/tag/'.$tag->id."?".$this->query_str; ?>">
 <?php else: ?>
-            <a href="<?php echo INCITE_PATH.'documents/tag/'.$tag->id; ?>">
+            <a href="<?php echo getFullInciteUrl().'/documents/tag/'.$tag->id; ?>">
 <?php endif; ?>
                 <div style="height: 40px; width:40px; float: left;">    
                     <img src="<?php echo $tag->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">      
@@ -175,7 +175,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </a>
         </div>
-<? endforeach; ?>
+<?php endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>
               <ul class="pagination">

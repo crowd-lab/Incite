@@ -12,14 +12,14 @@ include(dirname(__FILE__).'/../common/header.php');
 
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
-                <h1>Join existing discussions or <a class="btn btn-primary" type="button" href="<?php echo INCITE_PATH.'discussions/create'; ?>">Create</a> your own!</h1>
+                <h1>Join existing discussions or <a class="btn btn-primary" type="button" href="<?php echo getFullInciteUrl().'/discussions/create'; ?>">Create</a> your own!</h1>
             </div>
 
             <div class="col-md-10 col-md-offset-1">
                 <ul class="list-group">
 <?php foreach ((array)$this->Discussions as $discussion): ?>
                     <li class="list-group-item">
-                        <a href="<?php echo INCITE_PATH.'discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a> - created by <a href="#"><?php echo $discussion['user_first_name']; ?></a><span class='db_time'><?php echo $discussion['time']; ?></span><span class="badge">Replies: <?php echo $discussion['num_of_replies']; ?></span>
+                        <a href="<?php echo getFullInciteUrl().'/discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a> - created by <a href="<?php echo getFullInciteUrl().'/users/view/'.$discussion['user_id']; ?>"><?php echo $discussion['user_first_name']; ?></a><span class='db_time'><?php echo $discussion['time']; ?></span><span class="badge">Replies: <?php echo $discussion['num_of_replies']; ?></span>
                     </li>
 <?php endforeach; ?>
                 </ul>
@@ -84,6 +84,3 @@ var tl = $('#timeline').jqtimeline({
     <!-- /.container -->
 
 </body>
-
-
-<

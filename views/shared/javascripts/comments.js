@@ -9,7 +9,7 @@ function getNewComments(docId)
     $('#comments').empty();
     var request = $.ajax({
         type: "POST",
-        url: "/m4j/incite/ajax/getcommentsdoc",
+        url: fullInciteUrl+"/ajax/getcommentsdoc",
         data: {documentId: documentId},
         success: function (data)
         {
@@ -22,7 +22,7 @@ function getNewComments(docId)
                 var commentsArrayObject = {commentsArray};
                 var isSignedIn = $.ajax({
                     type: 'POST',
-                    url: "/m4j/incite/ajax/issignedin",
+                    url: fullInciteUrl+"/ajax/issignedin",
                     async: false,
                     data: {loopVar: i, commentArray: commentsArray, format: format},
                     success: appendNewComment
@@ -34,11 +34,13 @@ function getNewComments(docId)
 function commentTypeToTypeName(type)
 {
     if (type == 0)
-        return "Transcribe";
+        return "Transcribing";
     else if (type == 1)
-        return "Tag";
+        return "Tagging";
     else if (type == 2)
-        return "Connect";
+        return "Connecting";
+    else if (type == 3) 
+        return "Viewing";
     else
         return "Unknown";
 }
@@ -60,13 +62,24 @@ function appendNewComment(dataArray)
         dynamicLi.className = "cmmnt";
         var dynamicDiv = document.createElement('div');
         dynamicDiv.className = "cmmnt-content";
-        dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> on <span class="comment-type" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+' task</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+        var label_color = 'gray';
+        if (commentType == 0)  //transcribe
+            label_color = 'transcribe-color'; //'#D9534F';
+        else if (commentType == 1) //tag
+            label_color = 'tag-color';
+        else if (commentType == 2) //connect
+            label_color = 'connect-color';
+        else if (commentType == 3) //viewing
+            label_color = 'view-color';
+        else
+            label_color = 'gray';
+        dynamicDiv.innerHTML = '<header><a href="'+fullInciteUrl+'/users/view/'+commentsArray[i]['user_info'][5]+'" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span class="comment-type label label-primary label-pill '+label_color+'" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
 
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
-            var string = "<ul style='list-style: none;'><li><header><a href='javascript:void(0);' class='userlink'>";
             for (var j = 0; j < commentsArrayReplies.length; j++)
             {
+                var string = "<ul style='list-style: none;'><li><header><a href='"+fullInciteUrl+"/users/view/"+commentsArrayRepliesUserData[j][5]+"' class='userlink'>";
                 var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
                 string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">commented ' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
                 if (j != commentsArrayReplies.length - 1)
@@ -90,7 +103,7 @@ function appendNewComment(dataArray)
         dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
         if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
         {
-            var string = "<ul><li><header><a href='javascript:void(0);' class='userlink'>";
+            var string = "<ul style='list-style: outside none none;'><li><header><a href='javascript:void(0);' class='userlink'>";
             for (var j = 0; j < commentsArrayReplies.length; j++)
             {
                 var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
@@ -172,7 +185,7 @@ function submitReply(event, documentId)
     //var documentId = <?php echo $this->transcription->id; ?>;
     var request = $.ajax({
         type: "POST",
-        url: "/m4j/incite/ajax/postreply",
+        url: fullInciteUrl+"/ajax/postreply",
         data: {replyText: replyText, originalQuestionId: questionID, documentId: documentId},
         success: function (data)
         {
@@ -192,9 +205,10 @@ function submitComment(documentId)
 {
     var commentText = document.getElementById('comment').value;
     //var documentId = <?php echo $this->transcription->id; ?>;
+
     var request = $.ajax({
         type: "POST",
-        url: "/m4j/incite/ajax/postcomment",
+        url: fullInciteUrl+"/ajax/postcomment",
         data: {documentId: documentId, commentText: commentText, type: comment_type},
         success: function ()
         {

@@ -4,36 +4,6 @@
 <head>
     <script type="text/javascript">
         var selectedReferences = null;
-        function searchForDocuments2()
-        {
-            var currentSearch = document.getElementById('search_query').value;
-            if (currentSearch !== "")
-            {
-                var request = $.ajax({
-                    type: "POST",
-                    url: "http://localhost/m4j/incite/ajax/searchkeyword2",
-                    data: {keyword: currentSearch},
-                    success: function(data)
-                    {
-                        $("#search_results").empty();
-                        var parsedData = JSON.parse(data);
-                        $('#result_info').text(" ("+parsedData.length+" document(s) found)");
-                        $.each(parsedData, function (idx) {
-                            $('#search_results').append('<br><div><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+this.uri+'"> '+this.title+' <span class="document_text" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+this.description+'" data-id="'+this.id+'" data-uri="'+this.uri+'" data-title="'+this.title+'"> (<u>summary</u>)</span></div><br>');
-                        });
-                        $('#search_results').append('</select>');
-                        $('#search_results span').each(function (idx) {
-                            $(this).popover();
-                        });
-                    }
-                });
-            }
-            else
-            {
-                $("#document_icons").empty();
-                //clear selector
-            }
-        }
     </script>
     <style> 
         .tabs-below > .nav-tabs,
@@ -96,6 +66,16 @@
             border: 1px solid black;
             position: relative;
         }
+    #document-info-glphicon {
+        color: #337AB7; 
+        font-size: 20px;
+        top: 8px;
+        left: 15px;
+    }
+
+    .popover {
+    	max-width: 100%;
+    }
     </style>
 
     <?php
@@ -146,7 +126,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div class="row">
         <div class="col-md-5 col-md-offset-1" id="work-zone">
             <div style="position: fixed;" id="work-view">
-                <h3 id="viewer-title">Viewer for Related References/Documents:</h3>
+                <h3 id="viewer-title">Related Documents:</h3>
                 <div class="tabbable tabs-below" id="document-view">
                     <div class="tab-content" id="document-contents">
                     </div>
@@ -157,15 +137,25 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="col-md-5">
             <div class="row" id="content-1">
-                <a href="/m4j/incite/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
+                <a href="<?php echo getFullInciteUrl(); ?>/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
                 <h3><?php echo $this->title; ?></h3>
+                <br>
+                <h4>Related documents: </h4>
+                <div id="references" style="white-space: nowrap;">
+<?php foreach ((array) $this->references as $reference): ?>
+                    <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-description="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>" data-data="<?php echo $reference['date']; ?>" data-location="<?php echo $reference['location']; ?>">
+                        <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
+                    </div>
+<? endforeach; ?>
+                    <div class="clearfix"></div>
+                </div>
 <?php foreach ((array) $this->discussions as $discussion): ?>
-                <div style="margin: 10px; background-color: #AAAAAA; padding: 10px;">
-                    <b><?php echo $discussion['first_name']; ?>:</b><br>
+                <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
+                    <b><?php echo $discussion['first_name']; ?> commented on <?php echo $discussion['time']; ?>:</b><br>
                     <p><?php echo $discussion['content']; ?></p>
                 </div>
 
-<? endforeach; ?>
+<?php endforeach; ?>
                 <div id="discussion_reply_form_container">
                     <form id="discussion_form" class="form-wrapper" method="post">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
@@ -176,15 +166,6 @@ include(dirname(__FILE__).'/../common/header.php');
                         <textarea id="discussion_content" name="content" style="width: 100%; display:none;" rows="5" placeholder="Your thoughts here..."></textarea>
 
 <?php endif; ?>
-                        <h4>References: </h4>
-                        <div id="references" style="white-space: nowrap;">
-<?php foreach ((array) $this->references as $reference): ?>
-                            <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>">
-                                <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
-                            </div>
-<? endforeach; ?>
-                            <div class="clearfix"></div>
-                        </div>
                         <br>
                         <input type="hidden" name="discussion_id" value="<?php echo $this->id; ?>">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
@@ -195,14 +176,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
                     </form>
                 </div>
-            </div>
-            <div class="row" id="content-2">
-                <h3> Subjects of this document: <a href="">Nationalism</a>, 
-                    <a href="">Freedom</a>, 
-                    <a href="">Revolution</a> </h3>
-                <h3>Related Discussions: </h3>
-                <p>Number: <a href="">URL</a></p>
-
             </div>
         </div>
     </div>
@@ -218,6 +191,20 @@ include(dirname(__FILE__).'/../common/header.php');
             if (code == 13) { 
                 e.preventDefault();
                 return false;
+            }
+        });
+        $(document).on('mouseenter', '#document-tabs a', function(e) {
+            var pos = this.href.indexOf('#doc-');
+            if (pos != -1) {
+                pos += 5;
+                $('div[data-id='+this.href.substring(pos)+']').popover('show');
+            }
+        });
+        $(document).on('mouseleave', '#document-tabs a', function(e) {
+            var pos = this.href.indexOf('#doc-');
+            if (pos != -1) {
+                pos += 5;
+                $('div[data-id='+this.href.substring(pos)+']').popover('hide');
             }
         });
         $(document).on('click', '#submit_discussion', function(e) {
@@ -240,47 +227,39 @@ include(dirname(__FILE__).'/../common/header.php');
             
             $('#discussion_form').submit();
         });
-        $('#search_button').on('click', function() {
-            searchForDocuments2();
-        });
-        $('#search_query').on('keypress', function (e) {
-            if (e.keyCode == 13) {
-                e.preventDefault();
-                searchForDocuments2();
-            }
-        });
-        $('#add_reference').on('click', function() {
-            //check if already referenced. If not, add it!
-            //var existing_refs = 
-            var selected_refs = $('#search_results input:checked').parent().find('span.document_text');
-            $('#references div.clearfix').remove()
-            selected_refs.each(function (idx) {
-                var doc_id = $(this).attr('data-id');
-                //if not referenced
-                if ($('#references div[data-id='+doc_id+']').length == 0) {
-                    var cur_doc = $(this);
-                    var new_ref = $('<div class="col-md-2 reference" data-id="'+cur_doc.attr('data-id')+'" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="'+cur_doc.attr('data-content')+'" data-title="'+cur_doc.attr('data-title')+'"><input type="checkbox"> <img style="width: 40px; height: 40px;" src="'+cur_doc.attr('data-uri')+'"></div>');
-                    $('#references').append(new_ref);
-                    new_ref.popover();
-                }
-            });
-            $('#references').append('<div class="clearfix"></div>');
-        });
-        $('#delete_reference').on('click', function() {
-            var selected_refs = $('#references input:checked').parent().remove();
-        });
         $('.reference').each(function (idx) {
             $(this).popover();
         });
 
         $('.reference').on('click', function (e) {
-            //case1: document is already in the viewer -> switch to the tab
-            //case2: document is not yet in the viewer -> add the document to the viewer
+            //case 1 of 2: document is not yet in the viewer -> add the document to the viewer
             if ($('#doc-'+this.dataset.id).length <= 0) {
+                while ($('#document-tabs').children().length >= 3) {
+                    $($('#document-tabs').children()[0]).remove();
+                    $($('#document-contents').children()[0]).remove();
+                }
                 //Add tab
-                $('#document-tabs').append('<li><a href="#doc-'+this.dataset.id+'" data-toggle="tab">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></a></li>');
+                $('#document-tabs').append('<li style="width: 33%;"><a href="#doc-'+this.dataset.id+'" data-toggle="tab"><div style="overflow:hidden; height: 20px; text-overflow: ellipsis;">'+this.dataset.title+'<button class="close" type="button" title="Remove this page">×</button></div></a></li>');
                 //Add content
-                $('#document-contents').append('<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'"><ul class="nav nav-tabs" role="tablist"><li class="active"><a class="doc-tab" href="#document-'+this.dataset.id+'" role="tab" data-toggle="tab">Document</a></li><li><a class="transcription-tab" href="#transcription-'+this.dataset.id+'" role="tab" data-toggle="tab">Transcription</a></li></ul><div class="tab-content"><div class="tab-pane fade active in viewer" id="document-'+this.dataset.id+'"></div><div class="tab-pane fade" id="transcription-'+this.dataset.id+'">'+this.dataset.transcription+'</div></div>');
+                var content = '<div class="tab-pane reference-view" id="doc-'+this.dataset.id+'">';
+                content += '<ul class="nav nav-tabs" role="tablist">';
+                content += '<li class="active"><a class="doc-tab" href="#document-'+this.dataset.id+'" role="tab" data-toggle="tab">Document</a></li>';
+                content += '<li><a class="transcription-tab" href="#transcription-'+this.dataset.id+'" role="tab" data-toggle="tab">Transcription</a></li>';
+                content += '<span class="glyphicon glyphicon-info-sign" id="document-info-glphicon" aria-hidden="true" data-trigger="hover" data-toggle="popover" data-html="true" data-viewport=".tabbable" '
+                content += 'data-title="Document Information" data-content="'
+                content += '<strong>Title:</strong>'
+                content += this.dataset.title;
+                content += '<br><br><strong>Date:</strong><br>'
+                content += this.dataset.data;
+                content += '<br><br><strong>Location:</strong><br>'
+                content += this.dataset.location;
+                content += '<br><br><strong>Description:</strong><br>'
+                content += this.dataset.description;
+                content += '"></span></ul>';
+                content += '<div class="tab-content"><div class="tab-pane fade active in viewer" id="document-'+this.dataset.id+'"></div>';
+                content += '<div class="tab-pane fade" id="transcription-'+this.dataset.id+'">'+this.dataset.transcription+'</div></div>';
+                $('#document-contents').append(content);
+                $('.glyphicon').popover();
                 $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-tabs').height()-35); //-35 for buffer
                 //if there is transcription, show transcription first.
                 if (this.dataset.transcription !== "no transcription available")
@@ -296,6 +275,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     zoom: "fit"
                 });
             }
+            //case 2 of 2: document is already in the viewer -> switch to the tab
             $('ul a[href=#doc-'+this.dataset.id+']').click();
         });
         $('#document-tabs').on('click', 'button.close', function (e) {

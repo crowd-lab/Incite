@@ -39,8 +39,10 @@ SQL
         );
 
         get_db()->query(<<<SQL
-    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_group (
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_groups (
         `id`                int(11) NOT NULL AUTO_INCREMENT,
+        `name`              varchar(200) NOT NULL,
+        `creator`           int(11) NOT NULL,
         `group_type`        int(11) NOT NULL,
         `timestamp`         timestamp NOT NULL,
         
@@ -275,7 +277,7 @@ SQL
 SQL
         );
         get_db()->query(<<<SQL
-      DROP TABLE IF EXISTS {$this->_db->prefix}incite_group
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_groups
 SQL
         );
         get_db()->query(<<<SQL

@@ -15,10 +15,11 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
     {
                         //echo '<div style="color:red">Documents Controller Initialized! This is probably a good place to put the header such as <a href="./discover">discover</a> - <a href="transcribe">transcribe</a> - <a href="tag">tag</a> - <a href="connect">connect</a> - <a href="discuss">discuss</a></div>';
         require_once("Incite_Transcription_Table.php");
-        include("Incite_Users_Table.php");
-        include("Incite_Replies_Table.php");
-        include("Incite_Questions_Table.php");
+        require_once("Incite_Users_Table.php");
+        require_once("Incite_Replies_Table.php");
+        require_once("Incite_Questions_Table.php");
         require_once("Incite_Session.php");
+        require_once('Incite_Helpers.php');
         setup_session();
     }
 
@@ -41,7 +42,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
             $_SESSION['incite']['redirect'] = array(
                     'status' => 'complete_create_discussion', 
                     'message' => 'Congratulations! You just created a new discussion! You will be redirected to your discussion', 
-                    'url' => INCITE_PATH.'discussions/discuss/'.$this->_getParam('id'),
+                    'url' => getFullInciteUrl().'/discussions/discuss/'.$this->_getParam('id'),
                     'time' => '5');
             $this->redirect('incite/discussions/discuss/'.$discussionID);
             /*
@@ -75,7 +76,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                 foreach ((array)$discussion_reply_ids as $reply_id) {
                     $userdata = getUserDataID(getUserIdForReply($reply_id));
                     $first_name = $userdata[0];
-                    $replies[] = array('id' => $reply_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id));
+                    $replies[] = array('id' => $reply_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id), 'time' => getReplyTimestamp($reply_id));
                 }
                 $this->view->discussions = $replies;
 
@@ -88,7 +89,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                     $transcription = "no transcription available";
                     if ($approved_transcriptions != null) 
                         $transcription = getTranscriptionText($approved_transcriptions[0]);
-                    $references[] = array('id' => $reference_id, 'uri' => $record->getFile()->getProperty('uri'), 'title' => metadata($record, array('Dublin Core', 'Title')), 'description' => metadata($record, array('Dublin Core', 'Description')), 'transcription' => $transcription);
+                    $references[] = array('id' => $reference_id, 'uri' => get_image_url_for_item($record), 'title' => metadata($record, array('Dublin Core', 'Title')), 'description' => metadata($record, array('Dublin Core', 'Description')), 'transcription' => $transcription, 'date' => metadata($record, array('Dublin Core', 'Date')), 'location' => metadata($record, array('Item Type Metadata', 'Location')));
                 }
                 $this->view->references = $references;
 

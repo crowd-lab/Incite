@@ -3,6 +3,7 @@
  * API for Incite_Users_Table
  */
 require_once("DB_Connect.php");
+require_once("Incite_Groups_Table.php");
     /**
      * Verify the username and password combination. Use a prepare object to
      * sanitize user-submitted text. Fetch the number of times where the username
@@ -79,6 +80,7 @@ require_once("DB_Connect.php");
         $arr['last_name'] = $lastname;
         $arr['privilege'] = $priv;
         $arr['experience'] = $exp;
+        $arr['email'] = $email;
         return $arr;
     }
     function getUserDataOld($email)
@@ -123,6 +125,27 @@ require_once("DB_Connect.php");
         $arr[2] = $email;
         $arr[3] = $priv;
         $arr[4] = $exp;
+        $arr[5] = $id;
+        return $arr;
+    }
+    function getUserDataByUserId($id)
+    {
+        $arr = Array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT first_name, last_name, email, privilege_level, experience_level FROM omeka_incite_users WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->bind_result($firstname, $lastname, $email, $priv, $exp);
+        $stmt->execute();
+        $stmt->fetch();
+        $stmt->close();
+        $db->close();
+        
+        $arr['first_name'] = $firstname;
+        $arr['last_name'] = $lastname;
+        $arr['email'] = $email;
+        $arr['privilege'] = $priv;
+        $arr['experience'] = $exp;
+        $arr['id'] = $id;
         return $arr;
     }
     /**
@@ -399,4 +422,152 @@ require_once("DB_Connect.php");
             $db->close();
         }
     }
+
+    function getAllUsers() {
+        $users = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT id, first_name, last_name FROM omeka_incite_users");
+        $stmt->bind_result($id, $fname, $lname);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $users[] = array('id' => $id, 'first_name' => $fname, 'last_name' => $lname);
+        }
+        $stmt->close();
+        $db->close();
+        return $users;
+    }
+
+    function getAllActiveUsers() {
+        $users = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT id, first_name, last_name FROM omeka_incite_users WHERE is_active = 1");
+        $stmt->bind_result($id, $fname, $lname);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $users[] = array('id' => $id, 'first_name' => $fname, 'last_name' => $lname);
+        }
+        $stmt->close();
+        $db->close();
+        return $users;
+    }
+
+
+    function getTranscribedDocumentsByUserId($userid) {
+        $docs = array();
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT document_id, timestamp_creation, text from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY document_id");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+        }
+        $db->close();
+        return $docs;
+    }
+
+    function getTranscribedDocumentCountByUserId($userid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT document_id) from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+    function getTaggedDocumentsByUserId($userid) {
+        $docs = array();
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT DISTINCT item_id, created_timestamp, text FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+        }
+        $db->close();
+        return $docs;
+    }
+    function getTaggedDocumentCountByUserId($userid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_timestamp, text) FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+
+
+    function getConnectedDocumentsByUserId($userid) {
+        $docs = array();
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT DISTINCT item_id, created_time, text from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+        }
+        $db->close();
+        return $docs;
+    }
+
+    function getConnectedDocumentCountByUserId($userid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_time, text) from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ?");
+        $stmt->bind_param("ii", $element_id_for_title, $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+    function getDiscussionsByUserId($userid) {
+        $diss = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT id, timestamp, question_text from omeka_incite_questions WHERE user_id = ? AND question_type = 4");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($dis, $time, $dis_title);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $diss[] = array('time' => $time, 'discussion_id' => $dis, 'discussion_title' => $dis_title);
+        }
+        $db->close();
+        return $diss;
+    }
+    function getDiscussionCountByUserId($userid) {
+        $diss = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT COUNT(*) from omeka_incite_questions WHERE user_id = ? AND question_type = 4");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+    function getGroupsByUserId($userid) {
+        $groups = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT group_id from omeka_incite_group_members WHERE user_id = ?");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($group);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $group_info = getGroupInfoByGroupId($group);
+            $groups[] = $group_info;
+        }
+        $db->close();
+        return $groups;
+    }
+
 ?>

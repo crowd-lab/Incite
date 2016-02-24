@@ -108,7 +108,7 @@ function getReplyText($reply_id)
     $db->close();
     return $text;
 }
-function getTimestamp($reply_id)
+function getReplyTimestamp($reply_id)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT timestamp FROM omeka_incite_replies WHERE id = ?");

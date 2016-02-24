@@ -11,7 +11,7 @@
             {
                 var request = $.ajax({
                     type: "POST",
-                    url: "http://localhost/m4j/incite/ajax/searchkeyword2",
+                    url: "<?php echo getFullInciteUrl(); ?>/ajax/searchkeyword2",
                     data: {keyword: currentSearch},
                     success: function(data)
                     {
@@ -104,7 +104,7 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="col-md-5">
             <div class="row" id="content-1">
-                <a href="/m4j/incite/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
+                <a href="<?php echo getFullInciteUrl(); ?>/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
                 <h3>Create a New Discussion</h3>
                 <form id="discussion_form" class="form-wrapper" method="post">
                     Title: <input id="discussion_title" name="title" type="text" style="margin-bottom: 10px; width: 100%;" id="search1" placeholder="How do Northerners vs Southerners write....">
@@ -118,14 +118,6 @@ include(dirname(__FILE__).'/../common/header.php');
                     <button id="delete_reference" type="button" class="btn btn-primary">Delete Selected Reference(s)</button>
                     <button id="submit_discussion" type="button" class="btn btn-primary pull-right">Submit</button>
                 </form>
-            </div>
-            <div class="row" id="content-2">
-                <h3> Subjects of this document: <a href="">Nationalism</a>, 
-                    <a href="">Freedom</a>, 
-                    <a href="">Revolution</a> </h3>
-                <h3>Related Discussions: </h3>
-                <p>Number: <a href="">URL</a></p>
-
             </div>
         </div>
     </div>

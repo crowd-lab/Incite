@@ -55,6 +55,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         require_once("Incite_Search.php");
         require_once("Incite_Session.php");
         require_once("Incite_Env_Setting.php");
+        require_once('Incite_Helpers.php');
         setup_session();
     }
 
@@ -117,6 +118,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
                 $this->_helper->viewRenderer('transcribeid');
                 $this->view->transcription = $record;
+                $this->view->image_url = get_image_url_for_item($record);
                 $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
             } else {
                 //to such document so redirect to documents that need to be transcribed
@@ -227,6 +229,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
                 $this->_helper->viewRenderer('tagid');
                 $this->view->tag = $record;
+                $this->view->image_url = get_image_url_for_item($record);
 
                 //Check entities:
                 //  1) is tagged already?  Yes: skip the task; No: do the following
@@ -480,6 +483,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->_helper->viewRenderer('connectbymultiselection');
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
+                        $this->view->image_url = get_image_url_for_item($record);
                         //for this part, we can random the destination of the tasks!
                         /*
                         $_SESSION['incite']['redirect'] = array(
@@ -502,6 +506,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->_helper->viewRenderer('connectbymultiselection');
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
+                        $this->view->image_url = get_image_url_for_item($record);
                         /*
                         $_SESSION['incite']['redirect'] = array(
                                 'status' => 'error_noSubjectCandidates', 
@@ -530,6 +535,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->_helper->viewRenderer('connectbymultiselection');
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
+                        $this->view->image_url = get_image_url_for_item($record);
                     } else {
                         $subject_related_documents = array_unique($subject_related_documents);
                         $docs_for_common_tags = array_merge(array_unique($subject_related_documents), array($this->_getParam('id')));
@@ -554,6 +560,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if ($is_connectable_by_tags) {
                     $this->_helper->viewRenderer('connectbytags');
                     $this->view->connection = $record;
+                    $this->view->image_url = get_image_url_for_item($record);
                 }
             } else {
                 //no such document
@@ -582,11 +589,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if (count($document_ids) <= 0) {
                 //Try tagged documents
                 $connectable_documents = getDocumentsWithTags();
-                if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Change your search criteria and try again.';
-                } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="/m4j/incite/documents/transcribe">transcribe</a> or <a href="/m4j/incite/documents/tag">tag</a>!';
-                }
 
                 if (isSearchQuerySpecifiedViaGet()) {
                     $searched_item_ids = getSearchResultsViaGetQuery();
@@ -598,10 +600,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
             }
 
-            $records = array();
-            for ($i = 0; $i < count($document_ids); $i++) {
-                $records[] = $this->_helper->db->find($document_ids[$i]);
+            if (count($document_ids) <= 0) {
+                if (isSearchQuerySpecifiedViaGet()) {
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Change your search criteria and try again.';
+                } else {
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="/m4j/incite/documents/transcribe">transcribe</a> or <a href="/m4j/incite/documents/tag">tag</a>!';
+                }
             }
+
 
             $current_page = 1;
             if (isset($_GET['page']))
@@ -609,6 +615,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $records_counter = 0;
             $total_pages = ceil(count($connectable_documents) / $max_records_to_show);
+            $records = array();
+            if (count($document_ids) > 0) {
+                for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
+                    if ($records_counter++ >= $max_records_to_show)
+                        break;
+                    $records[] = $this->_helper->db->find($document_ids[$i]);
+                }
+            }
 
             $this->view->total_pages = $total_pages;
             $this->view->current_page = $current_page;
@@ -622,28 +636,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function discussAction() {
-        if ($this->hasParam($id)) {
-            $this->_helper->db->setDefaultModelName('Item');
-            $subjectConceptArray = getAllSubjectConcepts();
-            $randomSubjectInt = rand(0, sizeof($subjectConceptArray) - 1);
-            $subject_id = 1;
-            $subjectName = getSubjectConceptOnId($randomSubjectInt);
-            $subjectDef = getDefinition($subjectName[0]);
-
-            //Choosing a subject to test with some fake data to test view
-            $this->view->subject = $subjectName[0];
-            $this->view->subject_definition = $subjectDef;
-            $this->view->entities = array('liberty', 'independence');
-            $this->view->related_documents = array();
-
-            $record = $this->_helper->db->find($this->_getParam('id'));
-            $isReply = $_POST['IS_REPLY'];
-            if ($isReply == 0) {
-                $_questionText = $POST['QUESTION_TEXT'];
-            } else {
-                //do something
-            }
-        }//if has_param
+        //testing controller
     }//discussAction()
     public function redirectAction() {
         if (isset($_SESSION['incite']['redirect'])) {
@@ -657,4 +650,70 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                                           'time' => '5');
         }
     }
+
+    public function viewAction() {
+        $this->_helper->db->setDefaultModelName('Item');
+
+        $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+        $this->view->category_colors = $category_colors;
+
+        if ($this->_hasParam('id')) {
+            $this->_helper->viewRenderer('viewid');
+
+            //make sure the document is valid
+            $document_id = $this->_getParam('id');
+            $this->view->documentId = $document_id;
+            $document = $this->_helper->db->find($document_id);
+
+            if ($document != null) {
+                $this->view->document = $document;
+                $this->view->image_url = get_image_url_for_item($document);
+            }
+
+            //find the transcription for the document
+            $transcription = getIsAnyTranscriptionApproved($document_id);
+            $this->view->hasTranscription = false;
+
+            if ($transcription != null) {
+                $this->view->hasTranscription = true;
+                $this->view->transcription_id = $transcription[count($transcription)-1];
+                $this->view->transcription = getTranscriptionText($this->view->transcription_id);
+            }
+
+            //find the tagged transcription of the document
+            $this->view->hasTaggedTranscription = false;
+
+            if (hasTaggedTranscription($document_id)) {
+                $taggedTranscriptions = getAllTaggedTranscriptions($document_id);
+                $this->view->taggedTranscription = $taggedTranscriptions[count($taggedTranscriptions)-1];
+                $this->view->hasTaggedTranscription = true;
+            }
+
+            //find if a document has been connected
+            $this->view->hasBeenConnected = false;
+            $subjectsForDocument = getAllSubjectsOnId($document_id);
+            $pos_subs = array();
+            $neg_subs = array();
+            foreach ((array) $subjectsForDocument as $subject) {
+                if ($subject['is_positive']) {
+                    if (!isset($pos_subs[$subject['subject_name']]))
+                        $pos_subs[$subject['subject_name']] = 0;
+                    $pos_subs[$subject['subject_name']]++;
+                } else {
+                    if (!isset($neg_subs[$subject['subject_name']]))
+                        $neg_subs[$subject['subject_name']] = 0;
+                    $neg_subs[$subject['subject_name']]++;
+                }
+            }
+
+            if (!empty($subjectsForDocument)) {
+                $this->view->hasBeenConnected = true;
+                $this->view->subjects = $subjectsForDocument;
+                $this->view->positive_subjects = $pos_subs;
+                $this->view->negative_subjects = $neg_subs;
+            }
+        }
+    }
+
+    
 }
