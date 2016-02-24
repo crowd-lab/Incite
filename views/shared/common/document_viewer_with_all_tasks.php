@@ -144,22 +144,16 @@
             <div id="subjects-list">
                 <h3 id="positive-subjects-header">Subjects marked as relating to this document</h3>
                 <?php 
-                    forEach($this->subjects as $subject) {
-                        if ($subject['is_positive']) {
-                            echo "<p class='positive-subject'>".$subject['subject_name']."<p>";
-                        }
-                    }
+                    foreach ((array) $this->positive_subjects as $subject_name => $num)
+                        echo '<p class="positive-subject">'.$subject_name.' by '.$num.' person(s)</p>';
                 ?>
 
                 <hr size=2>
 
                 <h3 id="negative-subjects-header">Subjects marked as not relating to this document</h3>
                 <?php 
-                    forEach($this->subjects as $subject) {
-                        if (!$subject['is_positive']) {
-                            echo "<p class='negative-subject'>".$subject['subject_name']."<p>";
-                        }
-                    }
+                    foreach ((array) $this->negative_subjects as $subject_name => $num)
+                        echo '<p class="negative-subject">'.$subject_name.' by '.$num.' person(s)</p>';
                 ?>
             </div>
         </div>

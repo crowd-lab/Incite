@@ -692,10 +692,25 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //find if a document has been connected
             $this->view->hasBeenConnected = false;
             $subjectsForDocument = getAllSubjectsOnId($document_id);
+            $pos_subs = array();
+            $neg_subs = array();
+            foreach ((array) $subjectsForDocument as $subject) {
+                if ($subject['is_positive']) {
+                    if (!isset($pos_subs[$subject['subject_name']]))
+                        $pos_subs[$subject['subject_name']] = 0;
+                    $pos_subs[$subject['subject_name']]++;
+                } else {
+                    if (!isset($neg_subs[$subject['subject_name']]))
+                        $neg_subs[$subject['subject_name']] = 0;
+                    $neg_subs[$subject['subject_name']]++;
+                }
+            }
 
             if (!empty($subjectsForDocument)) {
                 $this->view->hasBeenConnected = true;
                 $this->view->subjects = $subjectsForDocument;
+                $this->view->positive_subjects = $pos_subs;
+                $this->view->negative_subjects = $neg_subs;
             }
         }
     }
