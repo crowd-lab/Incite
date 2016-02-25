@@ -15,12 +15,36 @@
                     unset($_SESSION['incite']['message']);
                 }
 
-                //if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
-                    //echo "addGroupOwnerControls();";
-                //}
-
-                if (true) {
+                if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
                     echo "addGroupOwnerControls();";
+                } else {
+                    $isMember = false;
+                    $hasRequested = false;
+                    $isBanned = false;
+
+                    foreach((array)$this->users as $user) {
+                        if ($_SESSION['Incite']['USER_DATA']['email'] == $user['email']) {
+                            if ($user['privilege'] > -1) {
+                                $isMember = true;
+                            } else if ($user['privilege'] == -1) {
+                                $hasRequested = true;
+                            } else if ($user['privilege'] == -2) {
+                                $isBanned = true;
+                            }
+                        }
+                    }
+
+                    if (!$isMember && !$isBanned) {
+                        echo "stylePageForNonMember();";
+                    }
+
+                    if (!$isMember && !$isBanned && $hasRequested) {
+                        echo "disableRequestButton();";
+                    }
+
+                    if ($isBanned) {
+                        echo "styleForBannedUser();";
+                    }
                 }
             ?>
 
@@ -33,7 +57,12 @@
             var span;
 
             <?php foreach ((array)$this->users as $user): ?>
-                span = $('<span class="group-member-link"></span>');
+                if ($("#groupprofile-list-of-members span").length === 0) {
+                    span = $('<span class="group-member-link"></span>');
+                } else {
+                    span = $('<span class="group-member-link">, </span>');
+                }
+
                 span.append(createProfileLink("<?php echo $user['email']; ?>", <?php echo $user['id']; ?>));
                 $("#groupprofile-list-of-members").append(span);
             <?php endforeach; ?>
@@ -100,25 +129,28 @@
         };
 
         function addGroupOwnerControls() {
+            generateAndAppendOwnerGlyph();
             generateAndAppendInviteUsersLink();
             generateAndAppendGroupOrManagementTabs();
 
             <?php foreach ((array)$this->users as $user): ?>
-                generateAndAppendManagementTableRows("<?php echo $user['email']; ?>", <?php echo $user['id']; ?>);
+                generateAndAppendManagementTableRows("<?php echo $user['email']; ?>", "<?php echo $user['privilege']; ?>", "<?php echo $user['id']; ?>");
             <?php endforeach; ?>    
-
-            generateAndAppendManagementTableRows("Seth", 0, 1);
-            generateAndAppendManagementTableRows("Sethh", -1, 2);
-            generateAndAppendManagementTableRows("Sethhh", -2, 3);
 
             colorEveryOtherManagementRowGrey();
             addManagementTableActionListeners();
         };
 
+        function generateAndAppendOwnerGlyph() {
+            var glyphicon = $('<span title="You are the group owner" id="owner-glyph" class="glyphicon glyphicon-star" aria-hidden="true"></span>');
+            
+            $('#group-owner').append(glyphicon);
+        };  
+
         function generateAndAppendInviteUsersLink() {
-            var inviteUsersLink = $('<a id="invite-new-users-link" href="mailto:?subject=Come join my Mapping the Fourth group, <?php echo $this->group["name"] ?>!&body=<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>%0D%0A%0D%0AFollow the above link to visit the group page and then click the button that says \'Request to join group\'!">Invite new users</a>');
+            var inviteUsersLink = $('<a id="invite-new-members-link" href="mailto:?subject=Come join my Mapping the Fourth group, <?php echo $this->group["name"] ?>!&body=<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>%0D%0A%0D%0AFollow the above link to visit the group page and then click the button that says \'Request to join group\'!">Invite New Members</a>');
         
-            $('#groupprofile-header').append(inviteUsersLink);
+            $('#groupprofile-overview-title').after(inviteUsersLink);
         };
 
         function generateAndAppendGroupOrManagementTabs() {
@@ -155,15 +187,18 @@
         function generateAndAppendManagementTableRows(username, status, id) {
             var statusName, glyphicon;
 
+            status = parseInt(status);
+            id = parseInt(id);
+
             if (status > -1) {
                 statusName = "Group Member";
-                glyphicon = $('<td><span title="Remove user from group" id="remove-user" class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span><span title="Ban user from group" id="ban-user" class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td></td>');
+                glyphicon = $('<td><span title="Remove user from group" class="remove-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span><span title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td></td>');
             } else if (status === -1) {
                 statusName = "Requested to join";
-                glyphicon = $('<td><span title="Add user to group" id="approve-user" class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span><span title="Ban user from group" id="ban-user-from-request" class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td>');
+                glyphicon = $('<td><span title="Add user to group" class="approve-user glyphicon glyphicon-ok-circle" aria-hidden="true"></span><span title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td>');
             } else if (status === -2) {
                 statusName = "Blocked";
-                glyphicon = $('<td><span title="Unban user from group" id="unban-user" class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></td>');
+                glyphicon = $('<td><span title="Unban user from group" class="unban-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span></td>');
             }
 
             var row = $('<tr class="management-row">' + 
@@ -183,46 +218,70 @@
         };
 
         function addManagementTableActionListeners() {
-            $('#remove-user').addClass('blue-color');
-            $('#approve-user').addClass('green-color');
-            $('#unban-user').addClass('blue-color');
-            $('#ban-user').addClass('red-color');
-            $('#ban-user-from-request').addClass('red-color');
-
-            $('#remove-user').click(removeUserFromGroup);
-            $('#approve-user').click(addUserToGroup);
-            $('#unban-user').click(unbanUser);
-            $('#ban-user').click(banUser);
-            $('#ban-user-from-request').click(banUser);
+            $('.remove-user').addClass('blue-color').click(removeUserFromGroup);
+            $('.approve-user').addClass('green-color').click(addUserToGroup);
+            $('.unban-user').addClass('blue-color').click(unbanUser);
+            $('.ban-user').addClass('red-color').click(banUser);
 
             function banUser() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
+                console.log(userId);
                 //Make ajax here to do action
-                window.location.reload();
             };
 
             function unbanUser() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
-
+                console.log(userId);
                 //Make ajax here to do action
-                window.location.reload();
             };
 
             function addUserToGroup() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
+                console.log(userId);
                 //Make ajax here to do action
-                window.location.reload();
             };
 
             function removeUserFromGroup() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
+                console.log(userId);
                 //Make ajax here to do action
-                window.location.reload();
             };
+        };
+
+        function stylePageForNonMember() {
+            $('#groupprofile-activity-feed').remove();
+
+            generateAndAppendRequestToJoinButton();
+        };
+
+        function generateAndAppendRequestToJoinButton() {
+            var button = $('<button class="btn btn-primary horizontal-align" id="request-button">Request to Join Group</button>');
+
+            $(button).click(function() {
+                //Send request ajax in here using the seesion id then disable the button
+                disableRequestButton();
+            });
+
+            $('#groupprofile-activity-container').append(button);
+        };
+
+        function disableRequestButton() {
+            $('#request-button').addClass("disabled");
+            $('#request-button').html("Request Pending..");
+            $('#request-button').click(function(){
+                //cant manually remove disabled class and resend request
+            });
+        };
+
+        function styleForBannedUser() {
+            $('#groupprofile-activity-container').hide();
+
+            var bannedText = $('<p style="color: red; text-align: center;">You have been banned from this group, sorry!</p>');
+            $('body').append(bannedText);
         };
     </script>
 
@@ -267,14 +326,14 @@
             text-align: center;
         }
 
+        #groupprofile-overview {
+            text-align: center;
+        }
+
         #groupprofile-overview-details {
             text-align: left;
             position: relative;
             left: 15%;
-        }
-
-        .group-member-link {
-            margin-right: 5px;
         }
 
         .transcribe-color {
@@ -329,6 +388,23 @@
         .nav-tabs > li {
             width: 50%;
         }
+
+        #owner-glyph {
+            position: relative;
+            top: 5px;
+            margin-left: 5px;
+        }
+
+        #invite-new-members-link {
+            font-size: 18px;
+        }
+
+        #request-button {
+            display: block;
+            width: 70%;
+            height: 50px;
+            font-size: 18px;
+        }
     </style>
 </head>
     
@@ -336,7 +412,7 @@
     <div id="groupprofile-header">
         <?php
             echo '<h1> Group: ' . $this->group['name'] . '</h1>';
-            echo '<h3> Group Owner: <a href="" target="_BLANK">'.$this->group['creator']['email'].'</a></h3>';
+            echo '<h3 id="group-owner"> Group Owner: <a href="" target="_BLANK">'.$this->group['creator']['email'].'</a></h3>';
         ?>
     </div>
 
