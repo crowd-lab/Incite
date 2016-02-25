@@ -90,9 +90,9 @@ body { padding-top: 60px;
 
 
 			<ul class="nav nav-pills nav-justified">
-				<li data-target="#myCarousel" data-slide-to="0" class="active"><a href="#">Transcribe<small>Searchable texts</small></a></li>
-				<li data-target="#myCarousel" data-slide-to="1"><a href="#">Tag<small>Find people, locations and organizations</small></a></li>
-				<li data-target="#myCarousel" data-slide-to="2"><a href="#">Connect<small>Concepts of documents</small></a></li>
+				<li data-target="#myCarousel" class="carouselNavLi active" data-slide-to="0"><a href="#">Transcribe<small>Searchable texts</small></a></li>
+				<li data-target="#myCarousel" class="carouselNavLi" data-slide-to="1"><a href="#">Tag<small>Find people, locations and organizations</small></a></li>
+				<li data-target="#myCarousel" class="carouselNavLi" data-slide-to="2"><a href="#">Connect<small>Concepts of documents</small></a></li>
 			</ul>
 
 		</div><!-- End Carousel -->
@@ -108,18 +108,7 @@ body { padding-top: 60px;
 			</div>
 
 		</div>
-
     </div>
-
-
-<?php 
-
-//print_r(metadata($this->Item, array('Dublin Core', 'Subject'), array('all' => true))); 
-//echo $this->Item;
-
-?>
-
-  
 </div>
 
     </div>
@@ -186,9 +175,11 @@ $(document).ready(function(){
 			window.location = '/m4j/incite/documents/connect';
 		}
 	}).on('slid.bs.carousel', function(e) {
-		if(!hoverEvent) {
+		if (!hoverEvent) {
 			var count = $('#myCarousel > .nav').children().length -1;
-			var current = $('.nav li.active');
+
+			var current = $('.carouselNavLi.active');
+
 			current.removeClass('active').next().addClass('active');
 			var id = parseInt(current.data('slide-to'));
 			if(count == id) {
