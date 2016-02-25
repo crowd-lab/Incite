@@ -41,8 +41,6 @@ class Incite_GroupsController extends Omeka_Controller_AbstractActionController 
             $this->view->users = "";
         }
     }
-
-
 }
 
 

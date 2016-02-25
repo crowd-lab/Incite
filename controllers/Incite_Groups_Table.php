@@ -21,13 +21,13 @@ function getMembersWithActivityOverviewByGroupId($groupid)
 {
     $users = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT user_id from omeka_incite_group_members WHERE group_id = ?");
+    $stmt = $db->prepare("SELECT user_id, privilege from omeka_incite_group_members WHERE group_id = ?");
     $stmt->bind_param("i", $groupid);
-    $stmt->bind_result($user);
+    $stmt->bind_result($user, $privilege);
     $stmt->execute();
     while ($stmt->fetch()) {
         $user_data = getUserDataByUserId($user);
-        $users[] = array('id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user));
+        $users[] = array('id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user), 'privilege' => $privilege);
     }
     $db->close();
     return $users;
