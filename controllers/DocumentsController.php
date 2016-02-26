@@ -149,7 +149,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed based on your search criteria. Change your search criteria and try again.';
                     //$this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
                 } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are currently no documents that can be transcribed. Please come back later or try to find a document to <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="/m4j/incite/documents/connect">connect</a>!';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are currently no documents that can be transcribed. Please come back later or try to find a document to <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
                 }
             }
 
@@ -347,7 +347,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if (isSearchQuerySpecifiedViaGet()) {
                     $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged based on your search criteria right now. Change your search criteria and try again.';
                 } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe?">transcribe</a> or <a href="/m4j/incite/documents/connect">connect</a>!';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe?">transcribe</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
                 }
             }
 
@@ -604,7 +604,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if (isSearchQuerySpecifiedViaGet()) {
                     $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Change your search criteria and try again.';
                 } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe">transcribe</a> or <a href="/m4j/incite/documents/tag">tag</a>!';
+                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe">transcribe</a> or <a href="'.getFullInciteUrl().'/documents/tag">tag</a>!';
                 }
             }
 
