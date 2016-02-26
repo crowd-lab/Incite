@@ -54,7 +54,7 @@ body { padding-top: 60px;
 			<div class="carousel-inner">
 			  
 				<div class="item active">
-					<a href="./incite/documents/transcribe">
+					<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe">
 				   		<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Transcribe.png">
 
 				    	<div class="carousel-caption">
@@ -65,7 +65,7 @@ body { padding-top: 60px;
 				</div><!-- End Item -->
 				
 				<div class="item">
-					<a href="./incite/documents/tag">
+					<a href="<?php echo getFullInciteUrl(); ?>/documents/tag">
 						<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Tag.png">
 					
 						<div class="carousel-caption">
@@ -76,8 +76,8 @@ body { padding-top: 60px;
 				</div><!-- End Item -->
 				
 				<div class="item">
-					<a href="./incite/documents/connect">
-				  		<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Connect.png" href="./incite/documents/connect">
+					<a href="<?php echo getFullInciteUrl(); ?>/documents/connect">
+				  		<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Connect.png">
 				  	
 					   	<div class="carousel-caption">
 							<h3>Connect</h3>
