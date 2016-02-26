@@ -6,7 +6,7 @@
     ?>
 
     <script type="text/javascript">
-        var filters = [];
+        var filters = ["transcribe", "tag", "connect", "discuss"];
 
         $(document).ready(function () {
             <?php
@@ -16,10 +16,13 @@
                 }
             ?>
 
+            $('#create-group-form').hide();
+
             addListenersToOverview();
             populateGroups();
             populateActivityOverview();
             populateActivityFeed();
+            addGroupCreateOrJoinListeners();
         });
 
         function addListenersToOverview() {
@@ -65,17 +68,17 @@
                     filters.indexOf("discuss") > -1 && $(row).hasClass("discuss-color")) {
                     $(row).show();
                 } else {
-                    if (!$(row).hasClass("activity-feed-table-header"))
+                    if (!$(row).hasClass("activity-feed-table-header")) {
                         $(row).hide();
+                    }
                 }
             });
         }
 
         function populateGroups() {
-
-<?php foreach ((array) $this->groups as $group): ?>
-            $('#groups-list').append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
-<?php endforeach; ?>
+            <?php foreach ((array) $this->groups as $group): ?>
+                $('#groups-list').append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
+            <?php endforeach; ?>
         };
 
         function createGroupLink(groupname, groupid) {
@@ -90,12 +93,11 @@
         };
 
         function populateActivityFeed() {
-<?php foreach ((array)$this->activities as $activity): ?>
-            generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
-<?php endforeach; ?>
+            <?php foreach ((array)$this->activities as $activity): ?>
+                generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+            <?php endforeach; ?>
         };
 
-        //TODO generate document link from docID
         function generateAndAppendRow(table, task, docTitle, docID, date) {
             var emptyRow = $('<tr>' + 
                 '<td><span class="task-data">' + task + '</span></td>' + 
@@ -117,9 +119,36 @@
 
             table.append(emptyRow);
         };
+
+        function addGroupCreateOrJoinListeners() {
+            $('#join-group-tab').click(function () {
+                $("#create-group-form").hide();
+                $("#join-group-table").show();
+                selectTab($("#join-group-tab"), $("#create-group-tab"));
+            });
+
+            $('#create-group-tab').click(function () {
+                $("#join-group-table").hide();
+                $("#create-group-form").show();
+                selectTab($("#create-group-tab"), $("#join-group-tab"));
+            });
+        };
+
+        function selectTab(tabToSelect, tabToUnselect) {
+            tabToSelect.addClass("active");
+            tabToUnselect.removeClass("active");
+        };
     </script>
 
     <style> 
+        #join-or-create-info-container {
+            padding: 15px;
+        }
+
+        #group-create-or-join-tabs {
+            border-bottom: 1px solid #EEEEEE;
+        }
+
         #userprofile-header {
             text-align: center;
         }
@@ -208,6 +237,31 @@
         .discuss-color {
             background-color: #C5F7EB;
         }
+
+        #group-name-input {
+            width: 300px;
+            margin-bottom: 7px;
+        }
+
+        .nav-tabs > li {
+            width: 50%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #group-create-submit-btn {
+            display: block;
+            width: 390px;
+            margin: 0 auto;
+        }
+
+        #create-group-form {
+            text-align: center;
+        }
+
+        #join-group-table {
+            border-top-style: hidden;
+        }
     </style>
 </head>
     
@@ -216,39 +270,68 @@
         <?php
             echo '<h1> Username: '. $this->user['email'] . '</h1>';
         ?>
+
         <div>
             <p id="groups-list">Belongs to group(s): </p>
         </div>
     </div>
 
-    <br>
-
     <div class="container-fluid horizontal-align" id="userprofile-activity-container">
+
+        <div id="group-creation-and-join-container">
+            <ul class="nav nav-tabs" id="group-create-or-join-tabs">
+                <li id="join-group-tab" class="active"><a>Join a group</a></li>
+                <li id="create-group-tab"><a>Create a group</a></li>
+            </ul>
+
+            <div id="join-or-create-info-container">
+                <table class="table" id="join-group-table">
+                    <tr>
+                        <th>
+                            Group Name
+                        </th>
+                        <th>
+                            Group Creator
+                        </th>
+                        <th>
+                            Request to Join
+                        </th>
+                    </tr>
+                </table>
+
+                <form id="create-group-form">
+                    <span>Group name:</span>
+                    <input id="group-name-input" type="text" name="field" placeholder="Ex: Mr. Smith's History Class" />
+                    <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
+                </form>
+            </div>
+        </div>
 
         <hr size=2 style="margin-top: 0px;">
 
         <div id="userprofile-activity-overview">
             <h2 class="activity-title" id="userprofile-activity-overview-title">Activity Overview</h2>
+            <p class="activity-title">Select sections below to filter the activity feed</p>
 
-            <div class="overview-section" id="transcribe-overview-section">
+            <div class="overview-section transcribe-color" id="transcribe-overview-section">
                 <p class="task-description">
                     Transcribed:
                 </p>
                 <p id="number-transcribed">0 documents<p>
             </div><!--
-            --><div class="overview-section" id="tag-overview-section">
+            --><div class="overview-section tag-color" id="tag-overview-section">
                 <p class="task-description">
                     Tagged:
                 </p>
                 <p id="number-tagged">0 documents<p>
             </div><!--
-            --><div class="overview-section" id="connect-overview-section">
+            --><div class="overview-section connect-color" id="connect-overview-section">
                 <p class="task-description">
                     Connected:
                 </p>
                 <p id="number-connected">0 documents<p>
             </div><!--
-            --><div class="overview-section" id="discuss-overview-section">
+            --><div class="overview-section discuss-color" id="discuss-overview-section">
                 <p class="task-description">
                     Discussed:
                 </p>
