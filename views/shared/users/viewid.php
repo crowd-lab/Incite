@@ -14,9 +14,14 @@
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
+
+                if ($this->user['id'] != $_SESSION['Incite']['USER_DATA']['id']) {
+                    echo "$('#group-creation-and-join-container').hide();";
+                }
             ?>
 
-            $('#create-group-form').hide();
+            $('#create-group-div').hide();
+            $('#join-group-table').hide();
 
             addListenersToOverview();
             populateGroups();
@@ -76,8 +81,18 @@
         }
 
         function populateGroups() {
+            var span;
+
             <?php foreach ((array) $this->groups as $group): ?>
-                $('#groups-list').append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
+                if ($("#groups-list span").length === 0) {
+                    span = $('<span class="group-member-link"></span>');
+                } else {
+                    span = $('<span class="group-member-link">, </span>');
+                }
+
+                span.append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
+
+                $('#groups-list').append(span);
             <?php endforeach; ?>
         };
 
@@ -120,23 +135,92 @@
             table.append(emptyRow);
         };
 
+        function addGroupToJoinRow(groupName, groupId) {
+            var table = $('#join-group-table');
+
+            var emptyRow = $('<tr>' + 
+                    '<td><a class="group-name-data" href="<?php echo getFullInciteUrl(); ?>' +
+                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' + 
+                    '<td><button class="btn btn-primary request-join-btn">Request!</button></td>' +
+                '</tr>');
+
+            table.append(emptyRow);
+        };
+
         function addGroupCreateOrJoinListeners() {
             $('#join-group-tab').click(function () {
-                $("#create-group-form").hide();
-                $("#join-group-table").show();
+                $("#create-group-div").hide();
+                $("#search-groups-section").show();
                 selectTab($("#join-group-tab"), $("#create-group-tab"));
             });
 
             $('#create-group-tab').click(function () {
-                $("#join-group-table").hide();
-                $("#create-group-form").show();
+                $("#search-groups-section").hide();
+                $("#create-group-div").show();
                 selectTab($("#create-group-tab"), $("#join-group-tab"));
+            });
+
+            $('#group-search-btn').click(function(e) {
+                $('#join-group-table tbody tr td').parent().empty();
+                $('#join-group-table').hide();
+
+                if ($('#search-groups-input').val().length > 0) {
+                    searchGroupAjaxRequest();
+                }
+            });
+
+            $('#group-create-submit-btn').click(function(e) {
+                if ($('#group-name-input').val().length > 0) {
+                    createGroupAjaxRequest();
+                } else {
+                    $('#create-group-div').addClass('has-error');
+                }
             });
         };
 
         function selectTab(tabToSelect, tabToUnselect) {
             tabToSelect.addClass("active");
             tabToUnselect.removeClass("active");
+        };
+
+        function createGroupAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/creategroup'; ?>",
+                data: {"groupName": $('#group-name-input').val(), "groupType": 0},
+                success: function (response) {
+                    var groupId = response.trim();
+
+                    redirectToGroupPage(groupId);
+                }
+            });
+        };
+
+        function redirectToGroupPage(groupId) {
+            var url = "<?php echo getFullInciteUrl(); ?>/groups/view/" + groupId;
+
+            window.location.href = url;
+        };
+
+        function searchGroupAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/searchgroups'; ?>",
+                data: {"searchTerm": $('#search-groups-input').val()},
+                success: function (response) {
+                    var groups = JSON.parse(response);
+                    
+                    if (groups) {
+                        groups.forEach(function(group) {
+                            addGroupToJoinRow(group['name'], group['id']);
+                        });
+
+                        if ($('#join-group-table tr').length > 0) {
+                            $('#join-group-table').show();
+                        }
+                    }
+                }
+            });
         };
     </script>
 
@@ -241,6 +325,7 @@
         #group-name-input {
             width: 300px;
             margin-bottom: 7px;
+            display: inline;
         }
 
         .nav-tabs > li {
@@ -255,12 +340,20 @@
             margin: 0 auto;
         }
 
-        #create-group-form {
+        #create-group-div {
             text-align: center;
         }
 
         #join-group-table {
             border-top-style: hidden;
+        }
+
+        .group-link {
+            margin-right: 0px;
+        }
+
+        #search-groups-section {
+            text-align: center;
         }
     </style>
 </head>
@@ -285,25 +378,31 @@
             </ul>
 
             <div id="join-or-create-info-container">
-                <table class="table" id="join-group-table">
-                    <tr>
-                        <th>
-                            Group Name
-                        </th>
-                        <th>
-                            Group Creator
-                        </th>
-                        <th>
-                            Request to Join
-                        </th>
-                    </tr>
-                </table>
 
-                <form id="create-group-form">
-                    <span>Group name:</span>
-                    <input id="group-name-input" type="text" name="field" placeholder="Ex: Mr. Smith's History Class" />
+                <div id="search-groups-section">
+                    <span>
+                        <input id="search-groups-input" type="text" name="field" placeholder="Ex: July" />        
+                        <button id="group-search-btn" class="btn btn-primary">Search</button>
+                    </span>
+                    <table class="table" id="join-group-table">
+                        <tr>
+                            <th>
+                                Group Name
+                            </th>
+                            <th>
+                                Request to Join
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="create-group-div">
+                    <span>
+                        <label class="control-label" for="group-name-input">Group name (can't be blank):</label>
+                        <input id="group-name-input" type="text" class="form-control" name="field" placeholder="Ex: Mr. Smith's History Class" />
+                    </span>
                     <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
-                </form>
+                </div>
             </div>
         </div>
 

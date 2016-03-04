@@ -131,6 +131,38 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
     }
     /**
+     * Ajax function that creates a new group, returns the new group's ID
+     */
+    public function creategroupAction() {
+        if ($this->getRequest()->isPost()) {
+            $groupName = $_POST['groupName'];
+            $groupType = $_POST['groupType'];
+
+            $groupId = createGroup($groupName, $_SESSION['Incite']['USER_DATA']['id'], $groupType);
+
+            if ($groupId > 0) {
+                echo $groupId;
+            } else {
+                system_log('failed to create group');
+                echo 'false';
+            }
+        }
+    }
+    /**
+     * Ajax function that searchs for groups with names similiar to the search term
+     *
+     * Returns a list of group ids
+     */
+    public function searchgroupsAction() {
+        if ($this->getRequest()->isPost()) {
+            $groupName = $_POST['searchTerm'];
+
+            $groups = searchGroupsByName($groupName);
+
+            echo json_encode($groups);
+        }
+    }
+    /**
      * Ajax function that creates accounts. This can be invoked in 2 ways
      * 1) An action is done and the user is not logged in, an account is automatically created for said user.
      * This account is a 'guest' account only meant for tracking any changes on the website

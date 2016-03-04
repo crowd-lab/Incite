@@ -66,7 +66,6 @@
                 span.append(createProfileLink("<?php echo $user['email']; ?>", <?php echo $user['id']; ?>));
                 $("#groupprofile-list-of-members").append(span);
             <?php endforeach; ?>
-
         };
 
         function createProfileLink(username, userid) {
