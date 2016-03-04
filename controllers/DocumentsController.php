@@ -42,6 +42,15 @@ function sort_strlen($str1, $str2) {
     return strlen($str2) - strlen($str1);
 }
 
+/**
+ * Upgrade V1 (using span) to V2 (using em)
+*/
+function migrateTaggedDocumentFromV1toV2($text) {
+    $tmp_result = str_replace('<span id', '<em id', $text);
+    $result = str_replace('</span>', '</em>', $tmp_result);
+    return $result;
+}
+
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController {
 
@@ -191,10 +200,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['Incite']['previous_task'] = 'tag';
 
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
-                    $_SESSION['incite']['message'] = 'Tagging successful! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag?'.$_POST['query_str'].'">here</a>.';
+                    $_SESSION['incite']['message'] = 'Tagging completed! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag?'.$_POST['query_str'].'">here</a>.';
                     $this->redirect('/incite/documents/connect/'.$this->_getParam('id').'?'.$_POST['query_str']);
                 } else {
-                    $_SESSION['incite']['message'] = 'Tagging successful! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
+                    $_SESSION['incite']['message'] = 'Tagging completed! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
                     $this->redirect('/incite/documents/connect/'.$this->_getParam('id'));
                 }
             }
@@ -242,7 +251,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if (hasTaggedTranscription($this->_getParam('id'))) {
                     $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                     //count($transcriptions) must > 0 since it has tagged transcription
-                    $this->view->transcription = $transcriptions[count($transcriptions)-1];
+                    $this->view->transcription = migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
                     //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
                     /*
                     $allTags = getAllTagInformation($this->_getParam('id'));
