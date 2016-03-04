@@ -12,17 +12,19 @@ function get_image_url_for_item($item) {
     else if (count($files) == 1)
         return $item->getFile()->getProperty('uri');
     else {
-        $filenames = get_jpeg_filenames_from_item($item);
+        $filenames = get_jpeg_png_filenames_from_item($item);
         merge_images($filenames, 'incite_'.$item->id.'.jpeg');
         return $url_path.'incite_'.$item->id.'.jpeg';
     }
 }
-function get_jpeg_filenames_from_item($item) {
+function get_jpeg_png_filenames_from_item($item) {
     $filenames = array();
     $files = $item->getFiles();
     for ($i = 0; $i < count($files); $i++) {
         if ($files[$i]['mime_type'] === "image/jpeg")
-            $filenames[] = $files[$i]['filename'];
+            $filenames[] = array('file' => $files[$i]['filename'], 'type' => 'jpg');
+        else if ($files[$i]['mime_type'] === "image/png")
+            $filenames[] = array('file' => $files[$i]['filename'], 'type' => 'png');
     }
     return $filenames;
 }
@@ -35,7 +37,7 @@ function merge_images($filenames, $filename_result) {
     $widths = array();
     $heights = array();
     for ($i = 0; $i < count($filenames); $i++) {
-        list($width, $height) = getimagesize($path.$filenames[$i]);
+        list($width, $height) = getimagesize($path.$filenames[$i]['file']);
         $widths[] = $width;
         $heights[] = $height;
     }
@@ -47,12 +49,16 @@ function merge_images($filenames, $filename_result) {
 
     $acc_height = 0;
     for ($i = 0; $i < count($filenames); $i++) {
-        $image = imagecreatefromjpeg($path.$filenames[$i]);
-        list($width, $height) = getimagesize($path.$filenames[$i]);
+        if ($filenames[$i]['type'] === 'jpg')
+            $image = imagecreatefromjpeg($path.$filenames[$i]['file']);
+        else if ($filenames[$i]['type'] === 'png')
+            $image = imagecreatefrompng($path.$filenames[$i]['file']);
+        list($width, $height) = getimagesize($path.$filenames[$i]['file']);
         imagecopy($final_image, $image, 0, $acc_height, 0, 0, $width, $height);
         $acc_height += $height;
         imagedestroy($image);
     }
+
 
     imagejpeg($final_image, $path.$filename_result);
     imagedestroy($final_image);
