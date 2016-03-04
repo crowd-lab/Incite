@@ -20,15 +20,19 @@
                 }
             ?>
 
-            $('#create-group-div').hide();
-            $('#join-group-table').hide();
-
+            hideElementsByDefault();
             addListenersToOverview();
             populateGroups();
             populateActivityOverview();
             populateActivityFeed();
             addGroupCreateOrJoinListeners();
         });
+
+        function hideElementsByDefault() {
+            $('#create-group-div').hide();
+            $('#join-group-table').hide();
+            $('#no-groups-found-paragraph').hide();
+        };
 
         function addListenersToOverview() {
             $('.overview-section').click(function(event) {
@@ -48,7 +52,7 @@
                     toggleFilter("discuss");
                 }
             });
-        }
+        };
 
         function toggleFilter(filter) {
             if (filters.indexOf(filter) > -1) {
@@ -58,7 +62,7 @@
             }
 
             filterActivityFeed();
-        }
+        };
 
         function filterActivityFeed() {
             $("#userprofile-activity-feed-table tr").each(function(index, row) {
@@ -78,21 +82,17 @@
                     }
                 }
             });
-        }
+        };
 
         function populateGroups() {
             var span;
 
             <?php foreach ((array) $this->groups as $group): ?>
-                if ($("#groups-list span").length === 0) {
-                    span = $('<span class="group-member-link"></span>');
-                } else {
-                    span = $('<span class="group-member-link">, </span>');
-                }
+                span = $('<span class="group-member-link"> | </span>');
 
                 span.append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
 
-                $('#groups-list').append(span);
+                appendBasedOnPrivilegeOfUser(<?php echo $group['id']; ?>, span);
             <?php endforeach; ?>
         };
 
@@ -131,18 +131,6 @@
             } else if (task === "Discuss") {
                 emptyRow.addClass("discuss-color");
             }
-
-            table.append(emptyRow);
-        };
-
-        function addGroupToJoinRow(groupName, groupId) {
-            var table = $('#join-group-table');
-
-            var emptyRow = $('<tr>' + 
-                    '<td><a class="group-name-data" href="<?php echo getFullInciteUrl(); ?>' +
-                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' + 
-                    '<td><button class="btn btn-primary request-join-btn">Request!</button></td>' +
-                '</tr>');
 
             table.append(emptyRow);
         };
@@ -208,7 +196,7 @@
                 url: "<?php echo getFullInciteUrl().'/ajax/searchgroups'; ?>",
                 data: {"searchTerm": $('#search-groups-input').val()},
                 success: function (response) {
-                    var groups = JSON.parse(response);
+                    groups = JSON.parse(response);
                     
                     if (groups) {
                         groups.forEach(function(group) {
@@ -217,8 +205,82 @@
 
                         if ($('#join-group-table tr').length > 0) {
                             $('#join-group-table').show();
+                            $('#no-groups-found-paragraph').hide();
                         }
+                    } else {
+                        $('#no-groups-found-paragraph').show();
+                        $('#join-group-table').hide();
                     }
+                }
+            });
+        };
+
+        function addGroupToJoinRow(groupName, groupId) {
+            var table = $('#join-group-table');
+
+            var emptyRow = $('<tr>' + 
+                    '<td><a class="group-name-data" href="<?php echo getFullInciteUrl(); ?>' +
+                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' + 
+                    '<td><button class="btn btn-primary request-join-btn">Request!</button></td>' +
+                '</tr>');
+
+            var button = emptyRow.find('button');
+
+            styleButtonBasedOnPrivilegeOfUser(groupId, button);
+
+            table.append(emptyRow);
+        };
+
+        function appendBasedOnPrivilegeOfUser(groupId, span) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/getgroupmemberprivilege'; ?>",
+                data: {"groupId": groupId, "userId": <?php echo $this->user['id'] ?>},
+                success: function (response) {
+                    var privilege = JSON.parse(response);
+                        
+                    if (privilege === 0) {
+                        $('#groups-list').append(span);
+                    } 
+                }
+            });
+        };
+
+        function styleButtonBasedOnPrivilegeOfUser(groupId, button) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/getgroupmemberprivilege'; ?>",
+                data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
+                success: function (response) {
+                    var privilege = JSON.parse(response);
+                        
+                    if (privilege === 0) {
+                        button.prop('disabled', true);
+                        button.html("Member of group");
+                    } else if (privilege === -1) {
+                        button.prop('disabled', true);
+                        button.html("Join request pending..");
+                    } else if (privilege === -2) {
+                        button.prop('disabled', true);
+                        button.html("Banned from this group");
+                    } else {
+                        button.click(function() {
+                            requestToJoinGroupAjaxRequest(groupId);
+                            button.prop('disabled', true);
+                            button.html("Join request pending..");
+                        });
+                    }
+                }
+            });
+        };
+
+        function requestToJoinGroupAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/addgroupmember'; ?>",
+                data: {"groupId": groupId, "privilege": -1},
+                success: function (response) {
+                    console.log(response);
                 }
             });
         };
@@ -354,6 +416,8 @@
 
         #search-groups-section {
             text-align: center;
+            max-height: 300px;
+            overflow-y: scroll;
         }
     </style>
 </head>
@@ -383,6 +447,7 @@
                     <span>
                         <input id="search-groups-input" type="text" name="field" placeholder="Ex: July" />        
                         <button id="group-search-btn" class="btn btn-primary">Search</button>
+                        <p id="no-groups-found-paragraph">No results found</p>
                     </span>
                     <table class="table" id="join-group-table">
                         <tr>

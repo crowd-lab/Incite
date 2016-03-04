@@ -8,6 +8,9 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#manage-users-table').hide();
+            populateGroupMembers();
+            populateActivityFeed();
+            colorEveryOtherActivityFeedRowGrey();
 
             <?php
                 if (isset($_SESSION['incite']['message'])) {
@@ -47,10 +50,6 @@
                     }
                 }
             ?>
-
-            populateGroupMembers();
-            populateActivityFeed();
-            colorEveryOtherActivityFeedRowGrey();
         });
 
         function populateGroupMembers() {
@@ -66,6 +65,9 @@
                 span.append(createProfileLink("<?php echo $user['email']; ?>", <?php echo $user['id']; ?>));
                 $("#groupprofile-list-of-members").append(span);
             <?php endforeach; ?>
+
+            //create link for group owner
+            $('#group-owner').append(createProfileLink("<?php echo $this->group['creator']['email'] ?>", <?php echo $this->group['creator']['id'] ?>));
         };
 
         function createProfileLink(username, userid) {
@@ -189,6 +191,11 @@
             status = parseInt(status);
             id = parseInt(id);
 
+            //don't add the owner of the group to the table
+            if (id === <?php echo $this->group['creator']['id'] ?>) {
+                return;
+            }
+
             if (status > -1) {
                 statusName = "Group Member";
                 glyphicon = $('<td><span title="Remove user from group" class="remove-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span><span title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td></td>');
@@ -196,7 +203,7 @@
                 statusName = "Requested to join";
                 glyphicon = $('<td><span title="Add user to group" class="approve-user glyphicon glyphicon-ok-circle" aria-hidden="true"></span><span title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td>');
             } else if (status === -2) {
-                statusName = "Blocked";
+                statusName = "Banned";
                 glyphicon = $('<td><span title="Unban user from group" class="unban-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span></td>');
             }
 
@@ -225,30 +232,48 @@
             function banUser() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
-                console.log(userId);
-                //Make ajax here to do action
+                changePrivilegeOfUserAjaxRequest(userId, -2);
             };
 
             function unbanUser() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
-                console.log(userId);
-                //Make ajax here to do action
+                changePrivilegeOfUserAjaxRequest(userId, 0);
             };
 
             function addUserToGroup() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
-                console.log(userId);
-                //Make ajax here to do action
+                changePrivilegeOfUserAjaxRequest(userId, 0);
             };
 
             function removeUserFromGroup() {
                 var row = $(this).parent().parent();
                 var userId = row.data("ID");
-                console.log(userId);
-                //Make ajax here to do action
+                removeUserFromGroupAjaxRequest(userId);
             };
+        };
+
+        function changePrivilegeOfUserAjaxRequest(userId, privilege) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/changegroupmemberprivilege'; ?>",
+                data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": privilege, "userId": userId},
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+        };
+
+        function removeUserFromGroupAjaxRequest(userId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/removememberfromgroup'; ?>",
+                data: {"groupId": <?php echo $this->group['id'] ?>, "userId": userId},
+                success: function (response) {
+                    console.log(response);
+                }
+            });
         };
 
         function stylePageForNonMember() {
@@ -261,18 +286,29 @@
             var button = $('<button class="btn btn-primary horizontal-align" id="request-button">Request to Join Group</button>');
 
             $(button).click(function() {
-                //Send request ajax in here using the seesion id then disable the button
+                requestToJoinGroupAjaxRequest();
                 disableRequestButton();
             });
 
             $('#groupprofile-activity-container').append(button);
         };
 
+        function requestToJoinGroupAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/addgroupmember'; ?>",
+                data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": -1},
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+        };
+
         function disableRequestButton() {
             $('#request-button').addClass("disabled");
             $('#request-button').html("Request Pending..");
             $('#request-button').click(function(){
-                //cant manually remove disabled class and resend request
+                //so it isn't possible to manually remove disabled class and then resend request
             });
         };
 
@@ -390,7 +426,7 @@
 
         #owner-glyph {
             position: relative;
-            top: 5px;
+            top: 3px;
             margin-left: 5px;
         }
 
@@ -411,7 +447,7 @@
     <div id="groupprofile-header">
         <?php
             echo '<h1> Group: ' . $this->group['name'] . '</h1>';
-            echo '<h3 id="group-owner"> Group Owner: <a href="" target="_BLANK">'.$this->group['creator']['email'].'</a></h3>';
+            echo '<h3 id="group-owner">Group Owner: </h3>';
         ?>
     </div>
 

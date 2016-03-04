@@ -92,10 +92,74 @@ function addGroupMember($memberId, $groupId, $privilege)
 }
 
 /**
+ * Removes a user from a group, should only be performed by the group owner
+ *
+ * @param int $memberId
+ * @param int $groupId
+ * @return string "Success" or "Failure"
+ */
+function removeMemberFromGroup($memberId, $groupId)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("DELETE FROM omeka_incite_group_members WHERE user_id = ? AND group_id = ?");
+    $stmt->bind_param("ii", $memberId, $groupId);
+    $stmt->execute();
+    $stmt->close();
+
+    return "true";
+}
+
+/**
+ * Changes the privilege of a member in a group, both specified by ID
+ * Privilege denotes membership status:
+ *      0 = member of the group
+ *     -1 = has requested to join the group and is not yet approved
+ *     -2 = user is banned from the group
+ *
+ * @param int $memberId
+ * @param int $groupId
+ * @param int $privilege
+ * @return string "Success" or "Failure"
+ */
+function changeGroupMemberPrivilege($memberId, $groupId, $privilege)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("UPDATE omeka_incite_group_members SET privilege = ? WHERE user_id = ? AND group_id = ?");
+    $stmt->bind_param("iii", $privilege, $memberId, $groupId);
+    $stmt->execute();
+    $stmt->close();
+
+    return "true";
+}
+
+/**
+ * Gets the privilege level of a user in a group
+ *      0 = member of the group
+ *     -1 = has requested to join the group and is not yet approved
+ *     -2 = user is banned from the group
+ *
+ * @param int $memberId
+ * @param int $groupId
+ * @return int privilege level 
+ */
+function getGroupMemberPrivilege($memberId, $groupId)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT privilege FROM omeka_incite_group_members WHERE user_id = ? AND group_id = ?");
+    $stmt->bind_param("ii", $memberId, $groupId);
+    $stmt->bind_result($privilege);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+
+    return $privilege;
+}
+
+/**
  * Gets all group ids who's groups contain the search string
  *
  * @param string $groupName
- * @return list of group ids
+ * @return list of group ids, or false if no groups found
  */
 function searchGroupsByName($groupName)
 {
@@ -105,12 +169,19 @@ function searchGroupsByName($groupName)
     $stmt->bind_param("s", $matchingTerm);
     $stmt->bind_result($groupId, $groupNameResult);
     $stmt->execute();
+
+    $groupsFound = false;
     while ($stmt->fetch()) {
         $groups[] = array('id' => $groupId, 'name' => $groupNameResult);
+        $groupsFound = true;
     }
     $stmt->close();
 
-    return $groups;
+    if ($groupsFound) {
+        return $groups;
+    } else {
+        return false;
+    }
 }
 
 ?>
