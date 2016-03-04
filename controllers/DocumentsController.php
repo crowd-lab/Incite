@@ -623,7 +623,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $current_page = $_GET['page'];
             $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $records_counter = 0;
-            $total_pages = ceil(count($connectable_documents) / $max_records_to_show);
+            $total_pages = ceil(count($document_ids) / $max_records_to_show);
             $records = array();
             if (count($document_ids) > 0) {
                 for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
