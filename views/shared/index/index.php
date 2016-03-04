@@ -54,8 +54,8 @@ body { padding-top: 60px;
 			<div class="carousel-inner">
 			  
 				<div class="item active">
-					<a href="./incite/documents/transcribe">
-				   		<img src="/m4j/plugins/Incite/views/shared/images/Transcribe.png">
+					<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe">
+				   		<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Transcribe.png">
 
 				    	<div class="carousel-caption">
 							<h3>Transcribe</h3>
@@ -65,8 +65,8 @@ body { padding-top: 60px;
 				</div><!-- End Item -->
 				
 				<div class="item">
-					<a href="./incite/documents/tag">
-						<img src="/m4j/plugins/Incite/views/shared/images/Tag.png">
+					<a href="<?php echo getFullInciteUrl(); ?>/documents/tag">
+						<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Tag.png">
 					
 						<div class="carousel-caption">
 							<h3>Tag</h3>
@@ -76,8 +76,8 @@ body { padding-top: 60px;
 				</div><!-- End Item -->
 				
 				<div class="item">
-					<a href="./incite/documents/connect">
-				  		<img src="/m4j/plugins/Incite/views/shared/images/Connect.png" href="./incite/documents/connect">
+					<a href="<?php echo getFullInciteUrl(); ?>/documents/connect">
+				  		<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Connect.png">
 				  	
 					   	<div class="carousel-caption">
 							<h3>Connect</h3>
@@ -168,11 +168,11 @@ $(document).ready(function(){
 		slideNumber = parseInt(slideNumber);
 
 		if (slideNumber === slideIndex.TRANSCRIBE) {
-			window.location = '/m4j/incite/documents/transcribe';
+			window.location = '<?php echo getFullInciteUrl(); ?>/documents/transcribe';
 		} else if (slideNumber === slideIndex.TAG) {
-			window.location = '/m4j/incite/documents/tag';
+			window.location = '<?php echo getFullInciteUrl(); ?>/documents/tag';
 		} else if (slideNumber === slideIndex.CONNECT) {
-			window.location = '/m4j/incite/documents/connect';
+			window.location = '<?php echo getFullInciteUrl(); ?>/documents/connect';
 		}
 	}).on('slid.bs.carousel', function(e) {
 		if (!hoverEvent) {
