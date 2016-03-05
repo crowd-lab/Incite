@@ -152,6 +152,18 @@
     var categories = <?php echo json_encode($category_object).";\n"; ?>
     var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
+    
+    function set_tag_id_counter() {
+        var max_id = 0;
+        $('#entity-table tr').each( function (idx) {
+            if (parseInt(this.dataset.tagid) > max_id) {
+                max_id = parseInt(this.dataset.tagid);
+            }
+        });
+        max_id++;
+        if (max_id > tagid_id_counter)
+            tagid_id_counter = max_id;
+    }
 
     function addUserTag(text, span_id) {
         var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
@@ -250,6 +262,7 @@
     $(document).ready(function () {
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
+        set_tag_id_counter();
 
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
