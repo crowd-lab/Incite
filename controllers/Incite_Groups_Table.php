@@ -33,6 +33,23 @@ function getMembersWithActivityOverviewByGroupId($groupid)
     return $users;
 }
 
+function getMembersAcceptedIntoGroup($groupid) 
+{
+    $users = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT user_id from omeka_incite_group_members WHERE group_id = ? AND privilege = 0");
+    $stmt->bind_param("i", $groupid);
+    $stmt->bind_result($user);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $user_data = getUserDataByUserId($user);
+        $users[] = array('id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user));
+    }
+    $db->close();
+    return $users;
+}
+
+
 function getGroupInfoByGroupId($groupid)
 {
     $db = DB_Connect::connectDB();

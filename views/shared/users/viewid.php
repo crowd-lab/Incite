@@ -88,11 +88,16 @@
             var span;
 
             <?php foreach ((array) $this->groups as $group): ?>
-                span = $('<span class="group-member-link"> | </span>');
+
+                if ($("#groups-list span").length === 0) {
+                    span = $('<span class="group-member-link"></span>');
+                } else {
+                    span = $('<span class="group-member-link">, </span>');
+                }
 
                 span.append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
 
-                appendBasedOnPrivilegeOfUser(<?php echo $group['id']; ?>, span);
+                $('#groups-list').append(span);
             <?php endforeach; ?>
         };
 
@@ -229,21 +234,6 @@
             styleButtonBasedOnPrivilegeOfUser(groupId, button);
 
             table.append(emptyRow);
-        };
-
-        function appendBasedOnPrivilegeOfUser(groupId, span) {
-            var request = $.ajax({
-                type: "POST",
-                url: "<?php echo getFullInciteUrl().'/ajax/getgroupmemberprivilege'; ?>",
-                data: {"groupId": groupId, "userId": <?php echo $this->user['id'] ?>},
-                success: function (response) {
-                    var privilege = JSON.parse(response);
-                        
-                    if (privilege === 0) {
-                        $('#groups-list').append(span);
-                    } 
-                }
-            });
         };
 
         function styleButtonBasedOnPrivilegeOfUser(groupId, button) {

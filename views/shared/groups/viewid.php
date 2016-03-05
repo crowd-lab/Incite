@@ -55,7 +55,7 @@
         function populateGroupMembers() {
             var span;
 
-            <?php foreach ((array)$this->users as $user): ?>
+            <?php foreach ((array)$this->acceptedUsers as $user): ?>
                 if ($("#groupprofile-list-of-members span").length === 0) {
                     span = $('<span class="group-member-link"></span>');
                 } else {
@@ -77,7 +77,7 @@
         function populateActivityFeed() {
             var table; 
 
-            <?php foreach ((array)$this->users as $user): ?>
+            <?php foreach ((array)$this->acceptedUsers as $user): ?>
                 table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), "<?php echo $user['email']; ?>", <?php echo $user['id']; ?>);
                 generateAndAppendUserActivityRow(table, "Transcribed", <?php echo $user['transcribed_doc_count']; ?>);
                 generateAndAppendUserActivityRow(table, "Tagged", <?php echo $user['tagged_doc_count']; ?>);
@@ -261,6 +261,7 @@
                 data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": privilege, "userId": userId},
                 success: function (response) {
                     console.log(response);
+                    location.reload(); 
                 }
             });
         };
@@ -272,6 +273,7 @@
                 data: {"groupId": <?php echo $this->group['id'] ?>, "userId": userId},
                 success: function (response) {
                     console.log(response);
+                    location.reload(); 
                 }
             });
         };
