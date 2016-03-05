@@ -558,7 +558,7 @@ require_once("Incite_Groups_Table.php");
     function getGroupsByUserId($userid) {
         $groups = array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT group_id from omeka_incite_group_members WHERE user_id = ?");
+        $stmt = $db->prepare("SELECT group_id from omeka_incite_group_members WHERE user_id = ? AND privilege = 0");
         $stmt->bind_param("i", $userid);
         $stmt->bind_result($group);
         $stmt->execute();
