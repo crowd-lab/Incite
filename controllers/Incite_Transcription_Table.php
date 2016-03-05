@@ -56,6 +56,19 @@ function getTranscriptionText($transcriptionID) {
     $db->close();
     return $text;
 }
+
+function getSummaryText($transcriptionID) {
+    $text = "";
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT summarized_text FROM omeka_incite_transcriptions WHERE id = ?");
+    $stmt->bind_param("i", $transcriptionID);
+    $stmt->bind_result($text);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $text;
+}
 /**
  * Get a list of ids for approved transcriptions for a document
  * @param int documentID

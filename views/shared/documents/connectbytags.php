@@ -36,13 +36,16 @@
                         data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                 </p>
+<?php $counter = 0; ?>
                 <?php foreach((array)$this->related_documents as $document): ?>
                     <div class="col-md-4">
                         <a data-toggle="popover" data-placement="bottom" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
-                            <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
+                            <img style="max-height: 150px" src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
                         </a>
                         <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
                     </div>
+<?php if ($counter%3 == 2) echo '<div class="clearfix"></div>'; ?>
+<?php $counter++; ?>
                 <?php endforeach; ?>
                 <div class="clearfix"></div>
                 <br>

@@ -153,11 +153,6 @@
     var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
-    function migrateTaggedDocumentsFromV1toV2() {
-        $('#transcribe_copy em').each( function (idx) {
-            $(this).addClass('tagged-text');
-        });
-    }
     function addUserTag(text, span_id) {
         var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
         
