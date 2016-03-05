@@ -146,7 +146,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-description="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>" data-data="<?php echo $reference['date']; ?>" data-location="<?php echo $reference['location']; ?>">
                         <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
                     </div>
-<? endforeach; ?>
+<?php endforeach; ?>
                     <div class="clearfix"></div>
                 </div>
 <?php foreach ((array) $this->discussions as $discussion): ?>

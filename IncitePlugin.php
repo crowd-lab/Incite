@@ -201,7 +201,7 @@ SQL
         `id`                int(11) NOT NULL AUTO_INCREMENT,
         `first_name`        varchar(15) NOT NULL,
         `last_name`         varchar(15) NOT NULL,
-        `email`             varchar(30) NOT NULL,
+        `email`             varchar(50) NOT NULL,
         `password`          varchar(32) NOT NULL,
         `privilege_level`   int(11) NOT NULL,
         `experience_level`  int(11) NOT NULL,
