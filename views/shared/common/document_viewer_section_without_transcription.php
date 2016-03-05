@@ -35,7 +35,9 @@
                             . "<br><br> <strong>Location:</strong> " 
                             . metadata($this->transcription, array('Item Type Metadata', 'Location')) 
                             . "<br><br> <strong>Description:</strong> " 
-                            . metadata($this->transcription, array('Dublin Core', 'Description')); ?>" 
+                            . metadata($this->transcription, array('Dublin Core', 'Description'))
+                            . "<br><br> <strong>Rights:</strong> " 
+                            . metadata($this->transcription, array('Dublin Core', 'Rights')); ?>" 
                     data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                 </span>
             </div> 

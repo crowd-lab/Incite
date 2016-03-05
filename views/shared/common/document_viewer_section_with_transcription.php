@@ -80,7 +80,9 @@
                         . "<br><br> <strong>Location:</strong> " 
                         . metadata($currentTask, array('Item Type Metadata', 'Location')) 
                         . "<br><br> <strong>Description:</strong> " 
-                        . metadata($currentTask, array('Dublin Core', 'Description')); ?>" 
+                        . metadata($currentTask, array('Dublin Core', 'Description'))
+                        . "<br><br> <strong>Rights:</strong> " 
+                        . metadata($currentTask, array('Dublin Core', 'Rights')); ?>" 
                 data-placement="bottom" data-id="<?php echo $currentTask->id; ?>">
             </span>
         </div> 

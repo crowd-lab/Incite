@@ -161,7 +161,14 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
         <br>
 <?php foreach ((array)$this->Tags as $tag): ?>
-        <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($tag, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($tag, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $tag->id; ?>">
+        <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;" data-toggle="popover" 
+            data-trigger="hover" data-html="true"
+            data-content="<?php echo "<strong>Date:</strong> " 
+                        . metadata($tag, array('Dublin Core', 'Date'))
+                        . "<br><br> <strong>Description:</strong> "
+                        . metadata($tag, array('Dublin Core', 'Description')); ?>"
+            data-title="<?php echo "<strong>" . metadata($tag, array('Dublin Core', 'Title')) . "</strong>";?>" 
+            data-placement="left" data-id="<?php echo $tag->id; ?>">
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
             <a href="<?php echo getFullInciteUrl().'/documents/tag/'.$tag->id."?".$this->query_str; ?>">
 <?php else: ?>
