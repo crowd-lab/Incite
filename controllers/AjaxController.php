@@ -131,6 +131,108 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
     }
     /**
+     * Ajax function that creates a new group, returns the new group's ID
+     */
+    public function creategroupAction() {
+        if ($this->getRequest()->isPost()) {
+            $groupName = $_POST['groupName'];
+            $groupType = $_POST['groupType'];
+
+            $groupId = createGroup($groupName, $_SESSION['Incite']['USER_DATA']['id'], $groupType);
+
+            if ($groupId > 0) {
+                echo $groupId;
+            } else {
+                system_log('failed to create group');
+                echo 'false';
+            }
+        }
+    }
+    /**
+     * Ajax function that searchs for groups with names similiar to the search term
+     *
+     * Returns a list of group ids
+     */
+    public function searchgroupsAction() {
+        if ($this->getRequest()->isPost()) {
+            $groupName = $_POST['searchTerm'];
+
+            $groups = searchGroupsByName($groupName);
+
+            echo json_encode($groups);
+        }
+    }
+    /**
+     * Ajax function that adds the currently logged in user to a group with the privilege specified
+     * in the ajax request
+     *
+     * Returns output of addGroupMember
+     */
+    public function addgroupmemberAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_SESSION['Incite']['USER_DATA']['id'];
+            $groupId = $_POST['groupId'];
+            $privilege = $_POST['privilege'];
+
+            echo json_encode(addGroupMember($userId, $groupId, $privilege));
+        }
+    }
+    /**
+     * Ajax function that adds the currently logged in user to a group with the privilege specified
+     * in the ajax request
+     *
+     * Returns output of addGroupMember
+     */
+    public function removememberfromgroupAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_POST['userId'];
+            $groupId = $_POST['groupId'];
+            $group = getGroupInfoByGroupId($groupId);
+
+            //prevent non group owners from changing people's privilege levels to banned or added
+            if ($_SESSION['Incite']['USER_DATA']['id'] != $group['creator']['id']) {
+                echo false;
+                return;
+            }
+
+            echo json_encode(removeMemberFromGroup($userId, $groupId));
+        }
+    }
+    /**
+     * Ajax function that updates the privilege of a member of a group
+     *
+     * Returns output of changeGroupMemberPrivilege
+     */
+    public function changegroupmemberprivilegeAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_POST['userId'];
+            $groupId = $_POST['groupId'];
+            $privilege = $_POST['privilege'];
+            $group = getGroupInfoByGroupId($groupId);
+
+            //prevent non group owners from changing people's privilege levels to banned or added
+            if (($privilege == 0 || $privilege == -2) && $_SESSION['Incite']['USER_DATA']['id'] != $group['creator']['id']) {
+                echo false;
+                return;
+            }
+
+            echo json_encode(changeGroupMemberPrivilege($userId, $groupId, $privilege));
+        }
+    }
+    /**
+     * Ajax function that gets the privilege of a group member 
+     *
+     * Returns output of getGroupMemberPrivilege
+     */
+    public function getgroupmemberprivilegeAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_POST['userId'];
+            $groupId = $_POST['groupId'];
+
+            echo json_encode(getGroupMemberPrivilege($userId, $groupId));
+        }
+    }
+    /**
      * Ajax function that creates accounts. This can be invoked in 2 ways
      * 1) An action is done and the user is not logged in, an account is automatically created for said user.
      * This account is a 'guest' account only meant for tracking any changes on the website

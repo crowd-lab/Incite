@@ -168,8 +168,15 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php else: ?>
             <a href="<?php echo getFullInciteUrl().'/documents/connect/'.$connection->id; ?>">
 <?php endif; ?>
-                <div style="height: 40px; width:40px; float: left;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($connection, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($connection, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $connection->id; ?>">
-                    <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
+                <div style="height: 40px; width:40px; float: left;" data-toggle="popover" 
+                    data-trigger="hover" data-html="true"
+                    data-content="<?php echo "<strong>Date:</strong> " 
+                        . metadata($connection, array('Dublin Core', 'Date'))
+                        . "<br><br> <strong>Description:</strong> "
+                        . metadata($connection, array('Dublin Core', 'Description')); ?>"
+                    data-title="<?php echo "<strong>" . metadata($connection, array('Dublin Core', 'Title')) . "</strong>";?>"
+                    data-placement="left" data-id="<?php echo $connection->id; ?>">
+                        <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
                 <div style="height: 40px; margin-left: 45px;">
                     <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>

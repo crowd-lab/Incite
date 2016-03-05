@@ -6,7 +6,7 @@
     ?>
 
     <script type="text/javascript">
-        var filters = [];
+        var filters = ["transcribe", "tag", "connect", "discuss"];
 
         $(document).ready(function () {
             <?php
@@ -14,13 +14,25 @@
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
+
+                if ($this->user['id'] != $_SESSION['Incite']['USER_DATA']['id']) {
+                    echo "$('#group-creation-and-join-container').hide();";
+                }
             ?>
 
+            hideElementsByDefault();
             addListenersToOverview();
             populateGroups();
             populateActivityOverview();
             populateActivityFeed();
+            addGroupCreateOrJoinListeners();
         });
+
+        function hideElementsByDefault() {
+            $('#create-group-div').hide();
+            $('#join-group-table').hide();
+            $('#no-groups-found-paragraph').hide();
+        };
 
         function addListenersToOverview() {
             $('.overview-section').click(function(event) {
@@ -40,7 +52,7 @@
                     toggleFilter("discuss");
                 }
             });
-        }
+        };
 
         function toggleFilter(filter) {
             if (filters.indexOf(filter) > -1) {
@@ -50,7 +62,7 @@
             }
 
             filterActivityFeed();
-        }
+        };
 
         function filterActivityFeed() {
             $("#userprofile-activity-feed-table tr").each(function(index, row) {
@@ -65,17 +77,28 @@
                     filters.indexOf("discuss") > -1 && $(row).hasClass("discuss-color")) {
                     $(row).show();
                 } else {
-                    if (!$(row).hasClass("activity-feed-table-header"))
+                    if (!$(row).hasClass("activity-feed-table-header")) {
                         $(row).hide();
+                    }
                 }
             });
-        }
+        };
 
         function populateGroups() {
+            var span;
 
-<?php foreach ((array) $this->groups as $group): ?>
-            $('#groups-list').append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
-<?php endforeach; ?>
+            <?php foreach ((array) $this->groups as $group): ?>
+
+                if ($("#groups-list span").length === 0) {
+                    span = $('<span class="group-member-link"></span>');
+                } else {
+                    span = $('<span class="group-member-link">, </span>');
+                }
+
+                span.append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
+
+                $('#groups-list').append(span);
+            <?php endforeach; ?>
         };
 
         function createGroupLink(groupname, groupid) {
@@ -90,12 +113,11 @@
         };
 
         function populateActivityFeed() {
-<?php foreach ((array)$this->activities as $activity): ?>
-            generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
-<?php endforeach; ?>
+            <?php foreach ((array)$this->activities as $activity): ?>
+                generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+            <?php endforeach; ?>
         };
 
-        //TODO generate document link from docID
         function generateAndAppendRow(table, task, docTitle, docID, date) {
             var emptyRow = $('<tr>' + 
                 '<td><span class="task-data">' + task + '</span></td>' + 
@@ -117,9 +139,152 @@
 
             table.append(emptyRow);
         };
+
+        function addGroupCreateOrJoinListeners() {
+            $('#join-group-tab').click(function () {
+                $("#create-group-div").hide();
+                $("#search-groups-section").show();
+                selectTab($("#join-group-tab"), $("#create-group-tab"));
+            });
+
+            $('#create-group-tab').click(function () {
+                $("#search-groups-section").hide();
+                $("#create-group-div").show();
+                selectTab($("#create-group-tab"), $("#join-group-tab"));
+            });
+
+            $('#group-search-btn').click(function(e) {
+                $('#join-group-table tbody tr td').parent().empty();
+                $('#join-group-table').hide();
+
+                if ($('#search-groups-input').val().length > 0) {
+                    searchGroupAjaxRequest();
+                }
+            });
+
+            $('#group-create-submit-btn').click(function(e) {
+                if ($('#group-name-input').val().length > 0) {
+                    createGroupAjaxRequest();
+                } else {
+                    $('#create-group-div').addClass('has-error');
+                }
+            });
+        };
+
+        function selectTab(tabToSelect, tabToUnselect) {
+            tabToSelect.addClass("active");
+            tabToUnselect.removeClass("active");
+        };
+
+        function createGroupAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/creategroup'; ?>",
+                data: {"groupName": $('#group-name-input').val(), "groupType": 0},
+                success: function (response) {
+                    var groupId = response.trim();
+
+                    redirectToGroupPage(groupId);
+                }
+            });
+        };
+
+        function redirectToGroupPage(groupId) {
+            var url = "<?php echo getFullInciteUrl(); ?>/groups/view/" + groupId;
+
+            window.location.href = url;
+        };
+
+        function searchGroupAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/searchgroups'; ?>",
+                data: {"searchTerm": $('#search-groups-input').val()},
+                success: function (response) {
+                    groups = JSON.parse(response);
+                    
+                    if (groups) {
+                        groups.forEach(function(group) {
+                            addGroupToJoinRow(group['name'], group['id']);
+                        });
+
+                        if ($('#join-group-table tr').length > 0) {
+                            $('#join-group-table').show();
+                            $('#no-groups-found-paragraph').hide();
+                        }
+                    } else {
+                        $('#no-groups-found-paragraph').show();
+                        $('#join-group-table').hide();
+                    }
+                }
+            });
+        };
+
+        function addGroupToJoinRow(groupName, groupId) {
+            var table = $('#join-group-table');
+
+            var emptyRow = $('<tr>' + 
+                    '<td><a class="group-name-data" href="<?php echo getFullInciteUrl(); ?>' +
+                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' + 
+                    '<td><button class="btn btn-primary request-join-btn">Request!</button></td>' +
+                '</tr>');
+
+            var button = emptyRow.find('button');
+
+            styleButtonBasedOnPrivilegeOfUser(groupId, button);
+
+            table.append(emptyRow);
+        };
+
+        function styleButtonBasedOnPrivilegeOfUser(groupId, button) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/getgroupmemberprivilege'; ?>",
+                data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
+                success: function (response) {
+                    var privilege = JSON.parse(response);
+                        
+                    if (privilege === 0) {
+                        button.prop('disabled', true);
+                        button.html("Member of group");
+                    } else if (privilege === -1) {
+                        button.prop('disabled', true);
+                        button.html("Join request pending..");
+                    } else if (privilege === -2) {
+                        button.prop('disabled', true);
+                        button.html("Banned from this group");
+                    } else {
+                        button.click(function() {
+                            requestToJoinGroupAjaxRequest(groupId);
+                            button.prop('disabled', true);
+                            button.html("Join request pending..");
+                        });
+                    }
+                }
+            });
+        };
+
+        function requestToJoinGroupAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/addgroupmember'; ?>",
+                data: {"groupId": groupId, "privilege": -1},
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+        };
     </script>
 
     <style> 
+        #join-or-create-info-container {
+            padding: 15px;
+        }
+
+        #group-create-or-join-tabs {
+            border-bottom: 1px solid #EEEEEE;
+        }
+
         #userprofile-header {
             text-align: center;
         }
@@ -208,6 +373,42 @@
         .discuss-color {
             background-color: #C5F7EB;
         }
+
+        #group-name-input {
+            width: 300px;
+            margin-bottom: 7px;
+            display: inline;
+        }
+
+        .nav-tabs > li {
+            width: 50%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #group-create-submit-btn {
+            display: block;
+            width: 390px;
+            margin: 0 auto;
+        }
+
+        #create-group-div {
+            text-align: center;
+        }
+
+        #join-group-table {
+            border-top-style: hidden;
+        }
+
+        .group-link {
+            margin-right: 0px;
+        }
+
+        #search-groups-section {
+            text-align: center;
+            max-height: 300px;
+            overflow-y: scroll;
+        }
     </style>
 </head>
     
@@ -216,39 +417,75 @@
         <?php
             echo '<h1> Username: '. $this->user['email'] . '</h1>';
         ?>
+
         <div>
             <p id="groups-list">Belongs to group(s): </p>
         </div>
     </div>
 
-    <br>
-
     <div class="container-fluid horizontal-align" id="userprofile-activity-container">
+
+        <div id="group-creation-and-join-container">
+            <ul class="nav nav-tabs" id="group-create-or-join-tabs">
+                <li id="join-group-tab" class="active"><a>Join a group</a></li>
+                <li id="create-group-tab"><a>Create a group</a></li>
+            </ul>
+
+            <div id="join-or-create-info-container">
+
+                <div id="search-groups-section">
+                    <span>
+                        <input id="search-groups-input" type="text" name="field" placeholder="Ex: July" />        
+                        <button id="group-search-btn" class="btn btn-primary">Search</button>
+                        <p id="no-groups-found-paragraph">No results found</p>
+                    </span>
+                    <table class="table" id="join-group-table">
+                        <tr>
+                            <th>
+                                Group Name
+                            </th>
+                            <th>
+                                Request to Join
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="create-group-div">
+                    <span>
+                        <label class="control-label" for="group-name-input">Group name (can't be blank):</label>
+                        <input id="group-name-input" type="text" class="form-control" name="field" placeholder="Ex: Mr. Smith's History Class" />
+                    </span>
+                    <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
+                </div>
+            </div>
+        </div>
 
         <hr size=2 style="margin-top: 0px;">
 
         <div id="userprofile-activity-overview">
             <h2 class="activity-title" id="userprofile-activity-overview-title">Activity Overview</h2>
+            <p class="activity-title">Select sections below to filter the activity feed</p>
 
-            <div class="overview-section" id="transcribe-overview-section">
+            <div class="overview-section transcribe-color" id="transcribe-overview-section">
                 <p class="task-description">
                     Transcribed:
                 </p>
                 <p id="number-transcribed">0 documents<p>
             </div><!--
-            --><div class="overview-section" id="tag-overview-section">
+            --><div class="overview-section tag-color" id="tag-overview-section">
                 <p class="task-description">
                     Tagged:
                 </p>
                 <p id="number-tagged">0 documents<p>
             </div><!--
-            --><div class="overview-section" id="connect-overview-section">
+            --><div class="overview-section connect-color" id="connect-overview-section">
                 <p class="task-description">
                     Connected:
                 </p>
                 <p id="number-connected">0 documents<p>
             </div><!--
-            --><div class="overview-section" id="discuss-overview-section">
+            --><div class="overview-section discuss-color" id="discuss-overview-section">
                 <p class="task-description">
                     Discussed:
                 </p>
