@@ -13,6 +13,11 @@
 	?>
 
 	<script type="text/javascript">
+        function migrateTaggedDocumentsFromV1toV2() {
+            $('#transcribe_copy em').each( function (idx) {
+                $(this).addClass('tagged-text');
+            });
+        }
 		var selectTab = function (tabToSelect, tabToUnselect) {
 		    tabToSelect.addClass("active");
 		    tabToUnselect.removeClass("active");
@@ -33,6 +38,7 @@
 		});
 
 		$(document).ready(function () {
+            migrateTaggedDocumentsFromV1toV2();
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
 		    $("#document_img").hide();
 

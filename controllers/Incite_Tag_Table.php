@@ -434,7 +434,7 @@ function findDocumentsWithAtLeastNofGivenTagNames($tag_name_array, $N)
     for ($i = 0; $i < sizeof($tag_name_array); $i++)
     {
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id = omeka_incite_documents_tags_conjunction.document_id WHERE omeka_incite_tags.tag_text = ?");
+        $stmt = $db->prepare("SELECT DISTINCT item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id = omeka_incite_documents_tags_conjunction.document_id WHERE omeka_incite_tags.tag_text = ?");
         $stmt->bind_param("s", $tag_name_array[$i]);
         $stmt->bind_result($document_id);
         $stmt->execute();
@@ -463,6 +463,7 @@ function findDocumentsWithAtLeastNofGivenTagNames($tag_name_array, $N)
             $idAboveMinimum[] = $doc_id;
         }
     }
+
     
     return $idAboveMinimum;
 }
@@ -488,9 +489,10 @@ function findCommonTagNames($item_ids)
     {
         $tags_for_one_item = array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT tag_id, tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
+        //$stmt = $db->prepare("SELECT tag_id, tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
+        $stmt = $db->prepare("SELECT DISTINCT tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
         $stmt->bind_param("i", $item_ids[$i]);
-        $stmt->bind_result($tag_id, $tag_name);
+        $stmt->bind_result($tag_name);
         $stmt->execute();
         while ($stmt->fetch())
         {

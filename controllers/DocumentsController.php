@@ -447,6 +447,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->transcription = "No transcription";
                 if ($transcription != null) {
                     $this->view->transcription = getTranscriptionText($transcription[0]);
+                    $this->view->summary = getSummaryText($transcription[0]);
                 } else {
                     if (isset($this->view->query_str) && $this->view->query_str !== "") {
                         $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
@@ -461,7 +462,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
                 if (hasTaggedTranscription($this->_getParam('id'))) {
                     $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
-                    $this->view->transcription = $transcriptions[count($transcriptions)-1];
+                    $this->view->transcription =  migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
 /*
                     $allTags = getAllTagInformation($this->_getParam('id'));
                     $entities = array();
@@ -486,7 +487,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                     //*/
 
-                    $related_documents = findRelatedDocumentsViaAtLeastNCommonTags($this->_getParam('id'));
+                    $related_documents = array_slice(findRelatedDocumentsViaAtLeastNCommonTags($this->_getParam('id')), 0, MAXIMUM_RELATED_DOCUMENTS_FOR_CONNECT) ;
                     if (count($related_documents) == 0) {
                         $is_connectable_by_tags = false;
                         $this->_helper->viewRenderer('connectbymultiselection');
