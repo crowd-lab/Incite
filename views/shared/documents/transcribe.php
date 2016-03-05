@@ -159,7 +159,15 @@ include(dirname(__FILE__).'/../common/header.php');
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
         <br>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
-        <div id="list_id<?php echo $transcription->id; ?>" style="margin: 10px;" data-toggle="popover" data-trigger="hover" data-content="<?php echo metadata($transcription, array('Dublin Core', 'Description')); ?>" data-title="<?php echo metadata($transcription, array('Dublin Core', 'Title')); ?>" data-placement="left" data-id="<?php echo $transcription->id; ?>">
+        <div id="list_id<?php echo $transcription->id; ?>" style="margin: 10px;" 
+            data-toggle="popover" data-trigger="hover" data-html="true"
+            data-content="<?php echo "<strong>Date:</strong> " 
+                        . metadata($transcription, array('Dublin Core', 'Date'))
+                        . "<br><br> <strong>Description:</strong> "
+                        . metadata($transcription, array('Dublin Core', 'Description')); ?>" 
+            data-title="<?php echo "<strong>" . metadata($transcription, array('Dublin Core', 'Title')) . "</strong>";?>"
+            data-placement="left" data-id="<?php echo $transcription->id; ?>" 
+        >
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
             <a href="<?php echo getFullInciteUrl().'/documents/transcribe/'.$transcription->id."?".$this->query_str; ?>">
 <?php else: ?>
