@@ -137,25 +137,36 @@ include(dirname(__FILE__).'/../common/header.php');
         </div>
         <div class="col-md-5">
             <div class="row" id="content-1">
-                <a href="<?php echo getFullInciteUrl(); ?>/discussions/discuss"><button class="btn btn-primary">Back to Other Discussions</button></a>
+                <a href="<?php echo getFullInciteUrl(); ?>/discussions/discuss">Back to Other Discussions</a>
                 <h3><?php echo $this->title; ?></h3>
-                <br>
+<?php if (count($this->discussions) > 0 ): // else it's an error!?>
+                <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
+                    <b><?php echo $this->discussions[0]['first_name']; ?> commented on <?php echo $this->discussions[0]['time']; ?>:</b><br>
+                    <p><?php echo $this->discussions[0]['content']; ?></p>
+                </div>
+
+<?php endif; ?>
                 <h4>Related documents: </h4>
                 <div id="references" style="white-space: nowrap;">
+<?php $ref_row_counter = 0; $col_per_row = 6;?>
 <?php foreach ((array) $this->references as $reference): ?>
                     <div class="col-md-2 reference" data-toggle="popover" data-trigger="hover" data-content="<?php echo $reference['description']; ?>" data-description="<?php echo $reference['description']; ?>" data-transcription="<?php echo $reference['transcription']; ?>" data-title="<?php echo $reference['title']; ?>" data-placement="top" data-id="<?php echo $reference['id']; ?>" data-uri="<?php echo $reference['uri']; ?>" data-data="<?php echo $reference['date']; ?>" data-location="<?php echo $reference['location']; ?>">
-                        <img style="width: 40px; height: 40px;" src="<?php echo $reference['uri']; ?>">
+                        <img style="width: 40px; height: 40px; margin-bottom: 13px;" src="<?php echo $reference['uri']; ?>">
                     </div>
+<?php if ($ref_row_counter++%$col_per_row == ($col_per_row-1)): ?>
+                    <div class="clearfix"></div>
+<?php endif; ?>
+
 <?php endforeach; ?>
                     <div class="clearfix"></div>
                 </div>
-<?php foreach ((array) $this->discussions as $discussion): ?>
+<?php for ($i = 1; $i < count($this->discussions); $i++): ?>
                 <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
-                    <b><?php echo $discussion['first_name']; ?> commented on <?php echo $discussion['time']; ?>:</b><br>
-                    <p><?php echo $discussion['content']; ?></p>
+                    <b><?php echo $this->discussions[$i]['first_name']; ?> commented on <?php echo $this->discussions[$i]['time']; ?>:</b><br>
+                    <p><?php echo $this->discussions[$i]['content']; ?></p>
                 </div>
 
-<?php endforeach; ?>
+<?php endfor; ?>
                 <div id="discussion_reply_form_container">
                     <form id="discussion_form" class="form-wrapper" method="post">
 <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>

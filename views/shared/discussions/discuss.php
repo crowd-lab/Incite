@@ -12,7 +12,7 @@ include(dirname(__FILE__).'/../common/header.php');
 
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
-                <h1>Join existing discussions or <a class="btn btn-primary" type="button" href="<?php echo getFullInciteUrl().'/discussions/create'; ?>">Create</a> your own!</h1>
+                <h1>Join existing discussions or <a class="" type="" href="<?php echo getFullInciteUrl().'/discussions/create'; ?>">Create</a> your own!</h1>
             </div>
 
             <div class="col-md-10 col-md-offset-1">
