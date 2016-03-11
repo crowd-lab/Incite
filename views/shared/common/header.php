@@ -162,7 +162,7 @@
                     '</button>' + 
                     '<ul class="dropdown-menu" id="user-dropdown-menu">'  + 
                         '<li><a href="' + fullInciteUrl + '/users/view/' + documentId + '">Profile</a></li>' +
-                        '<li><a href="#">Notifications</a></li>' +
+                        '<li><a href="#">Group Instructions</a></li>' +
                         '<li class="divider"></li>' +
                         '<li><a href="#" onclick="logout()">Logout</a></li>' +
                     '</ul>');
@@ -170,6 +170,14 @@
 
         function createLoginModalButton() {
             return $('<button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>');
+        }
+
+        function addGroupInstructionSection(groupName, groupInstructions) {
+            var section = $('<h1>' + groupName + ':</h1>' +
+                    '<p>' + groupInstructions + '</p>' +
+                    '<hr size=2>');
+
+            $('#instructions-modal-body').append(section);
         }
 
         <?php
@@ -181,6 +189,12 @@
         ?>
 
         $(document).ready(function () {
+            <?php foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
+                if ($group['instructions'] != '') {
+                    echo 'addGroupInstructionSection("' . $group['name'] . '", "' . $group['instructions'] . '");';
+                }
+            } ?>
+
             $('#time_picker').daterangepicker({
                 locale     : { format: 'YYYY-MM-DD'},
                 "startDate": "<?php echo (isset($start_time) ? $start_time : "1830-01-01"); ?>",   //could be dynamic or user's choice
@@ -333,7 +347,7 @@
                                 <?php else: ?>
                                     <li class="disabled"><a href="#">Profile</a></li>
                                 <?php endif; ?>
-                                <li><a href="#">Notifications</a></li>
+                                <li data-toggle="modal" data-target="#instructions-dialog"><a href="#">Group Instructions</a></li>
                                 <li class="divider"></li>
                                 <li><a href="#" onclick="logout()">Logout</a></li>
                             </ul>
@@ -403,6 +417,19 @@
                 </div>
                 <div class="modal-footer" id="modal-footer">
                     <button type="button" class="btn btn-primary" id="login-button">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="instructions-dialog" tabindex="-1" role="dialog" aria-labelledby="instructions-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="login-signup-dialog-label">Group Instructions</h4>
+                </div>
+                <div class="modal-body" id="instructions-modal-body">
                 </div>
             </div>
         </div>

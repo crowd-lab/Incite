@@ -163,7 +163,7 @@
             });
 
             $('#group-create-submit-btn').click(function(e) {
-                if ($('#group-name-input').val().length > 0) {
+                if ($('#group-name-input').val().length > 0 && $('#group-name-input').val().indexOf('"') < 0) {
                     createGroupAjaxRequest();
                 } else {
                     $('#create-group-div').addClass('has-error');
@@ -455,7 +455,7 @@
 
                 <div id="create-group-div">
                     <span>
-                        <label class="control-label" for="group-name-input">Group name (can't be blank):</label>
+                        <label class="control-label" for="group-name-input">Group name (can't be blank or contain the character "):</label>
                         <input id="group-name-input" type="text" class="form-control" name="field" placeholder="Ex: Mr. Smith's History Class" />
                     </span>
                     <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
