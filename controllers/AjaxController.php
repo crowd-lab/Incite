@@ -220,6 +220,26 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
     }
     /**
+     * Ajax function that sets the instructions for a group
+     *
+     * Returns output of setGroupInstructions
+     */
+    public function setgroupinstructionsAction() {
+        if ($this->getRequest()->isPost()) {
+            $instructions = $_POST['instructions'];
+            $groupId = $_POST['groupId'];
+            $group = getGroupInfoByGroupId($groupId);
+
+            //prevent non group owners from changing the instructions
+            if ($_SESSION['Incite']['USER_DATA']['id'] != $group['creator']['id']) {
+                echo false;
+                return;
+            }
+
+            echo json_encode(setGroupInstructions($groupId, $instructions));
+        }
+    }
+    /**
      * Ajax function that gets the privilege of a group member 
      *
      * Returns output of getGroupMemberPrivilege

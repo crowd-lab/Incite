@@ -53,13 +53,13 @@ function getMembersAcceptedIntoGroup($groupid)
 function getGroupInfoByGroupId($groupid)
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT name, creator, group_type, timestamp from omeka_incite_groups WHERE id = ?");
+    $stmt = $db->prepare("SELECT name, creator, group_type, instructions, timestamp from omeka_incite_groups WHERE id = ?");
     $stmt->bind_param("i", $groupid);
-    $stmt->bind_result($name, $creator, $group_type, $time);
+    $stmt->bind_result($name, $creator, $group_type, $instructions, $time);
     $stmt->execute();
     $stmt->fetch();
     $user = getUserDataByUserId($creator);
-    $group_info = array('id' => $groupid, 'name' => $name, 'creator' => $user, 'type' => $group_type, 'created_time' => $time);
+    $group_info = array('id' => $groupid, 'name' => $name, 'creator' => $user, 'type' => $group_type, 'instructions' => $instructions, 'created_time' => $time);
     $db->close();
     return $group_info;
 }
@@ -75,7 +75,7 @@ function getGroupInfoByGroupId($groupid)
 function createGroup($groupName, $userIdOfCreator, $groupType)
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_groups VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP)");
+    $stmt = $db->prepare("INSERT INTO omeka_incite_groups VALUES (NULL, ?, ?, ?, '', CURRENT_TIMESTAMP)");
     $stmt->bind_param("sii", $groupName, $userIdOfCreator, $groupType);
     $stmt->execute();
     $groupId = $stmt->insert_id;
@@ -199,6 +199,24 @@ function searchGroupsByName($groupName)
     } else {
         return false;
     }
+}
+
+/**
+ * Sets new instructions for the group 
+ *
+ * @param int groupId
+ * @param String instructions
+ * @return success or failure
+ */
+function setGroupInstructions($groupId, $instructions)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("UPDATE omeka_incite_groups SET instructions = ? WHERE id = ?");
+    $stmt->bind_param("si", $instructions, $groupId);
+    $stmt->execute();
+    $stmt->close();
+
+    return "true";
 }
 
 ?>

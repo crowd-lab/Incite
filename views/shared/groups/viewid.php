@@ -132,6 +132,7 @@
         function addGroupOwnerControls() {
             generateAndAppendOwnerGlyph();
             generateAndAppendInviteUsersLink();
+            generateAndAppendGroupInstructionsInput();
             generateAndAppendGroupOrManagementTabs();
 
             <?php foreach ((array)$this->users as $user): ?>
@@ -152,6 +153,25 @@
             var inviteUsersLink = $('<a id="invite-new-members-link" href="mailto:?subject=Come join my Mapping the Fourth group, <?php echo $this->group["name"] ?>!&body=<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>%0D%0A%0D%0AFollow the above link to visit the group page and then click the button that says \'Request to join group\'!">Invite New Members</a>');
         
             $('#groupprofile-overview-title').after(inviteUsersLink);
+        };
+
+        function generateAndAppendGroupInstructionsInput() {
+            var groupInstructionsInput = $('<form>' + 
+                        '<span><strong>Group Instructions: </strong></span>' +
+                        '<textarea id="group-instructions-textarea" placeholder="Group instructions will be shown to all group members when they are transcribing, tagging and connecting"></textarea>' +
+                        '<button type="button" onclick="saveGroupInstructionsAjaxRequest()" class="btn btn-primary">' + 
+                            'Save' + 
+                            '<span id="save-instructions-glyphicon" class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>' +
+                        '</button>' +
+                    '</form>');
+
+            var currentInstructions = "<?php echo $this->group['instructions'] ?>";
+
+            if (currentInstructions) {
+                groupInstructionsInput.find('#group-instructions-textarea').val(currentInstructions);
+            }
+
+            $('#groupprofile-overview-details').append(groupInstructionsInput);
         };
 
         function generateAndAppendGroupOrManagementTabs() {
@@ -254,6 +274,21 @@
                 var userId = row.data("ID");
                 removeUserFromGroupAjaxRequest(userId);
             };
+        };
+
+        function saveGroupInstructionsAjaxRequest() {
+            var instructions = $('#group-instructions-textarea').val();
+            
+            if (instructions) {
+                var request = $.ajax({
+                    type: "POST",
+                    url: "<?php echo getFullInciteUrl().'/ajax/setgroupinstructions'; ?>",
+                    data: {"groupId": <?php echo $this->group['id'] ?>, "instructions": instructions},
+                    success: function (response) {
+                        location.reload();
+                    }
+                });
+            }
         };
 
         function changePrivilegeOfUserAjaxRequest(userId, privilege) {
@@ -443,6 +478,19 @@
             width: 70%;
             height: 50px;
             font-size: 18px;
+        }
+
+        #group-instructions-textarea {
+            position: relative;
+            top: 6px;
+            height: 30px;
+            width: 750px;
+            margin-right: 3px;
+        }
+
+        #save-instructions-glyphicon {
+            margin-right: 0px;
+            margin-left: 3px;
         }
     </style>
 </head>
