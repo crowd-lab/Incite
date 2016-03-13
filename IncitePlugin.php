@@ -44,6 +44,7 @@ SQL
         `name`              varchar(200) NOT NULL,
         `creator`           int(11) NOT NULL,
         `group_type`        int(11) NOT NULL,
+        `instructions`      varchar(3000) NOT NULL,
         `timestamp`         timestamp NOT NULL,
         
         PRIMARY KEY (`id`)

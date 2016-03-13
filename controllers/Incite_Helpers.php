@@ -128,4 +128,9 @@ function getFullInciteUrl()
     return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . getOmekaUrl() . '/' . 'incite';
 }
 
+function getReadableTimeFromMySQL($time)
+{
+    
+}
+
 ?>

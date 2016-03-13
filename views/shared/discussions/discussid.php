@@ -141,7 +141,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <h3><?php echo $this->title; ?></h3>
 <?php if (count($this->discussions) > 0 ): // else it's an error!?>
                 <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
-                    <b><?php echo $this->discussions[0]['first_name']; ?> commented on <?php echo $this->discussions[0]['time']; ?>:</b><br>
+                    <b><a href="<?php echo getFullInciteUrl().'/users/view/'.$this->discussions[0]['user_id']; ?>"><?php echo $this->discussions[0]['first_name']; ?></a> commented on <span class="raw-date"><?php echo $this->discussions[0]['time']; ?></span>:</b><br>
                     <p><?php echo $this->discussions[0]['content']; ?></p>
                 </div>
 
@@ -162,7 +162,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
 <?php for ($i = 1; $i < count($this->discussions); $i++): ?>
                 <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
-                    <b><?php echo $this->discussions[$i]['first_name']; ?> commented on <?php echo $this->discussions[$i]['time']; ?>:</b><br>
+                    <b><a href="<?php echo getFullInciteUrl().'/users/view/'.$this->discussions[$i]['user_id']; ?>"><?php echo $this->discussions[$i]['first_name']; ?></a> commented on <span class="raw-date"><?php echo $this->discussions[$i]['time']; ?></span>:</b><br>
                     <p><?php echo $this->discussions[$i]['content']; ?></p>
                 </div>
 
@@ -196,6 +196,9 @@ include(dirname(__FILE__).'/../common/header.php');
         $('#work-view').width($('#work-zone').width());
     });
     $(document).ready(function () {
+        $('.raw-date').each(function (idx) {
+            this.innerHTML = compareDates(new Date(this.innerHTML));
+        });
         $('.reference-view').height($(window).height()-$('#work-zone').offset().top-$('#viewer-title').height()-$('#document-view ul.nav-tabs').height()-35); //-35 for buffer
         $('#discussion_title').on('keyup keypress', function(e) {
             var code = e.keyCode || e.which;
