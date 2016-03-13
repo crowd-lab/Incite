@@ -195,16 +195,18 @@
             if (id === <?php echo $this->group['creator']['id'] ?>) {
                 return;
             }
+            var font_size = 30; //px
+            var spacing = 40; //%
 
             if (status > -1) {
                 statusName = "Group Member";
-                glyphicon = $('<td><span title="Remove user from group" class="remove-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span><span title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td></td>');
+                glyphicon = $('<td><span style="font-size: '+font_size+'px;" title="Remove user from group" class="remove-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span><span style="width: '+spacing+'%; display:inline-block;"></span><span style="font-size: '+font_size+'px;" title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td></td>');
             } else if (status === -1) {
                 statusName = "Requested to join";
-                glyphicon = $('<td><span title="Add user to group" class="approve-user glyphicon glyphicon-ok-circle" aria-hidden="true"></span><span title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td>');
+                glyphicon = $('<td><span style="font-size: '+font_size+'px;" title="Add user to group" class="approve-user glyphicon glyphicon-ok-circle" aria-hidden="true"></span><span style="width: '+spacing+'%; display:inline-block;"></span><span style="font-size: '+font_size+'px;" title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td>');
             } else if (status === -2) {
                 statusName = "Banned";
-                glyphicon = $('<td><span title="Unban user from group" class="unban-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span></td>');
+                glyphicon = $('<td><span style="font-size: '+font_size+'px;" title="Unban user from group" class="unban-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span></td>');
             }
 
             var row = $('<tr class="management-row">' + 
