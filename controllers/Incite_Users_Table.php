@@ -569,5 +569,17 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $groups;
     }
-
+    function getGroupInstructionsSeenByUserId($userid) {
+        $groups = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT group_id from omeka_incite_group_instructions_seen_by WHERE user_id = ?");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($group);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $groups[] = $group;
+        }
+        $db->close();
+        return $groups;
+    }
 ?>

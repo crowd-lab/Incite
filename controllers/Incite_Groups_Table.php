@@ -27,7 +27,7 @@ function getMembersWithActivityOverviewByGroupId($groupid)
     $stmt->execute();
     while ($stmt->fetch()) {
         $user_data = getUserDataByUserId($user);
-        $users[] = array('id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user), 'privilege' => $privilege);
+        $users[] = array('first_name' => $user_data['first_name'], 'last_name' => $user_data['last_name'], 'id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user), 'privilege' => $privilege);
     }
     $db->close();
     return $users;
@@ -43,7 +43,7 @@ function getMembersAcceptedIntoGroup($groupid)
     $stmt->execute();
     while ($stmt->fetch()) {
         $user_data = getUserDataByUserId($user);
-        $users[] = array('id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user));
+        $users[] = array('first_name' => $user_data['first_name'], 'last_name' => $user_data['last_name'], 'id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user));
     }
     $db->close();
     return $users;
@@ -213,6 +213,43 @@ function setGroupInstructions($groupId, $instructions)
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("UPDATE omeka_incite_groups SET instructions = ? WHERE id = ?");
     $stmt->bind_param("si", $instructions, $groupId);
+    $stmt->execute();
+    $stmt->close();
+
+    return "true";
+}
+
+/**
+ * Deletes all the pairs with the specific group id
+ * such that the instructions appear to be new
+ *
+ * @param int groupId
+ * @return success or failure
+ */
+function markGroupInstructionsAsNew($groupId)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("DELETE FROM omeka_incite_group_instructions_seen_by WHERE group_id = ?");
+    $stmt->bind_param("i", $groupId);
+    $stmt->execute();
+    $stmt->close();
+
+    return "true";
+}
+
+/**
+ * Adds a pair of userId and groupId to denote that user has that group's
+ * latest instructions
+ *
+ * @param int $userId
+ * @param int $groupId
+ * @return string "Success" or "Failure"
+ */
+function markInstructionAsSeenByUser($userId, $groupId)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("INSERT INTO omeka_incite_group_instructions_seen_by VALUES (?, ?)");
+    $stmt->bind_param("ii", $userId, $groupId);
     $stmt->execute();
     $stmt->close();
 

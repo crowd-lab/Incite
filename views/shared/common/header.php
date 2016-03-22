@@ -33,6 +33,46 @@
     <?php echo js_tag('bootstrap-dialog.min'); ?>
     <?php echo head_css(); ?>
 
+     <?php
+        $groupsWithInstructions = [];
+
+        function loadGroupInstructions() {
+            foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
+                global $groupsWithInstructions;
+
+                $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+                $hasNewInstructions = false;
+
+                if ($group['instructions'] != '') {
+                    $groupsWithInstructions = $group['id'];
+
+                    if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
+                    } else {
+                        $hasNewInstructions = true;
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+                    }
+                }
+
+                if (count($groupsWithInstructions) == 0) {
+                    echo 'styleInstructionsModalToBeEmpty();';
+                }
+
+                if ($hasNewInstructions) {
+                    echo 'addNewIconToInstructionsDropdownSelector();';
+                }
+            }
+        }
+
+        function markAllInstructionsAsSeen() {
+            global $groupsWithInstructions;
+
+            foreach((array)$groupsWithInstructions as $groupId) {
+                echo "updateSeenInstructionsAjaxRequest(" . $groupId . ");";
+            }
+        }
+    ?>
+
     <!-- Custom CSS -->
     <style>
         #user_profile {
@@ -55,6 +95,25 @@
         body {
             padding-top: 70px;
             /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+        }
+
+        .instructions-alert-icon {
+            margin-left: 5px;
+            position: relative;
+            bottom: 2px;
+        }
+
+        .instructions-alert-icon-in-modal {
+            float: right;
+        }
+
+        .group-instructions-header {
+            margin-top: 5px;
+        }
+
+        .group-instructions-body {
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 
@@ -109,9 +168,19 @@
         };
 
         function styleForLogin(dataArray) {
-            var profileSection = createProfileSection(dataArray['first_name'], dataArray['id']);
+            var needsGroupInstructionsReloaded = true;
+
+            if ($('#user-dropdown-menu').length > 0) {
+                needsGroupInstructionsReloaded = false;
+            }
+
+            var profileSection = createProfileSection(dataArray['first_name'], dataArray['id'], needsGroupInstructionsReloaded);
             $('#login_modal').remove();
             $('#navbar-account-interaction-area').append(profileSection);
+
+            if (needsGroupInstructionsReloaded) {
+                location.reload();
+            }
 
             if (document.getElementById("onLogin") != null) {
                 $('#onLogin').load(document.URL + ' #onLogin');
@@ -152,7 +221,18 @@
             });
         }
 
-        function createProfileSection(firstName, documentId) {
+        function createProfileSection(firstName, documentId, needsGroupInstructionsReloaded) {
+            //user logged out and then back in without refreshing the page
+            if (!needsGroupInstructionsReloaded) {
+                return $('<button id="user_profile" type="button"' +  
+                              'class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"' +
+                              'aria-haspopup="true" aria-expanded="false"' +
+                    'style="height: 34px;">' +
+                        firstName + 
+                        '<span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-left: 4px;"></span>' + 
+                    '</button>');
+            }
+
             return $('<button id="user_profile" type="button"' +  
                               'class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"' +
                               'aria-haspopup="true" aria-expanded="false"' +
@@ -162,7 +242,7 @@
                     '</button>' + 
                     '<ul class="dropdown-menu" id="user-dropdown-menu">'  + 
                         '<li><a href="' + fullInciteUrl + '/users/view/' + documentId + '">Profile</a></li>' +
-                        '<li><a href="#">Group Instructions</a></li>' +
+                        '<li id="group-instructions-dropdown-selector"><a href="#">Group Instructions</a></li>' +
                         '<li class="divider"></li>' +
                         '<li><a href="#" onclick="logout()">Logout</a></li>' +
                     '</ul>');
@@ -172,12 +252,42 @@
             return $('<button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>');
         }
 
-        function addGroupInstructionSection(groupName, groupInstructions) {
-            var section = $('<h1>' + groupName + ':</h1>' +
-                    '<p>' + groupInstructions + '</p>' +
+        function addGroupInstructionSection(groupName, groupInstructions, isNew) {
+            if (isNew) {
+                var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><h1 class="group-instructions-header">' + groupName + ':</h1>' +
+                    '<p class="group-instructions-body">' + groupInstructions + '</p>' +
                     '<hr size=2>');
+            } else {
+                var section = $('<h1 class="group-instructions-header">' + groupName + ':</h1>' +
+                    '<p class="group-instructions-body">' + groupInstructions + '</p>' +
+                    '<hr size=2>');
+            }
 
             $('#instructions-modal-body').append(section);
+        }
+
+        function styleInstructionsModalToBeEmpty() {
+            var section = $('<p> No groups you belong to have added instructions yet! </p>');
+
+            $('#instructions-modal-body').append(section);
+        }
+
+        function addNewIconToInstructionsDropdownSelector() {
+            var icon = $('<span class="label label-danger instructions-alert-icon" aria-hidden="true">New</span>');
+
+            $('#group-instructions-dropdown-selector').find('a').append(icon);
+        }
+
+        function updateSeenInstructionsAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/addseeninstructions'; ?>",
+                data: {"userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>, "groupId": groupId},
+                success: function (response) {
+                    $(".instructions-alert-icon").remove();
+                    $(".instructions-alert-icon-in-modal").remove();
+                }
+            });
         }
 
         <?php
@@ -189,11 +299,7 @@
         ?>
 
         $(document).ready(function () {
-            <?php foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-                if ($group['instructions'] != '') {
-                    echo 'addGroupInstructionSection("' . $group['name'] . '", "' . $group['instructions'] . '");';
-                }
-            } ?>
+           <?php loadGroupInstructions(); ?>
 
             $('#time_picker').daterangepicker({
                 locale     : { format: 'YYYY-MM-DD'},
@@ -208,9 +314,14 @@
             $("#signup-tab").on('click', deleteErrorMessageFromModal);
             $("#login-tab").on('click', deleteErrorMessageFromModal);
             $("#login_modal").on('click', deleteErrorMessageFromModal);
+            $("#instructions-dialog").on('hide.bs.modal', function() {
+                <?php
+                    markAllInstructionsAsSeen();
+                ?>
+            });
 
-            $('#location').val("<?php echo (isset($_GET['location']) ? $_GET['location'] : ""); ?>");
-            $('#keywords').val("<?php echo (isset($_GET['keywords']) ? $_GET['keywords'] : ""); ?>");
+            $('#location').val(<?php echo (isset($_GET['location']) ? sanitizeStringInput($_GET['location']) : sanitizeStringInput("")); ?>.value);
+            $('#keywords').val(<?php echo (isset($_GET['keywords']) ? sanitizeStringInput($_GET['keywords']) : sanitizeStringInput("")); ?>.value);
 
             $('#login-button').on('click', function (e) {
                 if ($('#login-tab').hasClass('active')) {
@@ -347,7 +458,7 @@
                                 <?php else: ?>
                                     <li class="disabled"><a href="#">Profile</a></li>
                                 <?php endif; ?>
-                                <li data-toggle="modal" data-target="#instructions-dialog"><a href="#">Group Instructions</a></li>
+                                <li data-toggle="modal" data-target="#instructions-dialog" id="group-instructions-dropdown-selector"><a href="#">Group Instructions</a></li>
                                 <li class="divider"></li>
                                 <li><a href="#" onclick="logout()">Logout</a></li>
                             </ul>

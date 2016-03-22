@@ -149,6 +149,19 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
     }
     /**
+     * Marks group instructions as seen by a user
+     */
+    public function addseeninstructionsAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_POST['userId'];
+            $groupId = $_POST['groupId'];
+
+            markInstructionAsSeenByUser($userId, $groupId);
+
+            return true;
+        }
+    }
+    /**
      * Ajax function that searchs for groups with names similiar to the search term
      *
      * Returns a list of group ids
@@ -232,11 +245,11 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 
             //prevent non group owners from changing the instructions
             if ($_SESSION['Incite']['USER_DATA']['id'] != $group['creator']['id']) {
-                echo false;
-                return;
+                return false;
             }
 
             echo json_encode(setGroupInstructions($groupId, $instructions));
+            echo json_encode(markGroupInstructionsAsNew($groupId));
         }
     }
     /**

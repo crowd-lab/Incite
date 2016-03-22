@@ -130,7 +130,9 @@ function getFullInciteUrl()
 
 function getReadableTimeFromMySQL($time)
 {
-    
 }
 
+function sanitizeStringInput($input) {
+    return json_encode(array('value' => strip_tags($input)));
+}
 ?>

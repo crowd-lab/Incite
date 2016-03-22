@@ -85,6 +85,16 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
+
+        get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_group_instructions_seen_by (
+        `user_id`       int(11) NOT NULL,
+        `group_id`      int(11) NOT NULL,
+        
+        PRIMARY KEY (`user_id`, `group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
    
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_questions (
@@ -344,6 +354,10 @@ SQL
    );
     get_db()->query(<<<SQL
     DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_replies_conjunction
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_group_instructions_seen_by
 SQL
    );
     }
