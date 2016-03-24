@@ -19,6 +19,37 @@
             });
         };
 
+        function addNewSubject(subjectName, numPos, numNeg) {
+            var percentBarPerVoter = 100 / (numPos + numNeg);
+            var percentPositiveBarFilled = Math.floor(numPos * percentBarPerVoter);
+            var percentNegativeBarFilled = Math.floor(numNeg * percentBarPerVoter);
+
+            var subjectRow = $('<div class="subjectRow">' +
+                        '<span>' + subjectName + '</span>' + 
+                        '<div class="subjectBarContainer">' +
+                        '<div class="progress-bar progress-bar-success positive-subject-bar" style="width: ' + percentPositiveBarFilled + '%">' +
+                            '<span class="sr-only"></span>' +
+                        '</div>' +
+                        '<div class="progress-bar progress-bar-error negative-subject-bar" style="width: ' + percentNegativeBarFilled + '%">' +
+                            '<span class="sr-only"></span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<hr size=2>');
+
+            $('#subjects-list').append(subjectRow);
+        }
+
+        function addListenersToSubjectRows() {
+            $('.positive-subject-bar').hover(function(e) {
+                console.log('hover over positive bar');
+            });
+
+            $('.negative-subject-bar').hover(function(e) {
+                console.log('hover over negative bar');
+            });
+        }
+
         $('#work-zone').ready(function() {
             $('#work-view').width($('#work-zone').width());
         });
@@ -73,6 +104,8 @@
                 zoom_min: 1,
                 zoom: "fit"
             });
+
+            addListenersToSubjectRows();
         });
 	</script>
 </head>
@@ -127,18 +160,26 @@
 
         <div style="border: 1px solid; overflow: scroll;" name="connect_subjects_text" rows="10" id="connect_subjects_copy" style="width: 100%;">
             <div id="subjects-list">
-                <h3 id="positive-subjects-header">Subjects marked as relating to this document</h3>
+                <h3 id="subjects-header">Subjects connected to this document</h3>
                 <?php 
-                    foreach ((array) $this->positive_subjects as $subject_name => $num)
-                        echo '<p class="positive-subject">'.$subject_name.' by '.$num.' person(s)</p>';
-                ?>
+                    foreach ((array) $this->subjects as $subject) {
+                        $subjectName = $subject['subject_name'];
 
-                <hr size=2>
+                        if (isset($this->positive_subjects[$subjectName])) {
+                            $numPos = $this->positive_subjects[$subjectName];
+                        } else {
+                            $numPos = 0;
+                        }
 
-                <h3 id="negative-subjects-header">Subjects marked as not relating to this document</h3>
-                <?php 
-                    foreach ((array) $this->negative_subjects as $subject_name => $num)
-                        echo '<p class="negative-subject">'.$subject_name.' by '.$num.' person(s)</p>';
+                        if (isset($this->negative_subjects[$subjectName])) {
+                            $numNeg = $this->negative_subjects[$subjectName];
+                        } else {
+                            $numNeg = 0;
+                        }
+
+                        echo '<script type="text/javascript">addNewSubject("' . $subjectName . '",' . $numPos . ',' . $numNeg .');</script>';
+                        //echo '<p class="subject">'. $subjectName . ' marked pos by ' . $numPos . ' person(s) and neg by ' . $numNeg . ' person(s)</p>';
+                    }
                 ?>
             </div>
         </div>
@@ -216,11 +257,14 @@
         text-align: center;
     }
 
-    #positive-subjects-header {
-        color: #5CB85C;
+    .subjectBarContainer {
+        height: 10px;
+        margin-bottom: 10px;
+        max-width: 90%;
+        margin: 0 auto;
     }
 
-    #negative-subjects-header {
-        color: #D9534F;
+    .subjectRow {
+        margin-bottom: 10px;
     }
 </style>
