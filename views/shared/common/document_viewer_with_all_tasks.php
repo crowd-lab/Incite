@@ -27,27 +27,27 @@
             var subjectRow = $('<div class="subjectRow">' +
                         '<span>' + subjectName + '</span>' + 
                         '<div class="subjectBarContainer">' +
-                        '<div class="progress-bar progress-bar-success positive-subject-bar" style="width: ' + percentPositiveBarFilled + '%">' +
-                            '<span class="sr-only"></span>' +
-                        '</div>' +
-                        '<div class="progress-bar progress-bar-error negative-subject-bar" style="width: ' + percentNegativeBarFilled + '%">' +
-                            '<span class="sr-only"></span>' +
+                            '<div class="progress-bar progress-bar-success positive-subject-bar" style="width: ' + percentPositiveBarFilled + '%"' +
+                                'data-trigger="hover"' +
+                                'data-toggle="popover" data-html="true"' + 
+                                'data-content="' + numPos + ' person(s) connected this subject positively"'  + 
+                                'data-placement="bottom" data-id="positive-popover"' +
+                            '>' +
+                                '<span class="sr-only"></span>' +
+                            '</div>' +
+                            '<div class="progress-bar progress-bar-error negative-subject-bar" style="width: ' + percentNegativeBarFilled + '%"'+ 
+                                'data-trigger="hover"' +
+                                'data-toggle="popover" data-html="true"' + 
+                                'data-content="' + numNeg + ' person(s) connected this subject negatively"'  + 
+                                'data-placement="bottom" data-id="negative-popover"' +
+                            '>' +
+                                '<span class="sr-only"></span>' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
-                '</div>' +
-                '<hr size=2>');
+                    '<hr size=2>');
 
             $('#subjects-list').append(subjectRow);
-        }
-
-        function addListenersToSubjectRows() {
-            $('.positive-subject-bar').hover(function(e) {
-                console.log('hover over positive bar');
-            });
-
-            $('.negative-subject-bar').hover(function(e) {
-                console.log('hover over negative bar');
-            });
         }
 
         $('#work-zone').ready(function() {
@@ -104,8 +104,6 @@
                 zoom_min: 1,
                 zoom: "fit"
             });
-
-            addListenersToSubjectRows();
         });
 	</script>
 </head>
@@ -178,7 +176,6 @@
                         }
 
                         echo '<script type="text/javascript">addNewSubject("' . $subjectName . '",' . $numPos . ',' . $numNeg .');</script>';
-                        //echo '<p class="subject">'. $subjectName . ' marked pos by ' . $numPos . ' person(s) and neg by ' . $numNeg . ' person(s)</p>';
                     }
                 ?>
             </div>
@@ -266,5 +263,9 @@
 
     .subjectRow {
         margin-bottom: 10px;
+    }
+
+    .negative-subject-bar {
+        background-color: #D9534F;
     }
 </style>
