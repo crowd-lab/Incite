@@ -154,9 +154,9 @@
             $('#time_picker').daterangepicker({
                 locale     : { format: 'YYYY-MM-DD'},
                 "startDate": "<?php echo (isset($start_time) ? $start_time : "1830-01-01"); ?>",   //could be dynamic or user's choice
-                "endDate"  : "<?php echo (isset($end_time) ? $end_time : "1870-12-31"); ?>",   //could be dynamic or user's choice
+                "endDate"  : "<?php echo (isset($end_time) ? $end_time : "1880-12-31"); ?>",   //could be dynamic or user's choice
                 "minDate"  : "1830-01-01",
-                "maxDate"  : "1870-12-31",
+                "maxDate"  : "1880-12-31",
                 "opens"    : "center"
             }, function (start, end, label) {
             });
