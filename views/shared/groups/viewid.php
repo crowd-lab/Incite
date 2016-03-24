@@ -185,7 +185,7 @@
                         '<span><strong>Group Instructions: </strong></span>' +
                         '<div>' +
                         '<textarea id="group-instructions-textarea" placeholder="Group instructions will be shown to all group members when they are transcribing, tagging and connecting"></textarea>' +
-                        '<button type="button" onclick="saveGroupInstructionsAjaxRequest()" class="btn btn-primary">' + 
+                        '<button type="button" onclick="saveGroupInstructionsAjaxRequest()" id="save-group-instructions-btn" class="btn btn-primary">' + 
                             'Save' + 
                             '<span id="save-instructions-glyphicon" class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>' +
                         '</button>' +
@@ -517,14 +517,19 @@
         #group-instructions-textarea {
             position: relative;
             top: 6px;
-            height: 30px;
-            width: 750px;
+            height: 200px;
+            width: 70%;
             margin-right: 3px;
         }
 
         #save-instructions-glyphicon {
             margin-right: 0px;
             margin-left: 3px;
+        }
+
+        #save-group-instructions-btn {
+            position: relative;
+            bottom: 4px;
         }
     </style>
 </head>
