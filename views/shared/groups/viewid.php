@@ -26,7 +26,9 @@
                     unset($_SESSION['incite']['message']);
                 }
 
-                if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
+                if ($_SESSION['Incite']['Guest']) {
+                    echo "styleForGuest();";
+                } else if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
                     echo "addGroupOwnerControls();";
                 } else {
                     $isMember = false;
@@ -302,16 +304,14 @@
         function saveGroupInstructionsAjaxRequest() {
             var instructions = $('#group-instructions-textarea').val();
             
-            if (instructions) {
-                var request = $.ajax({
-                    type: "POST",
-                    url: "<?php echo getFullInciteUrl().'/ajax/setgroupinstructions'; ?>",
-                    data: {"groupId": <?php echo $this->group['id'] ?>, "instructions": instructions},
-                    success: function (response) {
-                        location.reload();
-                    }
-                });
-            }
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/setgroupinstructions'; ?>",
+                data: {"groupId": <?php echo $this->group['id'] ?>, "instructions": instructions},
+                success: function (response) {
+                    location.reload();
+                }
+            });
         };
 
         function changePrivilegeOfUserAjaxRequest(userId, privilege) {
@@ -379,6 +379,13 @@
 
             var bannedText = $('<p style="color: red; text-align: center;">You have been banned from this group, sorry!</p>');
             $('body').append(bannedText);
+        };
+
+        function styleForGuest() {
+            $('#groupprofile-activity-container').hide();
+
+            var pleaseLogInText = $('<p style="color: red; text-align: center;">Please log in to be able to view groups!</p>');
+            $('body').append(pleaseLogInText);
         };
     </script>
 

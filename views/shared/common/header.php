@@ -37,12 +37,12 @@
         $groupsWithInstructions = [];
 
         function loadGroupInstructions() {
+            global $groupsWithInstructions;
+            $hasNewInstructions = false;
+
             foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-                global $groupsWithInstructions;
-
                 $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
-                $hasNewInstructions = false;
-
+                
                 if ($group['instructions'] != '') {
                     $groupsWithInstructions = $group['id'];
 
@@ -53,14 +53,14 @@
                         echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
                     }
                 }
+            }
 
-                if (count($groupsWithInstructions) == 0) {
-                    echo 'styleInstructionsModalToBeEmpty();';
-                }
+            if ($hasNewInstructions) {
+                echo 'addNewIconToInstructionsDropdownSelector();';
+            }
 
-                if ($hasNewInstructions) {
-                    echo 'addNewIconToInstructionsDropdownSelector();';
-                }
+            if (count($groupsWithInstructions) == 0) {
+                echo 'styleInstructionsModalToBeEmpty();';
             }
         }
 
