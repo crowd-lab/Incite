@@ -723,8 +723,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->positive_subjects = $pos_subs;
                 $this->view->negative_subjects = $neg_subs;
             }
-
-
         }
     }
 
