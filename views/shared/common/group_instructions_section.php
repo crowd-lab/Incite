@@ -5,12 +5,12 @@
             global $groupsWithOldInstructions;
             global $groupsWithNewInstructions;
 
-            foreach((array)$groupsWithOldInstructions as $group) {
-                echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, false);';
-            }
-
             foreach((array)$groupsWithNewInstructions as $group) {
                 echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, true);';
+            }
+
+            foreach((array)$groupsWithOldInstructions as $group) {
+                echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, false);';
             }
 
             if (count($groupsWithNewInstructions) != 0) {
