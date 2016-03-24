@@ -183,11 +183,13 @@
         function generateAndAppendGroupInstructionsInput() {
             var groupInstructionsInput = $('<form>' + 
                         '<span><strong>Group Instructions: </strong></span>' +
+                        '<div>' +
                         '<textarea id="group-instructions-textarea" placeholder="Group instructions will be shown to all group members when they are transcribing, tagging and connecting"></textarea>' +
                         '<button type="button" onclick="saveGroupInstructionsAjaxRequest()" class="btn btn-primary">' + 
                             'Save' + 
                             '<span id="save-instructions-glyphicon" class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>' +
                         '</button>' +
+                        '</div>' +
                     '</form>');
 
             var currentInstructions = <?php echo sanitizeStringInput($this->group['instructions']); ?>.value;
@@ -197,6 +199,8 @@
             }
 
             $('#groupprofile-overview-details').append(groupInstructionsInput);
+            $('#group-instructions-textarea').height($('#group-instructions-textarea')[0].scrollHeight);
+
         };
 
         function generateAndAppendGroupOrManagementTabs() {
