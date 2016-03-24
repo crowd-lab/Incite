@@ -34,41 +34,44 @@
     <?php echo head_css(); ?>
 
      <?php
-        $groupsWithInstructions = [];
+        global $groupsWithOldInstructions;
+        global $groupsWithNewInstructions;
+
+        $groupsWithOldInstructions = [];
+        $groupsWithNewInstructions = [];
 
         function loadGroupInstructions() {
-            global $groupsWithInstructions;
-            $hasNewInstructions = false;
+            global $groupsWithOldInstructions;
+            global $groupsWithNewInstructions;
+
+            $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
 
             foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-                $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
-                
                 if ($group['instructions'] != '') {
-                    $groupsWithInstructions = $group['id'];
-
                     if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
+                        array_push($groupsWithOldInstructions, $group);
                         echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
                     } else {
-                        $hasNewInstructions = true;
+                        array_push($groupsWithNewInstructions, $group);
                         echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
                     }
                 }
             }
 
-            if ($hasNewInstructions) {
+            if (count($groupsWithNewInstructions) != 0) {
                 echo 'addNewIconToInstructionsDropdownSelector();';
             }
 
-            if (count($groupsWithInstructions) == 0) {
+            if (count($groupsWithOldInstructions) == 0 && count($groupsWithNewInstructions) == 0) {
                 echo 'styleInstructionsModalToBeEmpty();';
             }
         }
 
         function markAllInstructionsAsSeen() {
-            global $groupsWithInstructions;
+            global $groupsWithNewInstructions;
 
-            foreach((array)$groupsWithInstructions as $groupId) {
-                echo "updateSeenInstructionsAjaxRequest(" . $groupId . ");";
+            foreach((array)$groupsWithNewInstructions as $group) {
+                echo "updateSeenInstructionsAjaxRequest(" . $group['id'] . ");";
             }
         }
     ?>
@@ -101,6 +104,7 @@
             margin-left: 5px;
             position: relative;
             bottom: 2px;
+            font-family: arial;
         }
 
         .instructions-alert-icon-in-modal {
