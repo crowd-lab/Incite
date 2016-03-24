@@ -63,7 +63,7 @@ function merge_images($filenames, $filename_result) {
     }
 
 
-    imagejpeg($final_image, $path.$filename_result);
+    imagejpeg($final_image, $filename_result);
     imagedestroy($final_image);
 
     return true;
