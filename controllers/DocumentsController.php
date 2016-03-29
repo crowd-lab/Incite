@@ -705,7 +705,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             $pos_subs = array();
             $neg_subs = array();
+            $distinct_subNames = array();
             foreach ((array) $subjectsForDocument as $subject) {
+                if (!isset($distinct_subNames[$subject['subject_name']]))
+                    $distinct_subNames[$subject['subject_name']] = $subject['subject_name'];
+
                 if ($subject['is_positive']) {
                     if (!isset($pos_subs[$subject['subject_name']]))
                         $pos_subs[$subject['subject_name']] = 0;
@@ -719,7 +723,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             if (!empty($subjectsForDocument)) {
                 $this->view->hasBeenConnected = true;
-                $this->view->subjects = $subjectsForDocument;
+                $this->view->subjectNames = $distinct_subNames;
                 $this->view->positive_subjects = $pos_subs;
                 $this->view->negative_subjects = $neg_subs;
             }
