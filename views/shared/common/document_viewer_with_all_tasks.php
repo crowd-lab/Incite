@@ -48,7 +48,11 @@
                     '<hr size=2>');
 
             $('#subjects-list').append(subjectRow);
-        }
+        };
+
+        function createProfileLink(username, userid) {
+            return $('<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userid+'" target="_BLANK">' + username + '</a>')
+        };
 
         $('#work-zone').ready(function() {
             $('#work-view').width($('#work-zone').width());
@@ -160,9 +164,7 @@
             <div id="subjects-list">
                 <h3 id="subjects-header">Subjects connected to this document</h3>
                 <?php 
-                    foreach ((array) $this->subjects as $subject) {
-                        $subjectName = $subject['subject_name'];
-
+                    foreach ((array) $this->subjectNames as $subjectName) {
                         if (isset($this->positive_subjects[$subjectName])) {
                             $numPos = $this->positive_subjects[$subjectName];
                         } else {
