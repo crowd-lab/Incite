@@ -30,7 +30,7 @@
                             '<div class="progress-bar progress-bar-success positive-subject-bar" style="width: ' + percentPositiveBarFilled + '%"' +
                                 'data-trigger="hover"' +
                                 'data-toggle="popover" data-html="true"' + 
-                                'data-content="' + numPos + ' person(s) connected this subject positively"'  + 
+                                'data-content="' + numPos + ' person connected this subject positively"'  + 
                                 'data-placement="bottom" data-id="positive-popover"' +
                             '>' +
                                 '<span class="sr-only"></span>' +
@@ -38,7 +38,7 @@
                             '<div class="progress-bar progress-bar-error negative-subject-bar" style="width: ' + percentNegativeBarFilled + '%"'+ 
                                 'data-trigger="hover"' +
                                 'data-toggle="popover" data-html="true"' + 
-                                'data-content="' + numNeg + ' person(s) connected this subject negatively"'  + 
+                                'data-content="' + numNeg + ' person connected this subject negatively"'  + 
                                 'data-placement="bottom" data-id="negative-popover"' +
                             '>' +
                                 '<span class="sr-only"></span>' +
@@ -46,24 +46,8 @@
                         '</div>' +
                     '</div>' +
                     '<hr size=2>');
-
-            if (posUserIds) {
-                var posUsers = JSON.parse(posUserIds);
-
-                var popoverContent = createSubjectPopoverContent(posUsers);
-
-                console.log(popoverContent);
-
-                if (popoverContent) {
-                    subjectRow.find('.positive-subject-bar').attr("data-content", popoverContent);
-                }
-            }
-
-            if (negUserIds) {
-                var negUsers = JSON.parse(negUserIds);
-
-                
-            }
+        
+            //in the future we could use posUserIds and negUserIds to create user links
 
             $('#subjects-list').append(subjectRow);
         };
