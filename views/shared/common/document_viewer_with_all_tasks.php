@@ -19,7 +19,7 @@
             });
         };
 
-        function addNewSubject(subjectName, numPos, numNeg) {
+        function addNewSubject(subjectName, numPos, posUserIds, numNeg, negUserIds) {
             var percentBarPerVoter = 100 / (numPos + numNeg);
             var percentPositiveBarFilled = Math.floor(numPos * percentBarPerVoter);
             var percentNegativeBarFilled = Math.floor(numNeg * percentBarPerVoter);
@@ -47,11 +47,39 @@
                     '</div>' +
                     '<hr size=2>');
 
+            if (posUserIds) {
+                var posUsers = JSON.parse(posUserIds);
+
+                var popoverContent = createSubjectPopoverContent(posUsers);
+
+                console.log(popoverContent);
+
+                if (popoverContent) {
+                    subjectRow.find('.positive-subject-bar').attr("data-content", popoverContent);
+                }
+            }
+
+            if (negUserIds) {
+                var negUsers = JSON.parse(negUserIds);
+
+                
+            }
+
             $('#subjects-list').append(subjectRow);
         };
 
-        function createProfileLink(username, userid) {
-            return $('<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userid+'" target="_BLANK">' + username + '</a>')
+        function createSubjectPopoverContent(userIds) {
+            var popoverContent = "";
+
+            userIds.forEach(function(userId) {
+                popoverContent += createProfileLink('blah', userId);
+            });
+
+            return popoverContent;
+        };
+
+        function createProfileLink(username, userId) {
+            return '<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userId+'" target="_BLANK">' + username + '</a>';
         };
 
         $('#work-zone').ready(function() {
@@ -166,18 +194,22 @@
                 <?php 
                     foreach ((array) $this->subjectNames as $subjectName) {
                         if (isset($this->positive_subjects[$subjectName])) {
-                            $numPos = $this->positive_subjects[$subjectName];
+                            $numPos = count($this->positive_subjects[$subjectName]);
+                            $posUsers = $this->positive_subjects[$subjectName];
                         } else {
                             $numPos = 0;
+                            $posUsers = array();
                         }
 
                         if (isset($this->negative_subjects[$subjectName])) {
-                            $numNeg = $this->negative_subjects[$subjectName];
+                            $numNeg = count($this->negative_subjects[$subjectName]);
+                            $negUsers = $this->negative_subjects[$subjectName];
                         } else {
                             $numNeg = 0;
+                            $negUsers = array();
                         }
 
-                        echo '<script type="text/javascript">addNewSubject("' . $subjectName . '",' . $numPos . ',' . $numNeg .');</script>';
+                        echo '<script type="text/javascript">addNewSubject("' . $subjectName . '",' . $numPos . ',"' . json_encode($posUsers) . '",' . $numNeg . ',"' . json_encode($negUsers) . '");</script>';
                     }
                 ?>
             </div>
