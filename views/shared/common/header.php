@@ -5,6 +5,8 @@
 
     require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
     require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Session.php');
+    setup_session();
 ?>
 
 <head>
