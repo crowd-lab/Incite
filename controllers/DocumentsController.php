@@ -712,12 +712,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                 if ($subject['is_positive']) {
                     if (!isset($pos_subs[$subject['subject_name']]))
-                        $pos_subs[$subject['subject_name']] = 0;
-                    $pos_subs[$subject['subject_name']]++;
+                        $pos_subs[$subject['subject_name']] = array();
+
+                    array_push($pos_subs[$subject['subject_name']], $subject['user_id']);
                 } else {
                     if (!isset($neg_subs[$subject['subject_name']]))
-                        $neg_subs[$subject['subject_name']] = 0;
-                    $neg_subs[$subject['subject_name']]++;
+                        $neg_subs[$subject['subject_name']] = array();
+
+                    array_push($neg_subs[$subject['subject_name']], $subject['user_id']);
                 }
             }
 
