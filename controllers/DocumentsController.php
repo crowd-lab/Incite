@@ -702,23 +702,30 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //find if a document has been connected
             $this->view->hasBeenConnected = false;
             $subjectsForDocument = getAllSubjectsOnId($document_id);
+
             $pos_subs = array();
             $neg_subs = array();
+            $distinct_subNames = array();
             foreach ((array) $subjectsForDocument as $subject) {
+                if (!isset($distinct_subNames[$subject['subject_name']]))
+                    $distinct_subNames[$subject['subject_name']] = $subject['subject_name'];
+
                 if ($subject['is_positive']) {
                     if (!isset($pos_subs[$subject['subject_name']]))
-                        $pos_subs[$subject['subject_name']] = 0;
-                    $pos_subs[$subject['subject_name']]++;
+                        $pos_subs[$subject['subject_name']] = array();
+
+                    array_push($pos_subs[$subject['subject_name']], $subject['user_id']);
                 } else {
                     if (!isset($neg_subs[$subject['subject_name']]))
-                        $neg_subs[$subject['subject_name']] = 0;
-                    $neg_subs[$subject['subject_name']]++;
+                        $neg_subs[$subject['subject_name']] = array();
+
+                    array_push($neg_subs[$subject['subject_name']], $subject['user_id']);
                 }
             }
 
             if (!empty($subjectsForDocument)) {
                 $this->view->hasBeenConnected = true;
-                $this->view->subjects = $subjectsForDocument;
+                $this->view->subjectNames = $distinct_subNames;
                 $this->view->positive_subjects = $pos_subs;
                 $this->view->negative_subjects = $neg_subs;
             }

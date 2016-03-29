@@ -152,15 +152,15 @@ function getAllSubjectsOnId($item_id)
 {
     $db = DB_Connect::connectDB();
     $subjects = array();
-    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, is_positive FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.document_id WHERE omeka_incite_documents.item_id = ?");
+    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, is_positive, omeka_incite_documents_subject_conjunction.user_id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.document_id WHERE omeka_incite_documents.item_id = ?");
     $stmt->bind_param("i", $item_id);
-    $stmt->bind_result($subject, $is_positive);
+    $stmt->bind_result($subject, $is_positive, $userID);
     $stmt->execute();
     while ($stmt->fetch()) {
         if ($is_positive == 1) 
-            $subjects[] = array('subject_name' => $subject, 'is_positive' => true);
+            $subjects[] = array('subject_name' => $subject, 'is_positive' => true, 'user_id' => $userID);
         else
-            $subjects[] = array('subject_name' => $subject, 'is_positive' => false);
+            $subjects[] = array('subject_name' => $subject, 'is_positive' => false, 'user_id' => $userID);
 
     }
     $stmt->close();

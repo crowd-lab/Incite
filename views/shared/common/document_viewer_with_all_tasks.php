@@ -19,6 +19,53 @@
             });
         };
 
+        function addNewSubject(subjectName, numPos, posUserIds, numNeg, negUserIds) {
+            var percentBarPerVoter = 100 / (numPos + numNeg);
+            var percentPositiveBarFilled = Math.floor(numPos * percentBarPerVoter);
+            var percentNegativeBarFilled = Math.floor(numNeg * percentBarPerVoter);
+
+            var subjectRow = $('<div class="subjectRow">' +
+                        '<span>' + subjectName + '</span>' + 
+                        '<div class="subjectBarContainer">' +
+                            '<div class="progress-bar progress-bar-success positive-subject-bar" style="width: ' + percentPositiveBarFilled + '%"' +
+                                'data-trigger="hover"' +
+                                'data-toggle="popover" data-html="true"' + 
+                                'data-content="' + numPos + ' person connected this subject positively"'  + 
+                                'data-placement="bottom" data-id="positive-popover"' +
+                            '>' +
+                                '<span class="sr-only"></span>' +
+                            '</div>' +
+                            '<div class="progress-bar progress-bar-error negative-subject-bar" style="width: ' + percentNegativeBarFilled + '%"'+ 
+                                'data-trigger="hover"' +
+                                'data-toggle="popover" data-html="true"' + 
+                                'data-content="' + numNeg + ' person connected this subject negatively"'  + 
+                                'data-placement="bottom" data-id="negative-popover"' +
+                            '>' +
+                                '<span class="sr-only"></span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<hr size=2>');
+        
+            //in the future we could use posUserIds and negUserIds to create user links
+
+            $('#subjects-list').append(subjectRow);
+        };
+
+        function createSubjectPopoverContent(userIds) {
+            var popoverContent = "";
+
+            userIds.forEach(function(userId) {
+                popoverContent += createProfileLink('blah', userId);
+            });
+
+            return popoverContent;
+        };
+
+        function createProfileLink(username, userId) {
+            return '<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userId+'" target="_BLANK">' + username + '</a>';
+        };
+
         $('#work-zone').ready(function() {
             $('#work-view').width($('#work-zone').width());
         });
@@ -127,18 +174,27 @@
 
         <div style="border: 1px solid; overflow: scroll;" name="connect_subjects_text" rows="10" id="connect_subjects_copy" style="width: 100%;">
             <div id="subjects-list">
-                <h3 id="positive-subjects-header">Subjects marked as relating to this document</h3>
+                <h3 id="subjects-header">Subjects connected to this document</h3>
                 <?php 
-                    foreach ((array) $this->positive_subjects as $subject_name => $num)
-                        echo '<p class="positive-subject">'.$subject_name.' by '.$num.' person(s)</p>';
-                ?>
+                    foreach ((array) $this->subjectNames as $subjectName) {
+                        if (isset($this->positive_subjects[$subjectName])) {
+                            $numPos = count($this->positive_subjects[$subjectName]);
+                            $posUsers = $this->positive_subjects[$subjectName];
+                        } else {
+                            $numPos = 0;
+                            $posUsers = array();
+                        }
 
-                <hr size=2>
+                        if (isset($this->negative_subjects[$subjectName])) {
+                            $numNeg = count($this->negative_subjects[$subjectName]);
+                            $negUsers = $this->negative_subjects[$subjectName];
+                        } else {
+                            $numNeg = 0;
+                            $negUsers = array();
+                        }
 
-                <h3 id="negative-subjects-header">Subjects marked as not relating to this document</h3>
-                <?php 
-                    foreach ((array) $this->negative_subjects as $subject_name => $num)
-                        echo '<p class="negative-subject">'.$subject_name.' by '.$num.' person(s)</p>';
+                        echo '<script type="text/javascript">addNewSubject("' . $subjectName . '",' . $numPos . ',"' . json_encode($posUsers) . '",' . $numNeg . ',"' . json_encode($negUsers) . '");</script>';
+                    }
                 ?>
             </div>
         </div>
@@ -216,11 +272,18 @@
         text-align: center;
     }
 
-    #positive-subjects-header {
-        color: #5CB85C;
+    .subjectBarContainer {
+        height: 10px;
+        margin-bottom: 10px;
+        max-width: 90%;
+        margin: 0 auto;
     }
 
-    #negative-subjects-header {
-        color: #D9534F;
+    .subjectRow {
+        margin-bottom: 10px;
+    }
+
+    .negative-subject-bar {
+        background-color: #D9534F;
     }
 </style>
