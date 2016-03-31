@@ -95,7 +95,7 @@
                     span = $('<span class="group-member-link">, </span>');
                 }
 
-                span.append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
+                span.append(createGroupLink(<? echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
 
                 $('#groups-list').append(span);
             <?php endforeach; ?>
@@ -436,7 +436,9 @@
                 <div id="search-groups-section">
                     <span>
                         <input id="search-groups-input" type="text" name="field" placeholder="Ex: July" />        
-                        <button id="group-search-btn" class="btn btn-primary">Search</button>
+                        <button id="group-search-btn" class="btn btn-primary">
+                            Search <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
                         <p id="no-groups-found-paragraph">No results found</p>
                     </span>
                     <table class="table" id="join-group-table">

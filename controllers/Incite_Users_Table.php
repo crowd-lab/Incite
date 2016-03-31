@@ -59,7 +59,7 @@ require_once("Incite_Groups_Table.php");
     }
     /**
      * Gets information about the user in an array
-     * array format = [ID, FIRSTNAME, LASTNAME, PRIVILEGE_LEVEL, EXPERIENCE_LEVEL]
+     * array format = [ID, FIRSTNAME, LASTNAME, PRIVILEGE_LEVEL, EXPERIENCE_LEVEL, WORKING_GROUP]
      * @param type $email requires an email to check against
      * @return array containing information requested
      */
@@ -67,9 +67,9 @@ require_once("Incite_Groups_Table.php");
     {
         $arr = Array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT id, first_name, last_name, privilege_level, experience_level FROM omeka_incite_users WHERE email = ?");
+        $stmt = $db->prepare("SELECT id, first_name, last_name, privilege_level, experience_level, working_group_id FROM omeka_incite_users WHERE email = ?");
         $stmt->bind_param("s", $email);
-        $stmt->bind_result($id, $firstname, $lastname, $priv, $exp);
+        $stmt->bind_result($id, $firstname, $lastname, $priv, $exp, $groupId);
         $stmt->execute();
         $stmt->fetch();
         $stmt->close();
@@ -81,6 +81,7 @@ require_once("Incite_Groups_Table.php");
         $arr['privilege'] = $priv;
         $arr['experience'] = $exp;
         $arr['email'] = $email;
+        $arr['working_group'] = getGroupInfoByGroupId($groupId);
         return $arr;
     }
     function getUserDataOld($email)
@@ -215,6 +216,29 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return true;
     }
+    /**
+     * Set a user's working group
+     *
+     * @param int $userId the id of the user
+     * @param int $groupId the id of the working group to change to
+     * @return boolean true if successful, false otherwise
+     */
+    function setWorkingGroup($userId, $groupId)
+    {
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("UPDATE omeka_incite_users SET working_group_id = ? WHERE id = ?");
+        $stmt->bind_param("ii", $groupId, $userId);
+        if (!$stmt->execute())
+        {
+            var_dump($stmt->error);
+            $stmt->close();
+            $db->close();
+            return false;
+        }
+        $stmt->close();
+        $db->close();
+        return true;
+    }
     /*
      * REMOVE AND ADD TO API FOR GROUPS
     public function addGroupID($userID, $groupID, $privilege)
@@ -317,7 +341,7 @@ require_once("Incite_Groups_Table.php");
         if ($count == 0)
         {
             $hashedPassword = md5($password);
-            $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)");
+            $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, 0, CURRENT_TIMESTAMP)");
             $stmt->bind_param("ssssii", $firstName, $lastName, $email, $hashedPassword, $privilege, $experienceLevel);
             $stmt->execute();
             $stmt->close();
@@ -569,5 +593,17 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $groups;
     }
-
+    function getGroupInstructionsSeenByUserId($userid) {
+        $groups = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT group_id from omeka_incite_group_instructions_seen_by WHERE user_id = ?");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($group);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $groups[] = $group;
+        }
+        $db->close();
+        return $groups;
+    }
 ?>

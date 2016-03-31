@@ -6,7 +6,15 @@
     ?>
 
     <script type="text/javascript">
+        var isGroupOwner = false;
+
         $(document).ready(function () {
+            <?php 
+                if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
+                    echo "isGroupOwner = true;";
+                }
+            ?>
+
             $('#manage-users-table').hide();
             populateGroupMembers();
             populateActivityFeed();
@@ -18,7 +26,9 @@
                     unset($_SESSION['incite']['message']);
                 }
 
-                if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
+                if ($_SESSION['Incite']['Guest']) {
+                    echo "styleForGuest();";
+                } else if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
                     echo "addGroupOwnerControls();";
                 } else {
                     $isMember = false;
@@ -62,23 +72,36 @@
                     span = $('<span class="group-member-link">, </span>');
                 }
 
-                span.append(createProfileLink("<?php echo $user['email']; ?>", <?php echo $user['id']; ?>));
+                span.append(createProfileLink(<?php echo sanitizeStringInput($user['email']); ?>.value, <?php echo $user['id']; ?>));
                 $("#groupprofile-list-of-members").append(span);
             <?php endforeach; ?>
 
             //create link for group owner
-            $('#group-owner').append(createProfileLink("<?php echo $this->group['creator']['email'] ?>", <?php echo $this->group['creator']['id'] ?>));
+            $('#group-owner').append(createProfileLink(<?php echo sanitizeStringInput($this->group['creator']['email']); ?>.value, <?php echo $this->group['creator']['id'] ?>));
         };
 
         function createProfileLink(username, userid) {
             return $('<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userid+'" target="_BLANK">' + username + '</a>')
         };
 
+        function createProfileLinkWithRealName(firstName, lastName, username, userid) {
+            if (firstName || lastName) {
+                return $('<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userid+'" target="_BLANK">' + firstName + ' ' + lastName + ' (' + username + ')</a>')
+            } else {
+                return $('<a href="<?php echo getFullInciteUrl(); ?>/users/view/'+userid+'" target="_BLANK">' + username + '</a>')
+            }
+        };
+
         function populateActivityFeed() {
             var table; 
 
             <?php foreach ((array)$this->acceptedUsers as $user): ?>
-                table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), "<?php echo $user['email']; ?>", <?php echo $user['id']; ?>);
+                if (isGroupOwner) {
+                    table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), <?php echo sanitizeStringInput($user['first_name']); ?>.value, <?php echo sanitizeStringInput($user['last_name']); ?>.value, <?php echo sanitizeStringInput($user['email']); ?>.value, <?php echo $user['id']; ?>);
+                } else {
+                    table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), null, null, <?php echo sanitizeStringInput($user['email']); ?>.value, <?php echo $user['id']; ?>);
+                }
+
                 generateAndAppendUserActivityRow(table, "Transcribed", <?php echo $user['transcribed_doc_count']; ?>);
                 generateAndAppendUserActivityRow(table, "Tagged", <?php echo $user['tagged_doc_count']; ?>);
                 generateAndAppendUserActivityRow(table, "Connected", <?php echo $user['connected_doc_count']; ?>);
@@ -86,13 +109,13 @@
             <?php endforeach; ?>
         };
 
-        function generateAndAppendUserRow(table, username, userid) {
+        function generateAndAppendUserRow(table, firstName, lastName, username, userid) {
             var userRow = $('<tr class="user-row">' + 
                 '<td class="user-table-data"><span class="user-data"></span></td>' + 
                 '<td class="embedded-user-table-cell"><table class="user-table"></table</td>' +
                 '</tr>');
 
-            userRow.find(".user-data").append(createProfileLink(username, userid));
+            userRow.find(".user-data").append(createProfileLinkWithRealName(firstName, lastName, username, userid));
             table.append(userRow);
             return userRow.find(".user-table");
         };
@@ -132,10 +155,11 @@
         function addGroupOwnerControls() {
             generateAndAppendOwnerGlyph();
             generateAndAppendInviteUsersLink();
+            generateAndAppendGroupInstructionsInput();
             generateAndAppendGroupOrManagementTabs();
 
             <?php foreach ((array)$this->users as $user): ?>
-                generateAndAppendManagementTableRows("<?php echo $user['email']; ?>", "<?php echo $user['privilege']; ?>", "<?php echo $user['id']; ?>");
+                generateAndAppendManagementTableRows(<?php echo sanitizeStringInput($user['first_name']); ?>.value, <?php echo sanitizeStringInput($user['last_name']); ?>.value, <?php echo sanitizeStringInput($user['email']); ?>.value, "<?php echo $user['privilege']; ?>", "<?php echo $user['id']; ?>");
             <?php endforeach; ?>    
 
             colorEveryOtherManagementRowGrey();
@@ -149,9 +173,34 @@
         };  
 
         function generateAndAppendInviteUsersLink() {
-            var inviteUsersLink = $('<a id="invite-new-members-link" href="mailto:?subject=Come join my Mapping the Fourth group, <?php echo $this->group["name"] ?>!&body=<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>%0D%0A%0D%0AFollow the above link to visit the group page and then click the button that says \'Request to join group\'!">Invite New Members</a>');
+            var inviteUsersLink = $('<a id="invite-new-members-link" href="mailto:?subject=Come join my Mapping the Fourth group,' +
+                <?php echo sanitizeStringInput($this->group['name']); ?>.value.replace(/['"]+/g, '') + 
+                '!&body=<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>%0D%0A%0D%0AFollow the above link to visit the group page and then click the button that says \'Request to join group\'!">Invite New Members</a>');
         
             $('#groupprofile-overview-title').after(inviteUsersLink);
+        };
+
+        function generateAndAppendGroupInstructionsInput() {
+            var groupInstructionsInput = $('<form>' + 
+                        '<span><strong>Group Instructions: </strong></span>' +
+                        '<div>' +
+                        '<textarea id="group-instructions-textarea" placeholder="Group instructions will be shown to all group members when they are transcribing, tagging and connecting"></textarea>' +
+                        '<button type="button" onclick="saveGroupInstructionsAjaxRequest()" id="save-group-instructions-btn" class="btn btn-primary">' + 
+                            'Save' + 
+                            '<span id="save-instructions-glyphicon" class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>' +
+                        '</button>' +
+                        '</div>' +
+                    '</form>');
+
+            var currentInstructions = <?php echo sanitizeStringInput($this->group['instructions']); ?>.value;
+
+            if (currentInstructions) {
+                groupInstructionsInput.find('#group-instructions-textarea').val(currentInstructions);
+            }
+
+            $('#groupprofile-overview-details').append(groupInstructionsInput);
+            $('#group-instructions-textarea').height($('#group-instructions-textarea')[0].scrollHeight);
+
         };
 
         function generateAndAppendGroupOrManagementTabs() {
@@ -185,7 +234,7 @@
             tabToUnselect.removeClass("active");
         };
 
-        function generateAndAppendManagementTableRows(username, status, id) {
+        function generateAndAppendManagementTableRows(firstName, lastName, username, status, id) {
             var statusName, glyphicon;
 
             status = parseInt(status);
@@ -210,7 +259,7 @@
             }
 
             var row = $('<tr class="management-row">' + 
-                '<td><span>' + username + '</span></td>' + 
+                '<td><span>' + firstName + ' ' + lastName + ' (' + username + ')</span></td>' + 
                 '<td><span>' + statusName + '</span></td>' +
                 '</tr>');
 
@@ -254,6 +303,19 @@
                 var userId = row.data("ID");
                 removeUserFromGroupAjaxRequest(userId);
             };
+        };
+
+        function saveGroupInstructionsAjaxRequest() {
+            var instructions = $('#group-instructions-textarea').val();
+            
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/setgroupinstructions'; ?>",
+                data: {"groupId": <?php echo $this->group['id'] ?>, "instructions": instructions},
+                success: function (response) {
+                    location.reload();
+                }
+            });
         };
 
         function changePrivilegeOfUserAjaxRequest(userId, privilege) {
@@ -321,6 +383,13 @@
 
             var bannedText = $('<p style="color: red; text-align: center;">You have been banned from this group, sorry!</p>');
             $('body').append(bannedText);
+        };
+
+        function styleForGuest() {
+            $('#groupprofile-activity-container').hide();
+
+            var pleaseLogInText = $('<p style="color: red; text-align: center;">Please log in to be able to view groups!</p>');
+            $('body').append(pleaseLogInText);
         };
     </script>
 
@@ -443,6 +512,24 @@
             width: 70%;
             height: 50px;
             font-size: 18px;
+        }
+
+        #group-instructions-textarea {
+            position: relative;
+            top: 6px;
+            height: 200px;
+            width: 70%;
+            margin-right: 3px;
+        }
+
+        #save-instructions-glyphicon {
+            margin-right: 0px;
+            margin-left: 3px;
+        }
+
+        #save-group-instructions-btn {
+            position: relative;
+            bottom: 4px;
         }
     </style>
 </head>

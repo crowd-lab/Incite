@@ -149,6 +149,19 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
     }
     /**
+     * Marks group instructions as seen by a user
+     */
+    public function addseeninstructionsAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_POST['userId'];
+            $groupId = $_POST['groupId'];
+
+            markInstructionAsSeenByUser($userId, $groupId);
+
+            return true;
+        }
+    }
+    /**
      * Ajax function that searchs for groups with names similiar to the search term
      *
      * Returns a list of group ids
@@ -160,6 +173,19 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $groups = searchGroupsByName($groupName);
 
             echo json_encode($groups);
+        }
+    }
+    /**
+     * Ajax function sets a user's working group
+     *
+     * Returns output of setWorkingGroup
+     */
+    public function setworkinggroupAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_POST['userId'];
+            $groupId = $_POST['groupId'];
+
+            echo json_encode(setWorkingGroup($userId, $groupId));
         }
     }
     /**
@@ -217,6 +243,26 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             }
 
             echo json_encode(changeGroupMemberPrivilege($userId, $groupId, $privilege));
+        }
+    }
+    /**
+     * Ajax function that sets the instructions for a group
+     *
+     * Returns output of setGroupInstructions
+     */
+    public function setgroupinstructionsAction() {
+        if ($this->getRequest()->isPost()) {
+            $instructions = $_POST['instructions'];
+            $groupId = $_POST['groupId'];
+            $group = getGroupInfoByGroupId($groupId);
+
+            //prevent non group owners from changing the instructions
+            if ($_SESSION['Incite']['USER_DATA']['id'] != $group['creator']['id']) {
+                return false;
+            }
+
+            echo json_encode(setGroupInstructions($groupId, $instructions));
+            echo json_encode(markGroupInstructionsAsNew($groupId));
         }
     }
     /**

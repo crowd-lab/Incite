@@ -33,11 +33,102 @@
     <?php echo js_tag('bootstrap-dialog.min'); ?>
     <?php echo head_css(); ?>
 
+     <?php
+        global $groupsWithOldInstructions;
+        global $groupsWithNewInstructions;
+
+        $groupsWithOldInstructions = [];
+        $groupsWithNewInstructions = [];
+
+        function loadGroupInstructions() {
+            global $groupsWithOldInstructions;
+            global $groupsWithNewInstructions;
+
+            $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+
+            foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
+                if ($group['instructions'] != '') {
+                    if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
+                        array_push($groupsWithOldInstructions, $group);
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
+                    } else {
+                        array_push($groupsWithNewInstructions, $group);
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+                    }
+                }
+            }
+
+            if (count($groupsWithNewInstructions) != 0) {
+                echo 'addNewIconToInstructionsDropdownSelector();';
+            }
+
+            if (count($groupsWithOldInstructions) == 0 && count($groupsWithNewInstructions) == 0) {
+                echo 'styleInstructionsModalToBeEmpty();';
+            }
+        }
+
+        function markAllInstructionsAsSeen() {
+            global $groupsWithNewInstructions;
+
+            foreach((array)$groupsWithNewInstructions as $group) {
+                echo "updateSeenInstructionsAjaxRequest(" . $group['id'] . ");";
+            }
+        }
+    ?>
+
     <!-- Custom CSS -->
     <style>
+        #user_profile {
+            background:none!important;
+            border:none; 
+            padding:0!important;
+            font: inherit; 
+            color: #9D9D9D;
+            height: 34px;
+        }
+
+        #navbar-account-interaction-area {
+            margin-left: 20px;
+        }
+
+        #user_profile:hover {
+            color: white;
+        }
+
+        #user-dropdown-menu {
+            right: -15px;
+        }
+
+        #working-group-interaction-area {
+            text-align: center;
+            padding-right: 20px;
+            border-right: 1px solid grey;
+            height: 50px;
+        }
+
         body {
             padding-top: 70px;
             /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+        }
+
+        .instructions-alert-icon {
+            margin-left: 5px;
+            position: relative;
+            bottom: 2px;
+            font-family: arial;
+        }
+
+        .instructions-alert-icon-in-modal {
+            float: right;
+        }
+
+        .group-instructions-header {
+            margin-top: 5px;
+        }
+
+        .group-instructions-body {
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 
@@ -91,6 +182,31 @@
             loginDiv.insertBefore(usernameError, submitButton);
         };
 
+        function styleForLogin(dataArray) {
+            var needsGroupInstructionsReloaded = true;
+
+            if ($('#user-dropdown-menu').length > 0) {
+                needsGroupInstructionsReloaded = false;
+            }
+
+            var profileSection = createProfileSection(dataArray['first_name'], dataArray['id'], needsGroupInstructionsReloaded);
+            $('#login_modal').remove();
+            $('#navbar-account-interaction-area').append(profileSection);
+
+            if (needsGroupInstructionsReloaded) {
+                location.reload();
+            }
+
+            if (document.getElementById("onLogin") != null) {
+                $('#onLogin').load(document.URL + ' #onLogin');
+                getNewComments();
+            }
+
+            if (document.getElementById("discussion_reply_form_container") != null) {
+                $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
+            }
+        }
+
         function logout() {
             var request = $.ajax({
                 type: "POST",
@@ -99,16 +215,11 @@
                 {
                     notifyOfSuccessfulActionWithTimeout("You've logged out!");
                     
-                    $('#user_profile').text('Welcome Guest');
-                    $('#user_profile').attr('href', '');
-                    $('#user_profile').attr('id', 'welcome_message');
-                    $('#welcome_message').prop("disabled", true);
-                    
-                    $('#logout_button').text('Login/Sign-up');
-                    $('#logout_button').removeAttr('onClick');
-                    $('#logout_button').attr('data-toggle', 'modal')
-                    $('#logout_button').attr('data-target', '#login-signup-dialog');
-                    $('#logout_button').prop('id', 'login_modal');
+                    var loginButton = createLoginModalButton();
+                    $('#user_profile').remove();
+                    $('#working-group-interaction-area').remove();
+
+                    $('#navbar-account-interaction-area').append(loginButton);
 
                     if (document.getElementById("onLogin") != null)
                     {
@@ -126,18 +237,73 @@
             });
         }
 
-        function setProfileLinkOnClick(documentId) {
-            if (documentId) {
-                $('#user_profile').on('click', function (e) {
-                    window.location.href = fullInciteUrl+'/users/view/'+documentId;
-                });
-            } else {
-                <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
-                    $('#user_profile').on('click', function (e) {
-                        window.location.href = fullInciteUrl+'/users/view/<?php echo $_SESSION['Incite']['USER_DATA']['id']; ?>';
-                    });
-                <?php endif; ?>
+        function createProfileSection(firstName, documentId, needsGroupInstructionsReloaded) {
+            //user logged out and then back in without refreshing the page
+            if (!needsGroupInstructionsReloaded) {
+                return $('<button id="user_profile" type="button"' +  
+                              'class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"' +
+                              'aria-haspopup="true" aria-expanded="false"' +
+                    'style="height: 34px;">' +
+                        firstName + 
+                        '<span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-left: 4px;"></span>' + 
+                    '</button>');
             }
+
+            return $('<button id="user_profile" type="button"' +  
+                              'class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"' +
+                              'aria-haspopup="true" aria-expanded="false"' +
+                    'style="height: 34px;">' +
+                        firstName + 
+                        '<span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-left: 4px;"></span>' + 
+                    '</button>' + 
+                    '<ul class="dropdown-menu" id="user-dropdown-menu">'  + 
+                        '<li><a href="' + fullInciteUrl + '/users/view/' + documentId + '">Profile</a></li>' +
+                        '<li id="group-instructions-dropdown-selector"><a href="#">Group Instructions</a></li>' +
+                        '<li class="divider"></li>' +
+                        '<li><a href="#" onclick="logout()">Logout</a></li>' +
+                    '</ul>');
+        }
+
+        function createLoginModalButton() {
+            return $('<button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>');
+        }
+
+        function addGroupInstructionSection(groupName, groupInstructions, isNew) {
+            if (isNew) {
+                var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><h1 class="group-instructions-header">' + groupName + ':</h1>' +
+                    '<p class="group-instructions-body">' + groupInstructions + '</p>' +
+                    '<hr size=2>');
+            } else {
+                var section = $('<h1 class="group-instructions-header">' + groupName + ':</h1>' +
+                    '<p class="group-instructions-body">' + groupInstructions + '</p>' +
+                    '<hr size=2>');
+            }
+
+            $('#instructions-modal-body').append(section);
+        }
+
+        function styleInstructionsModalToBeEmpty() {
+            var section = $('<p> No groups you belong to have added instructions yet! </p>');
+
+            $('#instructions-modal-body').append(section);
+        }
+
+        function addNewIconToInstructionsDropdownSelector() {
+            var icon = $('<span class="label label-danger instructions-alert-icon" aria-hidden="true">New</span>');
+
+            $('#group-instructions-dropdown-selector').find('a').append(icon);
+        }
+
+        function updateSeenInstructionsAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/addseeninstructions'; ?>",
+                data: {"userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>, "groupId": groupId},
+                success: function (response) {
+                    $(".instructions-alert-icon").remove();
+                    $(".instructions-alert-icon-in-modal").remove();
+                }
+            });
         }
 
         <?php
@@ -149,7 +315,7 @@
         ?>
 
         $(document).ready(function () {
-            setProfileLinkOnClick();
+           <?php loadGroupInstructions(); ?>
 
             $('#time_picker').daterangepicker({
                 locale     : { format: 'YYYY-MM-DD'},
@@ -164,9 +330,14 @@
             $("#signup-tab").on('click', deleteErrorMessageFromModal);
             $("#login-tab").on('click', deleteErrorMessageFromModal);
             $("#login_modal").on('click', deleteErrorMessageFromModal);
+            $("#instructions-dialog").on('hide.bs.modal', function() {
+                <?php
+                    markAllInstructionsAsSeen();
+                ?>
+            });
 
-            $('#location').val("<?php echo (isset($_GET['location']) ? $_GET['location'] : ""); ?>");
-            $('#keywords').val("<?php echo (isset($_GET['keywords']) ? $_GET['keywords'] : ""); ?>");
+            $('#location').val(<?php echo (isset($_GET['location']) ? sanitizeStringInput($_GET['location']) : sanitizeStringInput("")); ?>.value);
+            $('#keywords').val(<?php echo (isset($_GET['keywords']) ? sanitizeStringInput($_GET['keywords']) : sanitizeStringInput("")); ?>.value);
 
             $('#login-button').on('click', function (e) {
                 if ($('#login-tab').hasClass('active')) {
@@ -193,27 +364,7 @@
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
-
-                                            $('#welcome_message').text(dataArray['first_name']);
-                                            $('#welcome_message').prop('disabled', false);
-                                            $('#welcome_message').prop('id', 'user_profile');
-                                            setProfileLinkOnClick(dataArray['id']);
-                                            
-                                            $('#login_modal').text("Logout");
-                                            $('#login_modal').removeAttr('data-toggle');
-                                            $('#login_modal').removeAttr('data-target');
-                                            $('#login_modal')[0].setAttribute('onclick', 'logout()');
-                                            $('#login_modal').prop('id', 'logout_button');
-                                            
-                                            if (document.getElementById("onLogin") != null)
-                                            {
-                                                $('#onLogin').load(document.URL + ' #onLogin');
-                                                getNewComments();
-                                            }
-                                            if (document.getElementById("discussion_reply_form_container") != null)
-                                            {
-                                                $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
-                                            }
+                                            styleForLogin(dataArray);
                                         }
                                     })
                                 } else {
@@ -255,31 +406,7 @@
                                         success: function (data)
                                         {
                                             var dataArray = JSON.parse(data);
-
-                                            $('#welcome_message').text(dataArray['first_name']);
-                                            $('#welcome_message').removeAttr('disabled');
-                                            $('#welcome_message').prop('id', 'user_profile');
-                                            setProfileLinkOnClick(dataArray['id']);
-
-                                            $('#login_modal').text("Logout");
-                                            $('#login_modal').removeAttr('data-toggle');
-                                            $('#login_modal').removeAttr('data-target');
-                                            $('#login_modal').click(function() {
-                                                logout();
-                                            });
-                                            $('#login_modal').prop('id', 'logout_button');
-
-
-                                            if (document.getElementById("onLogin") != null)
-                                            {
-                                                $('#onLogin').load(document.URL + ' #onLogin');
-                                                getNewComments();
-                                            }
-                                            if (document.getElementById("discussion_reply_form_container") != null)
-                                            {
-                                                $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
-                                            }
-
+                                            styleForLogin(dataArray);
                                         }
                                     })
 
@@ -331,13 +458,35 @@
                     </button>
                 </form>
 
-                <ul class="nav navbar-nav navbar-right" style="position: relative; right: 5px;">
-                    <li>
+                <ul class="nav navbar-nav navbar-right" style="position: relative; right: 15px;">
+                    <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
+                        <li id="working-group-interaction-area">
+                            <?php
+                                include(dirname(__FILE__) . '/working_group_selector.php');
+                            ?>
+                        </li>
+                    <?php endif; ?>
+
+                    <li class="dropdown" id="navbar-account-interaction-area">
                         <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-                            <button id="user_profile" type="button" class="btn btn-default navbar-btn"><?php echo $_SESSION['Incite']['USER_DATA']['first_name']; //first name    ?></button>
-                            <button id="logout_button" type="button" class="btn btn-default navbar-btn" onclick="logout()">Logout</button>
+                            <button id="user_profile" type="button" 
+                                    class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false"
+                                    style="height: 34px;">
+                                <?php echo $_SESSION['Incite']['USER_DATA']['first_name']; ?>
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="user-dropdown-menu">
+                                <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
+                                    <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
+                                <?php else: ?>
+                                    <li class="disabled"><a href="#">Profile</a></li>
+                                <?php endif; ?>
+                                <li data-toggle="modal" data-target="#instructions-dialog" id="group-instructions-dropdown-selector"><a href="#">Group Instructions</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" onclick="logout()">Logout</a></li>
+                            </ul>
                         <?php else: ?>
-                            <button id="welcome_message" type="button" class="btn btn-default navbar-btn" disabled>Welcome Guest</button>
                             <button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>
                         <?php endif; ?>
                     </li>
@@ -403,6 +552,36 @@
                 </div>
                 <div class="modal-footer" id="modal-footer">
                     <button type="button" class="btn btn-primary" id="login-button">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="instructions-dialog" tabindex="-1" role="dialog" aria-labelledby="instructions-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="login-signup-dialog-label">Group Instructions</h4>
+                </div>
+                <div class="modal-body" id="instructions-modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="working-group-dialog" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="working-group-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="working-group-modal-cancel-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="working-group-dialog-label">Are you sure you want to change your working group?</h4>
+                </div>
+                <div class="modal-body" id="working-group-modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="working-group-modal-no-btn" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="working-group-modal-yes-btn" class="btn btn-primary"  data-dismiss="modal">Yes, change group</button>
                 </div>
             </div>
         </div>
