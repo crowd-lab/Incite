@@ -95,7 +95,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //save transcription and summary to database
             if ($this->_hasParam('id')) {
 
-                createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $_POST['transcription'], $_POST['summary'], $_POST['tone']);
+                $workingGroupId = 0;
+                if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                    $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+                }
+
+                createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
                 $_SESSION['Incite']['previous_task'] = 'transcribe';
                 //Since we only need one copy now, we redirect the same user to next task of the same document.
                 //$this->redirect('incite/documents/tag/' . $this->_getParam('id'));

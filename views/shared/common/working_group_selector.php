@@ -69,10 +69,10 @@
                     //response will be true or false depending of if group is set or not
                     if (response) {
                         markNewOptionSelection(groupId);
-                        notifyOfSuccessfulActionWithTimeout("Working group successfully changed!")
+                        notifyOfSuccessfulActionWithTimeout("Working group successfully changed!");
                     } else {
                         resetOptionSelection();
-                        notifyOfErrorInForm("Something went wrong, try again.")
+                        notifyOfErrorInForm("Something went wrong, try again.");
                     }
                 }
             });

@@ -43,7 +43,7 @@ function getMembersAcceptedIntoGroup($groupid)
     $stmt->execute();
     while ($stmt->fetch()) {
         $user_data = getUserDataByUserId($user);
-        $users[] = array('first_name' => $user_data['first_name'], 'last_name' => $user_data['last_name'], 'id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserId($user), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user));
+        $users[] = array('first_name' => $user_data['first_name'], 'last_name' => $user_data['last_name'], 'id' => $user_data['id'], 'email' => $user_data['email'], 'transcribed_doc_count' => getTranscribedDocumentCountByUserIdAndGroupId($user, $groupid), 'tagged_doc_count' => getTaggedDocumentCountByUserId($user), 'connected_doc_count' => getConnectedDocumentCountByUserId($user), 'discussion_count' => getDiscussionCountByUserId($user));
     }
     $db->close();
     return $users;

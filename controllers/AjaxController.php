@@ -185,7 +185,13 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $userId = $_POST['userId'];
             $groupId = $_POST['groupId'];
 
-            echo json_encode(setWorkingGroup($userId, $groupId));
+            if (setWorkingGroup($userId, $groupId)) {
+                $_SESSION['Incite']['USER_DATA']['working_group'] = getGroupInfoByGroupId($groupId);
+
+                return json_encode(true);
+            } else {
+                return json_encode(false);
+            }
         }
     }
     /**

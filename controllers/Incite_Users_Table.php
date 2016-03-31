@@ -502,6 +502,19 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $count;
     }
+
+    function getTranscribedDocumentCountByUserIdAndGroupId($userid, $groupid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT document_id) from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ? AND working_group_id = ?");
+        $stmt->bind_param("iii", $element_id_for_title, $userid, $groupid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+
     function getTaggedDocumentsByUserId($userid) {
         $docs = array();
         $db = DB_Connect::connectDB();
@@ -516,6 +529,7 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $docs;
     }
+
     function getTaggedDocumentCountByUserId($userid) {
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
@@ -527,7 +541,6 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $count;
     }
-
 
     function getConnectedDocumentsByUserId($userid) {
         $docs = array();
