@@ -58,6 +58,7 @@ SQL
         `subject_concept_id`    int(11) NOT NULL,
         `is_positive`           int(5) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `created_time`          timestamp NOT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

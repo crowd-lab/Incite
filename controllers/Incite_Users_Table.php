@@ -568,6 +568,19 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $count;
     }
+
+    function getConnectedDocumentCountByUserIdAndGroupId($userid, $groupid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_time, text) from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ? AND sub.working_group_id = ?");
+        $stmt->bind_param("iii", $element_id_for_title, $userid, $groupid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+
     function getDiscussionsByUserId($userid) {
         $diss = array();
         $db = DB_Connect::connectDB();

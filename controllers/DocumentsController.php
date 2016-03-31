@@ -411,20 +411,26 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //save a connection to database
             if ($this->_hasParam('id')) {
                 $all_subject_ids = getAllSubjectConceptIds();
+
+                $workingGroupId = 0;
+                if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                    $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+                }
+
                 //connect by multiselection
                 if (isset($_POST['subjects'])) {
                     foreach ((array) $all_subject_ids as $subject_id) {
                         if (in_array($subject_id, $_POST['subjects']))
-                            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 1);
+                            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 1);
                         else
-                            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 0);
+                            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 0);
                     }
                 //connect by tags
                 } else {
                     if (isset($_POST['subject']) && $_POST['connection'] == 'true') 
-                        addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 1);
+                        addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 1);
                     else if (isset($_POST['subject']) && $_POST['connection'] == 'false') 
-                        addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], 0);
+                        addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 0);
                 }
                 $_SESSION['Incite']['previous_task'] = 'connect';
                 //Since we only need one copy now and connect is the final task, we redirect the same user to next document to start a new transcription
