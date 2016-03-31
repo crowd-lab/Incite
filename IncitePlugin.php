@@ -217,6 +217,7 @@ SQL
         `privilege_level`   int(11) NOT NULL,
         `experience_level`  int(11) NOT NULL,
         `is_active`         int(11) NOT NULL,
+        `working_group_id`  int(11) NOT NULL,
         `timestamp`         timestamp NOT NULL,
         
         PRIMARY KEY (`id`)

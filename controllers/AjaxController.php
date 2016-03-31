@@ -176,6 +176,19 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
     }
     /**
+     * Ajax function sets a user's working group
+     *
+     * Returns output of setWorkingGroup
+     */
+    public function setworkinggroupAction() {
+        if ($this->getRequest()->isPost()) {
+            $userId = $_POST['userId'];
+            $groupId = $_POST['groupId'];
+
+            echo json_encode(setWorkingGroup($userId, $groupId));
+        }
+    }
+    /**
      * Ajax function that adds the currently logged in user to a group with the privilege specified
      * in the ajax request
      *

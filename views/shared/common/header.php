@@ -87,12 +87,23 @@
             height: 34px;
         }
 
+        #navbar-account-interaction-area {
+            margin-left: 20px;
+        }
+
         #user_profile:hover {
             color: white;
         }
 
         #user-dropdown-menu {
-            right: -10px;
+            right: -15px;
+        }
+
+        #working-group-interaction-area {
+            text-align: center;
+            padding-right: 20px;
+            border-right: 1px solid grey;
+            height: 50px;
         }
 
         body {
@@ -206,6 +217,7 @@
                     
                     var loginButton = createLoginModalButton();
                     $('#user_profile').remove();
+                    $('#working-group-interaction-area').remove();
 
                     $('#navbar-account-interaction-area').append(loginButton);
 
@@ -447,6 +459,14 @@
                 </form>
 
                 <ul class="nav navbar-nav navbar-right" style="position: relative; right: 15px;">
+                    <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
+                        <li id="working-group-interaction-area">
+                            <?php
+                                include(dirname(__FILE__) . '/working_group_selector.php');
+                            ?>
+                        </li>
+                    <?php endif; ?>
+
                     <li class="dropdown" id="navbar-account-interaction-area">
                         <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                             <button id="user_profile" type="button" 
@@ -545,6 +565,23 @@
                     <h4 class="modal-title" id="login-signup-dialog-label">Group Instructions</h4>
                 </div>
                 <div class="modal-body" id="instructions-modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="working-group-dialog" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="working-group-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="working-group-modal-cancel-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="working-group-dialog-label">Are you sure you want to change your working group?</h4>
+                </div>
+                <div class="modal-body" id="working-group-modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="working-group-modal-no-btn" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="working-group-modal-yes-btn" class="btn btn-primary"  data-dismiss="modal">Yes, change group</button>
                 </div>
             </div>
         </div>
