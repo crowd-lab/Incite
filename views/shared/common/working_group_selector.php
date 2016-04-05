@@ -70,6 +70,9 @@
                     if (response) {
                         markNewOptionSelection(groupId);
                         notifyOfSuccessfulActionWithTimeout("Working group successfully changed!");
+
+                        //reloading is easiest way to get new instructions for group
+                        location.reload();
                     } else {
                         resetOptionSelection();
                         notifyOfErrorInForm("Something went wrong, try again.");

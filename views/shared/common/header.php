@@ -339,39 +339,7 @@
             $('#login-button').on('click', function (e) {
                 if ($('#login-tab').hasClass('active')) {
                     if ($('#username').val() !== "" && $('#password').val() !== "") {
-                        //do login
-                        var request = $.ajax({
-                            type: "POST",
-                            url: "<?php echo getFullInciteUrl().'/ajax/login'; ?>",
-                            data: {"username": $('#username').val(), "password": $('#password').val()},
-                            success: function (response) {
-                                data = response.trim();
-
-                                if (data == "true") {
-                                    createAlertInLoginModal("Login successful!", false);
-
-                                    setTimeout(function () {
-                                        $('#login-signup-dialog').modal('hide');
-                                        //loginDiv.removeChild(usernameError);
-                                    }, 1000);
-                                    
-                                    var getDataArray = $.ajax({
-                                        type: "POST",
-                                        url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
-                                        success: function (data)
-                                        {
-                                            var dataArray = JSON.parse(data);
-                                            styleForLogin(dataArray);
-                                        }
-                                    })
-                                } else {
-                                    createAlertInLoginModal("Wrong username or password", true);
-                                }
-                            },
-                            error: function (e) {
-                                console.log(e.message);
-                            }
-                        });
+                        loginAjaxRequest();
                     } else {
                         createAlertInLoginModal("Username and Password are both required", true);
                     }
@@ -382,47 +350,81 @@
                             createAlertInLoginModal('"Password" and "Confirm Password" fields do not match', true);
                             return;
                         }
-                        var request = $.ajax({
-                            type: "POST",
-                            url: "<?php echo getFullInciteUrl().'/ajax/createaccount'; ?>",
-                            data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
-                            success: function (response) {
-                                data = response.trim();
-                                if (data == "true")
-                                {
-                                    createAlertInLoginModal("Successful signup and login!", false);
-
-                                    setTimeout(function () {
-                                        $('#login-signup-dialog').modal('hide');
-                                        //loginDiv.removeChild(usernameError);
-                                    }, 1000);
-
-                                    var getDataArray = $.ajax({
-                                        type: "POST",
-                                        url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
-                                        success: function (data)
-                                        {
-                                            var dataArray = JSON.parse(data);
-                                            styleForLogin(dataArray);
-                                        }
-                                    })
-
-                                } else if (data == "exists") {
-                                    createAlertInLoginModal("Username already exists", true);
-                                } else {
-                                    createAlertInLoginModal("Unable to sign up!", true);
-                                }
-                            },
-                            error: function (e) {
-                                console.log(e.message);
-                            }
-                        });
+                        signupAjaxRequest();
                     } else {
                         createAlertInLoginModal('All fields are required', true);
                     }
                 }
             });
         });
+
+        function loginAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/login'; ?>",
+                data: {"username": $('#username').val(), "password": $('#password').val()},
+                success: function (response) {
+                    data = response.trim();
+
+                    if (data == "true") {
+                        createAlertInLoginModal("Login successful!", false);
+
+                        setTimeout(function () {
+                            $('#login-signup-dialog').modal('hide');
+                        }, 1000);
+                        
+                        var getDataArray = $.ajax({
+                            type: "POST",
+                            url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
+                            success: function (data) {
+                                var dataArray = JSON.parse(data);
+                                styleForLogin(dataArray);
+                            }
+                        });
+                    } else {
+                        createAlertInLoginModal("Wrong username or password", true);
+                    }
+                },
+                error: function (e) {
+                    console.log(e.message);
+                }
+            });
+        }
+
+        function signupAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/createaccount'; ?>",
+                data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
+                success: function (response) {
+                    data = response.trim();
+
+                    if (data === "true") {
+                        createAlertInLoginModal("Successful signup and login!", false);
+
+                        setTimeout(function () {
+                            $('#login-signup-dialog').modal('hide');
+                        }, 1000);
+
+                        var getDataArray = $.ajax({
+                            type: "POST",
+                            url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
+                            success: function (data) {
+                                var dataArray = JSON.parse(data);
+                                styleForLogin(dataArray);
+                            }
+                        });
+                    } else if (data === "exists") {
+                        createAlertInLoginModal("Username already exists", true);
+                    } else {
+                        createAlertInLoginModal("Unable to sign up!", true);
+                    }
+                },
+                error: function (e) {
+                    console.log(e.message);
+                }
+            });
+        }
     </script>
 </head>
 
