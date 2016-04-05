@@ -45,33 +45,46 @@
             global $groupsWithNewInstructions;
 
             $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+            $workingGroupId = 0;
+            $workingGroupHasInstructions = false;
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
 
             foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
                 if ($group['instructions'] != '') {
                     if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
                         array_push($groupsWithOldInstructions, $group);
-                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
+
+                        if ($workingGroupId == $group['id']) {
+                            echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
+                            $workingGroupHasInstructions = true;
+                        }
                     } else {
                         array_push($groupsWithNewInstructions, $group);
-                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+
+                        if ($workingGroupId == $group['id']) {
+                            echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+                            echo 'addNewIconToInstructionsDropdownSelector();';
+                            $workingGroupHasInstructions = true;
+                        }
                     }
                 }
             }
 
-            if (count($groupsWithNewInstructions) != 0) {
-                echo 'addNewIconToInstructionsDropdownSelector();';
-            }
-
-            if (count($groupsWithOldInstructions) == 0 && count($groupsWithNewInstructions) == 0) {
+            if (!$workingGroupHasInstructions) {
                 echo 'styleInstructionsModalToBeEmpty();';
             }
         }
 
-        function markAllInstructionsAsSeen() {
-            global $groupsWithNewInstructions;
+        function markWorkingGroupInstructionsAsSeen() {
+            $workingGroupId = 0;
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
 
-            foreach((array)$groupsWithNewInstructions as $group) {
-                echo "updateSeenInstructionsAjaxRequest(" . $group['id'] . ");";
+            if ($workingGroupId > 0) {
+                echo "updateSeenInstructionsAjaxRequest(" . $workingGroupId . ");";
             }
         }
     ?>
@@ -283,7 +296,7 @@
         }
 
         function styleInstructionsModalToBeEmpty() {
-            var section = $('<p> No groups you belong to have added instructions yet! </p>');
+            var section = $('<p> Either your current working group has not yet added instructions or you have no working group! </p>');
 
             $('#instructions-modal-body').append(section);
         }
@@ -332,7 +345,7 @@
             $("#login_modal").on('click', deleteErrorMessageFromModal);
             $("#instructions-dialog").on('hide.bs.modal', function() {
                 <?php
-                    markAllInstructionsAsSeen();
+                    markWorkingGroupInstructionsAsSeen();
                 ?>
             });
 

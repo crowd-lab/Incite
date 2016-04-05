@@ -5,19 +5,28 @@
             global $groupsWithOldInstructions;
             global $groupsWithNewInstructions;
 
+            $workingGroupId = 0;
+            $workingGroupHasInstructions = false;
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
+
             foreach((array)$groupsWithNewInstructions as $group) {
-                echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, true);';
+                if ($group['id'] ==  $workingGroupId) {
+                    echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, true);';
+                    echo 'addNewIconToSection();';
+                    $workingGroupHasInstructions = true;
+                }
             }
 
             foreach((array)$groupsWithOldInstructions as $group) {
-                echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, false);';
+                if ($group['id'] == $workingGroupId) {
+                    echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, false);';
+                    $workingGroupHasInstructions = true;
+                }
             }
 
-            if (count($groupsWithNewInstructions) != 0) {
-                echo 'addNewIconToSection();';
-            }
-
-            if (count($groupsWithNewInstructions) == 0 && count($groupsWithOldInstructions) == 0) {
+            if (!$workingGroupHasInstructions) {
                 echo 'hideGroupInstructions();';
             }
         }
@@ -65,7 +74,7 @@
                 setGlyphiconToCollapsed();
 
                 //comes from header
-                <?php markAllInstructionsAsSeen(); ?>
+                <?php markWorkingGroupInstructionsAsSeen(); ?>
             });
 
             $('#group-instructions-collapsible-section').on('shown.bs.collapse', function (e) {
