@@ -147,124 +147,6 @@
             msgbox.open();
         }
 
-        function deleteErrorMessageFromModal() {
-            if (document.getElementById("errorMessage") !== null) {
-                var x = document.getElementById("errorMessage");
-                var usernameDiv = document.getElementById("modal-footer");
-                usernameDiv.removeChild(x);
-            }
-        };
-
-        function createAlertInLoginModal(displayMessage, isError) {
-            var loginDiv = document.getElementById("modal-footer");
-            if (document.getElementById("errorMessage") !== null)
-            {
-                var x = document.getElementById("errorMessage");
-                loginDiv.removeChild(x);
-            }
-            var usernameError = document.createElement('div');
-            var textNode = document.createTextNode(displayMessage);
-            usernameError.style.textAlign = "center";
-            usernameError.appendChild(textNode);
-
-            usernameError.id = "errorMessage";
-
-            if (isError) {
-                usernameError.className = "alert alert-block alert-danger messages error";
-            } else {
-                usernameError.className = "alert alert-block alert-success messages status";
-            }
-            
-            var submitButton = document.getElementById("login-button");
-            loginDiv.insertBefore(usernameError, submitButton);
-        };
-
-        function styleForLogin(dataArray) {
-            var needsGroupInstructionsReloaded = true;
-
-            if ($('#user-dropdown-menu').length > 0) {
-                needsGroupInstructionsReloaded = false;
-            }
-
-            var profileSection = createProfileSection(dataArray['first_name'], dataArray['id'], needsGroupInstructionsReloaded);
-            $('#login_modal').remove();
-            $('#navbar-account-interaction-area').append(profileSection);
-
-            if (needsGroupInstructionsReloaded) {
-                location.reload();
-            }
-
-            if (document.getElementById("onLogin") != null) {
-                $('#onLogin').load(document.URL + ' #onLogin');
-                getNewComments();
-            }
-
-            if (document.getElementById("discussion_reply_form_container") != null) {
-                $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
-            }
-        }
-
-        function logout() {
-            var request = $.ajax({
-                type: "POST",
-                url: "<?php echo getFullInciteUrl().'/ajax/logout'; ?>",
-                success: function () 
-                {
-                    notifyOfSuccessfulActionWithTimeout("You've logged out!");
-                    
-                    var loginButton = createLoginModalButton();
-                    $('#user_profile').remove();
-                    $('#working-group-interaction-area').remove();
-
-                    $('#navbar-account-interaction-area').append(loginButton);
-
-                    if (document.getElementById("onLogin") != null)
-                    {
-                        $('#onLogin').load(document.URL + ' #onLogin');
-                        getNewComments();
-                    }
-                    if (document.getElementById("discussion_reply_form_container") != null)
-                    {
-                        $('#discussion_reply_form_container').load(document.URL + ' #discussion_reply_form_container');
-                    }
-                },
-                error: function (e) {
-                    console.log(e.message);
-                }
-            });
-        }
-
-        function createProfileSection(firstName, documentId, needsGroupInstructionsReloaded) {
-            //user logged out and then back in without refreshing the page
-            if (!needsGroupInstructionsReloaded) {
-                return $('<button id="user_profile" type="button"' +  
-                              'class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"' +
-                              'aria-haspopup="true" aria-expanded="false"' +
-                    'style="height: 34px;">' +
-                        firstName + 
-                        '<span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-left: 4px;"></span>' + 
-                    '</button>');
-            }
-
-            return $('<button id="user_profile" type="button"' +  
-                              'class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"' +
-                              'aria-haspopup="true" aria-expanded="false"' +
-                    'style="height: 34px;">' +
-                        firstName + 
-                        '<span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-left: 4px;"></span>' + 
-                    '</button>' + 
-                    '<ul class="dropdown-menu" id="user-dropdown-menu">'  + 
-                        '<li><a href="' + fullInciteUrl + '/users/view/' + documentId + '">Profile</a></li>' +
-                        '<li id="group-instructions-dropdown-selector"><a href="#">Group Instructions</a></li>' +
-                        '<li class="divider"></li>' +
-                        '<li><a href="#" onclick="logout()">Logout</a></li>' +
-                    '</ul>');
-        }
-
-        function createLoginModalButton() {
-            return $('<button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>');
-        }
-
         function addGroupInstructionSection(groupName, groupInstructions, isNew) {
             if (isNew) {
                 var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><h1 class="group-instructions-header">' + groupName + ':</h1>' +
@@ -324,9 +206,10 @@
             }, function (start, end, label) {
             });
 
-            $("#signup-tab").on('click', deleteErrorMessageFromModal);
-            $("#login-tab").on('click', deleteErrorMessageFromModal);
-            $("#login_modal").on('click', deleteErrorMessageFromModal);
+            $("#signup-tab").on('click', deleteAlertFromLoginModal);
+            $("#login-tab").on('click', deleteAlertFromLoginModal);
+            $("#login_modal").on('click', deleteAlertFromLoginModal);
+
             $("#instructions-dialog").on('hide.bs.modal', function() {
                 <?php
                     markWorkingGroupInstructionsAsSeen();
@@ -336,27 +219,61 @@
             $('#location').val(<?php echo (isset($_GET['location']) ? sanitizeStringInput($_GET['location']) : sanitizeStringInput("")); ?>.value);
             $('#keywords').val(<?php echo (isset($_GET['keywords']) ? sanitizeStringInput($_GET['keywords']) : sanitizeStringInput("")); ?>.value);
 
-            $('#login-button').on('click', function (e) {
-                if ($('#login-tab').hasClass('active')) {
-                    if ($('#username').val() !== "" && $('#password').val() !== "") {
-                        loginAjaxRequest();
-                    } else {
-                        createAlertInLoginModal("Username and Password are both required", true);
-                    }
-                } else { //then #signup-tab is active
-                    if ($('#newUsername').val() !== "" && $('#newPassword').val() !== "" && $('#confirmPassword').val() !== "" && $('#firstName').val !== "" && $('#lastName').val() !== "") {
-                        //do signup
-                        if ($('#newPassword').val() !== $('#confirmPassword').val()) {
-                            createAlertInLoginModal('"Password" and "Confirm Password" fields do not match', true);
-                            return;
-                        }
-                        signupAjaxRequest();
-                    } else {
-                        createAlertInLoginModal('All fields are required', true);
-                    }
-                }
-            });
+            $('#login-button').on('click', attemptToLoginOrSignup);
         });
+
+        function deleteAlertFromLoginModal() {
+            if (document.getElementById("errorMessage") !== null) {
+                var x = document.getElementById("errorMessage");
+                var usernameDiv = document.getElementById("modal-footer");
+                usernameDiv.removeChild(x);
+            }
+        };
+
+        function createAlertInLoginModal(displayMessage, isError) {
+            var loginDiv = document.getElementById("modal-footer");
+            if (document.getElementById("errorMessage") !== null)
+            {
+                var x = document.getElementById("errorMessage");
+                loginDiv.removeChild(x);
+            }
+            var usernameError = document.createElement('div');
+            var textNode = document.createTextNode(displayMessage);
+            usernameError.style.textAlign = "center";
+            usernameError.appendChild(textNode);
+
+            usernameError.id = "errorMessage";
+
+            if (isError) {
+                usernameError.className = "alert alert-block alert-danger messages error";
+            } else {
+                usernameError.className = "alert alert-block alert-success messages status";
+            }
+            
+            var submitButton = document.getElementById("login-button");
+            loginDiv.insertBefore(usernameError, submitButton);
+        };
+
+        function attemptToLoginOrSignup() {
+            if ($('#login-tab').hasClass('active')) {
+                if ($('#username').val() !== "" && $('#password').val() !== "") {
+                    loginAjaxRequest();
+                } else {
+                    createAlertInLoginModal("Username and Password are both required", true);
+                }
+            } else { //then #signup-tab is active
+                if ($('#newUsername').val() !== "" && $('#newPassword').val() !== "" && $('#confirmPassword').val() !== "" && $('#firstName').val !== "" && $('#lastName').val() !== "") {
+                    //do signup
+                    if ($('#newPassword').val() !== $('#confirmPassword').val()) {
+                        createAlertInLoginModal('"Password" and "Confirm Password" fields do not match', true);
+                        return;
+                    }
+                    signupAjaxRequest();
+                } else {
+                    createAlertInLoginModal('All fields are required', true);
+                }
+            }
+        };
 
         function loginAjaxRequest() {
             var request = $.ajax({
@@ -370,17 +287,8 @@
                         createAlertInLoginModal("Login successful!", false);
 
                         setTimeout(function () {
-                            $('#login-signup-dialog').modal('hide');
+                            location.reload();
                         }, 1000);
-                        
-                        var getDataArray = $.ajax({
-                            type: "POST",
-                            url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
-                            success: function (data) {
-                                var dataArray = JSON.parse(data);
-                                styleForLogin(dataArray);
-                            }
-                        });
                     } else {
                         createAlertInLoginModal("Wrong username or password", true);
                     }
@@ -389,7 +297,7 @@
                     console.log(e.message);
                 }
             });
-        }
+        };
 
         function signupAjaxRequest() {
             var request = $.ajax({
@@ -403,17 +311,8 @@
                         createAlertInLoginModal("Successful signup and login!", false);
 
                         setTimeout(function () {
-                            $('#login-signup-dialog').modal('hide');
+                            location.reload();
                         }, 1000);
-
-                        var getDataArray = $.ajax({
-                            type: "POST",
-                            url: "<?php echo getFullInciteUrl().'/ajax/getdata'; ?>",
-                            success: function (data) {
-                                var dataArray = JSON.parse(data);
-                                styleForLogin(dataArray);
-                            }
-                        });
                     } else if (data === "exists") {
                         createAlertInLoginModal("Username already exists", true);
                     } else {
@@ -424,7 +323,26 @@
                     console.log(e.message);
                 }
             });
-        }
+        };
+
+        //onclick set in html
+        function logoutAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/logout'; ?>",
+                success: function () 
+                {
+                    notifyOfSuccessfulActionWithTimeout("You've logged out!");
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                },
+                error: function (e) {
+                    console.log(e.message);
+                }
+            });
+        };
     </script>
 </head>
 
@@ -483,7 +401,7 @@
                                 <?php endif; ?>
                                 <li data-toggle="modal" data-target="#instructions-dialog" id="group-instructions-dropdown-selector"><a href="#">Group Instructions</a></li>
                                 <li class="divider"></li>
-                                <li><a href="#" onclick="logout()">Logout</a></li>
+                                <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
                             </ul>
                         <?php else: ?>
                             <button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>
