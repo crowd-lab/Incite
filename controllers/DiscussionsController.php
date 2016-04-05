@@ -32,11 +32,17 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
     public function createAction()
     {
         if ($this->getRequest()->isPost()) {
+            $workingGroupId = 0;
+
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
+
             //Discussion type is 4 (between-document)
             if (empty($_POST['references']))
-                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], array(), 4);
+                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, array(), 4);
             else
-                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], explode(',', $_POST['references']), 4);
+                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, explode(',', $_POST['references']), 4);
 
             replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA']['id'], $discussionID, array());
             $_SESSION['incite']['redirect'] = array(

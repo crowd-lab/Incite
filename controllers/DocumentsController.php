@@ -194,13 +194,21 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     public function tagAction() {
         if ($this->getRequest()->isPost()) {
+
             //save a tag to database
             if ($this->_hasParam('id')) {
                 $entities = json_decode($_POST["entities"], true);
                 removeAllTagsFromDocument($this->_getParam('id'));
-                for ($i = 0; $i < sizeof($entities); $i++) {
-                    createTag($_SESSION['Incite']['USER_DATA']['id'], $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
+
+                $workingGroupId = 0;
+                if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                    $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
                 }
+
+                for ($i = 0; $i < sizeof($entities); $i++) {
+                    createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
+                }
+
                 createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $_POST['tagged_doc']); 
                 $_SESSION['Incite']['previous_task'] = 'tag';
 

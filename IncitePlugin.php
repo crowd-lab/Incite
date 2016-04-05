@@ -101,6 +101,7 @@ SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_questions (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `question_text`         varchar(1000) NOT NULL,
         `is_active`             int(11) NOT NULL,
         `timestamp`             timestamp NOT NULL,
@@ -166,6 +167,7 @@ SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `tag_text`              varchar(30) NOT NULL,
         `created_timestamp`     timestamp NOT NULL,
         `category_id`           int(11) NOT NULL,

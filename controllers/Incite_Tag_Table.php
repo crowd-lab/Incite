@@ -9,16 +9,17 @@ require_once("Incite_Env_Setting.php");
 /**
  * Creates a tag for a specific document.
  * @param int $userID
+ * @param int $groupID
  * @param int $tag_text
  * @param int $category
  * @param int $subcategory
  * @param string $description
  * @param int $documentID
  */
-function createTag($userID, $tag_text, $category, $subcategory, $description, $documentID) {
+function createTag($userID, $groupID, $tag_text, $category, $subcategory, $description, $documentID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
-    $stmt->bind_param('isis', $userID, $tag_text, $category, $description);
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
+    $stmt->bind_param('iisis', $userID, $groupID, $tag_text, $category, $description);
     $stmt->execute();
     $tagID = $stmt->insert_id;
     $stmt->close();

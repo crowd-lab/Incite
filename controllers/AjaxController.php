@@ -350,7 +350,14 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $documentID = $_POST['documentId'];
             $text = $_POST['commentText'];
             $type = $_POST['type'];
-            createQuestion($text, $_SESSION['Incite']['USER_DATA']['id'], array($documentID), $type);
+
+            $workingGroupId = 0;
+
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
+
+            createQuestion($text, $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, array($documentID), $type);
             return true;
         }
     }
