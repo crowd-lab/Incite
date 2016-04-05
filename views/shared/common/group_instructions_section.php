@@ -1,9 +1,7 @@
 <head>
     <?php
-        function populateGroupInstructions() {
-            //these are loaded with the header
-            global $groupsWithOldInstructions;
-            global $groupsWithNewInstructions;
+        function populateWorkingGroupInstructions() {
+            $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
 
             $workingGroupId = 0;
             $workingGroupHasInstructions = false;
@@ -11,18 +9,14 @@
                 $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
             }
 
-            foreach((array)$groupsWithNewInstructions as $group) {
-                if ($group['id'] ==  $workingGroupId) {
-                    echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, true);';
-                    echo 'addNewIconToSection();';
+            foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
+                if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
                     $workingGroupHasInstructions = true;
-                }
-            }
-
-            foreach((array)$groupsWithOldInstructions as $group) {
-                if ($group['id'] == $workingGroupId) {
-                    echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' .sanitizeStringInput($group['instructions']) . '.value, false);';
-                    $workingGroupHasInstructions = true;
+                    echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value);';
+            
+                    if (!in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
+                        echo 'addNewIconToSection();';
+                    }
                 }
             }
 
@@ -33,16 +27,10 @@
     ?>
 
     <script type="text/javascript">
-        function addGroupInstruction(groupName, instructions, isNew) {
-            if (isNew) {
-                var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><h1 class="group-instructions-header">' + groupName + ':</h1>' +
-                    '<p class="group-instructions-body">' + instructions + '</p>' +
-                    '<hr size=2>');
-            } else {
-                var section = $('<h1 class="group-instructions-header">' + groupName + ':</h1>' +
-                    '<p class="group-instructions-body">' + instructions + '</p>' +
-                    '<hr size=2>');
-            }
+        function addGroupInstruction(groupName, instructions) {
+            var section = $('<h1 class="group-instructions-header">' + groupName + ':</h1>' +
+                '<p class="group-instructions-body">' + instructions + '</p>' +
+                '<hr size=2>');
 
             $('#group-instructions-collapsible-section').append(section);
         }
@@ -68,7 +56,7 @@
         }
 
         $(document).ready(function () {
-            <?php populateGroupInstructions(); ?>
+            <?php populateWorkingGroupInstructions(); ?>
 
             $('#group-instructions-collapsible-section').on('hidden.bs.collapse', function (e) {
                 setGlyphiconToCollapsed();
@@ -109,9 +97,11 @@
     }
 
     #group-instructions-collapsible-section {
-        max-height: 90px;
-        overflow-y: scroll;
         border: 1px solid lightgrey;
         color: black;
+    }
+
+    #collapse-glyph {
+        margin-bottom: 10px;
     }
 </style>

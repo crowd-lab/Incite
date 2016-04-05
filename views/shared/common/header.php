@@ -34,17 +34,9 @@
     <?php echo head_css(); ?>
 
      <?php
-        global $groupsWithOldInstructions;
-        global $groupsWithNewInstructions;
-
-        $groupsWithOldInstructions = [];
-        $groupsWithNewInstructions = [];
-
-        function loadGroupInstructions() {
-            global $groupsWithOldInstructions;
-            global $groupsWithNewInstructions;
-
+        function loadWorkingGroupInstructions() {
             $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+            
             $workingGroupId = 0;
             $workingGroupHasInstructions = false;
             if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
@@ -52,22 +44,14 @@
             }
 
             foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-                if ($group['instructions'] != '') {
+                if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
+                    $workingGroupHasInstructions = true;
+                                    
                     if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
-                        array_push($groupsWithOldInstructions, $group);
-
-                        if ($workingGroupId == $group['id']) {
-                            echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
-                            $workingGroupHasInstructions = true;
-                        }
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
                     } else {
-                        array_push($groupsWithNewInstructions, $group);
-
-                        if ($workingGroupId == $group['id']) {
-                            echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
-                            echo 'addNewIconToInstructionsDropdownSelector();';
-                            $workingGroupHasInstructions = true;
-                        }
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+                        echo 'addNewIconToInstructionsDropdownSelector();';
                     }
                 }
             }
@@ -328,7 +312,7 @@
         ?>
 
         $(document).ready(function () {
-           <?php loadGroupInstructions(); ?>
+           <?php loadWorkingGroupInstructions(); ?>
 
             $('#time_picker').daterangepicker({
                 locale     : { format: 'YYYY-MM-DD'},
