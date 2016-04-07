@@ -58,6 +58,7 @@ SQL
         `subject_concept_id`    int(11) NOT NULL,
         `is_positive`           int(5) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `created_time`          timestamp NOT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -100,6 +101,7 @@ SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_questions (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `question_text`         varchar(1000) NOT NULL,
         `is_active`             int(11) NOT NULL,
         `timestamp`             timestamp NOT NULL,
@@ -165,6 +167,7 @@ SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `tag_text`              varchar(30) NOT NULL,
         `created_timestamp`     timestamp NOT NULL,
         `category_id`           int(11) NOT NULL,
@@ -180,6 +183,7 @@ SQL
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `transcribed_text`      varchar(200000) NOT NULL,
         `summarized_text`       varchar(1000) NOT NULL,
         `tone`                  varchar(50) NOT NULL,

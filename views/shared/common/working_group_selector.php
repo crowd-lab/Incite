@@ -3,6 +3,7 @@
         $(document).ready(function () {
             removeDuplicateOfCurrentlySelectedGroupFromOptions();
             addChangeListenerToGroupSelector();
+            addListenerToInfoGlyphicon();
         });
 
         function removeDuplicateOfCurrentlySelectedGroupFromOptions() {
@@ -13,6 +14,7 @@
                 $('#working-group-selector option[value=' + selectedGroupId + ']')[1].remove();
             } else {
                 $('#working-group-selector').val($('#default-working-group-selector-option').val());
+                $('#reset-option').remove();
             }
         };
 
@@ -39,13 +41,22 @@
 
             var groupName = $('#working-group-selector option[value=' + groupId + ']').data("name");
 
-            var explanationText = $('<p>If you change your working group to "' + 
-                groupName + 
-                '" all tasks (transcribing, tagging, connected and discussing) will be logged as work done for "' +
-                groupName +
-                '".</p>' +
-                '<p><strong>Work can only be logged as being done for one group at a time.</strong></p>' +
-                '<p>Are you sure you want to proceed with this change?</p>');
+            if (groupId === "0") {
+                var explanationText = $('<p><strong>If you reset your working group tasks will no longer be logged under that group.</strong></p>' +
+                    '<p>Are you sure you want to proceed with this change?</p>');
+
+                $('#working-group-dialog-label').html("Are you sure you want to reset your working group?");
+                $('#working-group-modal-yes-btn').html("Yes, Reset Group");
+            } else {
+                var explanationText = $('<p>If you change your working group to "' + 
+                    groupName + 
+                    '" all tasks (transcribing, tagging, connected and discussing) will be logged as work done for "' +
+                    groupName +
+                    '".</p>' +
+                    '<p><strong>Work can only be logged as being done for one group at a time.</strong></p>' +
+                    '<p>Are you sure you want to proceed with this change?</p>');
+            }
+            
 
             $('#working-group-modal-body').append(explanationText);
 
@@ -68,41 +79,51 @@
                 success: function (response) {
                     //response will be true or false depending of if group is set or not
                     if (response) {
-                        markNewOptionSelection(groupId);
-                        notifyOfSuccessfulActionWithTimeout("Working group successfully changed!")
+                        notifyOfSuccessfulActionWithTimeout("Working group successfully changed!");
+
+                        //reloading is easiest way to get new instructions for group
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
                     } else {
                         resetOptionSelection();
-                        notifyOfErrorInForm("Something went wrong, try again.")
+                        notifyOfErrorInForm("Something went wrong, try again.");
                     }
                 }
             });
         };
 
-        function markNewOptionSelection(groupId) {
-            $('.option-for-current-working-group').prop('disabled', false);
-            $('.option-for-current-working-group').removeClass('option-for-current-working-group');
-
-            $('#working-group-selector option[value=' + groupId + ']').addClass('option-for-current-working-group');
-            $('.option-for-current-working-group').prop('disabled', true);
+        function resetOptionSelection() {
+            if ($('.option-for-current-working-group').val()) {
+                $('#working-group-selector').val($('.option-for-current-working-group').val());
+            } else {
+                $('#working-group-selector').val("none");
+            }
+            
         };
 
-        function resetOptionSelection() {
-            $('#working-group-selector').val($('.option-for-current-working-group').val());
+        function addListenerToInfoGlyphicon() {
+            $('#working-group-info-glyphicon').click(function(e) {
+                $('#instructions-dialog').modal('show');
+            });
         };
     </script>
 </head>
 
 <body>
-    <span id="working-group-header">Working Group:</span>
+    <span id="working-group-header">Working Group:
+        <span id="working-group-info-glyphicon" class="glyphicon glyphicon-info-sign"></span>
+    </span>
     <select id="working-group-selector" class="form-control" name="task">
-        <option id="default-working-group-selector-option" value="none" disabled>No group selected</option>
+        <option id="default-working-group-selector-option" value="none" disabled>No Group Selected</option>
         <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] > 0): ?>
-            <option value="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['id']; ?>" class="option-for-current-working-group" selected disabled><?php echo (strlen($_SESSION['Incite']['USER_DATA']['working_group']['name']) > 18) ? substr($_SESSION['Incite']['USER_DATA']['working_group']['name'],0,15).'...' : $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?></option>
+            <option value="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['id']; ?>" class="option-for-current-working-group" selected disabled><?php echo (strlen($_SESSION['Incite']['USER_DATA']['working_group']['name']) > 23) ? substr($_SESSION['Incite']['USER_DATA']['working_group']['name'],0,20).'...' : $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?></option>
         <?php endif; ?>
 
         <?php foreach ((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group): ?>
-            <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 18) ? substr($group['name'],0,15).'...' : $group['name']; ?></option>
+            <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 23) ? substr($group['name'],0,20).'...' : $group['name']; ?></option>
         <?php endforeach; ?>
+        <option id="reset-option" value="0">Reset Working Group</option>
     </select>
 </body>
 
@@ -123,5 +144,18 @@
 
     .option-for-current-working-group {
         display: none;
+    }
+
+    #working-group-info-glyphicon {
+        top: 2px;
+    }
+
+    #working-group-info-glyphicon:hover {
+        color: white;
+        cursor: pointer;
+    }
+
+    #reset-option {
+        color: #D9534F;
     }
 </style>

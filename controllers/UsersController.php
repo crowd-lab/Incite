@@ -53,10 +53,6 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
             $this->view->users = "";
         }
     }
-
-
 }
-
-
 
 ?>

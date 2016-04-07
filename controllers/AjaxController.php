@@ -185,7 +185,13 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $userId = $_POST['userId'];
             $groupId = $_POST['groupId'];
 
-            echo json_encode(setWorkingGroup($userId, $groupId));
+            if (setWorkingGroup($userId, $groupId)) {
+                $_SESSION['Incite']['USER_DATA']['working_group'] = getGroupInfoByGroupId($groupId);
+
+                return json_encode(true);
+            } else {
+                return json_encode(false);
+            }
         }
     }
     /**
@@ -344,7 +350,14 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $documentID = $_POST['documentId'];
             $text = $_POST['commentText'];
             $type = $_POST['type'];
-            createQuestion($text, $_SESSION['Incite']['USER_DATA']['id'], array($documentID), $type);
+
+            $workingGroupId = 0;
+
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
+
+            createQuestion($text, $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, array($documentID), $type);
             return true;
         }
     }

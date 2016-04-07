@@ -132,6 +132,13 @@ function getReadableTimeFromMySQL($time)
 {
 }
 
+/**
+ * A helper function that protects again two large bugs:
+ *
+ * 1.) XSS/SQL injection is prevented by the strip_tags/json_encode
+ * 2.) Provides a workaround for sending strings with " or ' in them to javascript as strings
+ *     Ex: Prevents var title = "<?php echo $this->title; ?>"; from breaking if title contains a "
+ */
 function sanitizeStringInput($input) {
     return json_encode(array('value' => strip_tags($input)));
 }

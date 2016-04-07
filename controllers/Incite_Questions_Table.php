@@ -13,14 +13,15 @@ require_once("DB_Connect.php");
  * 4 --> General forum question, can tag multiple documents
  * @param type $question
  * @param type $user_id
+ * @param int  $group_id
  * @param type $document_ids: references used in the question
  * @param type $type
  */
-function createQuestion($question, $user_id, $document_ids, $type)
+function createQuestion($question, $user_id, $group_id, $document_ids, $type)
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_questions VALUES (DEFAULT, ?, ?, 1, CURRENT_TIMESTAMP, ?)");
-    $stmt->bind_param("isi", $user_id, $question, $type);
+    $stmt = $db->prepare("INSERT INTO omeka_incite_questions VALUES (DEFAULT, ?, ?, ?, 1, CURRENT_TIMESTAMP, ?)");
+    $stmt->bind_param("iisi", $user_id, $group_id, $question, $type);
     $stmt->execute();
     $insertedID = $stmt->insert_id;
     $stmt->close();
