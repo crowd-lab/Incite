@@ -43,13 +43,16 @@ function getAllDocumentsContainLocation($location)
 function getAllDocumentsContainKeyword($keyword)
 {
     $db = DB_Connect::connectDB();
-    //potential places to look for keywords: title, description, transcription?
+    //potential places to look for keywords: title, description, transcription, author, newspaper
     $element_id_for_title = 50;
     $element_id_for_description = 41;
+    $element_id_for_author = 39;
+    $element_id_for_publisher = 45;
+    $element_id_for_source = 48;
     $item_ids = array();  
     $keyword_query = "%".$keyword."%";
-    $stmt = $db->prepare('SELECT `record_id` FROM `omeka_element_texts` WHERE (`element_id` = ? OR `element_id` = ?) AND `text` LIKE ?');
-    $stmt->bind_param("iis", $element_id_for_title, $element_id_for_description, $keyword_query);
+    $stmt = $db->prepare('SELECT `record_id` FROM `omeka_element_texts` WHERE (`element_id` = ? OR `element_id` = ? OR `element_id` = ? OR `element_id` = ? OR `element_id` = ?) AND `text` LIKE ?');
+    $stmt->bind_param("iiiiis", $element_id_for_title, $element_id_for_description, $element_id_for_author, $element_id_for_publisher, $element_id_for_source, $keyword_query);
     $stmt->bind_result($item_id);
     $stmt->execute();
     while ($stmt->fetch()) {
