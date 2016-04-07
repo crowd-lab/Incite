@@ -161,10 +161,6 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
         <div id="list_id<?php echo $transcription->id; ?>" style="margin: 10px;" 
             data-toggle="popover" data-trigger="hover" data-html="true"
-            data-content="<?php echo "<strong>Date:</strong> " 
-                        . metadata($transcription, array('Dublin Core', 'Date'))
-                        . "<br><br> <strong>Description:</strong> "
-                        . metadata($transcription, array('Dublin Core', 'Description')); ?>" 
             data-title="<?php echo "<strong>" . metadata($transcription, array('Dublin Core', 'Title')) . "</strong>";?>"
             data-placement="left" data-id="<?php echo $transcription->id; ?>" 
         >
@@ -303,9 +299,52 @@ include(dirname(__FILE__).'/../common/header.php');
 
         unset($_SESSION['incite']['message']);
     }
-?>
-
+?>          
+            buildPopoverContent();
         });
+
+        function buildPopoverContent() {
+            <?php foreach ((array)$this->Transcriptions as $transcription): ?>
+                var content = '';
+                var date = <?php echo sanitizeStringInput(metadata($transcription, array('Dublin Core', 'Date'))); ?>.value;
+                var location = <?php echo sanitizeStringInput(metadata($transcription, array('Item Type Metadata', 'Location'))); ?>.value;
+                var source = <?php echo sanitizeStringInput(metadata($transcription, array('Dublin Core', 'Source'))); ?>.value;
+                var contributor = <?php echo sanitizeStringInput(metadata($transcription, array('Dublin Core', 'Contributor'))); ?>.value;
+                var rights = <?php echo sanitizeStringInput(metadata($transcription, array('Dublin Core', 'Rights'))); ?>.value;
+
+                if (date) {
+                    content += '<strong>Date: </strong>' + date + '<br><br>';
+                }
+
+                if (location) {
+                    content += '<strong>Location: </strong>' + location + '<br><br>';
+                }
+
+                if (source) {
+                    content += '<strong>Source: </strong>' + source + '<br><br>';
+                }
+
+                if (contributor) {
+                    content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
+                }
+
+                if (rights) {
+                    content += '<strong>Rights: </strong>' + rights + '<br><br>';
+                } else {
+                    content += '<strong>Rights: </strong>Public Domain<br><br>';
+                }
+
+
+                if (content) {
+                    //cut off the last <br><br>
+                    content = content.slice(0, -8);
+
+                    $('#list_id<?php echo $transcription->id; ?>').attr('data-content', content);
+                } else {
+                    $('#list_id<?php echo $transcription->id; ?>').attr('data-content', "No available document information, sorry!");
+                }
+            <?php endforeach; ?>
+        }
 </script>
 
 

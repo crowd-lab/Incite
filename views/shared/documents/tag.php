@@ -164,10 +164,6 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php foreach ((array)$this->Tags as $tag): ?>
         <div id="list_id<?php echo $tag->id;?>" style="margin: 10px;" data-toggle="popover" 
             data-trigger="hover" data-html="true"
-            data-content="<?php echo "<strong>Date:</strong> " 
-                        . metadata($tag, array('Dublin Core', 'Date'))
-                        . "<br><br> <strong>Description:</strong> "
-                        . metadata($tag, array('Dublin Core', 'Description')); ?>"
             data-title="<?php echo "<strong>" . metadata($tag, array('Dublin Core', 'Title')) . "</strong>";?>" 
             data-placement="left" data-id="<?php echo $tag->id; ?>">
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
@@ -303,8 +299,51 @@ include(dirname(__FILE__).'/../common/header.php');
         unset($_SESSION['incite']['message']);
     }
 ?>
-
+            buildPopoverContent();
         });
+
+        function buildPopoverContent() {
+            <?php foreach ((array)$this->Tags as $tag): ?>
+                var content = '';
+                var date = <?php echo sanitizeStringInput(metadata($tag, array('Dublin Core', 'Date'))); ?>.value;
+                var location = <?php echo sanitizeStringInput(metadata($tag, array('Item Type Metadata', 'Location'))); ?>.value;
+                var source = <?php echo sanitizeStringInput(metadata($tag, array('Dublin Core', 'Source'))); ?>.value;
+                var contributor = <?php echo sanitizeStringInput(metadata($tag, array('Dublin Core', 'Contributor'))); ?>.value;
+                var rights = <?php echo sanitizeStringInput(metadata($tag, array('Dublin Core', 'Rights'))); ?>.value;
+
+                if (date) {
+                    content += '<strong>Date: </strong>' + date + '<br><br>';
+                }
+
+                if (location) {
+                    content += '<strong>Location: </strong>' + location + '<br><br>';
+                }
+
+                if (source) {
+                    content += '<strong>Source: </strong>' + source + '<br><br>';
+                }
+
+                if (contributor) {
+                    content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
+                }
+
+                if (rights) {
+                    content += '<strong>Rights: </strong>' + rights + '<br><br>';
+                } else {
+                    content += '<strong>Rights: </strong>Public Domain<br><br>';
+                }
+
+
+                if (content) {
+                    //cut off the last <br><br>
+                    content = content.slice(0, -8);
+
+                    $('#list_id<?php echo $tag->id; ?>').attr('data-content', content);
+                } else {
+                    $('#list_id<?php echo $tag->id; ?>').attr('data-content', "No available document information, sorry!");
+                }
+            <?php endforeach; ?>
+        }
 </script>
 
 
