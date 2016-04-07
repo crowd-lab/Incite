@@ -120,7 +120,50 @@
                 zoom_min: 1,
                 zoom: "fit"
             });
+
+            buildPopoverContent();
         });
+
+        function buildPopoverContent() {
+            var content = '';
+            var date = <?php echo sanitizeStringInput(metadata($currentTask, array('Dublin Core', 'Date'))); ?>.value;
+            var location = <?php echo sanitizeStringInput(metadata($currentTask, array('Item Type Metadata', 'Location'))); ?>.value;
+            var source = <?php echo sanitizeStringInput(metadata($currentTask, array('Dublin Core', 'Source'))); ?>.value;
+            var contributor = <?php echo sanitizeStringInput(metadata($currentTask, array('Dublin Core', 'Contributor'))); ?>.value;
+            var rights = <?php echo sanitizeStringInput(metadata($currentTask, array('Dublin Core', 'Rights'))); ?>.value;
+
+            if (date) {
+                content += '<strong>Date: </strong>' + date + '<br><br>';
+            }
+
+            if (location) {
+                content += '<strong>Location: </strong>' + location + '<br><br>';
+            }
+
+            if (source) {
+                content += '<strong>Source: </strong>' + source + '<br><br>';
+            }
+
+            if (contributor) {
+                content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
+            }
+
+            if (rights) {
+                content += '<strong>Rights: </strong>' + rights + '<br><br>';
+            } else {
+                content += '<strong>Rights: </strong>Public Domain<br><br>';
+            }
+
+
+            if (content) {
+                //cut off the last <br><br>
+                content = content.slice(0, -8);
+
+                $('#document-info-glphicon').attr('data-content', content);
+            } else {
+                $('#document-info-glphicon').attr('data-content', "No available document information, sorry!");
+            }
+        }
 	</script>
 </head>
 
@@ -134,16 +177,6 @@
                 data-toggle="popover" data-html="true" data-trigger="hover"
                 data-viewport=".document-header" aria-hidden="true"
                 data-title="<strong>Document Information</strong>" 
-                data-content="<?php echo "<strong>Title:</strong> "
-                    	. metadata($currentTask, array('Dublin Core', 'Title'))
-                        . "<br><br> <strong>Date:</strong> " 
-                        . metadata($currentTask, array('Dublin Core', 'Date')) 
-                        . "<br><br> <strong>Location:</strong> " 
-                        . metadata($currentTask, array('Item Type Metadata', 'Location')) 
-                        . "<br><br> <strong>Description:</strong> " 
-                        . metadata($currentTask, array('Dublin Core', 'Description'))
-                        . "<br><br> <strong>Rights:</strong> " 
-                        . metadata($currentTask, array('Dublin Core', 'Rights')); ?>" 
                 data-placement="bottom" data-id="<?php echo $currentTask->id; ?>">
             </span>
         </div> 
