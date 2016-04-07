@@ -28,9 +28,7 @@
 
     <script type="text/javascript">
         function addGroupInstruction(groupName, instructions) {
-            var section = $('<h1 class="group-instructions-header">' + groupName + ':</h1>' +
-                '<p class="group-instructions-body">' + instructions + '</p>' +
-                '<hr size=2>');
+            var section = $('<p class="group-instructions-text">' + instructions + '</p>');
 
             $('#group-instructions-collapsible-section').append(section);
         }
@@ -68,8 +66,6 @@
             $('#group-instructions-collapsible-section').on('shown.bs.collapse', function (e) {
                 setGlyphiconToExpanded();
             });
-
-            $("#group-instructions-collapsible-section").find('hr:last').remove();
         });
     </script>
 </head>
@@ -77,7 +73,7 @@
 <body>
     <div id="group-instructions-container">
         <span data-toggle="collapse" data-target="#group-instructions-collapsible-section" id="group-instructions-section-header">
-            Group Instructions
+            Instructions for <?php echo $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?>
             <span id="collapse-glyph" class="glyphicon glyphicon-collapse-down"></span>
         <span>
         <div id="group-instructions-collapsible-section" class="collapse">
@@ -99,9 +95,14 @@
     #group-instructions-collapsible-section {
         border: 1px solid lightgrey;
         color: black;
+        margin-bottom: 50px;
     }
 
     #collapse-glyph {
         margin-bottom: 10px;
+    }
+
+    .group-instructions-text {
+        margin-top: 10px;
     }
 </style>

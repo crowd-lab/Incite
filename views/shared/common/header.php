@@ -51,7 +51,7 @@
                         echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
                     } else {
                         echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
-                        echo 'addNewIconToInstructionsDropdownSelector();';
+                        echo 'changeWorkingGroupInfoIcon(true);';
                     }
                 }
             }
@@ -108,24 +108,19 @@
             /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
         }
 
-        .instructions-alert-icon {
-            margin-left: 5px;
-            position: relative;
-            bottom: 2px;
-            font-family: arial;
-        }
-
         .instructions-alert-icon-in-modal {
             float: right;
+            position: relative;
+            bottom: 27px;
+            right: 80px;
         }
 
         .group-instructions-header {
             margin-top: 5px;
         }
 
-        .group-instructions-body {
+        #instructions-modal-current-group-info-header {
             text-align: center;
-            margin-bottom: 20px;
         }
     </style>
 
@@ -149,13 +144,11 @@
 
         function addGroupInstructionSection(groupName, groupInstructions, isNew) {
             if (isNew) {
-                var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><h1 class="group-instructions-header">' + groupName + ':</h1>' +
-                    '<p class="group-instructions-body">' + groupInstructions + '</p>' +
-                    '<hr size=2>');
+                var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><p class="group-instructions-header"><strong>Working Group:</strong> ' + groupName + '</p>' +
+                    '<p class="group-instructions-body"><strong>Instructions:</strong> ' + groupInstructions + '</p>');
             } else {
-                var section = $('<h1 class="group-instructions-header">' + groupName + ':</h1>' +
-                    '<p class="group-instructions-body">' + groupInstructions + '</p>' +
-                    '<hr size=2>');
+                var section = $('<p class="group-instructions-header"><strong>Working Group:</strong> ' + groupName + '</p>' +
+                    '<p class="group-instructions-body"><strong>Instructions:</strong> ' + groupInstructions + '</p>');
             }
 
             $('#instructions-modal-body').append(section);
@@ -167,10 +160,17 @@
             $('#instructions-modal-body').append(section);
         }
 
-        function addNewIconToInstructionsDropdownSelector() {
-            var icon = $('<span class="label label-danger instructions-alert-icon" aria-hidden="true">New</span>');
-
-            $('#group-instructions-dropdown-selector').find('a').append(icon);
+        function changeWorkingGroupInfoIcon(isNew) {
+            if (isNew) {
+                $('#working-group-info-glyphicon').removeClass('glyphicon-info-sign')
+                    .addClass('glyphicon-exclamation-sign')
+                    .css('color', '#D9534F');
+            } else {
+                $('#working-group-info-glyphicon').removeClass('glyphicon-exclamation-sign')
+                    .addClass('glyphicon-info-sign')
+                    .css('color', '#9D9D9D');
+            }
+            
         }
 
         function updateSeenInstructionsAjaxRequest(groupId) {
@@ -179,8 +179,8 @@
                 url: "<?php echo getFullInciteUrl().'/ajax/addseeninstructions'; ?>",
                 data: {"userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>, "groupId": groupId},
                 success: function (response) {
-                    $(".instructions-alert-icon").remove();
                     $(".instructions-alert-icon-in-modal").remove();
+                    changeWorkingGroupInfoIcon(false);
                 }
             });
         }
@@ -399,7 +399,6 @@
                                 <?php else: ?>
                                     <li class="disabled"><a href="#">Profile</a></li>
                                 <?php endif; ?>
-                                <li data-toggle="modal" data-target="#instructions-dialog" id="group-instructions-dropdown-selector"><a href="#">Group Instructions</a></li>
                                 <li class="divider"></li>
                                 <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
                             </ul>
@@ -479,9 +478,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="login-signup-dialog-label">Group Instructions</h4>
+                    <h4 class="modal-title" id="login-signup-dialog-label">Working Group Information</h4>
                 </div>
                 <div class="modal-body" id="instructions-modal-body">
+                    <p><strong>What is a working group? </strong>All task work (transcribing, tagging, connected, discussing) is logged as being done for a specific group. This specific group is called your "working group" and is picked by you via the dropdown in the header. If no working group is selected your done work will not be logged for a specific group, but will still be viewable via your profile page's activity feed.</p>
+                    <hr style="margin-top:20px;margin-bottom:20px;"></hr>
+                    <h4 id="instructions-modal-current-group-info-header"><u>Your Current Working Group's Instructions</u></h4>
                 </div>
             </div>
         </div>

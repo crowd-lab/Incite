@@ -123,7 +123,7 @@
 
         function populateActivityFeed() {
             <?php foreach ((array)$this->activities as $activity): ?>
-                generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+                generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
             <?php endforeach; ?>
         };
 
@@ -296,6 +296,8 @@
                     populateActivityFeed();
                     populateActivityOverview();
                 }
+
+                resetFilters();
             });
         };
 
@@ -312,11 +314,30 @@
             <?php foreach ((array)$this->activities as $activity): ?>
                 if (parseInt(groupId) === <?php echo $activity['working_group_id']; ?>) {
                     <?php echo $activity['activity_type']; ?>++;
-                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
                 }
             <?php endforeach; ?>
 
             populateActivityOverview(Transcribe, Tag, Connect, Discuss);
+        };
+
+        function resetFilters() {
+            filters = ["transcribe", "tag", "connect", "discuss"];
+            filterActivityFeed();
+
+            $('.overview-section').each(function(index, ele) {
+                var id = this.id;
+
+                if (id === "transcribe-overview-section" && !$(this).hasClass("transcribe-color")) {
+                    $(this).toggleClass("transcribe-color");
+                } else if (id === "tag-overview-section" && !$(this).hasClass("tag-color")) {
+                    $(this).toggleClass("tag-color");
+                } else if (id === "connect-overview-section" && !$(this).hasClass("connect-color")) {
+                    $(this).toggleClass("connect-color");
+                } else if (id === "discuss-overview-section" && !$(this).hasClass("discuss-color")) {
+                    $(this).toggleClass("discuss-color");
+                }
+            });
         };
     </script>
 
