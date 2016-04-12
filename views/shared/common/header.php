@@ -481,7 +481,7 @@
                     <h4 class="modal-title" id="login-signup-dialog-label">Working Group Information</h4>
                 </div>
                 <div class="modal-body" id="instructions-modal-body">
-                    <p><strong>What is a working group? </strong>All task work (transcribing, tagging, connected, discussing) is logged as being done for a specific group. This specific group is called your "working group" and is picked by you via the dropdown in the header. If no working group is selected your done work will not be logged for a specific group, but will still be viewable via your profile page's activity feed.</p>
+                    <p><strong>What is a working group? </strong>All task work (transcribing, tagging, connected and discussing) is logged as being done for a specific group. This specific group is called your "working group" and is picked by you via the dropdown in the header. If no working group is selected your task work will not be logged for a specific group, but will still be viewable via your profile page's activity feed.</p>
                     <hr style="margin-top:20px;margin-bottom:20px;"></hr>
                     <h4 id="instructions-modal-current-group-info-header"><u>Your Current Working Group's Instructions</u></h4>
                 </div>
