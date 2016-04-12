@@ -156,7 +156,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="map-div" style="width:500px;"></div>
     <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white;">
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>
-        <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
+        <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span>
         <br>
 <?php foreach ((array)$this->Transcriptions as $transcription): ?>
         <div id="list_id<?php echo $transcription->id; ?>" style="margin: 10px;" 
