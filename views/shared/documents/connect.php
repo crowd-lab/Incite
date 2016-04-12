@@ -162,20 +162,18 @@ include(dirname(__FILE__).'/../common/header.php');
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
         <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
-        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;">
+        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;" 
+            data-toggle="popover" 
+            data-trigger="hover" data-html="true"
+            data-title="<?php echo "<strong>" . metadata($connection, array('Dublin Core', 'Title')) . "</strong>";?>"
+            data-placement="left" data-id="<?php echo $connection->id; ?>"
+        >
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
             <a href="<?php echo getFullInciteUrl().'/documents/connect/'.$connection->id."?".$this->query_str; ?>">
 <?php else: ?>
             <a href="<?php echo getFullInciteUrl().'/documents/connect/'.$connection->id; ?>">
 <?php endif; ?>
-                <div style="height: 40px; width:40px; float: left;" data-toggle="popover" 
-                    data-trigger="hover" data-html="true"
-                    data-content="<?php echo "<strong>Date:</strong> " 
-                        . metadata($connection, array('Dublin Core', 'Date'))
-                        . "<br><br> <strong>Description:</strong> "
-                        . metadata($connection, array('Dublin Core', 'Description')); ?>"
-                    data-title="<?php echo "<strong>" . metadata($connection, array('Dublin Core', 'Title')) . "</strong>";?>"
-                    data-placement="left" data-id="<?php echo $connection->id; ?>">
+                <div style="height: 40px; width:40px; float: left;">
                         <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
                 <div style="height: 40px; margin-left: 45px;">
@@ -244,6 +242,8 @@ include(dirname(__FILE__).'/../common/header.php');
         });
 
         $(document).ready( function (e) {
+            buildPopoverContent();
+
             $('#map-div').width($(window).width());
             $('#timeline').width($(window).width()-30);
             document.getElementById('list-view').style.top = ($('#map-div').offset().top+20)+'px';
@@ -304,7 +304,50 @@ include(dirname(__FILE__).'/../common/header.php');
     }
 ?>
 
-});
+        });
+
+        function buildPopoverContent() {
+            <?php foreach ((array)$this->Connections as $connection): ?>
+                var content = '';
+                var date = <?php echo sanitizeStringInput(metadata($connection, array('Dublin Core', 'Date'))); ?>.value;
+                var location = <?php echo sanitizeStringInput(metadata($connection, array('Item Type Metadata', 'Location'))); ?>.value;
+                var source = <?php echo sanitizeStringInput(metadata($connection, array('Dublin Core', 'Source'))); ?>.value;
+                var contributor = <?php echo sanitizeStringInput(metadata($connection, array('Dublin Core', 'Contributor'))); ?>.value;
+                var rights = <?php echo sanitizeStringInput(metadata($connection, array('Dublin Core', 'Rights'))); ?>.value;
+
+                if (date) {
+                    content += '<strong>Date: </strong>' + date + '<br><br>';
+                }
+
+                if (location) {
+                    content += '<strong>Location: </strong>' + location + '<br><br>';
+                }
+
+                if (source) {
+                    content += '<strong>Source: </strong>' + source + '<br><br>';
+                }
+
+                if (contributor) {
+                    content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
+                }
+
+                if (rights) {
+                    content += '<strong>Rights: </strong>' + rights + '<br><br>';
+                } else {
+                    content += '<strong>Rights: </strong>Public Domain<br><br>';
+                }
+
+
+                if (content) {
+                    //cut off the last <br><br>
+                    content = content.slice(0, -8);
+
+                    $('#list_id<?php echo $connection->id;?>').attr('data-content', content);
+                } else {
+                    $('#list_id<?php echo $connection->id;?>').attr('data-content', "No available document information, sorry!");
+                }
+            <?php endforeach; ?>
+        }
 </script>
 
 
