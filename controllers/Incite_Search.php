@@ -80,9 +80,8 @@ function getAllDocumentsWithKeywordInSource($keyword) {
     while ($stmt->fetch()) {
         if (preg_match_all($regex, $item_text, $matches)) {
             $matchedText = $matches[0][0];
-            debug_to_console($matchedText);
 
-            if (strpos($matchedText, $keyword) !== false) {
+            if (strpos(strtolower($matchedText), strtolower($keyword)) !== false) {
                 $item_ids[] = $item_id;
             }
         }
