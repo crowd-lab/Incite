@@ -48,43 +48,16 @@ function getAllDocumentsContainKeyword($keyword)
     $element_id_for_description = 41;
     $element_id_for_creator = 39;
     $element_id_for_publisher = 45;
-    $item_ids = array();  
-    $keyword_query = "%".$keyword."%";
-    $stmt = $db->prepare('SELECT `record_id` FROM `omeka_element_texts` WHERE (`element_id` = ? OR `element_id` = ? OR `element_id` = ? OR `element_id` = ?) AND `text` LIKE ?');
-    $stmt->bind_param("iiiis", $element_id_for_title, $element_id_for_description, $element_id_for_creator, $element_id_for_publisher, $keyword_query);
-    $stmt->bind_result($item_id);
-    $stmt->execute();
-    while ($stmt->fetch()) {
-        $item_ids[] = $item_id;
-    }
-    $stmt->close();
-    $db->close();
-
-    $documentIdsWithKeywordInSource = getAllDocumentsWithKeywordInSource($keyword);
-    
-    return array_merge($item_ids, $documentIdsWithKeywordInSource);
-}
-function getAllDocumentsWithKeywordInSource($keyword) {
-    $db = DB_Connect::connectDB();
-    //Contributors/sources are used interchangeably and contain links (aka <a></a>) so use a regular expression to match
     $element_id_for_contributor = 37;
     $element_id_for_source = 48;
     $item_ids = array();  
     $keyword_query = "%".$keyword."%";
-    $regex = "/>[^<]*/";
-
-    $stmt = $db->prepare('SELECT `record_id`, `text` FROM `omeka_element_texts` WHERE (`element_id` = ? OR `element_id` = ?) AND `text` LIKE ?');
-    $stmt->bind_param("iis", $element_id_for_contributor, $element_id_for_source, $keyword_query);
-    $stmt->bind_result($item_id, $item_text);
+    $stmt = $db->prepare('SELECT `record_id` FROM `omeka_element_texts` WHERE (`element_id` = ? OR `element_id` = ? OR `element_id` = ? OR `element_id` = ? OR `element_id` = ? OR `element_id` = ?) AND `text` LIKE ?');
+    $stmt->bind_param("iiiiiis", $element_id_for_title, $element_id_for_description, $element_id_for_creator, $element_id_for_publisher, $element_id_for_source, $element_id_for_contributor, $keyword_query);
+    $stmt->bind_result($item_id);
     $stmt->execute();
     while ($stmt->fetch()) {
-        if (preg_match_all($regex, $item_text, $matches)) {
-            $matchedText = $matches[0][0];
-
-            if (strpos(strtolower($matchedText), strtolower($keyword)) !== false) {
-                $item_ids[] = $item_id;
-            }
-        }
+        $item_ids[] = $item_id;
     }
     $stmt->close();
     $db->close();
