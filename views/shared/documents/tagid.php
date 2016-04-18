@@ -40,7 +40,7 @@
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Creating a tag</strong>" 
                                     data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -51,7 +51,7 @@
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a category</strong>" 
                                     data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -62,7 +62,7 @@
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a subcategory</strong>" 
                                     data-content="<?php echo "The computer has tried to identify the subcategories for this tag, please ensure they are accurate and change them if needed." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -73,7 +73,7 @@
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Adding details</strong>" 
                                     data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>Not a tag?</th></tr>
@@ -90,7 +90,7 @@
                                     data-title="<strong>Creating a tag</strong>"
                                     data-viewport="#tagging-container"; 
                                     data-content="<?php echo "Computers can't always recognize tags, so we need your help! Highlighting a word in the transcription box to the left will generate a new tag." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -100,8 +100,8 @@
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a category</strong>" 
-                                    data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than 'unknown' to be accepted." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than empty to be accepted." ?>" 
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -112,7 +112,7 @@
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a subcategory</strong>" 
                                     data-content="<?php echo "For the given tag and category, select the appropriate subcategories, if any. If it doesn't fall into any subcategories simply leave none selected." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -123,7 +123,7 @@
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Adding details</strong>" 
                                     data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>Not a tag?</th></tr>
@@ -176,7 +176,7 @@
             disableIfEmpty: true,
             numberDisplayed: 1
         });
-        new_entity.find('.category-select').append('<option value="0">Unknown</option>');
+        new_entity.find('.category-select').append('<option value="0">&nbsp;</option>');
 
         <?php for ($i = 0; $i < sizeof($category_object); $i++) {
             echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
@@ -229,6 +229,9 @@
                 } else if (new_entity.find('.category-select').hasClass('event')) {
                     cat = 2;
                     new_entity.find('.category-select option[value=2]').attr('selected', 'selected');
+                } else if (new_entity.find('.category-select').hasClass('other')) {
+                    cat = 5;
+                    new_entity.find('.category-select option[value=5]').attr('selected', 'selected');
                 } else {  //Unknown category!
                     cat = 0;
                     new_entity.find('.category-select option[value=0]').attr('selected', 'selected');
@@ -236,7 +239,7 @@
                 new_entity.find('.category-select').multiselect('rebuild');
                 var subcategory_menu = new_entity.find('.subcategory-select');
                 $(subcategory_menu).empty();
-                if (new_entity.find('.category-select option:selected').text() !== "Unknown") {
+                if (new_entity.find('.category-select option:selected').text() !== "") {
                     $.each(categories[new_entity.find('.category-select').val()-1]['subcategory'], function (idx) {
                         subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
                     });
@@ -271,7 +274,7 @@
         $('#user-entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            if ($(this).find('option:selected').text() !== "Unknown") {
+            if ($(this).find('option:selected').text() !== "") {
                 $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
                     subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
                 });
@@ -295,7 +298,7 @@
         $('#entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            if ($(this).find('option:selected').text() !== "Unknown") {
+            if ($(this).find('option:selected').text() !== "") {
                 $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
                     subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
                 });
@@ -308,7 +311,7 @@
 
         $('#confirm-button').on('click', function (e) {
             if ($('.category-select option:selected[value=0]').length > 0) {
-                notifyOfErrorInForm('Tag category cannot be set to "Unknown"');
+                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
             }
             var entities = [];
@@ -394,7 +397,7 @@
                     var tag_range = tag_selection.getRangeAt(0);
                     var tag_em = document.createElement('em');
                     tag_em.id = 'tag_id_'+tagid_id_counter;
-                    tag_em.className = 'unknown tagged-text';
+                    tag_em.className = 'other tagged-text';
                     tag_em.appendChild(document.createTextNode(tag_text));
                     tag_range.deleteContents();
 
