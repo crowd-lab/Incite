@@ -168,6 +168,12 @@ function getAllSubjectsOnId($item_id)
     return $subjects;
 }
 /**
+ * TODO finish this guy up
+ */
+function getNewestConnectionsForDocument($documentID) {
+    return array();
+}
+/**
  * Tags the document with a subject/concept
  * @param int $conceptID
  * @param int $itemID

@@ -406,6 +406,12 @@ function getAllTagInformation($item_id)
     return $dataArray;
 }
 /**
+ * TODO finish this guy up
+ */
+function getNewestTagsForDocument($documentID) {
+    return array();
+}
+/**
  * Gets all tag names of a document by item id
  * @return an array of results
  */

@@ -90,9 +90,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function transcribeAction() {
+        $this->_helper->db->setDefaultModelName('Item');
 
+        //save transcription and summary to database
         if ($this->getRequest()->isPost()) {
-            //save transcription and summary to database
             if ($this->_hasParam('id')) {
 
                 $workingGroupId = 0;
@@ -102,8 +103,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                 createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
                 $_SESSION['Incite']['previous_task'] = 'transcribe';
-                //Since we only need one copy now, we redirect the same user to next task of the same document.
-                //$this->redirect('incite/documents/tag/' . $this->_getParam('id'));
+                
+                //Redirect to tagging after they finish transcribing
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
                     $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe?'.$_POST['query_str'].'">here</a>.';
                     $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
@@ -113,16 +114,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
             }
         }
-
-        //Fake comments
-        //getCommentsForDocOnTask(doc_id, task_id)
-        $this->view->comments = array(
-            array('id' => 1, 'username' => 'Kurt', 'time' => 'three week ago', 'content' => 'Interesting!'),
-            array('id' => 2, 'username' => 'Amit', 'time' => 'two weeks ago', 'content' => 'Agreed!'),
-            array('id' => 3, 'username' => 'Vijay', 'time' => 'two weeks ago', 'content' => 'Agreed, too!')
-        );
-
-        $this->_helper->db->setDefaultModelName('Item');
+        
         if ($this->_hasParam('id')) {
             $record = $this->_helper->db->find($this->_getParam('id'));
             if ($record != null) {
@@ -131,7 +123,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $this->redirect('incite/documents/transcribe');
                 }
                 $this->_helper->viewRenderer('transcribeid');
-                $this->view->transcription = $record;
+                $this->view->document_metadata = $record;
+                $this->view->latest_transcription = getNewestTranscriptionForDocument($this->_getParam('id'));
+                $this->view->is_being_edited = !empty($this->view->latest_transcription);
                 $this->view->image_url = get_image_url_for_item($record);
                 $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
             } else {
@@ -143,7 +137,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 else
                     $this->redirect('/incite/documents/transcribe');
             }
-        } else {  //has_param
+        } else { 
             //default: fetch documents that need to be transcribed
             $current_page = 1;
             if (isset($_GET['page']))

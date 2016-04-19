@@ -20,11 +20,11 @@
 
         function buildPopoverContent() {
             var content = '';
-            var date = <?php echo sanitizeStringInput(metadata($this->transcription, array('Dublin Core', 'Date'))); ?>.value;
-            var location = <?php echo sanitizeStringInput(metadata($this->transcription, array('Item Type Metadata', 'Location'))); ?>.value;
-            var source = <?php echo sanitizeStringInput(metadata($this->transcription, array('Dublin Core', 'Source'))); ?>.value;
-            var contributor = <?php echo sanitizeStringInput(metadata($this->transcription, array('Dublin Core', 'Contributor'))); ?>.value;
-            var rights = <?php echo sanitizeStringInput(metadata($this->transcription, array('Dublin Core', 'Rights'))); ?>.value;
+            var date = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Date'))); ?>.value;
+            var location = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Item Type Metadata', 'Location'))); ?>.value;
+            var source = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Source'))); ?>.value;
+            var contributor = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Contributor'))); ?>.value;
+            var rights = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Rights'))); ?>.value;
 
             if (date) {
                 content += '<strong>Date: </strong>' + date + '<br><br>';
@@ -65,13 +65,13 @@
 	<div class="col-md-6" id="work-zone">
         <div id="work-view">
             <div class="document-header">
-                <span class="document-title" title="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>" ><b>Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></span>
+                <span class="document-title" title="<?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>" ><b>Title:</b> <?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?></span>
                 <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
                 	aria-hidden="true" data-trigger="hover"
                     data-toggle="popover" data-html="true"
                     data-viewport=".document-header"  
                     data-title="<strong>Document Information</strong>" 
-                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                    data-placement="bottom" data-id="<?php echo $this->document_metadata->id; ?>">
                 </span>
             </div> 
             <div class="wrapper">

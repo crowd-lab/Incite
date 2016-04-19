@@ -3,7 +3,6 @@
     <?php
         include(dirname(__FILE__) . '/../common/header.php');
         include(dirname(__FILE__) . '/../common/progress_indicator.php');
-        //$this->transcription must exist because controller has ensured it. If it doesn't exist, then controller should've redirected it to the right place!
     ?>
 
     <script type="text/javascript">
@@ -37,7 +36,7 @@
                         data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                 </p>
-                <textarea id="transcription" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
+                <textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
                 <p class="step">
                     <i>Step 2 of 3: Summarize</i>
                     <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
@@ -49,7 +48,7 @@
                         data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                 </p>
-                <textarea id="summary" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
+                <textarea id="summary-textarea" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
                 <div class="form-group">
                     <p class="step">
                         <i>Step 3 of 3: Select the tone of the document</i>
@@ -62,7 +61,7 @@
                             data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                         </span>
                     </p>
-                    <select id="tone" class="form-control" name="tone">
+                    <select id="tone-selector" class="form-control" name="tone">
                         <option value="informational" default selected>Informational</option>
                         <option value="anxiety">Anxiety</option>
                         <option value="optimism">Optimism</option>
@@ -88,15 +87,15 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
-                if ($('#transcription').val() === "") {
+                if ($('#transcription-textarea').val() === "") {
                     notifyOfErrorInForm('Please provide a transcription of the document');
                     return;
                 }
-                if ($('#summary').val() === "") {
+                if ($('#summary-textarea').val() === "") {
                     notifyOfErrorInForm('Please provide a summary of the document');
                     return;
                 }
-                if ($('#tone').val() === "") {
+                if ($('#tone-selector').val() === "") {
                     notifyOfErrorInForm('Please select the tone of the document');
                     return;
                 }
@@ -109,7 +108,21 @@
                     unset($_SESSION['incite']['message']);
                 }
             ?>
+
+            <?php if ($this->is_being_edited): ?>
+                styleForEditing();    
+            <?php endif; ?> 
         });
+
+        function styleForEditing() {
+            populateWithLatestData();
+        }
+
+        function populateWithLatestData() {
+            $('#transcription-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription['transcription']) ? $this->latest_transcription['transcription'] : 'nothing'); ?>.value);
+            $('#summary-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription['summary']) ? $this->latest_transcription['summary'] : 'nothing'); ?>.value);
+            $('#tone-selector').val('<?php echo isset($this->latest_transcription["tone"]) ? $this->latest_transcription["tone"] : "nothing"; ?>');
+        }
     </script>
 
     <style>
@@ -117,11 +130,11 @@
             float: right;
         }
 
-        #transcription {
+        #transcription-textarea {
             width: 100%;
         }
 
-        #summary {
+        #summary-textarea {
             width: 100%; 
             height: 66px;
         }

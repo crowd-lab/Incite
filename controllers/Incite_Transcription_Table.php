@@ -122,23 +122,6 @@ function getTranscriptionCreationTimestamp($transcriptionID) {
     return $timestamp;
 }
 /**
- * Gets the transcription status of a document based on the document id
- * @param int $documentID
- * @return int of status
- */
-function getTranscriptionStatus($documentID) {
-    $status = -1;
-    $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT transcription_status FROM omeka_incite_transcriptions WHERE document_id = ?");
-    $stmt->bind_param("i", $documentID);
-    $stmt->bind_result($status);
-    $stmt->execute();
-    $stmt->fetch();
-    $stmt->close();
-    $db->close();
-    return $status;
-}
-/**
  * Create a transcription and summary of the document
  * @param type $documentID
  * @param type $userID
@@ -236,6 +219,27 @@ function getTranscriptionIDsForDocument($documentID)
     $stmt->close();
     $db->close();
     return $arr;
+}
+/**
+ * Get the latest transcription, summary and tone for a specific document (approved or not)
+ *
+ * @param int $documentID
+ * @return array with the info request, or empty if no transcriptions for document
+ */
+function getNewestTranscriptionForDocument($documentID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT transcribed_text, summarized_text, tone FROM omeka_incite_transcriptions WHERE document_id = ? ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt->bind_param("i", $documentID);
+    $stmt->bind_result($transcription, $summary, $tone);
+    $stmt->execute();
+    $newest_transcription = array();
+    while ($stmt->fetch())
+    {
+        $newest_transcription = array('transcription' => $transcription, 'summary' => $summary, 'tone' => $tone);
+    }
+    $stmt->close();
+    $db->close();
+    return $newest_transcription;
 }
 /**
  * Get all documents that do not have a transcription
