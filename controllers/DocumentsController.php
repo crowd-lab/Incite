@@ -367,18 +367,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $subjectName = getSubjectConceptOnId($randomSubjectInt);
         $subjectDef = getDefinition($subjectName[0]);
 
-        //Choosing a subject to test with some fake data to test view
-        $this->view->subject = $subjectName[0];
-        $this->view->subject_definition = $subjectDef;
-        $this->view->entities = array('liberty', 'independence');
-        $this->view->related_documents = array();
-
         //From tagAction
         $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
         $this->view->category_colors = $category_colors;
 
+        //saving connections to the database
         if ($this->getRequest()->isPost()) {
-            //save a connection to database
             if ($this->_hasParam('id')) {
                 $all_subject_ids = getAllSubjectConceptIds();
 
@@ -388,23 +382,22 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
 
                 //connect by multiselection
-                if (isset($_POST['subjects'])) {
+                if (isset($_POST['subjects']) || isset($_POST['no_subjects'])) {
                     foreach ((array) $all_subject_ids as $subject_id) {
-                        if (in_array($subject_id, $_POST['subjects']))
+                        if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array())))
                             addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 1);
                         else
                             addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 0);
                     }
-                //connect by tags
-                } else {
+                } else { //connect by tags
                     if (isset($_POST['subject']) && $_POST['connection'] == 'true') 
                         addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 1);
                     else if (isset($_POST['subject']) && $_POST['connection'] == 'false') 
                         addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 0);
                 }
                 $_SESSION['Incite']['previous_task'] = 'connect';
+
                 //Since we only need one copy now and connect is the final task, we redirect the same user to next document to start a new transcription
-                //$this->redirect('incite/documents/transcribe');
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
                     $_SESSION['incite']['message'] = 'Connecting successful! You can now select a document to transcribe from the list below or find a document to <a href="'.getFullInciteUrl().'/documents/tag?'.$_POST['query_str'].'">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect?'.$_POST['query_str'].'">connect</a>.';
                     $this->redirect('/incite/documents/transcribe?'.$_POST['query_str']);
@@ -415,17 +408,24 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         }
 
+        //doing connect task
         if ($this->_hasParam('id')) {
             $is_connectable_by_tags = true;
             $record = $this->_helper->db->find($this->_getParam('id'));
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+
             if ($record != null) {
                 if ($record->getFile() == null) {
-                    //no image to transcribe
                     echo 'no image';
                 }
                 $transcription = getApprovedTranscriptionIDs($this->_getParam('id'));
                 $this->view->transcription = "No transcription";
+                $this->view->document_metadata = $record;
+                $this->view->image_url = get_image_url_for_item($record);
+                $this->view->subjects = getAllSubjectConcepts();
+                //$this->view->is_being_edited = isDocumentConnected($this->_getParam('id'));
+
+
                 if ($transcription != null) {
                     $this->view->transcription = getTranscriptionText($transcription[0]);
                     $this->view->summary = getSummaryText($transcription[0]);
@@ -441,6 +441,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
                 $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+                
                 if (hasTaggedTranscription($this->_getParam('id'))) {
                     $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                     $this->view->transcription =  migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
@@ -448,22 +449,26 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     if (count($related_documents) == 0) {
                         $is_connectable_by_tags = false;
                         $this->_helper->viewRenderer('connectbymultiselection');
-                        $this->view->subjects = getAllSubjectConcepts();
-                        $this->view->connection = $record;
-                        $this->view->image_url = get_image_url_for_item($record);
                     }
 
                     //Get subject candidates
                     $subject_candidates = getBestSubjectCandidateList($related_documents);
                     $self_subjects = getAllSubjectsOnId($this->_getParam('id'));
+                    
+                    $this->view->newest_n_subjects = getNewestSubjectsForDocument($this->_getParam('id'));
+                    $this->view->is_being_edited = !empty($this->view->newest_n_subjects);
+                    //can't connect by tags 
+                    if ($this->view->is_being_edited) {
+                        $is_connectable_by_tags = false;
+                        $this->_helper->viewRenderer('connectbymultiselection');
+                    }
+                    
+
                     $subject_related_documents = array();
                     if (count($subject_candidates) <= 0) {
+                        //none of the related documents have subjects
                         $is_connectable_by_tags = false;
-                        //None of the related documents have subjects!
                         $this->_helper->viewRenderer('connectbymultiselection');
-                        $this->view->subjects = getAllSubjectConcepts();
-                        $this->view->connection = $record;
-                        $this->view->image_url = get_image_url_for_item($record);
                     } else {
                         for ($i = 0; $i < count($subject_candidates); $i++) {
                             if (!in_array($subject_candidates[$i]['subject'], $self_subjects)) {
@@ -479,9 +484,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     if (count($subject_related_documents) == 0) {
                         $is_connectable_by_tags = false;
                         $this->_helper->viewRenderer('connectbymultiselection');
-                        $this->view->subjects = getAllSubjectConcepts();
-                        $this->view->connection = $record;
-                        $this->view->image_url = get_image_url_for_item($record);
                     } else {
                         $subject_related_documents = array_unique($subject_related_documents);
                         $docs_for_common_tags = array_merge(array_unique($subject_related_documents), array($this->_getParam('id')));
@@ -504,8 +506,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 } //if (isDocumentTagged($this->_getParam('id')))
                 if ($is_connectable_by_tags) {
                     $this->_helper->viewRenderer('connectbytags');
-                    $this->view->connection = $record;
-                    $this->view->image_url = get_image_url_for_item($record);
                 }
             } else {
                 //no such document

@@ -19,7 +19,7 @@
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (!empty(getNewestConnectionsForDocument($document_id))) {
+	        	if (!empty(getNewestSubjectsForDocument($document_id))) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 	        ?>
@@ -85,7 +85,7 @@
 	    /*
 		* Styles the nav to show the user they are connecting
 		*/
-	    function styleForConnect() {
+	    function styleForConnect(numberOfTasksCompleted) {
 	    	if (numberOfTasksCompleted === 2) {
 	    		$("#success-indicator-bar").width("66.66%");
 		    	$("#progress-indicator-bar-active").width("33.33%");

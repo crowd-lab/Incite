@@ -146,7 +146,7 @@ function getSubjectConceptOnId($id)
 /**
  * Get all the subjects/concepts (both positive and negative) for a document based on item_id. 
  * @param int $item_id
- * @return array of [name, definition]
+ * @return array of subjects
  */
 function getAllSubjectsOnId($item_id)
 {
@@ -168,10 +168,38 @@ function getAllSubjectsOnId($item_id)
     return $subjects;
 }
 /**
- * TODO finish this guy up
+ * Return the latest n subjects for the document where n is the number of subjects available in the database
  */
-function getNewestConnectionsForDocument($documentID) {
-    return array();
+function getNewestSubjectsForDocument($documentID) {
+    $db = DB_Connect::connectDB();
+    $subjects = array();
+    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, is_positive, omeka_incite_documents_subject_conjunction.user_id, omeka_incite_subject_concepts.id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.document_id WHERE omeka_incite_documents.item_id = ? ORDER BY created_time DESC LIMIT ?");
+    $stmt->bind_param("ii", $documentID, countSubjects());
+    $stmt->bind_result($subject, $is_positive, $userID, $subjectID);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        if ($is_positive == 1) 
+            $subjects[] = array('subject_name' => $subject, 'is_positive' => true, 'user_id' => $userID, 'subject_id' => $subjectID);
+        else
+            $subjects[] = array('subject_name' => $subject, 'is_positive' => false, 'user_id' => $userID, 'subject_id' => $subjectID);
+
+    }
+    $stmt->close();
+    $db->close();
+    return $subjects;
+}
+/**
+ * Returns the count of subjects that currently exist 
+ */
+function countSubjects() {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT count(*) FROM omeka_incite_subject_concepts");
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $count;
 }
 /**
  * Tags the document with a subject/concept

@@ -152,4 +152,8 @@ function debug_to_console( $data ) {
 
     echo $output;
 }
+
+function getPositiveSubjects($subjects) {
+    
+}
 ?>

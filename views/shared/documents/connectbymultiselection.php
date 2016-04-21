@@ -45,7 +45,7 @@
                                         <label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label>
                                         <br>
                     <?php endforeach; ?>
-                    <input type="checkbox" class="none-checkbox" name="no_subjects" value="-1">  
+                    <input type="checkbox" class="none-checkbox" name="no_subjects" value="100">  
                     <label>None of the above topics applied</label>
                     <br>
                     <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
@@ -68,16 +68,6 @@
     <!-- Bootstrap Core JavaScript -->
     <script>
         $(document).ready(function() {
-            $(".subject-checkbox").on('click', function(e) {
-                $(".none-checkbox").prop('checked', false);
-            });
-
-            $(".none-checkbox").on('click', function(e) {
-                $(".subject-checkbox").each(function(index, checkbox) {
-                    $(this).prop('checked', false);
-                });
-            });
-
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -85,6 +75,14 @@
                 }
             ?>
 
+            addButtonAndCheckboxListeners();
+
+            <?php if ($this->is_being_edited): ?> 
+                checkPositiveSubjects();
+            <?php endif; ?>
+        });
+
+        function addButtonAndCheckboxListeners() {
             $("#submit-selection-btn").click(function() {
                 if ($('input[type="checkbox"]:checked').length === 0) {
                     notifyOfErrorInForm("At least one category must be selected")
@@ -96,7 +94,37 @@
 
                 $("#subject-form").submit();
             });
-        });
+
+            $(".subject-checkbox").on('click', function(e) {
+                $(".none-checkbox").prop('checked', false);
+            });
+
+            $(".none-checkbox").on('click', function(e) {
+                $(".subject-checkbox").each(function(index, checkbox) {
+                    $(this).prop('checked', false);
+                });
+            });
+        }
+
+        function checkPositiveSubjects() {
+            var hasNoPositiveSubjects = true;
+
+            <?php foreach ((array)$this->newest_n_subjects as $subject): ?>
+                <?php if ($subject['is_positive']): ?>
+                    hasNoPositiveSubjects = false;
+
+                    $(".subject-checkbox").each(function() {
+                        if ($(this).val() === String(<?php echo $subject['subject_id']; ?>)) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                <?php endif; ?>
+            <?php endforeach; ?>
+
+            if (hasNoPositiveSubjects) {
+                $(".none-checkbox").prop('checked', true);
+            }
+        }
     </script>
 
     <style>
