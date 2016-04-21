@@ -12,15 +12,15 @@
 	        	$document_id = $this->document_metadata->id;
 
 	        	if (!empty(getNewestTranscriptionForDocument($document_id))) {
-	        		echo 'numberOfTasksCompleted++';
+	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (!empty(getNewestTagsForDocument($document_id))) {
-	        		echo 'numberOfTasksCompleted++';
+	        	if (isDocumentTagged($document_id)) {
+	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
 	        	if (!empty(getNewestConnectionsForDocument($document_id))) {
-	        		echo 'numberOfTasksCompleted++';
+	        		echo 'numberOfTasksCompleted++;';
 	        	}
 	        ?>
 
@@ -134,7 +134,7 @@
 	     	var documentSpecificPartOfLocation = window.location.href.split('/').pop();
 
 	     	$("#tag-progress-section").prop('title', 'You must finish transcribing before you can begin tagging');
-		    	$("#connect-progress-section").prop('title', 'You must finish transcribing and tagging before you can begin connecting');
+		    $("#connect-progress-section").prop('title', 'You must finish transcribing and tagging before you can begin connecting');
 
 	     	if (numberOfTasksCompleted > 0) {
 	     		$("#transcribe-progress-glyph-span").removeClass("glyphicon-unchecked");

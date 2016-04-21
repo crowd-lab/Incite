@@ -3,7 +3,7 @@
 		$currentURL = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 		if (strpos($currentURL, "/tag/") !== false) {
-		    $currentTask = $this->tag;
+		    $currentTask = $this->document_metadata;
 		} else if (strpos($currentURL, "/connect/") !== false) {
 		    $currentTask = $this->connection;
 		} else {

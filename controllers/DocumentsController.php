@@ -187,9 +187,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function tagAction() {
+        //saving a tag to the database
         if ($this->getRequest()->isPost()) {
-
-            //save a tag to database
             if ($this->_hasParam('id')) {
                 $entities = json_decode($_POST["entities"], true);
                 removeAllTagsFromDocument($this->_getParam('id'));
@@ -220,22 +219,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         $tag_id_counter = 0;
         if ($this->_hasParam('id')) {
-            //$this->view->isTagged = isDocumentTagged($this->_getParam('id'));
             $record = $this->_helper->db->find($this->_getParam('id'));
 
             if ($record != null) {
                 if ($record->getFile() == null) {
-                    //no image to transcribe
                     echo 'no image';
                 }
-                $transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
+                $transcriptionIDs = getApprovedTranscriptionIDs($this->_getParam('id'));
                 $this->view->transcription = "No transcription";
-                if ($transcription != null) {
-                    $this->view->transcription_id = $transcription[count($transcription)-1];
+                if ($transcriptionIDs != null) {
+                    $this->view->transcription_id = $transcriptionIDs[count($transcriptionIDs)-1];
                     $this->view->transcription = getTranscriptionText($this->view->transcription_id);
                 } else {
-                    //Redirect to transcribe task if there is no transcription available
-                    //$this->redirect('incite/documents/transcribe/' . $this->_getParam('id'));
                     $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe this document first. Or if you want to find another document to tag, please click <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
 
                     if (isset($this->view->query_str) && $this->view->query_str !== "")
@@ -244,47 +239,20 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id'));
                 }
                 $this->_helper->viewRenderer('tagid');
-                $this->view->tag = $record;
+                $this->view->document_metadata = $record;
+                $this->view->is_being_edited = isDocumentTagged($this->_getParam('id'));
                 $this->view->image_url = get_image_url_for_item($record);
 
                 //Check entities:
                 //  1) is tagged already?  Yes: skip the task; No: do the following
                 //  2) (to be implemented) pull similar entities in the database based on searching in transcription
                 //  3) NER to get entities
-                //Initialize attributes for entities
-                //$categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
                 $categories = getAllCategories();
                 $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
                 if (hasTaggedTranscription($this->_getParam('id'))) {
                     $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                     //count($transcriptions) must > 0 since it has tagged transcription
                     $this->view->transcription = migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
-                    //$this->view->allTags = getAllTagInformation($this->_getParam('id'));
-                    /*
-                    $allTags = getAllTagInformation($this->_getParam('id'));
-                    $entities = array();
-                    $entity_names = array();
-                    $entity_category = array();
-                    $colored_transcription = $this->view->transcription;
-                    foreach ((array) $allTags as $tag) {
-                        $subs = array();
-                        foreach ((array) $tag['subcategories'] as $sub) {
-                            $subs[] = str_replace(' ', '', $sub);
-                        }
-                        $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
-                        $entity_names[] = $tag['tag_text'];
-                        $entity_category[$tag['tag_text']] = $tag['category_name'];
-                    }
-                    usort($entity_names, 'sort_strlen');
-                    foreach ((array) $entity_names as $name) {
-                        $colored_transcription = str_replace($name, '<' . strtoupper($entity_category[$name]) . '>' . $name . '</' . strtoupper($entity_category[$name]) . '>', $colored_transcription);
-                    }
-                    foreach ($categories as $category) {
-                        $colored_transcription = colorTextBetweenTags($colored_transcription, strtoupper($category['name']), $category_colors[$category]);
-                    }
-                    $this->view->entities = $entities;
-                    $this->view->transcription = $colored_transcription;
-                    //*/
                 } else {
                     //NER: start
                     $ner_entity_table = array();
@@ -456,7 +424,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     //no image to transcribe
                     echo 'no image';
                 }
-                $transcription = getIsAnyTranscriptionApproved($this->_getParam('id'));
+                $transcription = getApprovedTranscriptionIDs($this->_getParam('id'));
                 $this->view->transcription = "No transcription";
                 if ($transcription != null) {
                     $this->view->transcription = getTranscriptionText($transcription[0]);
@@ -476,30 +444,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 if (hasTaggedTranscription($this->_getParam('id'))) {
                     $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                     $this->view->transcription =  migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
-/*
-                    $allTags = getAllTagInformation($this->_getParam('id'));
-                    $entities = array();
-                    $entity_names = array();
-                    $entity_category = array();
-                    $colored_transcription = $this->view->transcription;
-                    $tag_ids = array();
-                    foreach ((array) $allTags as $tag) {
-                        $subs = array();
-                        $tag_ids[] = $tag['tag_id'];
-                        foreach ((array) $tag['subcategories'] as $sub) {
-                            $subs[] = str_replace(' ', '', $sub);
-                        }
-                        $entities[] = array('entity' => $tag['tag_text'], 'category' => $tag['category_name'], 'subcategories' => $subs, 'details' => $tag['description']);
-                        $entity_names[] = $tag['tag_text'];
-                        $entity_category[$tag['tag_text']] = $tag['category_name'];
-                    }
-                    /* //replaced by user selection
-                    usort($entity_names, 'sort_strlen');
-                    foreach ((array) $entity_names as $name) {
-                        $colored_transcription = str_replace($name, '<' . strtoupper($entity_category[$name]) . '>' . $name . '</' . strtoupper($entity_category[$name]) . '>', $colored_transcription);
-                    }
-                    //*/
-
                     $related_documents = array_slice(findRelatedDocumentsViaAtLeastNCommonTags($this->_getParam('id')), 0, MAXIMUM_RELATED_DOCUMENTS_FOR_CONNECT) ;
                     if (count($related_documents) == 0) {
                         $is_connectable_by_tags = false;
@@ -507,16 +451,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
                         $this->view->image_url = get_image_url_for_item($record);
-                        //for this part, we can random the destination of the tasks!
-                        /*
-                        $_SESSION['incite']['redirect'] = array(
-                                'status' => 'error_noDocToConnect', 
-                                'message' => 'Unfortunately, we could not find related documents for this document at this moment. In the meanwhile, you can try connecting other documents or help transcribe/tag other documents so that we can find related documents! Now, we are searching to see if we can find documents that need connections. You will be redirected to the results', 
-                                'url' => INCITE_PATH.'documents/connect/',
-                                'time' => '10');
-
-                        $this->redirect(REDIRECTOR_URL);
-                        //*/
                     }
 
                     //Get subject candidates
@@ -530,17 +464,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->view->subjects = getAllSubjectConcepts();
                         $this->view->connection = $record;
                         $this->view->image_url = get_image_url_for_item($record);
-                        /*
-                        $_SESSION['incite']['redirect'] = array(
-                                'status' => 'error_noSubjectCandidates', 
-                                'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results', 
-                                'url' => INCITE_PATH.'documents/connect/',
-                                'time' => '10');
-
-                        $this->redirect(REDIRECTOR_URL);
-                        //*/
-                        //echo 'no connection found!';
-                        //die();
                     } else {
                         for ($i = 0; $i < count($subject_candidates); $i++) {
                             if (!in_array($subject_candidates[$i]['subject'], $self_subjects)) {
@@ -570,7 +493,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         }
                         $this->view->entities = $actual_entities;
                     }
-                    //$this->view->transcription = $colored_transcription;
                 } else {  //if (isDocumentTagged($this->_getParam('id')))
                     if (isset($this->view->query_str) && $this->view->query_str !== "") {
                         $_SESSION['incite']['message'] = 'Unfortunately, the document has not been tagged yet. Please help tag the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
@@ -660,7 +582,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     public function discussAction() {
         //testing controller
-    }//discussAction()
+    }
+
     public function redirectAction() {
         if (isset($_SESSION['incite']['redirect'])) {
             $this->view->redirect = $_SESSION['incite']['redirect'];
@@ -694,7 +617,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             //find the transcription for the document
-            $transcription = getIsAnyTranscriptionApproved($document_id);
+            $transcription = getApprovedTranscriptionIDs($document_id);
             $this->view->hasTranscription = false;
 
             if ($transcription != null) {
@@ -744,6 +667,4 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         }
     }
-
-    
 }

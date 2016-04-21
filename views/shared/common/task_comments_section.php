@@ -5,7 +5,7 @@
         if (strpos($currentURL, "/transcribe/") !== false) {
             $currentTaskID = $this->document_metadata->id;
         } else if (strpos($currentURL, "/tag/") !== false) {
-            $currentTaskID = $this->tag->id;
+            $currentTaskID = $this->document_metadata->id;
         } else if (strpos($currentURL, "/connect/") !== false) {
             $currentTaskID = $this->connection->id;
         } else if (strpos($currentURL, "/view/") !== false) {

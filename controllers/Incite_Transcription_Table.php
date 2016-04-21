@@ -74,7 +74,7 @@ function getSummaryText($transcriptionID) {
  * @param int documentID
  * @return array of results
  */
-function getIsAnyTranscriptionApproved($documentID) {
+function getApprovedTranscriptionIDs($documentID) {
     $db = DB_Connect::connectDB();
     $result = Array();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_transcriptions WHERE document_id = ? AND is_approved = 1");
