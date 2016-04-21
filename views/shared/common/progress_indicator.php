@@ -15,7 +15,7 @@
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (isDocumentTagged($document_id)) {
+	        	if (hasTaggedTranscription($document_id)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 

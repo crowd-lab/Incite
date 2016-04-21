@@ -247,28 +247,6 @@ function hasTaggedTranscription($itemID) {
     }
 }
 /**
- * Returns true if a document is tagged, false otherwise
- * @param int $itemID
- * @return boolean
- */
-function isDocumentTagged($itemID) {
-    $count = 0;
-    $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents INNER JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE item_id = ?");
-    $stmt->bind_param("i", $itemID);
-    $stmt->bind_result($count);
-    $stmt->execute();
-    $stmt->fetch();
-    $stmt->close();
-    $db->close();
-    if ($count > 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/**
  * Returns true if a tag exists
  * @param string $tag
  * @return boolean

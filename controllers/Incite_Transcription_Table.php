@@ -221,21 +221,21 @@ function getTranscriptionIDsForDocument($documentID)
     return $arr;
 }
 /**
- * Get the latest transcription, summary and tone for a specific document (approved or not)
+ * Get the latest transcription, summary, tone and id for a specific document (approved or not)
  *
  * @param int $documentID
  * @return array with the info request, or empty if no transcriptions for document
  */
 function getNewestTranscriptionForDocument($documentID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT transcribed_text, summarized_text, tone FROM omeka_incite_transcriptions WHERE document_id = ? ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt = $db->prepare("SELECT transcribed_text, summarized_text, tone, id FROM omeka_incite_transcriptions WHERE document_id = ? ORDER BY timestamp_creation DESC LIMIT 1");
     $stmt->bind_param("i", $documentID);
-    $stmt->bind_result($transcription, $summary, $tone);
+    $stmt->bind_result($transcription, $summary, $tone, $transcriptionID);
     $stmt->execute();
     $newest_transcription = array();
     while ($stmt->fetch())
     {
-        $newest_transcription = array('transcription' => $transcription, 'summary' => $summary, 'tone' => $tone);
+        $newest_transcription = array('transcription' => $transcription, 'summary' => $summary, 'tone' => $tone, 'id' => $transcriptionID);
     }
     $stmt->close();
     $db->close();

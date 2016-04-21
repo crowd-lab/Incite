@@ -76,24 +76,58 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
     }
 
+    public function createSearchResultPages($document_ids, $task_name) {
+        if (count($document_ids) <= 0) {
+            if (isSearchQuerySpecifiedViaGet()) {
+                $_SESSION['incite']['message'] = 'Unfortunately, we found no documents related to your search criteria. Change your search criteria and try again.';
+            } else {
+                $_SESSION['incite']['message'] = 'Unfortunately, there are no documents for your selected task right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe">transcribe</a>, <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
+            }
+
+            return;
+        }
+
+        if (isset($_GET['page'])) {
+            $current_page = $_GET['page'];
+        }
+        $current_page = 1;
+        $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
+        $records_counter = 0;
+        $records = array();
+        $total_pages = ceil(count($document_ids) / $max_records_to_show);
+
+        if (count($document_ids) > 0) {
+            for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
+                if ($records_counter++ >= $max_records_to_show)
+                    break;
+                $records[] = $this->_helper->db->find($document_ids[$i]);
+            }
+        }
+
+        $this->view->total_pages = $total_pages;
+        $this->view->current_page = $current_page;
+        $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+
+        if ($records != null && count($records) > 0) {
+            $this->view->assign(array($task_name => $records));
+        } 
+    }
+
     public function indexAction() {
         //Since we don't have document lists, redirect to the transcribe task page.
         $this->redirect('incite/documents/transcribe');
     }
 
     public function showAction() {
-
         $this->_helper->db->setDefaultModelName('Item');
+
         if ($this->_hasParam('id')) {
             $record = $this->_helper->db->find($this->_getParam('id'));
             if ($record != null) {
                 $this->view->assign(array('Item' => $record));
             } else {
-                //no such item
                 $this->_forward('index');
             }
-        } else {
-            //default view without id
         }
     }
 
@@ -150,10 +184,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function populateTranscribeSearchResults() {
-        $current_page = 1;
-        if (isset($_GET['page']))
-            $current_page = $_GET['page'];
-
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
             $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
@@ -163,35 +193,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->query_str = "";
         }
 
-        if (count($document_ids) <= 0 ) {
-            if (isSearchQuerySpecifiedViaGet()) {
-                $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed based on your search criteria. Change your search criteria and try again.';
-            } else {
-                $_SESSION['incite']['message'] = 'Unfortunately, there are currently no documents that can be transcribed. Please come back later or try to find a document to <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
-            }
-
-            return;
-        }
-
-        $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
-        $total_pages = ceil(count($document_ids) / $max_records_to_show);
-        $records_counter = 0;
-        $records = array();
-
-        if (count($document_ids) > 0) {
-            for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
-                if ($records_counter++ >= $max_records_to_show)
-                    break;
-                $records[] = $this->_helper->db->find($document_ids[$i]);
-            }
-        }
-        $this->view->total_pages = $total_pages;
-        $this->view->current_page = $current_page;
-        $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
-        if ($records != null && count($records) > 0) {
-            $this->view->assign(array('Transcriptions' => $records));
-        }
+        $this->createSearchResultPages($document_ids, 'Transcriptions');
     }
 
     public function tagAction() {
@@ -239,11 +241,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if ($this->view->document_metadata->getFile() == null) {
                 echo 'no image';
             }
-            $transcriptionIDs = getApprovedTranscriptionIDs($this->_getParam('id'));
-            $this->view->transcription = "No transcription";
-            if ($transcriptionIDs != null) {
-                $this->view->transcription_id = $transcriptionIDs[count($transcriptionIDs)-1];
-                $this->view->transcription = getTranscriptionText($this->view->transcription_id);
+
+            //Get the transcription for the document
+            $newestTranscription = getNewestTranscriptionForDocument($this->_getParam('id'));
+            if (!empty($newestTranscription)) {
+                $this->view->transcription_id = $newestTranscription['id'];
+                $this->view->transcription = $newestTranscription['transcription'];
             } else {
                 $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe this document first. Or if you want to find another document to tag, please click <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
 
@@ -252,25 +255,22 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 else
                     $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id'));
             }
-            $this->_helper->viewRenderer('tagid');
-            $this->view->is_being_edited = isDocumentTagged($this->_getParam('id'));
-            $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
 
-            //Check entities:
-            //  1) is tagged already?  Yes: skip the task; No: do the following
-            //  2) (to be implemented) pull similar entities in the database based on searching in transcription
-            //  3) NER to get entities
+            $this->_helper->viewRenderer('tagid');
+            $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
             $categories = getAllCategories();
             $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+            
+            //Do we already have tags or do we need to generate them via NER
             if (hasTaggedTranscription($this->_getParam('id'))) {
+                $this->view->is_being_edited = true;
                 $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
-                //count($transcriptions) must > 0 since it has tagged transcription
                 $this->view->transcription = migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
             } else {
-                //NER: start
+                $this->view->is_being_edited = false;
+
                 $ner_entity_table = array();
 
-                //running NER
                 $oldwd = getcwd();
                 chdir('./plugins/Incite/stanford-ner-2015-04-20/');
 
@@ -294,7 +294,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 foreach ($categories as $category) {
                     $entities = getTextBetweenTags($parsed_text, strtoupper($category['name']));
                     $repitition = substr_count($parsed_text, '<'.strtoupper($category['name']).'>');
-//function classifyTextWithinTagWithId($string, $tagname, $color, $id) {
+
                     for ($i = 0; $i < $repitition; $i++) {
                         $transformed_transcription = classifyTextWithinTagWithId($transformed_transcription, strtoupper($category['name']), $tag_id_counter++);
                     }
@@ -309,11 +309,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
 
                 chdir($oldwd);
-                //NER:end
 
                 $this->view->entities = $ner_entity_table;
                 $this->view->transcription = $transformed_transcription;
-            } //end of isDocumentTagged
+            }
+
             $this->view->category_colors = $category_colors;
             $this->view->tag_id_counter = $tag_id_counter;
         } else {
@@ -328,10 +328,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function populateTagSearchResults() {
-        $current_page = 1;
-        if (isset($_GET['page']))
-            $current_page = $_GET['page'];
-
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
             $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
@@ -341,33 +337,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->query_str = "";
         }
 
-        if (count($document_ids) <= 0) {
-            if (isSearchQuerySpecifiedViaGet()) {
-                $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged based on your search criteria right now. Change your search criteria and try again.';
-            } else {
-                $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe?">transcribe</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
-            }
-        }
-
-        $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
-        $records_counter = 0;
-        $records = array();
-        $total_pages = ceil(count($document_ids) / $max_records_to_show);
-
-        $this->view->total_pages = $total_pages;
-        $this->view->current_page = $current_page;
-
-        if (count($document_ids) > 0) {
-            for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
-                if ($records_counter++ >= $max_records_to_show)
-                    break;
-                $records[] = $this->_helper->db->find($document_ids[$i]);
-            }
-        }
-
-        if ($records != null && count($records) > 0) {
-            $this->view->assign(array('Tags' => $records));
-        }
+        $this->createSearchResultPages($document_ids, 'Tags');
     }
 
     public function connectAction() {
@@ -427,8 +397,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
             $this->view->subjects = getAllSubjectConcepts();
 
-            //Catches untranscribed documents
-            if (getApprovedTranscriptionIDs($this->_getParam('id')) == null) {
+            //Filter out untranscribed documents
+            if (empty(getNewestTranscriptionForDocument($this->_getParam('id')))) {
                 if (isset($this->view->query_str) && $this->view->query_str !== "") {
                     $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
                     $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id').'?'.$this->view->query_str);
@@ -493,37 +463,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         }
 
-        if (count($document_ids) <= 0) {
-            if (isSearchQuerySpecifiedViaGet()) {
-                $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected based on your search criteria. Change your search criteria and try again.';
-            } else {
-                $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be connected right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe">transcribe</a> or <a href="'.getFullInciteUrl().'/documents/tag">tag</a>!';
-            }
-        }
-
-
-        $current_page = 1;
-        if (isset($_GET['page']))
-            $current_page = $_GET['page'];
-        $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
-        $records_counter = 0;
-        $total_pages = ceil(count($document_ids) / $max_records_to_show);
-        $records = array();
-        if (count($document_ids) > 0) {
-            for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
-                if ($records_counter++ >= $max_records_to_show)
-                    break;
-                $records[] = $this->_helper->db->find($document_ids[$i]);
-            }
-        }
-
-        $this->view->total_pages = $total_pages;
-        $this->view->current_page = $current_page;
-        $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
-        if ($records != null && count($records) > 0) {
-            $this->view->assign(array('Connections' => $records));
-        } 
+        $this->createSearchResultPages($document_ids, 'Connections');
     }
 
     public function discussAction() {
@@ -562,13 +502,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             //find the transcription for the document
-            $transcription = getApprovedTranscriptionIDs($document_id);
+            $transcription = getNewestTranscriptionForDocument($document_id);
             $this->view->hasTranscription = false;
 
-            if ($transcription != null) {
+            if (!empty($transcription)) {
                 $this->view->hasTranscription = true;
-                $this->view->transcription_id = $transcription[count($transcription)-1];
-                $this->view->transcription = getTranscriptionText($this->view->transcription_id);
+                $this->view->transcription_id = $transcription['id'];
+                $this->view->transcription = $transcription['transcription'];
             }
 
             //find the tagged transcription of the document
