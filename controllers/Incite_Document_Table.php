@@ -96,4 +96,17 @@ function getConnectableDocuments() {
     return $connectable_documents;
 
 }
+/**
+ * Takes a list of document ids and returns a new array with info about their task completion
+ */
+function getTaskCompletionInfoFor($documentID) {
+    $isTranscribed = !empty(getNewestTranscriptionForDocument($documentID));
+    $isTagged = hasTaggedTranscription($documentID);
+    $isConnected = !empty(getNewestSubjectsForDocument($documentID));
+
+    $documents = array('isTranscribed' => ($isTranscribed ? true : false), 'isTagged' => ($isTagged ? true : false), 'isConnected' => ($isConnected ? true : false));
+    debug_to_console($documents['isTranscribed']);
+
+    return $documents;
+}
 ?>

@@ -489,67 +489,89 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
 
         if ($this->_hasParam('id')) {
-            $this->_helper->viewRenderer('viewid');
+            $this->populateDataForViewTask();
+        } else {
+            $this->populateViewSearchResults();
+        }
+    }
 
-            //make sure the document is valid
-            $document_id = $this->_getParam('id');
-            $this->view->documentId = $document_id;
-            $document = $this->_helper->db->find($document_id);
+    public function populateDataForViewTask() {
+        $this->_helper->viewRenderer('viewid');
 
-            if ($document != null) {
-                $this->view->document = $document;
-                $this->view->image_url = get_image_url_for_item($document);
-            }
+        //make sure the document is valid
+        $document_id = $this->_getParam('id');
+        $this->view->documentId = $document_id;
+        $document = $this->_helper->db->find($document_id);
 
-            //find the transcription for the document
-            $transcription = getNewestTranscriptionForDocument($document_id);
-            $this->view->hasTranscription = false;
+        if ($document != null) {
+            $this->view->document = $document;
+            $this->view->image_url = get_image_url_for_item($document);
+        }
 
-            if (!empty($transcription)) {
-                $this->view->hasTranscription = true;
-                $this->view->transcription_id = $transcription['id'];
-                $this->view->transcription = $transcription['transcription'];
-            }
+        //find the transcription for the document
+        $transcription = getNewestTranscriptionForDocument($document_id);
+        $this->view->hasTranscription = false;
 
-            //find the tagged transcription of the document
-            $this->view->hasTaggedTranscription = false;
+        if (!empty($transcription)) {
+            $this->view->hasTranscription = true;
+            $this->view->transcription_id = $transcription['id'];
+            $this->view->transcription = $transcription['transcription'];
+        }
 
-            if (hasTaggedTranscription($document_id)) {
-                $taggedTranscriptions = getAllTaggedTranscriptions($document_id);
-                $this->view->taggedTranscription = $taggedTranscriptions[count($taggedTranscriptions)-1];
-                $this->view->hasTaggedTranscription = true;
-            }
+        //find the tagged transcription of the document
+        $this->view->hasTaggedTranscription = false;
 
-            //find if a document has been connected
-            $this->view->hasBeenConnected = false;
-            $subjectsForDocument = getAllSubjectsOnId($document_id);
+        if (hasTaggedTranscription($document_id)) {
+            $taggedTranscriptions = getAllTaggedTranscriptions($document_id);
+            $this->view->taggedTranscription = $taggedTranscriptions[count($taggedTranscriptions)-1];
+            $this->view->hasTaggedTranscription = true;
+        }
 
-            $pos_subs = array();
-            $neg_subs = array();
-            $distinct_subNames = array();
-            foreach ((array) $subjectsForDocument as $subject) {
-                if (!isset($distinct_subNames[$subject['subject_name']]))
-                    $distinct_subNames[$subject['subject_name']] = $subject['subject_name'];
+        //find if a document has been connected
+        $this->view->hasBeenConnected = false;
+        $subjectsForDocument = getAllSubjectsOnId($document_id);
 
-                if ($subject['is_positive']) {
-                    if (!isset($pos_subs[$subject['subject_name']]))
-                        $pos_subs[$subject['subject_name']] = array();
+        $pos_subs = array();
+        $neg_subs = array();
+        $distinct_subNames = array();
+        foreach ((array) $subjectsForDocument as $subject) {
+            if (!isset($distinct_subNames[$subject['subject_name']]))
+                $distinct_subNames[$subject['subject_name']] = $subject['subject_name'];
 
-                    array_push($pos_subs[$subject['subject_name']], $subject['user_id']);
-                } else {
-                    if (!isset($neg_subs[$subject['subject_name']]))
-                        $neg_subs[$subject['subject_name']] = array();
+            if ($subject['is_positive']) {
+                if (!isset($pos_subs[$subject['subject_name']]))
+                    $pos_subs[$subject['subject_name']] = array();
 
-                    array_push($neg_subs[$subject['subject_name']], $subject['user_id']);
-                }
-            }
+                array_push($pos_subs[$subject['subject_name']], $subject['user_id']);
+            } else {
+                if (!isset($neg_subs[$subject['subject_name']]))
+                    $neg_subs[$subject['subject_name']] = array();
 
-            if (!empty($subjectsForDocument)) {
-                $this->view->hasBeenConnected = true;
-                $this->view->subjectNames = $distinct_subNames;
-                $this->view->positive_subjects = $pos_subs;
-                $this->view->negative_subjects = $neg_subs;
+                array_push($neg_subs[$subject['subject_name']], $subject['user_id']);
             }
         }
+
+        if (!empty($subjectsForDocument)) {
+            $this->view->hasBeenConnected = true;
+            $this->view->subjectNames = $distinct_subNames;
+            $this->view->positive_subjects = $pos_subs;
+            $this->view->negative_subjects = $neg_subs;
+        }
+    }
+
+    public function populateViewSearchResults() {
+        $all_doc_ids = getTranscribableDocuments();
+        $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+
+        if (isSearchQuerySpecifiedViaGet()) {
+            $searched_item_ids = getSearchResultsViaGetQuery();
+            $document_ids = array_slice(array_intersect(array_values($all_doc_ids), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+        } else {
+            $document_ids = array_slice(array_values($all_doc_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $this->view->query_str = "";
+        }
+
+        $this->createSearchResultPages($document_ids, 'Documents');
     }
 }
