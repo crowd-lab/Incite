@@ -68,6 +68,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         setup_session();
     }
 
+    public function getWorkingGroupID() {
+        if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+            return $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+        } else {
+            return 0;
+        }
+    }
+
     public function indexAction() {
         //Since we don't have document lists, redirect to the transcribe task page.
         $this->redirect('incite/documents/transcribe');
@@ -92,97 +100,97 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function transcribeAction() {
         $this->_helper->db->setDefaultModelName('Item');
 
-        //save transcription and summary to database
-        if ($this->getRequest()->isPost()) {
-            if ($this->_hasParam('id')) {
+        if ($this->_hasParam('id')) {
+            if ($this->getRequest()->isPost()) {
+                $this->saveTranscription();
+            } 
 
-                $workingGroupId = 0;
-                if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
-                    $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
-                }
+            $this->populateDataForTranscribeTask();
+        } else { 
+            $this->populateTranscribeSearchResults();
+        }
+    }
 
-                createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
-                $_SESSION['Incite']['previous_task'] = 'transcribe';
-                
-                //Redirect to tagging after they finish transcribing
-                if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
-                    $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe?'.$_POST['query_str'].'">here</a>.';
-                    $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
-                } else {
-                    $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe">here</a>.';
-                    $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
-                }
+    public function saveTranscription() {
+        $workingGroupId = $this->getWorkingGroupID();
+
+        createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
+        $_SESSION['Incite']['previous_task'] = 'transcribe';
+        
+        if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
+            $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe?'.$_POST['query_str'].'">here</a>.';
+            $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
+        } else {
+            $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe">here</a>.';
+            $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
+        }
+    }
+
+    public function populateDataForTranscribeTask() {
+        $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
+
+        if ($this->view->document_metadata != null) {
+            if ($this->view->document_metadata->getFile() == null) {
+                $this->redirect('incite/documents/transcribe');
+            }
+
+            $this->_helper->viewRenderer('transcribeid');
+            $this->view->latest_transcription = getNewestTranscriptionForDocument($this->_getParam('id'));
+            $this->view->is_being_edited = !empty($this->view->latest_transcription);
+            $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
+            $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+        } else {
+            $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select another document to transcribe from the list below.';
+
+            if (isset($this->view->query_str) && $this->view->query_str !== "")
+                $this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
+            else
+                $this->redirect('/incite/documents/transcribe');
+        }
+    }
+
+    public function populateTranscribeSearchResults() {
+        $current_page = 1;
+        if (isset($_GET['page']))
+            $current_page = $_GET['page'];
+
+        if (isSearchQuerySpecifiedViaGet()) {
+            $searched_item_ids = getSearchResultsViaGetQuery();
+            $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+        } else {
+            $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
+            $this->view->query_str = "";
+        }
+
+        if (count($document_ids) <= 0 ) {
+            if (isSearchQuerySpecifiedViaGet()) {
+                $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed based on your search criteria. Change your search criteria and try again.';
+            } else {
+                $_SESSION['incite']['message'] = 'Unfortunately, there are currently no documents that can be transcribed. Please come back later or try to find a document to <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
+            }
+
+            return;
+        }
+
+        $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
+        $total_pages = ceil(count($document_ids) / $max_records_to_show);
+        $records_counter = 0;
+        $records = array();
+
+        if (count($document_ids) > 0) {
+            for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
+                if ($records_counter++ >= $max_records_to_show)
+                    break;
+                $records[] = $this->_helper->db->find($document_ids[$i]);
             }
         }
-        
-        if ($this->_hasParam('id')) {
-            $record = $this->_helper->db->find($this->_getParam('id'));
-            if ($record != null) {
-                if ($record->getFile() == null) {
-                    //no image to transcribe so redirect to documents that need to be transcribed
-                    $this->redirect('incite/documents/transcribe');
-                }
-                $this->_helper->viewRenderer('transcribeid');
-                $this->view->document_metadata = $record;
-                $this->view->latest_transcription = getNewestTranscriptionForDocument($this->_getParam('id'));
-                $this->view->is_being_edited = !empty($this->view->latest_transcription);
-                $this->view->image_url = get_image_url_for_item($record);
-                $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-            } else {
-                //to such document so redirect to documents that need to be transcribed
-                $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select another document to transcribe from the list below.';
+        $this->view->total_pages = $total_pages;
+        $this->view->current_page = $current_page;
+        $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
-                if (isset($this->view->query_str) && $this->view->query_str !== "")
-                    $this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
-                else
-                    $this->redirect('/incite/documents/transcribe');
-            }
-        } else { 
-            //default: fetch documents that need to be transcribed
-            $current_page = 1;
-            if (isset($_GET['page']))
-                $current_page = $_GET['page'];
-
-            if (isSearchQuerySpecifiedViaGet()) {
-                $searched_item_ids = getSearchResultsViaGetQuery();
-                $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
-                $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-            } else {
-                $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
-                $this->view->query_str = "";
-            }
-
-            if (count($document_ids) <= 0 ) {
-                if (isSearchQuerySpecifiedViaGet()) {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are no documents that can be transcribed based on your search criteria. Change your search criteria and try again.';
-                    //$this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
-                } else {
-                    $_SESSION['incite']['message'] = 'Unfortunately, there are currently no documents that can be transcribed. Please come back later or try to find a document to <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
-                }
-            }
-
-            $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
-            $total_pages = ceil(count($document_ids) / $max_records_to_show);
-            $records_counter = 0;
-            $records = array();
-
-            if (count($document_ids) > 0) {
-                for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
-                    if ($records_counter++ >= $max_records_to_show)
-                        break;
-                    $records[] = $this->_helper->db->find($document_ids[$i]);
-                }
-            }
-            $this->view->total_pages = $total_pages;
-            $this->view->current_page = $current_page;
-            $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
-            //Assign all documents that need to be transcribed to view!
-            if ($records != null && count($records) > 0) {
-                $this->view->assign(array('Transcriptions' => $records));
-            } else {
-                //no need to transcribe
-            }
+        if ($records != null && count($records) > 0) {
+            $this->view->assign(array('Transcriptions' => $records));
         }
     }
 
@@ -457,7 +465,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     
                     $this->view->newest_n_subjects = getNewestSubjectsForDocument($this->_getParam('id'));
                     $this->view->is_being_edited = !empty($this->view->newest_n_subjects);
-                    //can't connect by tags 
+
+                    //can't connect by tags because it's already been connected
                     if ($this->view->is_being_edited) {
                         $is_connectable_by_tags = false;
                         $this->_helper->viewRenderer('connectbymultiselection');
