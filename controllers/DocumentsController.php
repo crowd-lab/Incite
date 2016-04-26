@@ -79,7 +79,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function createSearchResultPages($document_ids, $task_name) {
         if (count($document_ids) <= 0) {
             if (isSearchQuerySpecifiedViaGet()) {
-                $_SESSION['incite']['message'] = 'Unfortunately, we found no documents related to your search criteria. Change your search criteria and try again.';
+                $_SESSION['incite']['message'] = 'Unfortunately, we found no documents related to your search criteria. Please change your search criteria and try again.';
             } else {
                 $_SESSION['incite']['message'] = 'Unfortunately, there are no documents for your selected task right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe">transcribe</a>, <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
             }
@@ -87,10 +87,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             return;
         }
 
+        $current_page = 1;
         if (isset($_GET['page'])) {
             $current_page = $_GET['page'];
         }
-        $current_page = 1;
+
         $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
         $records_counter = 0;
         $records = array();

@@ -116,6 +116,21 @@ include(dirname(__FILE__).'/../common/header.php');
     .no-map-marker {
         background-color: #EEEEEE;
     }
+
+    .icon-container {
+        position: relative;
+        top: -20px;
+        margin-left: 45px;
+    }
+
+    .task-icon {
+        margin-right: 7px;
+        cursor: pointer;
+    }
+
+    .light-grey-color {
+        color: lightgrey;
+    }
 </style>
 
 <script type="text/javascript">
@@ -145,6 +160,36 @@ include(dirname(__FILE__).'/../common/header.php');
         }
     } ?> }
 
+    function addTaskCompletionIconsToResultsRow(isTranscribed, isTagged, isConnected, documentId) {
+        var row = $('#list_id' + documentId);
+        var transcribedIcon, taggedIcon, connectedIcon, iconContainer;
+
+        iconContainer = $('<div class="icon-container"></div>');
+
+        if (isTranscribed) {
+            transcribedIcon = $('<span title="Document has been transcribed" class="glyphicon glyphicon-pencil task-icon"></span>');
+        } else {
+            transcribedIcon = $('<span title="Document has not yet been transcribed" class="glyphicon glyphicon-pencil task-icon light-grey-color"></span>');
+        }
+
+        if (isTagged) {
+            taggedIcon = $('<span title="Document has been tagged" class="glyphicon glyphicon-tags task-icon"></span>');
+        } else {
+            taggedIcon = $('<span title="Document has not yet been tagged" class="glyphicon glyphicon-tags task-icon light-grey-color"></span>');
+        }
+
+        if (isConnected) {
+            connectedIcon = $('<span title="Document has been connected" class="glyphicon glyphicon-tasks task-icon"></span>');
+        } else {
+            connectedIcon = $('<span title="Document has not yet been connected" class="glyphicon glyphicon-tasks task-icon light-grey-color"></span>');
+        }
+
+        iconContainer.append(transcribedIcon);
+        iconContainer.append(taggedIcon);
+        iconContainer.append(connectedIcon);
+
+        row.append(iconContainer);
+    }
 </script>
 
     <!-- Page Content -->
@@ -158,8 +203,8 @@ include(dirname(__FILE__).'/../common/header.php');
         <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
         <br>
-<?php foreach ((array)$this->Documents as $document): ?>
-        <div id="list_id<?php echo $document->id; ?>" style="margin: 10px;" 
+<?php foreach ((array)$this->Documents as $document): ?>    
+        <div id="list_id<?php echo $document->id; ?>" style="margin: 10px; height: 45px;" 
             data-toggle="popover" data-trigger="hover" data-html="true"
             data-title="<?php echo "<strong>" . metadata($document, array('Dublin Core', 'Title')) . "</strong>";?>"
             data-placement="left" data-id="<?php echo $document->id; ?>" 
@@ -175,23 +220,13 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div style="height: 40px; margin-left: 45px;">
                     <p style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></p>
                 </div>
-                <?php
-                    $taskInfo = getTaskCompletionInfoFor($document->id);
-
-                    if ($taskInfo['isTranscribed']) {
-                        echo '<span>Tr</span>';
-                    }
-
-                    if ($taskInfo['isTagged']) {
-                        echo '<span>Tg</span>';
-                    }
-
-                    if ($taskInfo['isConnected']) {
-                        echo '<span>C</span>';
-                    }
-                ?>
             </a>
         </div>
+
+        <?php
+            $taskInfo = getTaskCompletionInfoFor($document->id);
+            echo '<script type="text/javascript">addTaskCompletionIconsToResultsRow(' . json_encode($taskInfo["isTranscribed"]) . ' ,' . json_encode($taskInfo["isTagged"]) . ' ,' . json_encode($taskInfo["isConnected"]) . ' ,' . $document->id . ');</script>';
+        ?>
 <?php endforeach; ?>
         <div id="pagination-bar" class="text-center">
             <nav>

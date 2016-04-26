@@ -105,7 +105,6 @@ function getTaskCompletionInfoFor($documentID) {
     $isConnected = !empty(getNewestSubjectsForDocument($documentID));
 
     $documents = array('isTranscribed' => ($isTranscribed ? true : false), 'isTagged' => ($isTagged ? true : false), 'isConnected' => ($isConnected ? true : false));
-    debug_to_console($documents['isTranscribed']);
 
     return $documents;
 }
