@@ -117,6 +117,25 @@ include(dirname(__FILE__).'/../common/header.php');
     .no-map-marker {
         background-color: #EEEEEE;
     }
+
+    .icon-container {
+        position: relative;
+        top: -20px;
+        margin-left: 45px;
+    }
+
+    .task-icon {
+        margin-right: 7px;
+        cursor: pointer;
+    }
+
+    .light-grey-color {
+        color: lightgrey;
+    }
+
+    .black-color {
+        color: black;
+    }
 </style>
 
 <script type="text/javascript">
@@ -148,6 +167,24 @@ include(dirname(__FILE__).'/../common/header.php');
 ?>
     }
 
+    function addTaskCompletionIconsToResultsRow(documentId) {
+        var row = $('#list_id' + documentId);
+        var iconContainer = $('<div class="icon-container"></div>');
+
+        var transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
+            '<span title="Document has been transcribed - Click to edit" class="glyphicon glyphicon-pencil task-icon black-color"></span></a>');
+
+        var taggedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/tag/' + documentId + '">' +
+            '<span title="Document has been tagged - Click to edit" class="glyphicon glyphicon-tags task-icon black-color"></span></a>');
+
+        var connectedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/connect/' + documentId + '">' +
+            '<span title="Document has not yet been connected - Click to connect it now" class="glyphicon glyphicon-tasks task-icon light-grey-color"></span></a>');
+
+        iconContainer.append(transcribedIcon);
+        iconContainer.append(taggedIcon);
+        iconContainer.append(connectedIcon);
+        row.append(iconContainer);
+    }
 </script>
 
     <!-- Page Content -->
@@ -180,6 +217,10 @@ include(dirname(__FILE__).'/../common/header.php');
                     <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>
                 </div>
             </a>
+
+            <?php
+                echo '<script type="text/javascript">addTaskCompletionIconsToResultsRow(' . $connection->id . ');</script>';
+            ?>
         </div>
 <?php endforeach; ?>
         <div id="pagination-bar" class="text-center">

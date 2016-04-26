@@ -131,6 +131,10 @@ include(dirname(__FILE__).'/../common/header.php');
     .light-grey-color {
         color: lightgrey;
     }
+
+    .black-color {
+        color: black;
+    }
 </style>
 
 <script type="text/javascript">
@@ -162,31 +166,56 @@ include(dirname(__FILE__).'/../common/header.php');
 
     function addTaskCompletionIconsToResultsRow(isTranscribed, isTagged, isConnected, documentId) {
         var row = $('#list_id' + documentId);
-        var transcribedIcon, taggedIcon, connectedIcon, iconContainer;
-
-        iconContainer = $('<div class="icon-container"></div>');
+        var link = $('#list_id' + documentId + ' a');
+        var transcribedIcon = null;
+        var taggedIcon = null;
+        var connectedIcon = null;
+        var iconContainer = $('<div class="icon-container"></div>');
 
         if (isTranscribed) {
-            transcribedIcon = $('<span title="Document has been transcribed" class="glyphicon glyphicon-pencil task-icon"></span>');
+            transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
+                '<span title="Document has been transcribed - Click to edit" class="glyphicon glyphicon-pencil task-icon black-color"></span></a>');
+            
+            if (isTagged) {
+                taggedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/tag/' + documentId + '">' +
+                    '<span title="Document has been tagged - Click to edit" class="glyphicon glyphicon-tags task-icon black-color"></span></a>');
+            
+                if (isConnected) {
+                    connectedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/connect/' + documentId + '">' +
+                        '<span title="Document has been connected - Click to edit" class="glyphicon glyphicon-tasks task-icon black-color"></span></a>');
+                } else {
+                    //link users to start connecting the document
+                    link.attr("href", link.attr("href").replace("/documents/view/", "/documents/connect/"));
+
+                    connectedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/connect/' + documentId + '">' +
+                        '<span title="Document has not yet been connected - Click to connect it" class="glyphicon glyphicon-tasks task-icon light-grey-color"></span></a>');
+                }
+            } else {
+                //link users to start tagging the document
+                link.attr("href", link.attr("href").replace("/documents/view/", "/documents/tag/"));
+
+                taggedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/tag/' + documentId + '">' +
+                    '<span title="Document has not yet been tagged - Click to tag it" class="glyphicon glyphicon-tags task-icon light-grey-color"></span></a>');
+            }
         } else {
-            transcribedIcon = $('<span title="Document has not yet been transcribed" class="glyphicon glyphicon-pencil task-icon light-grey-color"></span>');
+            //link users to start transcribing the document
+            link.attr("href", link.attr("href").replace("/documents/view/", "/documents/transcribe/"));
+
+            transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
+                '<span title="Document has not yet been transcribed - Click to transcribe it" class="glyphicon glyphicon-pencil task-icon light-grey-color"></span></a>');    
         }
 
-        if (isTagged) {
-            taggedIcon = $('<span title="Document has been tagged" class="glyphicon glyphicon-tags task-icon"></span>');
-        } else {
-            taggedIcon = $('<span title="Document has not yet been tagged" class="glyphicon glyphicon-tags task-icon light-grey-color"></span>');
+        if (transcribedIcon !== null) {
+            iconContainer.append(transcribedIcon);
         }
 
-        if (isConnected) {
-            connectedIcon = $('<span title="Document has been connected" class="glyphicon glyphicon-tasks task-icon"></span>');
-        } else {
-            connectedIcon = $('<span title="Document has not yet been connected" class="glyphicon glyphicon-tasks task-icon light-grey-color"></span>');
+        if (taggedIcon !== null) {
+            iconContainer.append(taggedIcon);
         }
 
-        iconContainer.append(transcribedIcon);
-        iconContainer.append(taggedIcon);
-        iconContainer.append(connectedIcon);
+        if (connectedIcon !== null) {
+            iconContainer.append(connectedIcon);
+        }
 
         row.append(iconContainer);
     }

@@ -22,7 +22,7 @@
         function addFinishedTask(type) {
             var unfinishedTask = $('<li><p><span class="glyphicon glyphicon-check" aria-hidden="true"></span>Document has been ' + type + '</p></li>');
 
-            $('#tasks-list').append(unfinishedTask);
+            //$('#tasks-list').append(unfinishedTask);
         }
 
         function addUnfinishedTask(typeWithAnEd, type) {
@@ -32,7 +32,7 @@
 
             finishedTask.find('a').attr("href", link);
 
-            $('#tasks-list').append(finishedTask);
+            //$('#tasks-list').append(finishedTask);
         }
     </script>
 
@@ -58,7 +58,28 @@
         }
 
         #discussion-seperation-line {
-            margin-top: -6px;
+            margin-top: 30px;
+        }
+
+        .vertical-align {
+            position: relative;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+
+        .task-section {
+            width: 100%;
+            height: 33.33%;
+            border: 1px solid black;
+            text-align: center;
+            font-size: 40px;
+        }
+
+        #document-progress-section {
+            height: 350px;
+            background-color: #F8F8F8;
         }
     </style>
 </head>
@@ -90,34 +111,57 @@
                     </span>
                 </p>
 
-                <div id="document-progress-review-section">
-                    <ul id="tasks-list">
-                        <?php
-                            if ($this->hasTranscription) {
-                                echo '<script type="text/javascript">addFinishedTask("transcribed");</script>';
-                            } else {
-                                echo '<script type="text/javascript">addUnfinishedTask("transcribed", "Transcribe"); 
-                                    $("#transcriptionTab").hide();
-                                    $("#taggedTranscriptionTab").hide();
-                                    $("#connectTab").hide();</script>';
-                            }
+                <div class="progress" style="height: 40px;">
+                    <div class="progress-bar progress-bar-success" id="success-indicator-bar" style="width: 0%;">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
 
-                            if ($this->hasTaggedTranscription) {
-                                echo '<script type="text/javascript">addFinishedTask("tagged");</script>';
-                            } else {
-                                echo '<script type="text/javascript">addUnfinishedTask("tagged","Tag");
-                                    $("#taggedTranscriptionTab").hide();
-                                    $("#connectTab").hide();</script>';
-                            }
+                <div id="document-progress-section">
+                    <div class="task-section" id="transcribe-progress-section">
+                        <p class="task-description vertical-align">
+                            Transcribe
+                            <span class="glyphicon glyphicon-unchecked" id="transcribe-progress-glyph-span" aria-hidden="true"></span>
+                        </p>
+                    </div><!--
+                    --><div class="task-section" id="tag-progress-section">
+                        <p class="task-description vertical-align">
+                            Tag
+                            <span class="glyphicon glyphicon-unchecked" id="tag-progress-glyph-span" aria-hidden="true"></span>
+                        </p>
+                    </div><!--
+                    --><div class="task-section" id="connect-progress-section">
+                        <p class="task-description vertical-align">
+                            Connect
+                            <span class="glyphicon glyphicon-unchecked" id="connect-progress-glyph-span" aria-hidden="true"></span>
+                        </p>
+                    </div>
 
-                            if ($this->hasBeenConnected) {
-                                echo '<script type="text/javascript">addFinishedTask("connected");</script>';
-                            } else {
-                                echo '<script type="text/javascript">addUnfinishedTask("connected","Connect");
-                                    $("#connectTab").hide();</script>';
-                            }
-                        ?>
-                    </ul>
+                    <?php
+                        if ($this->hasTranscription) {
+                            echo '<script type="text/javascript">addFinishedTask("transcribed");</script>';
+                        } else {
+                            echo '<script type="text/javascript">addUnfinishedTask("transcribed", "Transcribe"); 
+                                $("#transcriptionTab").hide();
+                                $("#taggedTranscriptionTab").hide();
+                                $("#connectTab").hide();</script>';
+                        }
+
+                        if ($this->hasTaggedTranscription) {
+                            echo '<script type="text/javascript">addFinishedTask("tagged");</script>';
+                        } else {
+                            echo '<script type="text/javascript">addUnfinishedTask("tagged","Tag");
+                                $("#taggedTranscriptionTab").hide();
+                                $("#connectTab").hide();</script>';
+                        }
+
+                        if ($this->hasBeenConnected) {
+                            echo '<script type="text/javascript">addFinishedTask("connected");</script>';
+                        } else {
+                            echo '<script type="text/javascript">addUnfinishedTask("connected","Connect");
+                                $("#connectTab").hide();</script>';
+                        }
+                    ?>
                 </div>
 
                 <hr size=2 id="discussion-seperation-line">

@@ -116,6 +116,21 @@ include(dirname(__FILE__).'/../common/header.php');
     .no-map-marker {
         background-color: #EEEEEE;
     }
+
+    .icon-container {
+        position: relative;
+        top: -20px;
+        margin-left: 45px;
+    }
+
+    .task-icon {
+        margin-right: 7px;
+        cursor: pointer;
+    }
+
+    .light-grey-color {
+        color: lightgrey;
+    }
 </style>
 
 <script type="text/javascript">
@@ -145,6 +160,16 @@ include(dirname(__FILE__).'/../common/header.php');
         }
     } ?> }
 
+    function addTaskCompletionIconsToResultsRow(documentId) {
+        var row = $('#list_id' + documentId);
+        var iconContainer = $('<div class="icon-container"></div>');
+
+        var transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
+            '<span title="Document has not yet been transcribed - Click to transcribe it" class="glyphicon glyphicon-pencil task-icon light-grey-color"></span></a>');
+
+        iconContainer.append(transcribedIcon);
+        row.append(iconContainer);
+    }
 </script>
 
     <!-- Page Content -->
@@ -176,6 +201,10 @@ include(dirname(__FILE__).'/../common/header.php');
                     <p style=""><?php echo metadata($transcription, array('Dublin Core', 'Title')); ?></p>
                 </div>
             </a>
+
+            <?php
+                echo '<script type="text/javascript">addTaskCompletionIconsToResultsRow(' . $transcription->id . ');</script>';
+            ?>
         </div>
 <?php endforeach; ?>
         <div id="pagination-bar" class="text-center">
