@@ -106,7 +106,7 @@
                 $("#transcribe_copy").hide();
                 $("#tagged_transcribe_copy").hide();
                 $("#connect_subjects_copy").show();
-                selectTab($("#connectTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#taggedTranscriptionTab")]);
+                selectTab($("#connectTab"), [$("#documentTab"), $("#transcriptionTab"), $("#taggedTranscriptionTab")]);
             });
 
             $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);

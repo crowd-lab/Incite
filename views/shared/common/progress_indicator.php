@@ -277,5 +277,4 @@
    		-webkit-box-shadow: inset 0 0 15px #5CB85C;
    		box-shadow:         inset 0 0 15px #5CB85C;
 	}
-	
 </style>

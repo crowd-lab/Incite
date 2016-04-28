@@ -11,38 +11,68 @@
         var documentId = "<?php echo $this->documentId; ?>";
 
         $(document).ready(function () {
+            var numberOfTasksCompleted = 0;
+
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
+
+                if ($this->hasTranscription) {
+                    echo 'numberOfTasksCompleted++;';
+                }
+
+                if ($this->hasTaggedTranscription) {
+                    echo 'numberOfTasksCompleted++;';
+                }
+
+                if ($this->hasBeenConnected) {
+                    echo 'numberOfTasksCompleted++;';
+                }
             ?>
+
+            styleForNumberOfTasksCompleted(numberOfTasksCompleted);
+
+            $('#group-instructions-section-header').hide();
         });
 
-        function addFinishedTask(type) {
-            var unfinishedTask = $('<li><p><span class="glyphicon glyphicon-check" aria-hidden="true"></span>Document has been ' + type + '</p></li>');
+        function styleForNumberOfTasksCompleted(numberOfTasksCompleted) {
+            if (numberOfTasksCompleted > 0) {
+                markTaskCompleted("transcribe", "transcribed");
 
-            //$('#tasks-list').append(unfinishedTask);
+                if (numberOfTasksCompleted > 1) {
+                    markTaskCompleted("tag", "tagged");
+
+                    if (numberOfTasksCompleted > 2) {
+                        markTaskCompleted("connect", "connected");
+                        $("#success-indicator-bar").width("100%");
+                    } else {
+                        $("#connectTab").hide();
+                        $("#success-indicator-bar").width("66.66%");
+                    }
+                } else {
+                    $("#taggedTranscriptionTab").hide();
+                    $("#connectTab").hide();
+                    $("#success-indicator-bar").width("33.33%");
+                }
+            } else {
+                $("#transcriptionTab").hide();
+                $("#taggedTranscriptionTab").hide();
+                $("#connectTab").hide();
+            }
         }
 
-        function addUnfinishedTask(typeWithAnEd, type) {
-            var link = fullInciteUrl + "/documents/" + type.toLowerCase() + "/" + documentId;
-
-            var finishedTask = $('<li><p><span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>Document has not been ' + typeWithAnEd + '..  <a href="">' + type + ' it now!</a></p></li>');
-
-            finishedTask.find('a').attr("href", link);
-
-            //$('#tasks-list').append(finishedTask);
+        function markTaskCompleted(taskType, taskTypeWithAnEd) {
+            $("#" + taskType + "-progress-section").removeClass("progres-shadow").addClass("success-shadow").attr("title", "Document has been " + taskTypeWithAnEd + ", click to edit now!");
+            $("#" + taskType + "-progress-glyph-span").removeClass("glyphicon-unchecked").addClass("glyphicon-check");
         }
     </script>
 
     <style>
         .header-step {
             margin-top: -25px;
-        }
-
-        #tasks-list {
-            list-style-type: none;
+            font-size: 25px;
         }
 
         .glyphicon {
@@ -55,6 +85,10 @@
 
         .glyphicon-unchecked {
             color: #F0AD4E;
+        }
+
+        .step-instruction-glyphicon {
+            font-size: 20px;
         }
 
         #discussion-seperation-line {
@@ -75,11 +109,24 @@
             border: 1px solid black;
             text-align: center;
             font-size: 40px;
+            cursor: pointer;
         }
 
         #document-progress-section {
             height: 350px;
             background-color: #F8F8F8;
+        }
+
+        .progress-shadow {
+            -moz-box-shadow:    inset 0 0 10px #F0AD4E;
+            -webkit-box-shadow: inset 0 0 10px #F0AD4E;
+            box-shadow:         inset 0 0 10px #F0AD4E;
+        }
+
+        .success-shadow {
+            -moz-box-shadow:    inset 0 0 10px #5CB85C;
+            -webkit-box-shadow: inset 0 0 10px #5CB85C;
+            box-shadow:         inset 0 0 10px #5CB85C;
         }
     </style>
 </head>
@@ -111,57 +158,37 @@
                     </span>
                 </p>
 
-                <div class="progress" style="height: 40px;">
+                <div class="progress" style="height: 48px;">
                     <div class="progress-bar progress-bar-success" id="success-indicator-bar" style="width: 0%;">
                         <span class="sr-only"></span>
                     </div>
                 </div>
 
                 <div id="document-progress-section">
-                    <div class="task-section" id="transcribe-progress-section">
-                        <p class="task-description vertical-align">
-                            Transcribe
-                            <span class="glyphicon glyphicon-unchecked" id="transcribe-progress-glyph-span" aria-hidden="true"></span>
-                        </p>
+                    <div class="task-section progress-shadow" title="Document not yet been transcribed, click to transcribe it now!" id="transcribe-progress-section">
+                        <a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/<?php echo $this->documentId; ?>">
+                            <p class="task-description vertical-align">
+                                Transcribe
+                                <span class="glyphicon glyphicon-unchecked" id="transcribe-progress-glyph-span" aria-hidden="true"></span>
+                            </p>
+                        </a>
                     </div><!--
-                    --><div class="task-section" id="tag-progress-section">
-                        <p class="task-description vertical-align">
-                            Tag
-                            <span class="glyphicon glyphicon-unchecked" id="tag-progress-glyph-span" aria-hidden="true"></span>
-                        </p>
+                    --><div class="task-section progress-shadow" title="Document not yet been tagged, click to tag it now!" id="tag-progress-section">
+                        <a href="<?php echo getFullInciteUrl(); ?>/documents/tag/<?php echo $this->documentId; ?>">
+                            <p class="task-description vertical-align">
+                                Tag
+                                <span class="glyphicon glyphicon-unchecked" id="tag-progress-glyph-span" aria-hidden="true"></span>
+                            </p>
+                        </a>
                     </div><!--
-                    --><div class="task-section" id="connect-progress-section">
-                        <p class="task-description vertical-align">
-                            Connect
-                            <span class="glyphicon glyphicon-unchecked" id="connect-progress-glyph-span" aria-hidden="true"></span>
-                        </p>
+                    --><div class="task-section progress-shadow" title="Document not yet been connected, click to connect it now!" id="connect-progress-section">
+                        <a href="<?php echo getFullInciteUrl(); ?>/documents/connect/<?php echo $this->documentId; ?>">
+                            <p class="task-description vertical-align">
+                                Connect
+                                <span class="glyphicon glyphicon-unchecked" id="connect-progress-glyph-span" aria-hidden="true"></span>
+                            </p>
+                        </a>
                     </div>
-
-                    <?php
-                        if ($this->hasTranscription) {
-                            echo '<script type="text/javascript">addFinishedTask("transcribed");</script>';
-                        } else {
-                            echo '<script type="text/javascript">addUnfinishedTask("transcribed", "Transcribe"); 
-                                $("#transcriptionTab").hide();
-                                $("#taggedTranscriptionTab").hide();
-                                $("#connectTab").hide();</script>';
-                        }
-
-                        if ($this->hasTaggedTranscription) {
-                            echo '<script type="text/javascript">addFinishedTask("tagged");</script>';
-                        } else {
-                            echo '<script type="text/javascript">addUnfinishedTask("tagged","Tag");
-                                $("#taggedTranscriptionTab").hide();
-                                $("#connectTab").hide();</script>';
-                        }
-
-                        if ($this->hasBeenConnected) {
-                            echo '<script type="text/javascript">addFinishedTask("connected");</script>';
-                        } else {
-                            echo '<script type="text/javascript">addUnfinishedTask("connected","Connect");
-                                $("#connectTab").hide();</script>';
-                        }
-                    ?>
                 </div>
 
                 <hr size=2 id="discussion-seperation-line">
