@@ -1,11 +1,6 @@
 <?php
 
 /**
- * Incite 
- *
- */
-
-/**
  * Plugin "Incite"
  *
  * @package Incite 
@@ -172,6 +167,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->_helper->viewRenderer('transcribeid');
             $this->view->latest_transcription = getNewestTranscriptionForDocument($this->_getParam('id'));
             $this->view->is_being_edited = !empty($this->view->latest_transcription);
+
+            if ($this->view->is_being_edited) {
+                $this->view->revision_history = getTranscriptionRevisionHistory($this->_getParam('id'));
+            } 
+
             $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {

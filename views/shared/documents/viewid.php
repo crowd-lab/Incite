@@ -73,6 +73,8 @@
         .header-step {
             margin-top: -25px;
             font-size: 25px;
+            position: relative;
+            top: -8px;
         }
 
         .glyphicon {

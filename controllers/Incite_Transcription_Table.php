@@ -242,6 +242,27 @@ function getNewestTranscriptionForDocument($documentID) {
     return $newest_transcription;
 }
 /**
+ * Get the 20 latest transcription edits (approved or not)
+ *
+ * @param int $documentID
+ * @return array with the info request, or empty if no transcriptions for document
+ */
+function getTranscriptionRevisionHistory($documentID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_transcriptions.timestamp_creation, omeka_incite_users.email, omeka_incite_users.id FROM omeka_incite_transcriptions, omeka_incite_users WHERE document_id = ? AND omeka_incite_transcriptions.user_id = omeka_incite_users.id ORDER BY timestamp_creation DESC LIMIT 20");
+    $stmt->bind_param("i", $documentID);
+    $stmt->bind_result($timestamp, $userEmail, $userID);
+    $stmt->execute();
+    $transcription_history = array();
+    while ($stmt->fetch())
+    {
+        $transcription_history[] = array('userEmail' => $userEmail, 'userID' => $userID, 'timestamp' => $timestamp);
+    }
+    $stmt->close();
+    $db->close();
+    return $transcription_history;
+}
+/**
  * Get all documents that do not have a transcription
  * @return array of document ids
  */

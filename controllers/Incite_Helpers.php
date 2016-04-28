@@ -140,7 +140,18 @@ function getReadableTimeFromMySQL($time)
  *     Ex: Prevents var title = "<?php echo $this->title; ?>"; from breaking if title contains a "
  */
 function sanitizeStringInput($input) {
-    return json_encode(array('value' => strip_tags($input)));
+    if (empty($input)) {
+        return json_encode(array('value' => "Unknown"));
+    }
+
+    $json_encoded_array = json_encode(array('value' => strip_tags($input)));
+    
+    //json_encode will fail if ?bad characters? are present, not sure what exactly causes this
+    if (empty($json_encoded_array)) {
+        return json_encode(array('value' => "PARSING ERROR, BAD CHARACTERS"));
+    } else {
+        return $json_encoded_array;
+    }
 }
 
 function debug_to_console( $data ) {
