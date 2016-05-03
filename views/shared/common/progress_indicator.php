@@ -77,7 +77,7 @@
 		    	$("#success-indicator-bar-active").width("33.33%");
 
 		    	if (numberOfTasksCompleted === 3) {
-		    		$("success-indicator-bar-connect").width("33.33%");
+		    		$("#success-indicator-bar-connect").width("33.33%");
 		    	}
 	    	}
 	    }

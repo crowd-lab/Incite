@@ -189,6 +189,27 @@ function getNewestSubjectsForDocument($documentID) {
     return $subjects;
 }
 /**
+ * Get the 20 latest subject edits (approved or not)
+ *
+ * @param int $documentID
+ * @return array with the info request, or empty if no transcriptions for document
+ */
+function getConnectionRevisionHistory($documentID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT created_time, omeka_incite_users.email, omeka_incite_users.id FROM omeka_incite_documents_subject_conjunction, omeka_incite_users WHERE document_id = ? AND omeka_incite_documents_subject_conjunction.user_id = omeka_incite_users.id GROUP BY created_time ORDER BY created_time DESC LIMIT 20");
+    $stmt->bind_param("i", $documentID);
+    $stmt->bind_result($timestamp, $userEmail, $userID);
+    $stmt->execute();
+    $connection_history = array();
+    while ($stmt->fetch())
+    {
+        $connection_history[] = array('userEmail' => $userEmail, 'userID' => $userID, 'timestamp' => $timestamp);
+    }
+    $stmt->close();
+    $db->close();
+    return $connection_history;
+}
+/**
  * Returns the count of subjects that currently exist 
  */
 function countSubjects() {

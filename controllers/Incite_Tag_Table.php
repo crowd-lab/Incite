@@ -247,6 +247,27 @@ function hasTaggedTranscription($itemID) {
     }
 }
 /**
+ * Get the 20 latest tagged transcription edits (approved or not)
+ *
+ * @param int $documentID
+ * @return array with the info request, or empty if no tagged transcriptions for document
+ */
+function getTaggedTranscriptionRevisionHistory($documentID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tagged_transcriptions.timestamp_creation, omeka_incite_users.email, omeka_incite_users.id FROM omeka_incite_tagged_transcriptions, omeka_incite_users WHERE item_id = ? AND omeka_incite_tagged_transcriptions.user_id = omeka_incite_users.id ORDER BY timestamp_creation DESC LIMIT 20");
+    $stmt->bind_param("i", $documentID);
+    $stmt->bind_result($timestamp, $userEmail, $userID);
+    $stmt->execute();
+    $tagging_history = array();
+    while ($stmt->fetch())
+    {
+        $tagging_history[] = array('userEmail' => $userEmail, 'userID' => $userID, 'timestamp' => $timestamp);
+    }
+    $stmt->close();
+    $db->close();
+    return $tagging_history;
+}
+/**
  * Returns true if a tag exists
  * @param string $tag
  * @return boolean
@@ -382,12 +403,6 @@ function getAllTagInformation($item_id)
     $getTagID->close();
     $db4->close();
     return $dataArray;
-}
-/**
- * TODO finish this guy up
- */
-function getNewestTagsForDocument($documentID) {
-    return array();
 }
 /**
  * Gets all tag names of a document by item id

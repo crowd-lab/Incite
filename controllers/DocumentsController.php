@@ -265,6 +265,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //Do we already have tags or do we need to generate them via NER
             if (hasTaggedTranscription($this->_getParam('id'))) {
                 $this->view->is_being_edited = true;
+                $this->view->revision_history = getTaggedTranscriptionRevisionHistory($this->_getParam('id'));
                 $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                 $this->view->transcription = migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
             } else {
@@ -416,6 +417,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
                 $this->view->newest_n_subjects = getNewestSubjectsForDocument($this->_getParam('id'));
                 $this->view->is_being_edited = !empty($this->view->newest_n_subjects);
+
+                if ($this->view->is_being_edited) {
+                    $this->view->revision_history = getConnectionRevisionHistory($this->_getParam('id'));
+                } 
 
                 $this->_helper->viewRenderer('connectbymultiselection');
             } else { 

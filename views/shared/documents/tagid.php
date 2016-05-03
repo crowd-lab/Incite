@@ -30,6 +30,7 @@
             <div class="col-md-7">
                 <div class="col-md-12" id="tagging-container">
                     <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
+                    <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
                             <th>
@@ -157,6 +158,10 @@
                 </div>
 
                 <?php
+                    include(dirname(__FILE__) . '/../common/revision_history_for_task_id_pages.php');
+                ?>
+
+                <?php
                     include(dirname(__FILE__) . '/../common/task_comments_section.php');
                 ?>
             </div> 
@@ -280,6 +285,10 @@
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
+
+        <?php if ($this->is_being_edited): ?>
+            styleForEditing();    
+        <?php endif; ?>
 
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
@@ -459,6 +468,24 @@
             }
         ?>
     });
+
+    function styleForEditing() {
+        addRevisionHistoryListeners();
+    }
+
+    function addRevisionHistoryListeners() {
+        $('#view-revision-history-link').show();
+
+        $('#view-revision-history-link').click(function(e) {
+            $('#tagging-container').hide();
+            $('#revision-history-container').show();
+        });
+
+        $('#view-editing-link').click(function(e) {
+            $('#revision-history-container').hide();
+            $('#tagging-container').show();
+        });
+    }
 </script>
 
 <style>
@@ -472,6 +499,17 @@
 
     .comments-section-container {
         padding-left: 15px;
+    }
+
+    #revision-history-container {
+        padding-left: 1.5%;
+    }
+
+    #view-revision-history-link {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+        margin-top: -32px;
     }
 </style>
 
