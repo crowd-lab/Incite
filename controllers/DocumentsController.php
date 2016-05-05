@@ -401,7 +401,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             //Filter out untranscribed documents
             $newestTranscription = getNewestTranscription($this->_getParam('id'));
-            if (empty($newestTranscription))) {
+            if (empty($newestTranscription)) {
                 if (isset($this->view->query_str) && $this->view->query_str !== "") {
                     $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
                     $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id').'?'.$this->view->query_str);
