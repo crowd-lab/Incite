@@ -11,7 +11,10 @@
 	        <?php
 	        	$document_id = $this->document_metadata->id;
 
-	        	if (!empty(getNewestTranscription($document_id))) {
+	        	$newestTranscription = getNewestTranscription($document_id);
+	        	$newestSubjects = getNewestSubjectsForNewestTaggedTranscription($document_id);
+
+	        	if (!empty($newestTranscription)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
@@ -19,7 +22,7 @@
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (!empty(getNewestSubjectsForNewestTaggedTranscription($document_id))) {
+	        	if (!empty($newestSubjects)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 	        ?>
