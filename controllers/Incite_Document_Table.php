@@ -68,7 +68,9 @@ function getDocumentsWithoutConnectionsForLatestTaggedTranscription() {
     $tagged_documents = getDocumentsWithTags();
 
     foreach($tagged_documents as $document_id) {
-        if (empty(getNewestSubjectsForNewestTaggedTranscription($document_id))) {
+        $newestSubjects = getNewestSubjectsForNewestTaggedTranscription($document_id);
+
+        if (empty($newestSubjects)) {
             $documents_without_connections[] = $document_id;
         }
     }
@@ -79,9 +81,12 @@ function getDocumentsWithoutConnectionsForLatestTaggedTranscription() {
  * Takes a list of document ids and returns a new array with info about their task completion
  */
 function getTaskCompletionInfoFor($documentID) {
-    $isTranscribed = !empty(getNewestTranscription($documentID));
+    $newestTranscription = getNewestTranscription($documentID);
+    $newestSubjects = getNewestSubjectsForNewestTaggedTranscription($documentID);
+
+    $isTranscribed = !empty($newestTranscription);
     $isTagged = hasTaggedTranscriptionForNewestTranscription($documentID);
-    $isConnected = !empty(getNewestSubjectsForNewestTaggedTranscription($documentID));
+    $isConnected = !empty($newestSubjects);
 
     $documents = array('isTranscribed' => ($isTranscribed ? true : false), 'isTagged' => ($isTagged ? true : false), 'isConnected' => ($isConnected ? true : false));
 
