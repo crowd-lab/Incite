@@ -165,7 +165,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             $this->_helper->viewRenderer('transcribeid');
-            $this->view->latest_transcription = getNewestTranscriptionForDocument($this->_getParam('id'));
+            $this->view->latest_transcription = getNewestTranscription($this->_getParam('id'));
             $this->view->is_being_edited = !empty($this->view->latest_transcription);
 
             if ($this->view->is_being_edited) {
@@ -244,7 +244,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             //Get the transcription for the document
-            $newestTranscription = getNewestTranscriptionForDocument($this->_getParam('id'));
+            $newestTranscription = getNewestTranscription($this->_getParam('id'));
             if (!empty($newestTranscription)) {
                 $this->view->transcription_id = $newestTranscription['id'];
                 $this->view->transcription = $newestTranscription['transcription'];
@@ -263,7 +263,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
             
             //Do we already have tags or do we need to generate them via NER
-            if (hasTaggedTranscription($this->_getParam('id'))) {
+            if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
                 $this->view->is_being_edited = true;
                 $this->view->revision_history = getTaggedTranscriptionRevisionHistory($this->_getParam('id'));
                 $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
@@ -332,10 +332,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function populateTagSearchResults() {
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTag()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTagsForLatestTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {
-            $document_ids = array_slice(array_values(getDocumentsWithoutTag()), 0, MAXIMUM_SEARCH_RESULTS);
+            $document_ids = array_slice(array_values(getDocumentsWithoutTagsForLatestTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
         }
 
@@ -400,7 +400,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->subjects = getAllSubjectConcepts();
 
             //Filter out untranscribed documents
-            if (empty(getNewestTranscriptionForDocument($this->_getParam('id')))) {
+            if (empty(getNewestTranscription($this->_getParam('id')))) {
                 if (isset($this->view->query_str) && $this->view->query_str !== "") {
                     $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
                     $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id').'?'.$this->view->query_str);
@@ -411,11 +411,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
             
             //Gets the latest tagged transcription and the most recently marked subjects, if they exist
-            if (hasTaggedTranscription($this->_getParam('id'))) {
+            if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
                 $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
                 $this->view->transcription =  migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
 
-                $this->view->newest_n_subjects = getNewestSubjectsForDocument($this->_getParam('id'));
+                $this->view->newest_n_subjects = getNewestSubjectsForNewestTaggedTranscription($this->_getParam('id'));
                 $this->view->is_being_edited = !empty($this->view->newest_n_subjects);
 
                 if ($this->view->is_being_edited) {
@@ -443,7 +443,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     public function populateConnectSearchResults() {
-        $connectable_documents = getConnectableDocuments();
+        $connectable_documents = getDocumentsWithoutConnectionsForLatestTaggedTranscription();
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
         if (isSearchQuerySpecifiedViaGet()) {
@@ -501,7 +501,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
 
         //find the transcription for the document
-        $transcription = getNewestTranscriptionForDocument($document_id);
+        $transcription = getNewestTranscription($document_id);
         $this->view->hasTranscription = false;
 
         if (!empty($transcription)) {
@@ -511,12 +511,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
 
         //find the tagged transcription of the document
-        $this->view->hasTaggedTranscription = false;
+        $this->view->hasTaggedTranscriptionForNewestTranscription = false;
 
-        if (hasTaggedTranscription($document_id)) {
+        if (hasTaggedTranscriptionForNewestTranscription($document_id)) {
             $taggedTranscriptions = getAllTaggedTranscriptions($document_id);
             $this->view->taggedTranscription = $taggedTranscriptions[count($taggedTranscriptions)-1];
-            $this->view->hasTaggedTranscription = true;
+            $this->view->hasTaggedTranscriptionForNewestTranscription = true;
         }
 
         //find if a document has been connected

@@ -11,15 +11,15 @@
 	        <?php
 	        	$document_id = $this->document_metadata->id;
 
-	        	if (!empty(getNewestTranscriptionForDocument($document_id))) {
+	        	if (!empty(getNewestTranscription($document_id))) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (hasTaggedTranscription($document_id)) {
+	        	if (hasTaggedTranscriptionForNewestTranscription($document_id)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (!empty(getNewestSubjectsForDocument($document_id))) {
+	        	if (!empty(getNewestSubjectsForNewestTaggedTranscription($document_id))) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 	        ?>

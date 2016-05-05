@@ -23,7 +23,7 @@
                     echo 'numberOfTasksCompleted++;';
                 }
 
-                if ($this->hasTaggedTranscription) {
+                if ($this->hasTaggedTranscriptionForNewestTranscription) {
                     echo 'numberOfTasksCompleted++;';
                 }
 

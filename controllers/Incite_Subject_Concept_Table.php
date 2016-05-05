@@ -170,8 +170,8 @@ function getAllSubjectsOnId($item_id)
 /**
  * Return the latest n subjects for the document where n is the number of subjects available in the database
  */
-function getNewestSubjectsForDocument($documentID) {
-    if (hasTaggedTranscription($documentID)) {
+function getNewestSubjectsForNewestTaggedTranscription($documentID) {
+    if (hasTaggedTranscriptionForNewestTranscription($documentID)) {
         $taggedTranscriptionID = getLatestTaggedTranscriptionID($documentID);
     } else {
         return array();

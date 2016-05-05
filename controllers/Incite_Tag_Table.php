@@ -248,8 +248,8 @@ function getLatestTaggedTranscriptionID($itemID) {
  * @param int $itemID -> the document id
  * @return boolean
  */
-function hasTaggedTranscription($itemID) {
-    $latestTranscription = getNewestTranscriptionForDocument($itemID);
+function hasTaggedTranscriptionForNewestTranscription($itemID) {
+    $latestTranscription = getNewestTranscription($itemID);
     if (empty($latestTranscription)) {
         return false;
     }
