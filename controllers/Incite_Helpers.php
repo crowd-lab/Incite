@@ -141,7 +141,7 @@ function getReadableTimeFromMySQL($time)
  */
 function sanitizeStringInput($input) {
     if (empty($input)) {
-        return json_encode(array('value' => "Unknown"));
+        return json_encode(array('value' => ''));
     }
 
     $json_encoded_array = json_encode(array('value' => strip_tags($input)));

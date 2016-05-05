@@ -48,6 +48,11 @@
 		    	$("#transcribe-progress-section").prop('title', 'Finish transcribing to move on to the next task');
 		    	$("#transcribe-progress-glyph-span").css("color", "#F0AD4E");
 	    	} else {
+	    		if (numberOfTasksCompleted === 1) {
+	    			$('#tag-progress-section').css('cursor', 'pointer');
+	    			$("#tag-progress-section").prop('title', 'Click here to start tagging!');
+	    		}
+
 	    		var successIndicatorBarInactiveWidth = 0;
 
 	    		while (numberOfTasksCompleted > 1) {
@@ -73,6 +78,11 @@
 
 		    	$("#tag-progress-glyph-span").css("color", "#F0AD4E");
 	    	} else {
+	    		if (numberOfTasksCompleted === 2) {
+	    			$('#connect-progress-section').css('cursor', 'pointer');
+	    			$("#connect-progress-section").prop('title', 'Click here to start connecting!');
+	    		}
+
 	    		$("#success-indicator-bar").width("33.33%");
 		    	$("#success-indicator-bar-active").width("33.33%");
 
@@ -136,14 +146,24 @@
 	     	$("#tag-progress-section").prop('title', 'You must finish transcribing before you can begin tagging');
 		    $("#connect-progress-section").prop('title', 'You must finish transcribing and tagging before you can begin connecting');
 
+		    $("#transcribe-progress-section").click(function() {
+    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/transcribe/' + documentSpecificPartOfLocation;
+    		});
+
+		    $("#tag-progress-section").click(function() {
+    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/tag/' + documentSpecificPartOfLocation;
+    		});
+
+		    $("#connect-progress-section").click(function() {
+    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/connect/' + documentSpecificPartOfLocation;
+    		});
+
 	     	if (numberOfTasksCompleted > 0) {
 	     		$("#transcribe-progress-glyph-span").removeClass("glyphicon-unchecked");
 	    		$("#transcribe-progress-glyph-span").addClass("glyphicon-check");
 	    		$("#transcribe-progress-glyph-span").css("color", "#5CB85C");
 	    		$("#transcribe-progress-section").addClass("success-shadow");
-	    		$("#transcribe-progress-section").click(function() {
-	    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/transcribe/' + documentSpecificPartOfLocation;
-	    		});
+	    
 	    		$('#transcribe-progress-section').css('cursor', 'pointer');
 	    		$("#transcribe-progress-section").prop('title', 'Transcribing Complete - Click to Edit');
 	     	} 
@@ -153,9 +173,7 @@
 	    		$("#tag-progress-glyph-span").addClass("glyphicon-check");
 	    		$("#tag-progress-glyph-span").css("color", "#5CB85C");
 	    		$("#tag-progress-section").addClass("success-shadow");
-	    		$("#tag-progress-section").click(function() {
-	    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/tag/' + documentSpecificPartOfLocation;
-	    		});
+	    		
 	    		$('#tag-progress-section').css('cursor', 'pointer');
 	    		$("#tag-progress-section").prop('title', 'Tagging Complete - Click to Edit');
 	     	}
@@ -165,9 +183,7 @@
 	    		$("#connect-progress-glyph-span").addClass("glyphicon-check");
 	    		$("#connect-progress-glyph-span").css("color", "#5CB85C");
 	    		$("#connect-progress-section").addClass("success-shadow");
-	    		$("#connect-progress-section").click(function() {
-	    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/connect/' + documentSpecificPartOfLocation;
-	    		});
+	    		
 	    		$('#connect-progress-section').css('cursor', 'pointer');
 	    		$("#connect-progress-section").prop('title', 'Connecting Complete - Click to Edit');
 	     	}
