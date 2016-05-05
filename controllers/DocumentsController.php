@@ -365,15 +365,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         if (isset($_POST['subjects']) || isset($_POST['no_subjects'])) {
             foreach ((array) $all_subject_ids as $subject_id) {
                 if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array())))
-                    addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 1);
+                    addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 1);
                 else
-                    addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 0);
+                    addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 0);
             }
         } else { //connect by tags
             if (isset($_POST['subject']) && $_POST['connection'] == 'true') 
-                addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 1);
+                addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 1);
             else if (isset($_POST['subject']) && $_POST['connection'] == 'false') 
-                addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 0);
+                addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 0);
         }
         $_SESSION['Incite']['previous_task'] = 'connect';
 
@@ -453,20 +453,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         } else {
             $document_ids = array_slice(array_values($connectable_documents), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
-        }
-
-        if (count($document_ids) <= 0) {
-            //Try tagged documents
-            $connectable_documents = getDocumentsWithTags();
-
-            if (isSearchQuerySpecifiedViaGet()) {
-                $searched_item_ids = getSearchResultsViaGetQuery();
-                $document_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
-                $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-            } else {
-                $document_ids = array_slice(array_values($connectable_documents), 0, MAXIMUM_SEARCH_RESULTS);
-                $this->view->query_str = "";
-            }
         }
 
         $this->createSearchResultPages($document_ids, 'Connections');

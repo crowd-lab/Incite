@@ -226,15 +226,38 @@ function getAllTaggedTranscriptions($itemID) {
     return $transcriptions;
 }
 /**
- * Returns true if a document is tagged, false otherwise
+ * Returns id of latest tagged transcription
  * @param int $itemID
  * @return boolean
  */
-function hasTaggedTranscription($itemID) {
+function getLatestTaggedTranscriptionID($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_tagged_transcriptions WHERE item_id = ?");
+    $transcriptions = array();
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND is_approved = 1 ORDER BY timestamp_creation DESC LIMIT 1");
     $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($taggedTranscriptionID);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $taggedTranscriptionID;
+}
+/**
+ * Returns true if a document is tagged, false otherwise
+ * @param int $itemID -> the document id
+ * @return boolean
+ */
+function hasTaggedTranscription($itemID) {
+    $latestTranscription = getNewestTranscriptionForDocument($itemID);
+    if (empty($latestTranscription)) {
+        return false;
+    }
+
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND transcription_id = ?");
+    $stmt->bind_param("ii", $itemID, $latestTranscription['id']);
     $stmt->bind_result($count);
     $stmt->execute();
     $stmt->fetch();

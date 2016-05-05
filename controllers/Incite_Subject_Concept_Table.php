@@ -171,10 +171,16 @@ function getAllSubjectsOnId($item_id)
  * Return the latest n subjects for the document where n is the number of subjects available in the database
  */
 function getNewestSubjectsForDocument($documentID) {
+    if (hasTaggedTranscription($documentID)) {
+        $taggedTranscriptionID = getLatestTaggedTranscriptionID($documentID);
+    } else {
+        return array();
+    }
+
     $db = DB_Connect::connectDB();
     $subjects = array();
-    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, is_positive, omeka_incite_documents_subject_conjunction.user_id, omeka_incite_subject_concepts.id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.document_id WHERE omeka_incite_documents.item_id = ? ORDER BY created_time DESC LIMIT ?");
-    $stmt->bind_param("ii", $documentID, countSubjects());
+    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, is_positive, omeka_incite_documents_subject_conjunction.user_id, omeka_incite_subject_concepts.id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.document_id WHERE omeka_incite_documents.item_id = ? AND omeka_incite_documents_subject_conjunction.tagged_trans_id = ? ORDER BY created_time DESC LIMIT ?");
+    $stmt->bind_param("iii", $documentID, $taggedTranscriptionID, countSubjects());
     $stmt->bind_result($subject, $is_positive, $userID, $subjectID);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -228,8 +234,10 @@ function countSubjects() {
  * @param int $itemID
  * @param int $userID
  * @param int $groupID
+ * @param int $taggedTranscriptionID
+ * @param bool $positive
  */
-function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $positive)
+function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTranscriptionID, $positive)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
@@ -244,8 +252,8 @@ function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $positive)
         //store concept in conjunction table
         $db->close();
         $db = DB_Connect::connectDB();
-        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
-        $newStmt->bind_param("iiiii", $documentID, $conceptID, $positive, $userID, $groupID);
+        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        $newStmt->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $positive, $userID, $groupID);
         $newStmt->execute();
         $newStmt->close();
         
@@ -262,8 +270,8 @@ function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $positive)
         $newStmt->close();
         $db->close();
         $db = DB_Connect::connectDB();
-        $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
-        $newStmt1->bind_param("iiiii",$documentID, $conceptID, $positive, $userID, $groupID);
+        $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        $newStmt1->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $positive, $userID, $groupID);
         $newStmt1->execute();
         $newStmt1->close();
     }
