@@ -482,7 +482,7 @@ require_once("Incite_Groups_Table.php");
         $docs = array();
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
-        $stmt = $db->prepare("SELECT DISTINCT item_id, created_timestamp, text FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        $stmt = $db->prepare("SELECT item_id, timestamp_creation, text from omeka_incite_tagged_transcriptions INNER JOIN omeka_element_texts ON item_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY item_id");
         $stmt->bind_param("ii", $element_id_for_title, $userid);
         $stmt->bind_result($doc, $time, $doc_title);
         $stmt->execute();
