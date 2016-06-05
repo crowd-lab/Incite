@@ -149,7 +149,7 @@
         };  
 
         function generateAndAppendInviteUsersLink() {
-            var inviteUsersLink = $('<a id="invite-new-members-link" href="mailto:?subject=Come join my Mapping the Fourth group, <?php echo $this->group["name"] ?>!&body=<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>%0D%0A%0D%0AFollow the above link to visit the group page and then click the button that says \'Request to join group\'!">Invite New Members</a>');
+            var inviteUsersLink = $('<a id="invite-new-members-link" href="mailto:?subject=Come join my Mapping the Fourth group, <?php echo addslashes($this->group["name"]); ?>!&body=<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>%0D%0A%0D%0AFollow the above link to visit the group page and then click the button that says \'Request to join group\'!">Invite New Members</a>');
         
             $('#groupprofile-overview-title').after(inviteUsersLink);
         };
