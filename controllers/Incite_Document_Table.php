@@ -10,7 +10,7 @@ function getTranscribableDocuments()
 
     $db = DB_Connect::connectDB();
     $documents_with_jpeg = array();  //document id's and assume documents with jpeg all need transcriptions and thus tags
-    $stmt = $db->prepare("SELECT DISTINCT `item_id` FROM `omeka_files` WHERE `mime_type` = 'image/jpeg'");
+    $stmt = $db->prepare("SELECT DISTINCT `item_id` FROM `omeka_files` WHERE `mime_type` = 'image/jpeg' OR `mime_type` = 'image/png'");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {

@@ -3,6 +3,7 @@
 function get_image_url_for_item($item) {
     //$url_path = (isset($_SERVER['HTTPS']) ? "https" : "http") . '://'. $_SERVER['HTTP_HOST'] . '/m4j/files/original/';
     $url_path = getFullOmekaUrl().'/files/original/';
+    $path = getcwd().'/files/original/';
     if ($item == null)
         return '';
 
@@ -13,7 +14,9 @@ function get_image_url_for_item($item) {
         return $item->getFile()->getProperty('uri');
     else {
         $filenames = get_jpeg_png_filenames_from_item($item);
-        merge_images($filenames, 'incite_'.$item->id.'.jpeg');
+        $target_filename = $path.'incite_'.$item->id.'.jpeg';
+        if (!file_exists($target_filename))
+            merge_images($filenames, $target_filename);
         return $url_path.'incite_'.$item->id.'.jpeg';
     }
 }
@@ -60,7 +63,7 @@ function merge_images($filenames, $filename_result) {
     }
 
 
-    imagejpeg($final_image, $path.$filename_result);
+    imagejpeg($final_image, $filename_result);
     imagedestroy($final_image);
 
     return true;
