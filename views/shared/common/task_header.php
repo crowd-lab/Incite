@@ -17,6 +17,10 @@
 		    	alert("Using task headers on a non-task page");
 		    }
 
+            <?php if ($this->is_being_edited): ?>
+                currentTask += ' - Editing';   
+            <?php endif; ?>
+
         	$(".task-header").html(currentTask); 
         });
 	</script>

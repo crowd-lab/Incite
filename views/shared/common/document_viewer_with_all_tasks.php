@@ -30,7 +30,7 @@
                             '<div class="progress-bar progress-bar-success positive-subject-bar" style="width: ' + percentPositiveBarFilled + '%"' +
                                 'data-trigger="hover"' +
                                 'data-toggle="popover" data-html="true"' + 
-                                'data-content="' + numPos + ' person connected this subject positively"'  + 
+                                'data-content="' + numPos + ' people connected this subject positively"'  + 
                                 'data-placement="bottom" data-id="positive-popover"' +
                             '>' +
                                 '<span class="sr-only"></span>' +
@@ -38,7 +38,7 @@
                             '<div class="progress-bar progress-bar-error negative-subject-bar" style="width: ' + percentNegativeBarFilled + '%"'+ 
                                 'data-trigger="hover"' +
                                 'data-toggle="popover" data-html="true"' + 
-                                'data-content="' + numNeg + ' person connected this subject negatively"'  + 
+                                'data-content="' + numNeg + ' people connected this subject negatively"'  + 
                                 'data-placement="bottom" data-id="negative-popover"' +
                             '>' +
                                 '<span class="sr-only"></span>' +
@@ -106,7 +106,7 @@
                 $("#transcribe_copy").hide();
                 $("#tagged_transcribe_copy").hide();
                 $("#connect_subjects_copy").show();
-                selectTab($("#connectTab"), [$("#documentTab"), $("#taggedTranscriptionTab"), $("#taggedTranscriptionTab")]);
+                selectTab($("#connectTab"), [$("#documentTab"), $("#transcriptionTab"), $("#taggedTranscriptionTab")]);
             });
 
             $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-250);

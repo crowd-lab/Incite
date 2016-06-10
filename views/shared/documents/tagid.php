@@ -30,6 +30,7 @@
             <div class="col-md-7">
                 <div class="col-md-12" id="tagging-container">
                     <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
+                    <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
                             <th>
@@ -38,8 +39,12 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Creating a tag</strong>" 
-                                    data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>" 
+                                    data-title="<strong>Creating a tag</strong>"
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Tags in this upper table were generated or confirmed accurate by some other user. If no tags are present, then whoever completed tagging this document felt no tags were necessary. You can always delete the tags present here via the trash can icon. Add more tags by highlighting them in the transcription to the left." ?>" 
+                                    <?php else: ?>
+                                        data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>" 
+                                    <?php endif; ?>
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -50,7 +55,11 @@
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a category</strong>" 
-                                    data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>" 
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Please confirm that the categories for these tags are accurate, feel free to change them as you see fit." ?>" 
+                                    <?php else: ?>
+                                        data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>" 
+                                    <?php endif; ?>
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -61,7 +70,11 @@
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Selecting a subcategory</strong>" 
-                                    data-content="<?php echo "The computer has tried to identify the subcategories for this tag, please ensure they are accurate and change them if needed." ?>" 
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Please confirm that all tags have an appropriate subcategory, feel free to change the subcategory as you see fit." ?>"
+                                    <?php else: ?>
+                                        data-content="<?php echo "The computer has tried to identify the subcategories for these tags, please ensure they are accurate and change them if needed." ?>"
+                                    <?php endif; ?> 
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -72,7 +85,11 @@
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
                                     data-title="<strong>Adding details</strong>" 
-                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Please confirm the additional details of each tag, feel free to edit them as you see fit." ?>" 
+                                    <?php else: ?>
+                                        data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
+                                    <?php endif; ?> 
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -89,7 +106,7 @@
                                     data-toggle="popover" data-html="true"
                                     data-title="<strong>Creating a tag</strong>"
                                     data-viewport="#tagging-container"; 
-                                    data-content="<?php echo "Computers can't always recognize tags, so we need your help! Highlighting a word in the transcription box to the left will generate a new tag." ?>" 
+                                    data-content="<?php echo "Add any tags that aren't present in the upper table by highlighting the word(s) you want to tag in the transcription to the left." ?>" 
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -139,6 +156,10 @@
 
                     <hr size=2 class="discussion-seperation-line">
                 </div>
+
+                <?php
+                    include(dirname(__FILE__) . '/../common/revision_history_for_task_id_pages.php');
+                ?>
 
                 <?php
                     include(dirname(__FILE__) . '/../common/task_comments_section.php');
@@ -260,12 +281,14 @@
         });
     }
 
-    
-
     $(document).ready(function () {
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
+
+        <?php if ($this->is_being_edited): ?>
+            styleForEditing();    
+        <?php endif; ?>
 
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
@@ -445,6 +468,24 @@
             }
         ?>
     });
+
+    function styleForEditing() {
+        addRevisionHistoryListeners();
+    }
+
+    function addRevisionHistoryListeners() {
+        $('#view-revision-history-link').show();
+
+        $('#view-revision-history-link').click(function(e) {
+            $('#tagging-container').hide();
+            $('#revision-history-container').show();
+        });
+
+        $('#view-editing-link').click(function(e) {
+            $('#revision-history-container').hide();
+            $('#tagging-container').show();
+        });
+    }
 </script>
 
 <style>
@@ -458,6 +499,17 @@
 
     .comments-section-container {
         padding-left: 15px;
+    }
+
+    #revision-history-container {
+        padding-left: 1.5%;
+    }
+
+    #view-revision-history-link {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+        margin-top: -32px;
     }
 </style>
 

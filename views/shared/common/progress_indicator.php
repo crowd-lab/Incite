@@ -6,13 +6,35 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 	        var pathname = window.location.pathname;
+	        var numberOfTasksCompleted = 0;
+
+	        <?php
+	        	$document_id = $this->document_metadata->id;
+
+	        	$newestTranscription = getNewestTranscription($document_id);
+	        	$newestSubjects = getNewestSubjectsForNewestTaggedTranscription($document_id);
+
+	        	if (!empty($newestTranscription)) {
+	        		echo 'numberOfTasksCompleted++;';
+	        	}
+
+	        	if (hasTaggedTranscriptionForNewestTranscription($document_id)) {
+	        		echo 'numberOfTasksCompleted++;';
+	        	}
+
+	        	if (!empty($newestSubjects)) {
+	        		echo 'numberOfTasksCompleted++;';
+	        	}
+	        ?>
+
+	        styleShadowsAndGlyphsAndLinksFor(numberOfTasksCompleted);
 
 	        if (pathname.indexOf("/transcribe/") > -1) {
-	        	styleForTranscribe();
+	        	styleForTranscribe(numberOfTasksCompleted);
 	        } else if (pathname.indexOf("/tag/") > -1) {
-	        	styleForTag();
+	        	styleForTag(numberOfTasksCompleted);
 	        } else if (pathname.indexOf("/connect/") > -1) {
-	        	styleForConnect();
+	        	styleForConnect(numberOfTasksCompleted);
 	        } else {
 	        	alert("Using progress indicator on incorrect page, please contact the developers");
 	        }
@@ -21,63 +43,74 @@
 		/*
 		* Styles the nav to show the user they are transcribing
 		*/
-	    function styleForTranscribe() {
-	    	$("#progress-indicator-bar").width("33.33%");
+	    function styleForTranscribe(numberOfTasksCompleted) {
+	    	if (numberOfTasksCompleted === 0) {
+	    		$("#progress-indicator-bar-active").width("33.33%");
+		    	$("#transcribe-progress-section").addClass("progress-shadow");
 
-	    	$("#transcribe-progress-section").addClass("progress-shadow");
+		    	$("#transcribe-progress-section").prop('title', 'Finish transcribing to move on to the next task');
+		    	$("#transcribe-progress-glyph-span").css("color", "#F0AD4E");
+	    	} else {
+	    		if (numberOfTasksCompleted === 1) {
+	    			$('#tag-progress-section').css('cursor', 'pointer');
+	    			$("#tag-progress-section").prop('title', 'Click here to start tagging!');
+	    		}
 
-	    	$("#transcribe-progress-section").prop('title', 'Finish transcribing to move on to the next task');
-	    	$("#tag-progress-section").prop('title', 'You must finish transcribing before you can begin tagging');
-	    	$("#connect-progress-section").prop('title', 'You must finish transcribing and tagging before you can begin connecting');
+	    		var successIndicatorBarInactiveWidth = 0;
 
-	    	$("#transcribe-progress-glyph-span").css("color", "#F0AD4E");
+	    		while (numberOfTasksCompleted > 1) {
+	    			successIndicatorBarInactiveWidth += 33.33;
+	    			numberOfTasksCompleted--;
+	    		}
+
+	    		$("#success-indicator-bar").width(String(successIndicatorBarInactiveWidth) + "%");
+	    		$("#success-indicator-bar-active-transcribe").width("33.33%");
+	    	}
 	    }
 
 	    /*
 		* Styles the nav to show the user they are tagging
 		*/
-	    function styleForTag() {
-	    	$("#success-indicator-bar").width("33.33%");
-	    	$("#progress-indicator-bar").width("33.33%");
+	    function styleForTag(numberOfTasksCompleted) {
+	    	if (numberOfTasksCompleted === 1) {
+	    		$("#success-indicator-bar").width("33.33%");
+		    	$("#progress-indicator-bar-active").width("33.33%");
+		    	$("#tag-progress-section").addClass("progress-shadow");
 
-	    	$("#transcribe-progress-section").addClass("success-shadow");
-	    	$("#tag-progress-section").addClass("progress-shadow");
+		    	$("#tag-progress-section").prop('title', 'Finish tagging to move on to the next task, connecting');
 
-	    	$("#transcribe-progress-section").prop('title', 'This document has been successfully transcribed!');
-	    	$("#tag-progress-section").prop('title', 'Finish tagging to move on to the next task');
-	    	$("#connect-progress-section").prop('title', 'You must finish tagging before you can begin connecting');
-	    	
-	    	$("#transcribe-progress-glyph-span").removeClass("glyphicon-unchecked");
-	    	$("#transcribe-progress-glyph-span").addClass("glyphicon-check");
-	    	$("#transcribe-progress-glyph-span").css("color", "#5CB85C");
+		    	$("#tag-progress-glyph-span").css("color", "#F0AD4E");
+	    	} else {
+	    		if (numberOfTasksCompleted === 2) {
+	    			$('#connect-progress-section').css('cursor', 'pointer');
+	    			$("#connect-progress-section").prop('title', 'Click here to start connecting!');
+	    		}
 
-	    	$("#tag-progress-glyph-span").css("color", "#F0AD4E");
+	    		$("#success-indicator-bar").width("33.33%");
+		    	$("#success-indicator-bar-active").width("33.33%");
+
+		    	if (numberOfTasksCompleted === 3) {
+		    		$("#success-indicator-bar-connect").width("33.33%");
+		    	}
+	    	}
 	    }
 
 	    /*
 		* Styles the nav to show the user they are connecting
 		*/
-	    function styleForConnect() {
-	    	$("#success-indicator-bar").width("66.66%");
-	    	$("#progress-indicator-bar").width("33.33%");
+	    function styleForConnect(numberOfTasksCompleted) {
+	    	if (numberOfTasksCompleted === 2) {
+	    		$("#success-indicator-bar").width("66.66%");
+		    	$("#progress-indicator-bar-active").width("33.33%");
+		    	$("#connect-progress-section").addClass("progress-shadow");
 
-	    	$("#transcribe-progress-section").addClass("success-shadow");
-	    	$("#tag-progress-section").addClass("success-shadow");
-	    	$("#connect-progress-section").addClass("progress-shadow");
+		    	$("#connect-progress-section").prop('title', 'Once you finish connecting this document all tasks are completed');
 
-	    	$("#transcribe-progress-section").prop('title', 'This document has been successfully transcribed!');
-	    	$("#tag-progress-section").prop('title', 'This document has been successfully tagged!');
-	    	$("#connect-progress-section").prop('title', 'Once you finish connecting this document you are done');
-	    	
-	    	$("#transcribe-progress-glyph-span").removeClass("glyphicon-unchecked");
-	    	$("#transcribe-progress-glyph-span").addClass("glyphicon-check");
-	    	$("#transcribe-progress-glyph-span").css("color", "#5CB85C");
-
-	    	$("#tag-progress-glyph-span").removeClass("glyphicon-unchecked");
-	    	$("#tag-progress-glyph-span").addClass("glyphicon-check");
-	    	$("#tag-progress-glyph-span").css("color", "#5CB85C");
-
-	    	$("#connect-progress-glyph-span").css("color", "#F0AD4E");
+		    	$("#connect-progress-glyph-span").css("color", "#F0AD4E");
+	    	} else {
+	    		$("#success-indicator-bar").width("66.66%");
+		    	$("#success-indicator-bar-active").width("33.33%");
+	    	}
 	    }
 
 	    /*
@@ -86,7 +119,7 @@
 	     */
 	    function styleProgressIndicatorForCompletion() {
 	    	$("#success-indicator-bar").width("100%");
-	    	$("#progress-indicator-bar").width("0%");
+	    	$("#progress-indicator-bar-active").width("0%");
 
 	    	$("#transcribe-progress-section").addClass("success-shadow");
 	    	$("#tag-progress-section").addClass("success-shadow");
@@ -104,6 +137,60 @@
 	    	$("#connect-progress-glyph-span").addClass("glyphicon-check");
 	    	$("#connect-progress-glyph-span").css("color", "#5CB85C");
 	    }
+
+	    /*
+	     * Change the glyphicon to green and complete depending on the number of tasks completed
+	     * Adds success shadows to the sections as appropriate
+	     * Makes sections clickable with links as appropriate  
+	     */
+	     function styleShadowsAndGlyphsAndLinksFor(numberOfTasksCompleted) {
+	     	var documentSpecificPartOfLocation = window.location.href.split('/').pop();
+
+	     	$("#tag-progress-section").prop('title', 'You must finish transcribing before you can begin tagging');
+		    $("#connect-progress-section").prop('title', 'You must finish transcribing and tagging before you can begin connecting');
+
+		    $("#transcribe-progress-section").click(function() {
+    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/transcribe/' + documentSpecificPartOfLocation;
+    		});
+
+		    $("#tag-progress-section").click(function() {
+    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/tag/' + documentSpecificPartOfLocation;
+    		});
+
+		    $("#connect-progress-section").click(function() {
+    			window.location.href = "<?php echo getFullInciteUrl(); ?>" + '/documents/connect/' + documentSpecificPartOfLocation;
+    		});
+
+	     	if (numberOfTasksCompleted > 0) {
+	     		$("#transcribe-progress-glyph-span").removeClass("glyphicon-unchecked");
+	    		$("#transcribe-progress-glyph-span").addClass("glyphicon-check");
+	    		$("#transcribe-progress-glyph-span").css("color", "#5CB85C");
+	    		$("#transcribe-progress-section").addClass("success-shadow");
+	    
+	    		$('#transcribe-progress-section').css('cursor', 'pointer');
+	    		$("#transcribe-progress-section").prop('title', 'Transcribing Complete - Click to Edit');
+	     	} 
+
+	     	if (numberOfTasksCompleted > 1) {
+	     		$("#tag-progress-glyph-span").removeClass("glyphicon-unchecked");
+	    		$("#tag-progress-glyph-span").addClass("glyphicon-check");
+	    		$("#tag-progress-glyph-span").css("color", "#5CB85C");
+	    		$("#tag-progress-section").addClass("success-shadow");
+	    		
+	    		$('#tag-progress-section').css('cursor', 'pointer');
+	    		$("#tag-progress-section").prop('title', 'Tagging Complete - Click to Edit');
+	     	}
+
+	     	if (numberOfTasksCompleted > 2) {
+	     		$("#connect-progress-glyph-span").removeClass("glyphicon-unchecked");
+	    		$("#connect-progress-glyph-span").addClass("glyphicon-check");
+	    		$("#connect-progress-glyph-span").css("color", "#5CB85C");
+	    		$("#connect-progress-section").addClass("success-shadow");
+	    		
+	    		$('#connect-progress-section').css('cursor', 'pointer');
+	    		$("#connect-progress-section").prop('title', 'Connecting Complete - Click to Edit');
+	     	}
+	     }
 	</script>
 </head>
 
@@ -111,11 +198,23 @@
 	<nav class="navbar navbar-default navbar-fixed-bottom">
 		<div class="container progress-indicator-container">
 			<div class="progress">
+				<div class="progress-bar progress-bar-success progress-bar-striped active" id="success-indicator-bar-active-transcribe" style="width: 0%">
+					<span class="sr-only"></span>
+				</div>
+
 				<div class="progress-bar progress-bar-success" id="success-indicator-bar" style="width: 0%">
 					<span class="sr-only"></span>
 				</div>
 
-				<div class="progress-bar progress-bar-warning progress-bar-striped active" id="progress-indicator-bar" 
+				<div class="progress-bar progress-bar-success progress-bar-striped active" id="success-indicator-bar-active" style="width: 0%">
+					<span class="sr-only"></span>
+				</div>
+
+				<div class="progress-bar progress-bar-success" id="success-indicator-bar-connect" style="width: 0%">
+					<span class="sr-only"></span>
+				</div>
+
+				<div class="progress-bar progress-bar-warning progress-bar-striped active" id="progress-indicator-bar-active" 
 					style="width:0%">
 					<span class="sr-only"></span>
 				</div>
@@ -197,5 +296,4 @@
    		-webkit-box-shadow: inset 0 0 15px #5CB85C;
    		box-shadow:         inset 0 0 15px #5CB85C;
 	}
-	
 </style>

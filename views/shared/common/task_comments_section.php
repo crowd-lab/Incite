@@ -3,11 +3,11 @@
 		$currentURL = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
         if (strpos($currentURL, "/transcribe/") !== false) {
-            $currentTaskID = $this->transcription->id;
+            $currentTaskID = $this->document_metadata->id;
         } else if (strpos($currentURL, "/tag/") !== false) {
-            $currentTaskID = $this->tag->id;
+            $currentTaskID = $this->document_metadata->id;
         } else if (strpos($currentURL, "/connect/") !== false) {
-            $currentTaskID = $this->connection->id;
+            $currentTaskID = $this->document_metadata->id;
         } else if (strpos($currentURL, "/view/") !== false) {
             $currentTaskID = $this->document->id;
         } else {

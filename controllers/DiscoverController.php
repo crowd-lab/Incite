@@ -52,7 +52,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
 				} else if ($_GET['task'] == "discuss") {
                     $redirect_action = 'discussions/discuss';
 				} else { //then...random! but currently need more transcriptions
-                    $redirect_action = 'documents/transcribe';
+                    $redirect_action = 'documents/view';
 				}
 			}
             if (strlen($query) > 1)  //more than "?"
