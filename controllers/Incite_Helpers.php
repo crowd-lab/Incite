@@ -1,4 +1,5 @@
 <?php
+require_once("Email.php");
 
 function get_image_url_for_item($item) {
     //$url_path = (isset($_SERVER['HTTPS']) ? "https" : "http") . '://'. $_SERVER['HTTP_HOST'] . '/m4j/files/original/';
@@ -131,6 +132,9 @@ function getFullInciteUrl()
 function getReadableTimeFromMySQL($time)
 {
 }
+
+
+
 
 /**
  * A helper function that protects again two large bugs:

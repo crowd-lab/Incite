@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Incite 
+ * Incite
  *
  */
 
 /**
  * Plugin "Incite"
  *
- * @package Incite 
+ * @package Incite
  */
 function getTextBetweenTags($string, $tagname) {
     $pattern = "/<$tagname>(.*?)<\/$tagname>/";
@@ -91,6 +91,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     public function transcribeAction() {
 
+
+
         if ($this->getRequest()->isPost()) {
             //save transcription and summary to database
             if ($this->_hasParam('id')) {
@@ -167,13 +169,22 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
             }
 
+
             $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $total_pages = ceil(count($document_ids) / $max_records_to_show);
             $records_counter = 0;
             $records = array();
 
+            debug_to_console( count($document_ids));
+            $start = ($current_page - 1) * $max_records_to_show;
+            $end = $start + $max_records_to_show +1;
+            //used for resolution issue
+            $numItemsShowLess = 2;
+            $startdiff = $numItemsShowLess * $current_page;
+
+
             if (count($document_ids) > 0) {
-                for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
+                for ($i = $start; $i < $end; $i++) {
                     if ($records_counter++ >= $max_records_to_show)
                         break;
                     $records[] = $this->_helper->db->find($document_ids[$i]);
@@ -209,7 +220,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
                 }
 
-                createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $_POST['tagged_doc']); 
+                createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $_POST['tagged_doc']);
                 $_SESSION['Incite']['previous_task'] = 'tag';
 
                 if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
@@ -372,7 +383,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $_SESSION['incite']['message'] = 'Unfortunately, there are no documents to be tagged right now. Please come back later or find a document to <a href="'.getFullInciteUrl().'/documents/transcribe?">transcribe</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>!';
                 }
             }
-
             $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
             $records_counter = 0;
             $records = array();
@@ -392,7 +402,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if ($records != null && count($records) > 0) {
                 $this->view->assign(array('Tags' => $records));
             } else {
-                //no need to tag 
+                //no need to tag
             }
         }
     }
@@ -435,9 +445,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     }
                 //connect by tags
                 } else {
-                    if (isset($_POST['subject']) && $_POST['connection'] == 'true') 
+                    if (isset($_POST['subject']) && $_POST['connection'] == 'true')
                         addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 1);
-                    else if (isset($_POST['subject']) && $_POST['connection'] == 'false') 
+                    else if (isset($_POST['subject']) && $_POST['connection'] == 'false')
                         addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, 0);
                 }
                 $_SESSION['Incite']['previous_task'] = 'connect';
@@ -475,7 +485,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
                         $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id'));
                     }
-                    
+
                 }
                 $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
                 $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
@@ -516,8 +526,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         //for this part, we can random the destination of the tasks!
                         /*
                         $_SESSION['incite']['redirect'] = array(
-                                'status' => 'error_noDocToConnect', 
-                                'message' => 'Unfortunately, we could not find related documents for this document at this moment. In the meanwhile, you can try connecting other documents or help transcribe/tag other documents so that we can find related documents! Now, we are searching to see if we can find documents that need connections. You will be redirected to the results', 
+                                'status' => 'error_noDocToConnect',
+                                'message' => 'Unfortunately, we could not find related documents for this document at this moment. In the meanwhile, you can try connecting other documents or help transcribe/tag other documents so that we can find related documents! Now, we are searching to see if we can find documents that need connections. You will be redirected to the results',
                                 'url' => INCITE_PATH.'documents/connect/',
                                 'time' => '10');
 
@@ -538,8 +548,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                         $this->view->image_url = get_image_url_for_item($record);
                         /*
                         $_SESSION['incite']['redirect'] = array(
-                                'status' => 'error_noSubjectCandidates', 
-                                'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results', 
+                                'status' => 'error_noSubjectCandidates',
+                                'message' => 'Unfortunately, no potential subjects were found for this document. We are searching to see if there are documents that you can help connect. You will be redirected to the results',
                                 'url' => INCITE_PATH.'documents/connect/',
                                 'time' => '10');
 
@@ -568,7 +578,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     } else {
                         $subject_related_documents = array_unique($subject_related_documents);
                         $docs_for_common_tags = array_merge(array_unique($subject_related_documents), array($this->_getParam('id')));
-                        //fetch documents!    
+                        //fetch documents!
                         $actual_entities = findCommonTagNames($docs_for_common_tags);
                         $this->view->related_documents = array();
                         foreach ((array)$subject_related_documents as $id) {
@@ -673,8 +683,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             unset($_SESSION['incite']['redirect']);
         } else {
             //unknown error occur so we set default message
-            $this->view->redirect = array('status' => 'error', 
-                                          'message' => 'The server could not complete the request. You will be redirected to homepage', 
+            $this->view->redirect = array('status' => 'error',
+                                          'message' => 'The server could not complete the request. You will be redirected to homepage',
                                           'url' => '/m4j/incite',
                                           'time' => '5');
         }
@@ -751,5 +761,5 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
     }
 
-    
+
 }

@@ -84,6 +84,8 @@ require_once("Incite_Groups_Table.php");
         $arr['working_group'] = getGroupInfoByGroupId($groupId);
         return $arr;
     }
+
+   
     function getUserDataOld($email)
     {
         $arr = Array();
@@ -183,6 +185,35 @@ require_once("Incite_Groups_Table.php");
         $db = DB_Connect::connectDB();
         $stmt = $db->prepare("UPDATE omeka_incite_users SET password = ? WHERE email = ?");
         $stmt->bind_param("ss", md5($newPassword), $email);
+        if (!$stmt->execute())
+        {
+            var_dump($stmt->error);
+            $stmt->close();
+            $db->close();
+            return false;
+        }
+        $stmt->close();
+        $db->close();
+        return true;
+    }
+
+/**
+* Update the user's profile information.  
+* @param int $id is the user's id number in the database
+* @param string $username is the username, email
+* @param string password is the user's new password. It will be hashed 
+* before the update
+* @param string $firstname is user's first name
+* @param string $lastname is user's last name
+* @return true if successfully updated, false if not.
+*/
+    function editAccount($id, $username, $password, $firstName, $lastName){
+
+        $db = DB_Connect::connectDB();
+        $hashedPassword = md5($password);
+        $stmt = $db->prepare("UPDATE omeka_incite_users SET first_name = ?, last_name = ?, email = ?, password = ? WHERE id = ?");
+        $stmt->bind_param("ssssi", $firstName, $lastName, $username, $hashedPassword, $id);
+
         if (!$stmt->execute())
         {
             var_dump($stmt->error);

@@ -4,7 +4,7 @@
         <?php
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
-        
+
             $category_object = getAllCategories();
             $subcategory_id_name_table = getSubcategoryIdAndNames();
         ?>
@@ -38,8 +38,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Creating a tag</strong>" 
-                                    data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>" 
+                                    data-title="<strong>Creating a tag</strong>"
+                                    data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -49,8 +49,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a category</strong>" 
-                                    data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>" 
+                                    data-title="<strong>Selecting a category</strong>"
+                                    data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -60,8 +60,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a subcategory</strong>" 
-                                    data-content="<?php echo "The computer has tried to identify the subcategories for this tag, please ensure they are accurate and change them if needed." ?>" 
+                                    data-title="<strong>Selecting a subcategory</strong>"
+                                    data-content="<?php echo "The computer has tried to identify the subcategories for this tag, please ensure they are accurate and change them if needed." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -71,8 +71,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Adding details</strong>" 
-                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
+                                    data-title="<strong>Adding details</strong>"
+                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -88,8 +88,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-title="<strong>Creating a tag</strong>"
-                                    data-viewport="#tagging-container"; 
-                                    data-content="<?php echo "Computers can't always recognize tags, so we need your help! Highlighting a word in the transcription box to the left will generate a new tag." ?>" 
+                                    data-viewport="#tagging-container";
+                                    data-content="<?php echo "Computers can't always recognize tags, so we need your help! Highlighting a word in the transcription box to the left will generate a new tag." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -99,8 +99,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a category</strong>" 
-                                    data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than empty to be accepted." ?>" 
+                                    data-title="<strong>Selecting a category</strong>"
+                                    data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than empty to be accepted." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -110,8 +110,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a subcategory</strong>" 
-                                    data-content="<?php echo "For the given tag and category, select the appropriate subcategories, if any. If it doesn't fall into any subcategories simply leave none selected." ?>" 
+                                    data-title="<strong>Selecting a subcategory</strong>"
+                                    data-content="<?php echo "For the given tag and category, select the appropriate subcategories, if any. If it doesn't fall into any subcategories simply leave none selected." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -121,8 +121,8 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Adding details</strong>" 
-                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
+                                    data-title="<strong>Adding details</strong>"
+                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>"
                                     data-placement="bottom">
                                 </span>
                             </th>
@@ -134,7 +134,7 @@
                         <input id="entity-info" type="hidden" name="entities" />
                         <input id="tagged-doc" type="hidden" name="tagged_doc" />
                         <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
-                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
+                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                     </form>
 
                     <hr size=2 class="discussion-seperation-line">
@@ -143,16 +143,17 @@
                 <?php
                     include(dirname(__FILE__) . '/../common/task_comments_section.php');
                 ?>
-            </div> 
+            </div>
         </div>
     <!-- End work container -->
 
 <script type="text/javascript">
     //Global variable to store categories/counters
     var categories = <?php echo json_encode($category_object).";\n"; ?>
+    // alert(categories[2]['subcategory'].length);
     var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
-    
+
     function set_tag_id_counter() {
         var max_id = 0;
         $('#entity-table tr').each( function (idx) {
@@ -167,7 +168,7 @@
 
     function addUserTag(text, span_id) {
         var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
-        
+
         new_entity.find('.subcategory-select').multiselect({
             enableFiltering: true,
             filterBehavior: 'text',
@@ -186,7 +187,7 @@
             disableIfEmpty: true
         });
 
-        $('.category-select').multiselect('rebuild');    
+        $('.category-select').multiselect('rebuild');
         $('#user-entity-table').append(new_entity);
         new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
     }
@@ -203,7 +204,7 @@
                 disableIfEmpty: true,
                 numberDisplayed: 1
             });
-            
+
             <?php for ($i = 0; $i < sizeof($category_object); $i++){
                 echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
             }
@@ -212,7 +213,7 @@
                 disableIfEmpty: true
             });
             $('.category-select').multiselect('rebuild');
-                
+
             $('#entity-table').append(new_entity);
             new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
             new_entity.find('.category-select')
@@ -239,9 +240,9 @@
                 new_entity.find('.category-select').multiselect('rebuild');
                 var subcategory_menu = new_entity.find('.subcategory-select');
                 $(subcategory_menu).empty();
-                if (new_entity.find('.category-select option:selected').text() !== "") {
+                if (new_entity.find('.category-select').val() != 0) {
                     $.each(categories[new_entity.find('.category-select').val()-1]['subcategory'], function (idx) {
-                        subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                        subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                     });
                 } else {
                     subcategory_menu.multiselect('rebuild');
@@ -256,11 +257,11 @@
             if (this.dataset.details !== "") {
                 $('#'+this.id+'_table .entity-details').val(this.dataset.details);
             }
-            
+
         });
     }
 
-    
+
 
     $(document).ready(function () {
         addExistingTags();
@@ -274,9 +275,9 @@
         $('#user-entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            if ($(this).find('option:selected').text() !== "") {
+            if ($(this).val() != 0) {
                 $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                 });
             } else {
                 subcategory_menu.multiselect('rebuild');
@@ -299,8 +300,8 @@
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
             if ($(this).find('option:selected').text() !== "") {
-                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                $.each(categories[$(this).val()-1]['subcategory'][$(this).val()-1], function (idx) {
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                 });
             } else {
                 subcategory_menu.multiselect('rebuild');
@@ -376,12 +377,12 @@
 
         //Add entities by selection
         $('#transcribe_copy').on('mouseup', function (e) {
-            var parentOffset = $(this).offset(); 
+            var parentOffset = $(this).offset();
             var relX = e.pageX - parentOffset.left;
             var relY = e.pageY - parentOffset.top;
 
             //Bug fix - make sure the selection is still within the transcription on mouseup
-            //so you can't tag anything outside the transcription. Can't just check for hover here 
+            //so you can't tag anything outside the transcription. Can't just check for hover here
             //due to selection weirdness
             if (relX >= 0 && relY >= 0) {
                 var tag_selection = document.getSelection();

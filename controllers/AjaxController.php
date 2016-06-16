@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Incite 
+ * Incite
  *
  */
 
 /**
  * Plugin "Incite"
  *
- * @package Incite 
+ * @package Incite
  * Ajax controller for responding different ajax requests
  */
-class Incite_AjaxController extends Omeka_Controller_AbstractActionController 
+class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 {
     public function init() {
         //Since this is for ajax purpose, we don't need to render any views!
@@ -27,6 +27,9 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         require_once("Incite_System_Log.php");
         require_once("Incite_Subject_Concept_Table.php");
         require_once("Incite_Session.php");
+        require_once("Email.php");
+
+
     }
     /**
      * Ajax function to check if a username and password does exist in the database and if they are valid.
@@ -39,7 +42,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $password = $_POST['password'];
             $isGuest = false;
             $guestID = -1;
-            if (verifyUser($username, $password)) 
+            if (verifyUser($username, $password))
             {
                 //If there is already a guest session, then combine the guest session with the verified user
                 if (isset($_SESSION['Incite']['Guest']) && $_SESSION['Incite']['Guest'] == true) {
@@ -52,8 +55,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
                     system_log('not a guest before login!');
                 }
                 echo 'true';
-            } 
-            else 
+            }
+            else
             {
                 echo 'false';
             }
@@ -71,9 +74,9 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
                 $isGuest = true;
                 $guestID = $_SESSION['Incite']['USER_DATA'][0];
             }
-            if (verifyUser($username, $password)) 
+            if (verifyUser($username, $password))
             {
-                if (!isset($_SESSION)) 
+                if (!isset($_SESSION))
                 {
                     session_start();
                 }
@@ -84,24 +87,54 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
                     mapAccounts($guestID, $_SESSION['Incite']['USER_DATA'][0]);
                 }
                 echo json_encode(true);
-            } 
-            else 
+            }
+            else
             {
                 echo json_encode(false);
             }
         }
     }
+
+/**
+* This method edits user's information. Calls editAccount in
+* Incite_Users_Table class and updates username, password, First name,
+* and the Last name.
+*/
+
+    public function editaccountAction() {
+        if ($this->getRequest()->isPost()) {
+            $id = $_SESSION['Incite']['USER_DATA']['id'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $firstName = $_POST['fName'];
+            $lastName = $_POST['lName'];
+
+            if (editAccount($id, $username, $password, $firstName, $lastName))
+            {
+                system_log('editing account success');
+                echo 'true';
+            }
+            else
+            {
+                system_log('failed to edit account');
+                echo 'false';
+            }
+        }
+    }
+
+
     /**
      * Ajax function that creates accounts. This can be invoked in 2 ways
      * 1) An action is done and the user is not logged in, an account is automatically created for said user.
      * This account is a 'guest' account only meant for tracking any changes on the website
-     * 
+     *
      * 2) The user wants to create an account on the website that is not a guest account. If a guest account was used,
      * it is mapped back to the new account. On completion of making a new account, the user is automatically signed in.
-     * 
+     *
      * This method will throw 'false' if an account already exists in the system
      */
     public function createaccountAction() {
+
         if ($this->getRequest()->isPost()) {
             $username = $_POST['username'];
             $password = $_POST['password'];
@@ -130,6 +163,68 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             }
         }
     }
+
+
+
+/**
+* Ajax function that sends emails to the user.
+* Email::send will return true if the email has been sent. false if it
+* didn't.
+*/
+public function sendemailAction(){
+   if ($this->getRequest()->isPost()) {
+    $email = $_POST['username'];
+    $body = $_POST['body'];
+    $subject = $_POST['subject'];
+
+    if(Email::send($email, $body, $subject)){
+        echo 'true';
+
+    } else {
+        system_log('failed to send email');
+        echo 'false';
+    }
+
+}
+}
+
+/**
+* Ajax function that generates a new password and send email to the user.
+* It will create new password using uniqid() method.
+*
+* It checks for whether the user exists or not first.
+* If it does, ask the database to update the password with the new
+* password. After the database gets updated properly, it will send an
+* email to the user including the currently updated password.
+*
+* Will not send an email if the database failed to update. and echo false
+*/
+public function newpwAction(){
+    if ($this->getRequest()->isPost()) {
+        $email = $_POST['username'];
+        $pw = uniqid();
+        $subject="Here is your new password";
+        $body="Your password is now ".$pw.". Please log in with this password and change the password";
+
+        if (!userExists($email)) {
+            echo 'notexist';
+        }
+        else {
+            if(changePassword($email, $pw)){
+                Email::send($email, $body, $subject);
+                echo 'true';
+            }
+            else{
+                echo 'false';
+            }
+        }
+
+    }
+
+
+}
+
+
     /**
      * Ajax function that creates a new group, returns the new group's ID
      */
@@ -272,7 +367,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
     }
     /**
-     * Ajax function that gets the privilege of a group member 
+     * Ajax function that gets the privilege of a group member
      *
      * Returns output of getGroupMemberPrivilege
      */
@@ -288,10 +383,10 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
      * Ajax function that creates accounts. This can be invoked in 2 ways
      * 1) An action is done and the user is not logged in, an account is automatically created for said user.
      * This account is a 'guest' account only meant for tracking any changes on the website
-     * 
+     *
      * 2) The user wants to create an account on the website that is not a guest account. If a guest account was used,
      * it is mapped back to the new account. On completion of making a new account, the user is automatically signed in.
-     * 
+     *
      * This method will throw 'false' if an account already exists in the system
      */
     public function createaccountoldAction() {
@@ -311,7 +406,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             }
             if (createAccount($username, $password, $firstName, $lastName, $priv, $exp) != "failure") {
                 //destroy previous session and then map it to the new session ==> store in new table
-                if (!isset($_SESSION)) 
+                if (!isset($_SESSION))
                 {
                     session_start();
                 }
@@ -327,6 +422,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             }
         }
     }
+
+
     /**
      * Logs a user out of the website. This kills the cookie
      */
@@ -345,7 +442,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
      * This gets a comment from a specific user
      */
     public function postcommentAction() {
-        if ($this->getRequest()->isPost()) 
+        if ($this->getRequest()->isPost())
         {
             $documentID = $_POST['documentId'];
             $text = $_POST['commentText'];
@@ -372,7 +469,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             return true;
         }
     }
-        public function cmp($a, $b)
+    public function cmp($a, $b)
     {
         $firstime = strtotime($a['question_timestamp']);
         $secondtime = strtotime($b['question_timestamp']);
@@ -385,7 +482,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     /**
      * This returns comments of a document
      */
-    public function getcommentsdocAction() 
+    public function getcommentsdocAction()
     {
         if ($this->getRequest()->isPost())
         {
@@ -427,7 +524,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
         echo json_encode($array);
     }
-    
+
     public function searchkeyword2Action()
     {
         //$documentID is item id
