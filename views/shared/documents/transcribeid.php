@@ -144,6 +144,28 @@
                 $('#transcribe-form').show();
             });
         }
+        var tour = new Tour({
+        steps: [
+            {
+                element: "#work-view",
+                title: "Title of my step",
+                content: "Content of my step"
+            },
+            {
+                element: "#transcription-textarea",
+                title: "Title of my step",
+                content: "Content of my step"
+            }
+        ],
+        backdrop: true,
+        storate: false});
+
+        // Initialize the tour
+        tour.init();
+
+        // Start the tour
+        tour.start();
+        tour.restart();
     </script>
 
     <style>

@@ -1,6 +1,6 @@
 <?php
     require_once(dirname(__FILE__) . '/../../../controllers/Incite_Helpers.php');
-    queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles'));
+    queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles', 'bootstrap-tour.min'));
     $db = get_db();
 
     require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
@@ -33,6 +33,7 @@
     <?php echo js_tag('comments'); ?>
     <?php echo js_tag('notifications'); ?>
     <?php echo js_tag('bootstrap-dialog.min'); ?>
+    <?php echo js_tag('bootstrap-tour.min'); ?>
     <?php echo head_css(); ?>
 
      <?php
