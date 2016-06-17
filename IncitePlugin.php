@@ -203,6 +203,7 @@ SQL
         `item_id`               int(11) NOT NULL,
         `transcription_id`      int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `tagged_transcription`  varchar(200000) NOT NULL,
         `is_approved`           int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
