@@ -274,7 +274,7 @@ include(dirname(__FILE__).'/../common/header.php');
             document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
             document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
             showListView();
-            buildTimeLine(ev);
+            //buildTimeLine(ev);
             $(window).on('resize', function(e) {
                 $('#map-div').width($(window).width());
                 $('#timeline').width($(window).width()-30);
@@ -282,7 +282,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
                 document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
                 showListView();
-                buildTimeLine(ev);
+                //buildTimeLine(ev);
                 //$('#list-view').width($(window).width()*0.15);
             });
             $('#list-view-switch').one('click', showListView);
