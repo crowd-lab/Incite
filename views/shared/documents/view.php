@@ -424,6 +424,28 @@ include(dirname(__FILE__).'/../common/header.php');
                 }
             <?php endforeach; ?>
         }
+        var tour = new Tour({
+        steps: [
+            {
+                element: "#map-div",
+                title: "Title of my step",
+                content: "Content of my step"
+            },
+            {
+                element: "#list-view",
+                title: "Title of my step",
+                content: "Content of my step"
+            }
+        ],
+        backdrop: true,
+        storate: false});
+
+        // Initialize the tour
+        tour.init();
+
+        // Start the tour
+        tour.start(true);
+        tour.goTo(0);
 </script>
 
 
