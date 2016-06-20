@@ -33,7 +33,7 @@
 </head>
 
 <body>
-	<div id="container" class="comments-section-container">
+	<div id="comment-container" class="comments-section-container">
         <h3> Comment </h3>
         <div id="onLogin">
 			<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>	

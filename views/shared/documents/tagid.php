@@ -28,7 +28,7 @@
             </div>
 
             <div class="col-md-7">
-                <div class="col-md-12" id="tagging-container">
+                <div id="tagging-container">
                     <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
@@ -154,8 +154,8 @@
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
                     </form>
 
-                    <hr size=2 class="discussion-seperation-line">
                 </div>
+                <hr size=2 class="discussion-seperation-line">
 
                 <?php
                     include(dirname(__FILE__) . '/../common/revision_history_for_task_id_pages.php');
@@ -486,6 +486,33 @@
             $('#tagging-container').show();
         });
     }
+    var tour = new Tour({
+    steps: [
+        {
+            element: "#work-view",
+            title: "Title of my step",
+            content: "Content of my step"
+        },
+        {
+            element: "#tagging-container",
+            title: "Title of my step",
+            content: "Content of my step"
+        },
+        {
+            element: "#comment-container",
+            title: "Title of my step",
+            content: "Content of my step"
+        }
+    ],
+    backdrop: true,
+    storate: false});
+
+    // Initialize the tour
+    tour.init();
+
+    // Start the tour
+    tour.start(true);
+    tour.goTo(0);
 </script>
 
 <style>
@@ -495,6 +522,7 @@
 
     #tagging-container {
         padding-right: 0px;
+        margin-top: -32px;
     }
 
     .comments-section-container {
@@ -511,6 +539,7 @@
         cursor: pointer;
         margin-top: -32px;
     }
+
 </style>
 
 </body>

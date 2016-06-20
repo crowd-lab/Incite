@@ -26,7 +26,7 @@
                 ?>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6" id="connecting-work-area">
                 <div id="connecting-container">
                     <p class="header-step">
                         <i>Step 1 of 1: Mark all categories that apply to this document</i>
@@ -150,6 +150,33 @@
                 $('#connecting-container').show();
             });
         }
+        var tour = new Tour({
+        steps: [
+            {
+                element: "#work-view",
+                title: "Title of my step",
+                content: "Content of my step"
+            },
+            {
+                element: "#connecting-container",
+                title: "Title of my step",
+                content: "Content of my step"
+            },
+            {
+                element: "#comment-container",
+                title: "Title of my step",
+                content: "Content of my step"
+            }
+        ],
+        backdrop: true,
+        storate: false});
+
+        // Initialize the tour
+        tour.init();
+
+        // Start the tour
+        tour.start(true);
+        tour.goTo(0);
     </script>
 
     <style>
@@ -161,6 +188,10 @@
             position: absolute;
             right: 0;
             cursor: pointer;
+        }
+
+        #connecting-work-area {
+            margin-top: -32px;
         }
     </style>
 </body>

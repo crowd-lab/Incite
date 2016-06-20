@@ -85,6 +85,7 @@
 	#work-view {
         position: fixed; 
         width: 35%;
+        margin-top: -39px;
     }
 
     .viewer {
@@ -99,7 +100,6 @@
     }
 
     .document-header {
-        margin-top: -39px;
     }
 
     .document-title {

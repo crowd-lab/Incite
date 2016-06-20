@@ -20,6 +20,7 @@
         ?>
 
         <div class="col-md-6" id="submit-zone">
+            <div id="transcribing-work-area">
             <form method="post" id="transcribe-form">
                 <p class="header-step" style="margin-bottom: 13px; position: relative;">
                     <i>Step 1 of 3: Transcribe</i>
@@ -79,6 +80,8 @@
             <?php
                 include(dirname(__FILE__) . '/../common/revision_history_for_task_id_pages.php');
             ?>
+
+            </div>
 
             <br>
             <hr size=2 class="discussion-seperation-line">
@@ -152,7 +155,12 @@
                 content: "Content of my step"
             },
             {
-                element: "#transcription-textarea",
+                element: "#transcribing-work-area",
+                title: "Title of my step",
+                content: "Content of my step"
+            },
+            {
+                element: "#comment-container",
                 title: "Title of my step",
                 content: "Content of my step"
             }
@@ -164,11 +172,16 @@
         tour.init();
 
         // Start the tour
-        tour.start();
-        tour.restart();
+        tour.start(true);
+        tour.goTo(0);
+        //tour.restart();
     </script>
 
     <style>
+        #submit-zone {
+            margin-top: -32px;
+        }
+
         #submit_transcription {
             float: right;
         }

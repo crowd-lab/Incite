@@ -138,8 +138,12 @@
 </body>
 
 <style>
-	.document-header {
+	#work-view {
+        position: fixed; 
         margin-top: -30px;
+    }
+
+	.document-header {
     }
 
 	.document-title {
