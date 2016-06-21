@@ -125,6 +125,11 @@
         #instructions-modal-current-group-info-header {
             text-align: center;
         }
+
+        .nav-dropdown-control {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -360,24 +365,6 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form navbar-left" role="search" action="<?php echo getFullInciteUrl(); ?>/discover">
-                    <div class="form-group">
-                        <input id="location" type="text" class="form-control" placeholder="Location" name="location">
-                        <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
-                        <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
-                        <select class="form-control" name="task">
-                            <option value="random">Select a task</option>
-                            <option value="transcribe" <?php if (isset($task) && $task == "transcribe") echo ' selected'; ?>>Transcribe</option>
-                            <option value="tag"<?php if (isset($task) && $task == "tag") echo ' selected'; ?>>Tag</option>
-                            <option value="connect"<?php if (isset($task) && $task == "connect") echo ' selected'; ?>>Connect</option>
-                            <option value="discuss"<?php if (isset($task) && $task == "discuss") echo ' selected'; ?>>Discuss</option>
-                        </select>
-                    </div>
-                    <button id="navbar_search_button" type="submit" class="btn btn-default">
-                        Search <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                    </button>
-                </form>
-
                 <ul class="nav navbar-nav navbar-right" style="position: relative; right: 15px;">
                     <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                         <li id="working-group-interaction-area">
@@ -410,6 +397,53 @@
                         <?php endif; ?>
                     </li>
                 </ul>
+                <form class="navbar-form navbar-right" role="search" action="<?php echo getFullInciteUrl(); ?>/discover">
+                    <div class="form-group" style="width: 225px;">
+                        <div class="dropdown">
+                            <input id="adv-search" class="dropdown-toggle form-control" type="text" data-toggle="dropdown" aria-haspupus="true" aria-expanded="true" placeholder="Search...">
+                            <ul class="dropdown-menu" aria-labelledby="adv-search">
+                                <li class="nav-dropdown-control">
+                                    <label>Location:</label><br>
+                                    <input id="location" type="text" class="form-control" placeholder="Location" name="location">
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <label>Time:</label><br>
+                                    <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <label>Keywords:</label><br>
+                                    <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <label>Task Type:</label><br>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="random" checked="checked"> All</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="transcribe"> Transcribe</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="tag"> Tag</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="connect"> Connect</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="discuss"> Discuss</label>
+                                    </div>
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <br>
+                                    <button id="navbar_search_button" type="submit" class="btn btn-default pull-right">
+                                        Search <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                    </button>
+                                </li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+
             </div>
 
             <!-- /.navbar-collapse -->
