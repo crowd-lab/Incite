@@ -356,7 +356,7 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff;" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -398,39 +398,39 @@
                     </li>
                 </ul>
                 <form class="navbar-form navbar-right" role="search" action="<?php echo getFullInciteUrl(); ?>/discover">
-                    <div class="form-group" style="width: 225px;">
+                    <div class="form-group" style="width: 220px;">
                         <div class="dropdown">
                             <input id="adv-search" class="dropdown-toggle form-control" type="text" data-toggle="dropdown" aria-haspupus="true" aria-expanded="true" placeholder="Search...">
                             <ul class="dropdown-menu" aria-labelledby="adv-search">
                                 <li class="nav-dropdown-control">
-                                    <label>Location:</label><br>
+                                    <label>I want to </label><br>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="random" checked="checked"> find</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="transcribe"> transcribe</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="tag"> tag</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="connect"> connect</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="discuss"> discuss</label>
+                                    </div>
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <label>documents in</label><br>
                                     <input id="location" type="text" class="form-control" placeholder="Location" name="location">
                                 </li>
                                 <li class="nav-dropdown-control">
-                                    <label>Time:</label><br>
+                                    <label>between</label><br>
                                     <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
                                 </li>
                                 <li class="nav-dropdown-control">
-                                    <label>Keywords:</label><br>
+                                    <label>that are about</label><br>
                                     <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
-                                </li>
-                                <li class="nav-dropdown-control">
-                                    <label>Task Type:</label><br>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="random" checked="checked"> All</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="transcribe"> Transcribe</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="tag"> Tag</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="connect"> Connect</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="discuss"> Discuss</label>
-                                    </div>
                                 </li>
                                 <li class="nav-dropdown-control">
                                     <br>
