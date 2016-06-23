@@ -367,6 +367,10 @@ SQL
     DROP TABLE IF EXISTS {$this->_db->prefix}incite_group_instructions_seen_by
 SQL
    );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_group
+SQL
+   );
     }
 
     /**

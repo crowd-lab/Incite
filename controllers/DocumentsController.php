@@ -222,7 +222,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
         }
 
-        createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $_POST['tagged_doc']); 
+        createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']); 
         $_SESSION['Incite']['previous_task'] = 'tag';
 
         if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
