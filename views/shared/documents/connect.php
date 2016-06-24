@@ -2,8 +2,8 @@
 <?php
 
 /**
-    Input: Location from Item Type Metadata (Format: State - County - City or "State - City Indep. City")
-    Output: array including "lat" and "long".
+*    Input: Location from Item Type Metadata (Format: State - County - City or "State - City Indep. City")
+*    Output: array including "lat" and "long".
  */
 function loc_to_lat_long($loc_str)
 {
@@ -162,8 +162,8 @@ include(dirname(__FILE__).'/../common/header.php');
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
         <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
-        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;" 
-            data-toggle="popover" 
+        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;"
+            data-toggle="popover"
             data-trigger="hover" data-html="true"
             data-title="<?php echo "<strong>" . metadata($connection, array('Dublin Core', 'Title')) . "</strong>";?>"
             data-placement="left" data-id="<?php echo $connection->id; ?>"
@@ -197,7 +197,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="timeline"></div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
-                     
+
 </div>
     <script type="text/javascript">
             var ev = [
@@ -216,14 +216,14 @@ include(dirname(__FILE__).'/../common/header.php');
             });
             $('#list-view-switch').one("click", hideListView);
         }
-        
+
         function hideListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view-switch').width()-5 }, 'slow', function() {
                 $('#list-view-switch').html('Show');
             });
             $('#list-view-switch').one("click", showListView);
         }
-        
+
         function buildTimeLine(evt) {
             $('#timeline').empty();
             tl = $('#timeline').jqtimeline({
@@ -299,7 +299,7 @@ include(dirname(__FILE__).'/../common/header.php');
         } else {
             echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
         }
-        
+
         unset($_SESSION['incite']['message']);
     }
 ?>
