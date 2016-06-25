@@ -274,7 +274,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             // $records[] = $this->_helper->db->find($document_ids[$i]);
             $records[] = array('id' => $document_ids[$i],
             'uri' => $file->getProperty('uri'),
-            'date' => metadata($record, array('Dublin Core', 'Date')),
+            'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
             'desc' => metadata($record, array('Dublin Core','Description')),
             'name' => metadata($record, array('Dublin Core','Title')),
             'loc' => metadata($record, array('Item Type Metadata', 'Location')),
@@ -287,9 +287,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         }
       }
 
-
       echo json_encode($records);
-
 
     }else{
       echo 'false';

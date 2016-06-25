@@ -33,26 +33,6 @@ var docs;
 
 
 
-
-//
-//
-// <?php
-// foreach((array)$this->Transcriptions as $transcription) {
-//   $lat_long = loc_to_lat_long(metadata($transcription, array('Item Type Metadata', 'Location')));
-//   if (count($lat_long) > 0) {
-//     echo 'marker = L.marker(['.$lat_long['lat'].','.$lat_long['long']."]).addTo(map).bindPopup('".trim(strip_tags(metadata($transcription, array('Dublin Core', 'Title'))))." in ".metadata($transcription, array('Item Type Metadata', 'Location'))."');\n";
-//     echo 'markers_array.push({id:'.$transcription->id.', marker: marker});';
-//     echo 'marker_to_id[marker._leaflet_id]='.$transcription->id.';';
-//     echo 'id_to_marker['.$transcription->id.']= marker;';
-//   } else {
-//     echo 'nomarkers_array.push({id:'.$transcription->id.', marker: marker});';
-//   }
-// } ?> }
-
-
-
-
-
 </script>
 
 <!-- Page Content -->
@@ -128,6 +108,7 @@ var docs;
 
 
                 for ($i = $start; $i < $start+5; $i++): ?>
+
                 <li class=" page-item <?php if ($this->current_page == ($i+1)) echo 'active'; ?>">
                   <a class="page-link" href="?page=<?php echo ($i+1); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>">
                     <?php echo ($i+1); ?>
@@ -196,13 +177,12 @@ var docs;
                 });
 
                 function generateHashForTimeLine(){
+                  var i = 0;
                   $.each(docs, function() {
-                    ev["id"] = this.id;
-                    ev["name"] = this.name;
-                    ev["desc"] = this.desc;
-                    ev["on"] = new Date(this.date);
-                  });
-                }
+                    ev[i] = {'id': this.id, 'name': this.name, 'desc': this.desc, 'on':new Date(this.date)};
+                    i++;
+                });
+              }
 
 
 
@@ -221,6 +201,7 @@ var docs;
                 }
 
                 function buildTimeLine(evt) {
+                  console.log(evt);
                   $('#timeline').empty();
                   tl = $('#timeline').jqtimeline({
                     events : evt,
@@ -229,7 +210,7 @@ var docs;
                     endYear: 1880,
                     totalWidth: $('#timeline').width(),
                     click:function(e,event){
-                      alert(events.desc);
+                      alert(event.desc);
                     }});
                   }
 
@@ -308,7 +289,6 @@ var docs;
                     $.each(docs, function() {
 
                       var lat_long_var = this.lat_long;
-                      alert(lat_long_var.long);
                       if(lat_long_var.long && lat_long_var.lat){
                         marker = L.marker([lat_long_var.lat, lat_long_var.long]).addTo(map).bindPopup("\'"+ this.name +" in "+ this.loc + "\'");
                         markers_array.push({id: this.id, marker: marker});
