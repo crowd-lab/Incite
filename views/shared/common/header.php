@@ -360,11 +360,11 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff;" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1;" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-left" style=""><img src="http://incite.cs.vt.edu/m4jdev/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 55px; margin-right: 5px;"></a>
+                <a class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 55px; margin-right: 5px;"></a>
                 <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">
                     <div style="display: inline-block; font-size: 100%; margin-top: -8px;">
                         <div style="font-size: 100%; color: #8BB7C8;">MAPPING THE FOURTH OF JULY IN CIVIL WAR ERA</div>
@@ -403,7 +403,7 @@
                                 <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
                             </ul>
                         <?php else: ?>
-                            <a href="" style="color: #8BB7C8; font-size: 125%;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a>
+                            <a href="" style="color: #8BB7C8; font-size: 110%;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a>
                         <?php endif; ?>
                     </li>
                 </ul>
@@ -457,7 +457,13 @@
                     </li>
 -->
                     <li class="">
-                        <a href="" style="font-size: 125%; color: #8BB7C8;">Contribute</a>
+                        <a href="" style="font-size: 110%; color: #8BB7C8;">About</a>
+                    </li>
+                    <li class="">
+                        <a href="" style="font-size: 110%; color: #8BB7C8;">Teachers</a>
+                    </li>
+                    <li class="">
+                        <a href="" style="font-size: 150%; color: #8BB7C8;">Contribute</a>
                     </li>
                 </ul>
 
