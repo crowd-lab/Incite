@@ -135,6 +135,10 @@ include(dirname(__FILE__).'/../common/header.php');
     .black-color {
         color: black;
     }
+
+    #list-view p {
+        /* color: #B2B1B1; */
+    }
 </style>
 
 <script type="text/javascript">
@@ -227,9 +231,9 @@ include(dirname(__FILE__).'/../common/header.php');
         <span style="text-align: center;">You can mouse over the pins on the map or document thumbnails to see more details and click them to view more document info!
         </span>
     </div>
-    <div id="map-div" style="width:500px;"></div>
-    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white;">
-        <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>
+    <div id="map-view" style="margin: 5px; width: 69%;"><div id="map-div" style=""></div></div>
+    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white; border: solid 1.5px; border-color: #B2B1B1;">
+        <!--<div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>-->
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
         <br>
 <?php foreach ((array)$this->Documents as $document): ?>    
@@ -318,20 +322,21 @@ include(dirname(__FILE__).'/../common/header.php');
         });
 
         $(document).ready( function (e) {
-            $('#map-div').width($(window).width());
+            //$('#map-div').width($(window).width()*0.68);
             $('#timeline').width($(window).width()-30);
-            document.getElementById('list-view').style.top = ($('#map-div').offset().top+20)+'px';
-            document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
-            document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
-            showListView();
+            document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
+            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+            document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
+            //showListView();
             //buildTimeLine(ev);
             $(window).on('resize', function(e) {
-                $('#map-div').width($(window).width());
+                $('#map-div').width($(window).width()*0.69);
                 $('#timeline').width($(window).width()-30);
                 $('#map-div').height($(window).height()-200);
-                document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
-                document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
-                showListView();
+                document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
+                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+                document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
+                //showListView();
                 //buildTimeLine(ev);
                 //$('#list-view').width($(window).width()*0.15);
             });
@@ -427,7 +432,7 @@ include(dirname(__FILE__).'/../common/header.php');
         var tour = new Tour({
         steps: [
             {
-                element: "#map-div",
+                element: "#map-view",
                 title: "Title of my step",
                 content: "Content of my step"
             },
@@ -444,8 +449,8 @@ include(dirname(__FILE__).'/../common/header.php');
         tour.init();
 
         // Start the tour
-        tour.start(true);
-        tour.goTo(0);
+        //tour.start(true);
+        //tour.goTo(0);
 </script>
 
 
