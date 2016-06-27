@@ -389,7 +389,7 @@
                             <button id="user_profile" type="button" 
                                     class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false"
-                                    style="height: 34px;">
+                                    style="height: 34px; color: #8BB7C8;">
                                 <?php echo $_SESSION['Incite']['USER_DATA']['first_name']; ?>
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                             </button>
