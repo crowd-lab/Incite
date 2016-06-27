@@ -463,7 +463,7 @@
                         <a href="" style="font-size: 110%; color: #8BB7C8;">Teachers</a>
                     </li>
                     <li class="">
-                        <a href="" style="font-size: 150%; color: #8BB7C8;">Contribute</a>
+                        <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8;">Contribute</a>
                     </li>
                 </ul>
 

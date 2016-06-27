@@ -567,4 +567,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         $this->createSearchResultPages($document_ids, 'Documents');
     }
+
+
+    public function contributeAction() {
+    }
 }
