@@ -9,9 +9,9 @@ include(dirname(__FILE__).'/../common/header.php');
             <div id="contribute-confirmation" style="margin: 40px; text-align: center;">
                 <h2>I want to 
                     <select class="form-control" style="font-size: 80%; width: 150px;">
-                        <option>transcribe</option>
-                        <option>tag</option>
-                        <option>connect</option>
+                        <option value="transcribe" <?php if ($this->task_type === 'transcribe') echo 'selected="selected"'; ?>>transcribe</option>
+                        <option value="tag" <?php if ($this->task_type === 'tag') echo 'selected="selected"'; ?>>tag</option>
+                        <option value="connect" <?php if ($this->task_type === 'connect') echo 'selected="selected"'; ?>>connect</option>
                     </select> documents in 
                     <input type="text" class="form-control" value="Virginia" style="font-size: 80%; width: 150px;"> from 
                     <select class="form-control" style="font-size: 80%; width: 85px;">

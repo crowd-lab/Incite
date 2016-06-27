@@ -368,7 +368,7 @@
                 <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">
                     <div style="display: inline-block; font-size: 100%; margin-top: -8px;">
                         <div style="font-size: 100%; color: #8BB7C8;">MAPPING THE FOURTH OF JULY IN CIVIL WAR ERA</div>
-                        <div style="font-size: 75%; color: #C76152;">BUILD WITH INCITE</div>
+                        <div style="font-size: 65%; color: #C76152;">BUILD WITH INCITE</div>
                     </div>
                 </a>
             </div>

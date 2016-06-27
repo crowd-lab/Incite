@@ -570,5 +570,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
 
     public function contributeAction() {
+        $task = 'transcribe';
+        if (isset($_GET['task'])) {
+            if ($_GET['task'] === 'tag') {
+                $task = 'tag';
+            } else if ($_GET['task'] === 'connect') {
+                $task = 'connect';
+            }
+        }
+        $this->view->task_type = $task;
     }
 }

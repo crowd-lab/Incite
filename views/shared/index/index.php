@@ -49,7 +49,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
                         </div>
                         <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
-                            <a href=""><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
+                            <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=transcribe"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
                         </div>
                         <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
-                            <a href=""><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
+                            <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=tag"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
                         </div>
                         <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
-                            <a href=""><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
+                            <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=connect"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
                         </div>
                     </div>
                 </div>
