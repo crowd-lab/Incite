@@ -130,6 +130,10 @@
             margin-left: 15px;
             margin-right: 15px;
         }
+
+        nav > li > a {
+            color: #8BB7C8;
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -360,7 +364,13 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">Mapping the Fourth</a>
+                <a class="navbar-left" style=""><img src="http://incite.cs.vt.edu/m4jdev/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 55px; margin-right: 5px;"></a>
+                <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">
+                    <div style="display: inline-block; font-size: 100%; margin-top: -8px;">
+                        <div style="font-size: 100%; color: #8BB7C8;">MAPPING THE FOURTH OF JULY IN CIVIL WAR ERA</div>
+                        <div style="font-size: 75%; color: #C76152;">BUILD WITH INCITE</div>
+                    </div>
+                </a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -393,17 +403,17 @@
                                 <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
                             </ul>
                         <?php else: ?>
-                            <button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>
+                            <a href="" style="color: #8BB7C8; font-size: 125%;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a>
                         <?php endif; ?>
                     </li>
                 </ul>
-                <form class="navbar-form navbar-right" role="search" action="<?php echo getFullInciteUrl(); ?>/discover">
+                <form class="navbar-form navbar-right" role="search" action="<?php echo getFullInciteUrl(); ?>/discover" style="">
                     <div class="form-group" style="width: 220px;">
                         <div class="dropdown">
-                            <input id="adv-search" class="dropdown-toggle form-control" type="text" data-toggle="dropdown" aria-haspupus="true" aria-expanded="true" placeholder="Search...">
+                            <input id="adv-search" class="dropdown-toggle form-control" type="text" data-toggle="dropdown" aria-haspupus="true" aria-expanded="true" placeholder="Search..." style="width: 95%;" name="keywords">
                             <ul class="dropdown-menu" aria-labelledby="adv-search">
                                 <li class="nav-dropdown-control">
-                                    <label>I want to </label><br>
+                                    <label>Task Type:</label><br>
                                     <div class="radio">
                                         <label><input type="radio" name="task" value="random" checked="checked"> find</label>
                                     </div>
@@ -421,16 +431,12 @@
                                     </div>
                                 </li>
                                 <li class="nav-dropdown-control">
-                                    <label>documents in</label><br>
+                                    <label>Location:</label><br>
                                     <input id="location" type="text" class="form-control" placeholder="Location" name="location">
                                 </li>
                                 <li class="nav-dropdown-control">
-                                    <label>between</label><br>
+                                    <label>Time Range (1830-1870):</label><br>
                                     <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
-                                </li>
-                                <li class="nav-dropdown-control">
-                                    <label>that are about</label><br>
-                                    <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
                                 </li>
                                 <li class="nav-dropdown-control">
                                     <br>
@@ -443,6 +449,17 @@
                         </div>
                     </div>
                 </form>
+                <ul class="nav navbar-nav navbar-right">
+<!-- To be added -->
+<!--
+                    <li class="">
+                        <a style="font-size: 125%; color: #8BB7C8;">Browse</a>
+                    </li>
+-->
+                    <li class="">
+                        <a href="" style="font-size: 125%; color: #8BB7C8;">Contribute</a>
+                    </li>
+                </ul>
 
             </div>
 
