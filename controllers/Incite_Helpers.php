@@ -1,8 +1,12 @@
 <?php
 
-function get_image_url_for_item($item) {
+function get_image_url_for_item($item, $is_thumbnail = false) {
     //$url_path = (isset($_SERVER['HTTPS']) ? "https" : "http") . '://'. $_SERVER['HTTP_HOST'] . '/m4j/files/original/';
-    $url_path = getFullOmekaUrl().'/files/original/';
+    $url_path = getFullOmekaUrl();
+    if ($is_thumbnail)
+        $url_path .= '/files/thumbnails/';
+    else
+        $url_path .= '/files/original/';
     $path = getcwd().'/files/original/';
     if ($item == null)
         return '';
@@ -10,12 +14,16 @@ function get_image_url_for_item($item) {
     $files = $item->getFiles();
     if (count($files) <= 0)
         return '';
-    else if (count($files) == 1)
-        return $item->getFile()->getProperty('uri');
-    else {
+    else if (count($files) == 1) {
+        if ($is_thumbnail)
+            return $item->getFile()->getProperty('thumbnail_uri');
+        else
+            return $item->getFile()->getProperty('uri');
+    } else {
         $filenames = get_jpeg_png_filenames_from_item($item);
-        $target_filename = $path.'incite_'.$item->id.'.jpeg';
-        if (!file_exists($target_filename))
+        $full_target_filename = $path.'incite_'.$item->id.'.jpeg';
+        $target_filename = 'incite_'.$item->id.'.jpeg';
+        if (!file_exists($full_target_filename))
             merge_images($filenames, $target_filename);
         return $url_path.'incite_'.$item->id.'.jpeg';
     }
@@ -37,6 +45,23 @@ function merge_images($filenames, $filename_result) {
         return false;
 
     $path = getcwd().'/files/original/';
+    $oldcwd = getcwd();
+    chdir('./files/original/');
+
+    $file_names = '';
+
+    foreach ((array)$filenames as $filename) {
+        $file_names .= $filename['file']." ";
+    }
+    
+    //full size
+    system('convert '.$file_names.'-append '.$filename_result);
+
+    //thumbnail
+    system('convert '.$filename_result.' -thumbnail \'200x200\' ../thumbnails/'.$filename_result);
+
+//using php functions: too much memory consumption!
+/*
     $widths = array();
     $heights = array();
     for ($i = 0; $i < count($filenames); $i++) {
@@ -47,6 +72,8 @@ function merge_images($filenames, $filename_result) {
 
     $final_width = max($widths);
     $final_height = array_sum($heights);
+        echo $final_width." -- ".$final_height."\n<br>";
+        die();
 
     $final_image = imagecreatetruecolor($final_width, $final_height);
 
@@ -65,6 +92,9 @@ function merge_images($filenames, $filename_result) {
 
     imagejpeg($final_image, $filename_result);
     imagedestroy($final_image);
+*/
+
+    chdir($oldcwd);
 
     return true;
 
