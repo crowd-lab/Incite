@@ -211,7 +211,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <a href="<?php echo getFullInciteUrl().'/documents/connect/'.$connection->id; ?>">
 <?php endif; ?>
                 <div style="height: 40px; width:40px; float: left;">
-                        <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
+                        <img src="<?php echo get_image_url_for_item($connection, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
                 <div style="height: 40px; margin-left: 45px;">
                     <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>
