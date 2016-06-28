@@ -403,7 +403,7 @@
                                 <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
                             </ul>
                         <?php else: ?>
-                            <a href="" style="color: #8BB7C8; font-size: 110%;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a>
+                            <a href="" style="color: #8BB7C8; font-size: 110%; padding-left: 10px; padding-right: 10px;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a>
                         <?php endif; ?>
                     </li>
                 </ul>
@@ -457,13 +457,13 @@
                     </li>
 -->
                     <li class="">
-                        <a href="" style="font-size: 110%; color: #8BB7C8;">About</a>
+                        <a href="" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">About</a>
                     </li>
                     <li class="">
-                        <a href="" style="font-size: 110%; color: #8BB7C8;">Teachers</a>
+                        <a href="" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Teachers</a>
                     </li>
                     <li class="">
-                        <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8;">Contribute</a>
+                        <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Contribute</a>
                     </li>
                 </ul>
 
