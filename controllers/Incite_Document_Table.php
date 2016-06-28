@@ -21,6 +21,42 @@ function getTranscribableDocuments()
     
     return $documents_with_jpeg;
 }
+
+function getDocumentsWithTranscriptions()
+{
+
+    $db = DB_Connect::connectDB();
+    $documents_with_trans = array();  //document id's and assume documents with jpeg all need transcriptions and thus tags
+    $stmt = $db->prepare("SELECT DISTINCT `omeka_items`.`id` FROM `omeka_items` INNER JOIN `omeka_incite_transcriptions` ON `omeka_items`.`id` = `document_id`");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $documents_with_trans[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+    
+    return $documents_with_trans;
+}
+
+function getDocumentsWithoutTranscriptions()
+{
+
+    $db = DB_Connect::connectDB();
+    $documents = array();  //document id's and assume documents with jpeg all need transcriptions and thus tags
+    $stmt = $db->prepare("SELECT `id` FROM `omeka_items`");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $documents[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+
+    $documents_with_trans = getDocumentsWithTranscriptions();
+    
+    return array_diff($documents, $documents_with_trans);
+}
 /**
  * Gets all document id with tags
  * @return an array of results
