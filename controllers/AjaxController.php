@@ -226,12 +226,12 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
   }
 
   public function getcurrpageAction(){
-// $page = getCurrentPage();
+    // $page = getCurrentPage();
     if ($this->getRequest()->isGet()) {
       // if(isSearchQuerySpecifiedViaGet()){
-          $page = getCurrentPage();
-          // $page = 1;
-          echo $page;
+      $page = getCurrentPage();
+      // $page = 1;
+      echo $page;
 
 
     }
@@ -247,23 +247,14 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 
       $width = $_POST['width'];
       $height = $_POST['height'];
+      $current_page = $_POST['current_page'];
+      $items_per_page = $_POST['items_per_page'];
 
-      $items_per_page = SEARCH_RESULTS_PER_PAGE;
+
 
       $records = array();
 
-      if($height > 650 && $height <= 710){
-        $items_per_page = 6;
-      }
-      if ($height > 560 && $height <= 650){
-        $items_per_page = 5;
-      }
-      if($height <= 560){
-        $items_per_page = 4;
-      }
-      $current_page = 1;
       $this->_helper->db->setDefaultModelName('Item');
-      $records_coutner = 0;
 
       if (isSearchQuerySpecifiedViaGet()) {
         $searched_item_ids = getSearchResultsViaGetQuery();
@@ -274,12 +265,15 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         $query_str = "";
       }
 
-    $total_pages = ceil(count($document_ids) / $items_per_page);
-
+      $total_pages = ceil(count($document_ids) / $items_per_page);
+      $data['total_pages'] = $total_pages;
 
       if (count($document_ids) > 0 ) {
 
-        for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page*$current_page; $i++) {
+        for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page * $current_page; $i++) {
+          if ($i >= MAXIMUM_SEARCH_RESULTS){
+            break;
+          }
 
           $record = get_record_by_id('item',$document_ids[$i]);
           $file = $record->getFile();
@@ -300,8 +294,9 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
           }
         }
       }
+      $data['records'] = $records;
 
-      echo json_encode($records);
+      echo json_encode($data);
 
     }else{
       echo 'false';
