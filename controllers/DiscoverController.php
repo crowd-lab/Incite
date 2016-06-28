@@ -20,6 +20,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
     require_once("Incite_Search.php");
   }
 
+
   public function indexAction()
   {
     if ($this->getRequest()->isGet()) {
@@ -66,5 +67,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
       $this->_redirect('/incite/'.$redirect_action);
     }
   }
+  
+
 
 }

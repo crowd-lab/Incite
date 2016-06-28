@@ -225,6 +225,22 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     }
   }
 
+  public function getcurrpageAction(){
+// $page = getCurrentPage();
+    if ($this->getRequest()->isGet()) {
+      // if(isSearchQuerySpecifiedViaGet()){
+          $page = getCurrentPage();
+          // $page = 1;
+          echo $page;
+
+
+    }
+    else{
+      echo 'false';
+    }
+
+  }
+
   public function getdocumentsAction(){
 
     if ($this->getRequest()->isPost()) {
@@ -247,8 +263,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
       }
       $current_page = 1;
       $this->_helper->db->setDefaultModelName('Item');
-
-
+      $records_coutner = 0;
 
       if (isSearchQuerySpecifiedViaGet()) {
         $searched_item_ids = getSearchResultsViaGetQuery();
@@ -259,14 +274,13 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         $query_str = "";
       }
 
-      getCurrentPage();
-      // debug_to_console($curpage);
-      // die();
+    $total_pages = ceil(count($document_ids) / $items_per_page);
 
 
       if (count($document_ids) > 0 ) {
 
-        for ($i = ($current_page - 1) * $items_per_page; $i < 10; $i++) {
+        for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page*$current_page; $i++) {
+
           $record = get_record_by_id('item',$document_ids[$i]);
           $file = $record->getFile();
 

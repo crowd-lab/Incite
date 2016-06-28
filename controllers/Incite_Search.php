@@ -23,7 +23,6 @@ function getAllDocumentsBetweenDates($start, $end, $order='ASC')
 }
 function getAllDocumentsContainLocation($location)
 {
-
   $db = DB_Connect::connectDB();
   $item_ids = array();
   $element_id_for_location = 4;
@@ -75,16 +74,6 @@ function getAllDocumentsContainKeywords($keywords)
   return $item_ids;
 }
 
-function getCurrentPage(){
-  $current_page = 1;
-  if (isset($_GET['page'])){
-    $current_page = $_GET['page'];
-  }
-  // debug_to_console($current_page);
-  // die();
-  return $current_page;
-}
-
 
 function getSearchResultsViaGetQuery()
 {
@@ -134,11 +123,20 @@ function getSearchResultsViaGetQuery()
 
 function isSearchQuerySpecifiedViaGet()
 {
+// $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+// debug_to_console($current_page);
+// die();
 
-  return (isset($_GET['location']) && $_GET['location'] != "") ||
-  (isset($_GET['time']) && $_GET['time'] != "") ||
-  (isset($_GET['keyword']) && $_GET['keywords'] != "");
+  return (isset($_GET['location']) && $_GET['location'] != "") || (isset($_GET['time']) && $_GET['time'] != "") ||  (isset($_GET['keyword']) && $_GET['keywords'] != "");
 }
+
+
+function getCurrentPage(){
+
+  // return $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+  // return
+}
+
 
 function getSearchQuerySpecifiedViaGetAsString()
 {
