@@ -31,8 +31,13 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
             }
 
             //Process time search
-            if (isset($_GET['time']) && $_GET['time'] != "") {
+            if (isset($_GET['time']) && $_GET['time'] != "") { //for advanced search. We also have dates
                 $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time'];
+            } else if (isset($_GET['time_from']) &&  //from landing page. We only have years.
+                       isset($_GET['time_to']) && 
+                       $_GET['time_from'] != "" && 
+                       $_GET['time_to'] != "") {
+                $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time_from'].'-01-01 - '.$_GET['time_to'].'-12-31';
             }
 
             //Process keyword search
