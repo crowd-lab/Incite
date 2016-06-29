@@ -35,7 +35,7 @@ require_once("Incite_Groups_Table.php");
         else {
             system_log('Incite_Users_Table:verifyUser:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
         }
-        
+
     }
     function userExists($email)
     {
@@ -55,7 +55,7 @@ require_once("Incite_Groups_Table.php");
         else {
             system_log('Incite_Users_Table:userExists:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
         }
-        
+
     }
     /**
      * Gets information about the user in an array
@@ -74,7 +74,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr['id'] = $id;
         $arr['first_name'] = $firstname;
         $arr['last_name'] = $lastname;
@@ -84,8 +84,6 @@ require_once("Incite_Groups_Table.php");
         $arr['working_group'] = getGroupInfoByGroupId($groupId);
         return $arr;
     }
-
-   
     function getUserDataOld($email)
     {
         $arr = Array();
@@ -97,7 +95,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr[0] = $id;
         $arr[1] = $firstname;
         $arr[2] = $lastname;
@@ -122,7 +120,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr[0] = $firstname;
         $arr[1] = $lastname;
         $arr[2] = $email;
@@ -142,7 +140,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr['first_name'] = $firstname;
         $arr['last_name'] = $lastname;
         $arr['email'] = $email;
@@ -196,39 +194,10 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return true;
     }
-
-/**
-* Update the user's profile information.  
-* @param int $id is the user's id number in the database
-* @param string $username is the username, email
-* @param string password is the user's new password. It will be hashed 
-* before the update
-* @param string $firstname is user's first name
-* @param string $lastname is user's last name
-* @return true if successfully updated, false if not.
-*/
-    function editAccount($id, $username, $password, $firstName, $lastName){
-
-        $db = DB_Connect::connectDB();
-        $hashedPassword = md5($password);
-        $stmt = $db->prepare("UPDATE omeka_incite_users SET first_name = ?, last_name = ?, email = ?, password = ? WHERE id = ?");
-        $stmt->bind_param("ssssi", $firstName, $lastName, $username, $hashedPassword, $id);
-
-        if (!$stmt->execute())
-        {
-            var_dump($stmt->error);
-            $stmt->close();
-            $db->close();
-            return false;
-        }
-        $stmt->close();
-        $db->close();
-        return true;
-    }
     /**
      * Upgrade or Downgrade user's experience level
      * @param string $email associated with account
-     * @param int $experienceLevel to change to 
+     * @param int $experienceLevel to change to
      * @return boolean true if successful, false otherwise
      */
     function changeExperienceLevel($email, $experienceLevel)
@@ -295,19 +264,19 @@ require_once("Incite_Groups_Table.php");
         else
         {
             var_dump("ERROR: You are already added");
-        }        
+        }
     }
     public function removeGroupID($userID, $groupID)
     {
-        
-        
+
+
     }
      *
      */
     /**
      * Safe way to 'remove' an account by setting it's active status to '0'
      * @param string $email associated with the account to deactivate
-     * @return boolean true if worked, false otherwise 
+     * @return boolean true if worked, false otherwise
      */
     function deactivateAccount($email)
     {
@@ -324,7 +293,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->close();
         $db->close();
         return true;
-        
+
     }
     /**
      * If account is inactive, reactivate the account
@@ -398,7 +367,7 @@ require_once("Incite_Groups_Table.php");
         $db->close();
     }
     /**
-     * Generate an 11 digit random user id. Used only for making an 
+     * Generate an 11 digit random user id. Used only for making an
      * anonymous cookie for unlogged-in users
      * @return int 11 digit random number
      */
@@ -420,7 +389,7 @@ require_once("Incite_Groups_Table.php");
     {
         return implode(explode(" ", microtime()));
     }
-    
+
     function createGuestSession()
     {
         $id = generateRandomUserId();
@@ -550,7 +519,7 @@ require_once("Incite_Groups_Table.php");
         $docs = array();
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
-        $stmt = $db->prepare("SELECT DISTINCT item_id, created_timestamp, text, working_group_id FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        $stmt = $db->prepare("SELECT item_id, timestamp_creation, text, working_group_id FROM omeka_incite_tagged_transcriptions INNER JOIN omeka_element_texts ON item_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY item_id");
         $stmt->bind_param("ii", $element_id_for_title, $userid);
         $stmt->bind_result($doc, $time, $doc_title, $working_group_id);
         $stmt->execute();
@@ -564,7 +533,8 @@ require_once("Incite_Groups_Table.php");
     function getTaggedDocumentCountByUserId($userid) {
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
-        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_timestamp, text) FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        //$stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_timestamp, text) FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ?");
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, timestamp_creation, text) FROM omeka_incite_tagged_transcriptions INNER JOIN omeka_element_texts ON item_id = record_id WHERE element_id = ? AND user_id = ?");
         $stmt->bind_param("ii", $element_id_for_title, $userid);
         $stmt->bind_result($count);
         $stmt->execute();

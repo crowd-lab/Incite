@@ -7,9 +7,25 @@ include(dirname(__FILE__).'/../common/header.php');
 ?>
 
 <style>
-.no-map-marker {
-  background-color: #EEEEEE;
-}
+
+    .no-map-marker {
+        background-color: #EEEEEE;
+    }
+
+    .icon-container {
+        position: relative;
+        top: -20px;
+        margin-left: 45px;
+    }
+
+    .task-icon {
+        margin-right: 7px;
+        cursor: pointer;
+    }
+
+    .light-grey-color {
+        color: lightgrey;
+    }
 </style>
 
 <script type="text/javascript">
@@ -26,6 +42,16 @@ var screenY;
 var docs;
 
 
+    function addTaskCompletionIconsToResultsRow(documentId) {
+        var row = $('#list_id' + documentId);
+        var iconContainer = $('<div class="icon-container"></div>');
+
+        var transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
+            '<span title="Document has not yet been transcribed - Click to transcribe it" class="glyphicon glyphicon-pencil task-icon light-grey-color"></span></a>');
+
+        iconContainer.append(transcribedIcon);
+        row.append(iconContainer);
+    }
 </script>
 
 <!-- Page Content -->
@@ -140,7 +166,7 @@ function setUpForDocumentsList(){
 * Send current_page of the list and number of items per page.
 * When succeed, response contains two items. 'total_pages' is the total number of pages
 * in the list. 'records' contains documents that we need to display.
-* This function will call other functions to build the map, timeline, pagination bar and the list. 
+* This function will call other functions to build the map, timeline, pagination bar and the list.
 */
 function getTranscribableDocumentsRequest() {
   var request = $.ajax({
@@ -344,6 +370,7 @@ function buildTimeLine(evt) {
 
 
     <?php
+
     if (isset($_SESSION['incite']['message'])) {
 
       if (strpos($_SESSION["incite"]["message"], 'Unfortunately') !== false) {

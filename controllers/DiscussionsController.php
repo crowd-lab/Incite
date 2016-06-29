@@ -92,7 +92,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                     $record = $this->_helper->db->find($reference_id);
                     if ($record == null)
                         continue;
-                    $approved_transcriptions = getIsAnyTranscriptionApproved($reference_id);
+                    $approved_transcriptions = getApprovedTranscriptionIDs($reference_id);
                     $transcription = "no transcription available";
                     if ($approved_transcriptions != null) 
                         $transcription = getTranscriptionText($approved_transcriptions[0]);

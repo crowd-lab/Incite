@@ -1,10 +1,13 @@
 <?php
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Helpers.php');
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles'));
-$db = get_db();
 
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Helpers.php');
+    queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles', 'bootstrap-tour.min'));
+    $db = get_db();
+
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Session.php');
+    setup_session();
 ?>
 
 <head>
@@ -127,7 +130,16 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
   #instructions-modal-current-group-info-header {
     text-align: center;
   }
-  </style>
+  .nav-dropdown-control {
+      margin-left: 15px;
+      margin-right: 15px;
+  }
+
+  nav > li > a {
+      color: #8BB7C8;
+  }
+</style>
+
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -290,28 +302,28 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
   };
 
   function loginAjaxRequest() {
-    var request = $.ajax({
-      type: "POST",
-      url: "<?php echo getFullInciteUrl().'/ajax/login'; ?>",
-      data: {"username": $('#username').val(), "password": $('#password').val()},
-      success: function (response) {
-        data = response.trim();
+             var request = $.ajax({
+                 type: "POST",
+                 url: "<?php echo getFullInciteUrl().'/ajax/login'; ?>",
+                 data: {"username": $('#username').val(), "password": $('#password').val()},
+                 success: function (response) {
+                     data = response.trim();
+                     if (data == "true") {
+                         createAlertInLoginModal("Login successful!", false);
+                         setTimeout(function () {
+                             location.reload();
+                         }, 1000);
+                     } else {
+                         createAlertInLoginModal("Wrong username or password", true);
+                     }
+                 },
+                 error: function (e) {
+                     console.log(e.message);
+                 }
+             });
+         };
 
-        if (data == "true") {
-          createAlertInLoginModal("Login successful!", false);
 
-          setTimeout(function () {
-            location.reload();
-          }, 1000);
-        } else {
-          createAlertInLoginModal("Wrong username or password", true);
-        }
-      },
-      error: function (e) {
-        console.log(e.message);
-      }
-    });
-  };
 
   function signupAjaxRequest() {
     var request = $.ajax({
@@ -392,85 +404,182 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
 </head>
 
 <body>
-  <!-- Navigation -->
-  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <!-- <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">Mapping the Fourth</a> -->
 
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1;" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 55px; margin-right: 5px;"></a>
+                <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">
+                    <div style="display: inline-block; font-size: 100%; margin-top: -8px;">
+                        <div style="font-size: 100%; color: #8BB7C8;">MAPPING THE FOURTH OF JULY IN CIVIL WAR ERA</div>
+                        <div style="font-size: 65%; color: #C76152;">BUILD WITH INCITE</div>
+                    </div>
+                </a>
+            </div>
 
-        <ul class="nav navbar-nav">
-          <li class="dropdown">
-            <a href="#" class="navbar-brand dropdown" data-toggle="dropdown">Mapping the Fourth</a>
-            <ul class="dropdown-menu" id="header-dropdown-menu"role="menu">
-              <li><a href="<?php echo getFullInciteUrl(); ?>">Home</a></li>
-              <li class="divider" id="DropdownDivider"></li>
-              <!-- <li><a href=" <?php //echo getFullInciteUrl(); ?>/index/about">About</a></li> -->
-              <li><a target="_blank" href="http://www.civilwar.vt.edu/wordpress/mapping-the-fourth-of-july-in-the-civil-war-era/">About</a></li>
-              <li><a href="<?php echo getFullInciteUrl(); ?>/help/students">Students</a></li>
-              <li><a href="<?php echo getFullInciteUrl(); ?>/help/teachers">Teachers/professors</a></li>
-              <li class="divider" id="DropdownDivider"></li>
-              <li><a href="#">Terms of Use</a></li>
-              <li><a href="#">Privacy Policy</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right" style="position: relative; right: 15px;">
+                    <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
+                        <li id="working-group-interaction-area">
+                            <?php
+                                include(dirname(__FILE__) . '/working_group_selector.php');
+                            ?>
+                        </li>
+                    <?php endif; ?>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <form class="navbar-form navbar-left" role="search" action="<?php echo getFullInciteUrl(); ?>/discover">
-          <div class="form-group">
-            <input id="location" type="text" class="form-control" placeholder="Location" name="location">
-            <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
-            <input id="keywords" type="text" class="form-control" placeholder="Keywords" name="keywords">
-            <select class="form-control" name="task">
-              <option value="random">Select a task</option>
-              <option value="transcribe" <?php if (isset($task) && $task == "transcribe") echo ' selected'; ?>>Transcribe</option>
-              <option value="tag"<?php if (isset($task) && $task == "tag") echo ' selected'; ?>>Tag</option>
-              <option value="connect"<?php if (isset($task) && $task == "connect") echo ' selected'; ?>>Connect</option>
-              <option value="discuss"<?php if (isset($task) && $task == "discuss") echo ' selected'; ?>>Discuss</option>
-            </select>
+                    <li class="dropdown" id="navbar-account-interaction-area">
+                        <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
+                            <button id="user_profile" type="button"
+                                    class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false"
+                                    style="height: 34px; color: #8BB7C8;">
+                                <?php echo $_SESSION['Incite']['USER_DATA']['first_name']; ?>
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="user-dropdown-menu">
+                                <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
+                                    <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
+                                <?php else: ?>
+                                    <li class="disabled"><a href="#">Profile</a></li>
+                                <?php endif; ?>
+                                <li class="divider"></li>
+                                <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
+                            </ul>
+                        <?php else: ?>
+                            <a href="" style="color: #8BB7C8; font-size: 110%; padding-left: 10px; padding-right: 10px;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a>
+                        <?php endif; ?>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-right" role="search" action="<?php echo getFullInciteUrl(); ?>/discover" style="">
+                    <div class="form-group" style="width: 220px;">
+                        <div class="dropdown">
+                            <input id="adv-search" class="dropdown-toggle form-control" type="text" data-toggle="dropdown" aria-haspupus="true" aria-expanded="true" placeholder="Search..." style="width: 95%;" name="keywords">
+                            <ul class="dropdown-menu" aria-labelledby="adv-search">
+                                <li class="nav-dropdown-control">
+                                    <label>Task Type:</label><br>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="random" checked="checked"> find</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="transcribe"> transcribe</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="tag"> tag</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="connect"> connect</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="task" value="discuss"> discuss</label>
+                                    </div>
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <label>Location:</label><br>
+                                    <input id="location" type="text" class="form-control" placeholder="Location" name="location">
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <label>Time Range (1830-1870):</label><br>
+                                    <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
+                                </li>
+                                <li class="nav-dropdown-control">
+                                    <br>
+                                    <button id="navbar_search_button" type="submit" class="btn btn-default pull-right">
+                                        Search <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                    </button>
+                                </li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+<!-- To be added -->
+<!--
+                    <li class="">
+                        <a style="font-size: 125%; color: #8BB7C8;">Browse</a>
+                    </li>
+-->
+                    <li class="">
+                        <a href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">About</a>
+                    </li>
+                    <li class="">
+                        <a href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Teachers</a>
+                    </li>
+                    <li class="">
+                        <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Contribute</a>
 
-          </div>
-          <button id="navbar_search_button" type="submit" class="btn btn-default">
-            Search <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-          </button>
-        </form>
+                    </li>
+                </ul>
 
-        <ul class="nav navbar-nav navbar-right" style="position: relative; right: 15px;">
-          <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-            <li id="working-group-interaction-area">
-              <?php
-              include(dirname(__FILE__) . '/working_group_selector.php');
-              ?>
-            </li>
-          <?php endif; ?>
+            </div>
 
-          <li class="dropdown" id="navbar-account-interaction-area">
-            <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-              <button id="user_profile" type="button"
-              class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false"
-              style="height: 34px;">
-              <?php echo $_SESSION['Incite']['USER_DATA']['first_name']; ?>
-              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            </button>
-            <ul class="dropdown-menu" id="user-dropdown-menu">
-              <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
-                <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
-              <?php else: ?>
-                <li class="disabled"><a href="#">Profile</a></li>
-              <?php endif; ?>
-              <li class="divider"></li>
-              <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
-            </ul>
-          <?php else: ?>
-            <button id="login_modal" type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</button>
-          <?php endif; ?>
-        </li>
-      </ul>
+            <!-- /.navbar-collapse -->
+        </div>
+
+        <!-- /.container -->
+    </nav>
+
+    <div class="modal fade" id="login-signup-dialog" tabindex="-1" role="dialog" aria-labelledby="login-signup-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="login-signup-dialog-label">User Login/Sign-up</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs nav-justified nav-pills">
+                        <li class="active" id="login-tab"><a href="#tab1" data-toggle="tab">Login</a></li>
+                        <li id="signup-tab"><a href="#tab2" data-toggle="tab">Sign-up</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1">
+                            <form>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="control-label">Username (email):</label>
+                                    <input type="text" class="form-control" id="username" name="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="control-label">Password:</label>
+                                    <input type="password" class="form-control" id="password" name="password">
+                                </div>
+                                  <a href="<?php echo getFullInciteUrl() . '/users/forgot'?>" id="forgotpw">forgot password?</a>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            <form>
+                                <div class="form-group">
+                                    <label class="control-label">Username (email):</label>
+                                    <input type="text" class="form-control" id="newUsername" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="control-label">Password:</label>
+                                    <input type="password" class="form-control" id="newPassword" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="control-label">Confirm Password:</label>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="control-label">First Name:</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="control-label">Last Name:</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="modal-footer">
+                    <button type="button" class="btn btn-primary" id="login-button">Submit</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- /.navbar-collapse -->
@@ -479,7 +588,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
   <!-- /.container -->
 </nav>
 
-<div class="modal fade" id="login-signup-dialog" tabindex="-1" role="dialog" aria-labelledby="login-signup-dialog-label">
+<!-- <div class="modal fade" id="login-signup-dialog" tabindex="-1" role="dialog" aria-labelledby="login-signup-dialog-label">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -538,7 +647,7 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php')
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <div class="modal fade" id="instructions-dialog" tabindex="-1" role="dialog" aria-labelledby="instructions-dialog-label">
   <div class="modal-dialog" role="document">

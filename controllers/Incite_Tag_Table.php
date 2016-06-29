@@ -226,15 +226,38 @@ function getAllTaggedTranscriptions($itemID) {
     return $transcriptions;
 }
 /**
- * Returns true if a document is tagged, false otherwise
+ * Returns id of latest tagged transcription
  * @param int $itemID
  * @return boolean
  */
-function hasTaggedTranscription($itemID) {
+function getLatestTaggedTranscriptionID($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_tagged_transcriptions WHERE item_id = ?");
+    $transcriptions = array();
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND is_approved = 1 ORDER BY timestamp_creation DESC LIMIT 1");
     $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($taggedTranscriptionID);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $taggedTranscriptionID;
+}
+/**
+ * Returns true if a document is tagged, false otherwise
+ * @param int $itemID -> the document id
+ * @return boolean
+ */
+function hasTaggedTranscriptionForNewestTranscription($itemID) {
+    $latestTranscription = getNewestTranscription($itemID);
+    if (empty($latestTranscription)) {
+        return false;
+    }
+
+    $count = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND transcription_id = ?");
+    $stmt->bind_param("ii", $itemID, $latestTranscription['id']);
     $stmt->bind_result($count);
     $stmt->execute();
     $stmt->fetch();
@@ -247,27 +270,26 @@ function hasTaggedTranscription($itemID) {
     }
 }
 /**
- * Returns true if a document is tagged, false otherwise
- * @param int $itemID
- * @return boolean
+ * Get the 20 latest tagged transcription edits (approved or not)
+ *
+ * @param int $documentID
+ * @return array with the info request, or empty if no tagged transcriptions for document
  */
-function isDocumentTagged($itemID) {
-    $count = 0;
+function getTaggedTranscriptionRevisionHistory($documentID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM omeka_incite_documents INNER JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE item_id = ?");
-    $stmt->bind_param("i", $itemID);
-    $stmt->bind_result($count);
+    $stmt = $db->prepare("SELECT omeka_incite_tagged_transcriptions.timestamp_creation, omeka_incite_users.email, omeka_incite_users.id FROM omeka_incite_tagged_transcriptions, omeka_incite_users WHERE item_id = ? AND omeka_incite_tagged_transcriptions.user_id = omeka_incite_users.id ORDER BY timestamp_creation DESC LIMIT 20");
+    $stmt->bind_param("i", $documentID);
+    $stmt->bind_result($timestamp, $userEmail, $userID);
     $stmt->execute();
-    $stmt->fetch();
+    $tagging_history = array();
+    while ($stmt->fetch())
+    {
+        $tagging_history[] = array('userEmail' => $userEmail, 'userID' => $userID, 'timestamp' => $timestamp);
+    }
     $stmt->close();
     $db->close();
-    if ($count > 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return $tagging_history;
 }
-
 /**
  * Returns true if a tag exists
  * @param string $tag
@@ -553,10 +575,10 @@ function getBestSubjectCandidateList($item_ids)
     return $results;
 }
 
-function createTaggedTranscription($item_id, $transcription_id, $userID, $tagged_transcription) {
+function createTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
-    $stmt->bind_param("iiis", $item_id, $transcription_id, $userID, $tagged_transcription);
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
+    $stmt->bind_param("iiiis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription);
     $stmt->execute();
     $stmt->close();
     $db->close();

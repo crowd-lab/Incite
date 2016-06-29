@@ -19,7 +19,7 @@ class Incite_HelpController extends Omeka_Controller_AbstractActionController
     {
 		//Nothing to do right now. The view is enough to handle output.
     }
-    public function studentsAction(){
+    public function aboutAction(){
 
     }
     public function teachersAction(){

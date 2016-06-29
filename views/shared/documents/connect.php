@@ -10,6 +10,25 @@ include(dirname(__FILE__).'/../common/header.php');
     .no-map-marker {
         background-color: #EEEEEE;
     }
+
+    .icon-container {
+        position: relative;
+        top: -20px;
+        margin-left: 45px;
+    }
+
+    .task-icon {
+        margin-right: 7px;
+        cursor: pointer;
+    }
+
+    .light-grey-color {
+        color: lightgrey;
+    }
+
+    .black-color {
+        color: black;
+    }
 </style>
 
 <script type="text/javascript">
@@ -41,6 +60,24 @@ include(dirname(__FILE__).'/../common/header.php');
 ?>
     }
 
+    function addTaskCompletionIconsToResultsRow(documentId) {
+        var row = $('#list_id' + documentId);
+        var iconContainer = $('<div class="icon-container"></div>');
+
+        var transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
+            '<span title="Document has been transcribed - Click to edit" class="glyphicon glyphicon-pencil task-icon black-color"></span></a>');
+
+        var taggedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/tag/' + documentId + '">' +
+            '<span title="Document has been tagged - Click to edit" class="glyphicon glyphicon-tags task-icon black-color"></span></a>');
+
+        var connectedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/connect/' + documentId + '">' +
+            '<span title="Document has not yet been connected - Click to connect it now" class="glyphicon glyphicon-tasks task-icon light-grey-color"></span></a>');
+
+        iconContainer.append(transcribedIcon);
+        iconContainer.append(taggedIcon);
+        iconContainer.append(connectedIcon);
+        row.append(iconContainer);
+    }
 </script>
 
     <!-- Page Content -->
@@ -49,13 +86,14 @@ include(dirname(__FILE__).'/../common/header.php');
         <span style="text-align: center;">You can mouse over the pins on the map or document thumbnails to see more details and click them to try connecting the document!
         </span>
     </div>
-    <div id="map-div" style="width:500px;"></div>
-    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white;">
-        <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div>
-        <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
+    <div id="map-view" style="margin: 5px; width: 69%;"><div id="map-div" style=""></div></div>
+    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white; border: solid 1.5px; border-color: #B2B1B1;">
+        <!-- <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left;">Show</div> -->
+        <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span>
         <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
-        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px;"
+
+        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px; height: 45px;"
             data-toggle="popover"
             data-trigger="hover" data-html="true"
             data-title="<?php echo "<strong>" . metadata($connection, array('Dublin Core', 'Title')) . "</strong>";?>"
@@ -67,12 +105,16 @@ include(dirname(__FILE__).'/../common/header.php');
             <a href="<?php echo getFullInciteUrl().'/documents/connect/'.$connection->id; ?>">
 <?php endif; ?>
                 <div style="height: 40px; width:40px; float: left;">
-                        <img src="<?php echo $connection->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
+                        <img src="<?php echo get_image_url_for_item($connection, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
                 <div style="height: 40px; margin-left: 45px;">
                     <p style=""><?php echo metadata($connection, array('Dublin Core', 'Title')); ?></p>
                 </div>
             </a>
+
+            <?php
+                echo '<script type="text/javascript">addTaskCompletionIconsToResultsRow(' . $connection->id . ');</script>';
+            ?>
         </div>
 <?php endforeach; ?>
         <div id="pagination-bar" class="text-center">
@@ -137,21 +179,22 @@ include(dirname(__FILE__).'/../common/header.php');
         $(document).ready( function (e) {
             buildPopoverContent();
 
-            $('#map-div').width($(window).width());
+            //$('#map-div').width($(window).width());
             $('#timeline').width($(window).width()-30);
-            document.getElementById('list-view').style.top = ($('#map-div').offset().top+20)+'px';
-            document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
-            document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
-            showListView();
-            buildTimeLine(ev);
+            document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
+            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
+            document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
+            //showListView();
+            //buildTimeLine(ev);
             $(window).on('resize', function(e) {
-                $('#map-div').width($(window).width());
+                $('#map-div').width($(window).width()*0.69);
                 $('#timeline').width($(window).width()-30);
                 $('#map-div').height($(window).height()-200);
-                document.getElementById('list-view').style.left = ($(window).width()-$('#list-view-switch').width()-5)+'px';
-                document.getElementById('list-view').style.height = ($('#map-div').height()-40)+'px';
-                showListView();
-                buildTimeLine(ev);
+                document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
+                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
+                document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
+                //showListView();
+                //buildTimeLine(ev);
                 //$('#list-view').width($(window).width()*0.15);
             });
             $('#list-view-switch').one('click', showListView);

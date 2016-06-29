@@ -7,112 +7,94 @@ $db = get_db();
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
+    <style>
+        .carousel-inner {
+            height: 150px;
+        }
 
-    <!-- Page Content -->
-    <div class="container">
+        .carousel-control {
+            top: 20%;
+        }
 
-        <!-- /.row -->
+        .carousel-control.left, .carousel-control.right {
+            background: none;
+            color: @red;
+            border: none;
+        }
 
-        <div class="row"> 
-        	<div class="jumbotron">
-                <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-                    <h1>Welcome to Mapping The Fourth!</h1>
-                    <p class="lead"> Help us better understand the history of our country.</p>
+        .carousel-control.left {
+            margin-left: -45px; color: black;
+        }
 
-                    <p style="margin-bottom: 20px;"> The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation’s borders lie? But it was on one particular day each year—July 4—that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p>
-                    <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
-                </div> 
-                <div class="row"> 
-                    <div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-                        <h2>How You Can Help</h2>
-                        <p class="lead">There are three main tasks you can choose to contribute.</p>
-                        <!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
-                    </div> 
+        .carousel-control.right {
+            margin-right: -45px; color: black;
+        }
+    </style>
+
+
+    <div id="homepage-content" style="margin-top: 25px; margin-left: 15%; margin-right:15%; margin-bottom: 25px;">
+        <div id="homepage-summary" style="margin-bottom: 75px">
+            <h1>Mapping the Fourth uses the power of crowdsourcing to rediscover how Independence Day was celebrated during     the Civil War era.</h1>
+        </div>  <!-- homepage-summary -->
+        <div id="homepage-carousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <a href=""><div style="display:inline-block; width: 33%;" data-target="#homepage-carousel" data-slide-to    ="1"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/transcribe.png"></div></a>
+                    <a href=""><div style="display:inline-block; width: 33%;" data-target="#homepage-carousel" data-slide-to    ="2"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/tag.png"></div></a>
+                    <a href=""><div style="display:inline-block; width: 33%;" data-target="#homepage-carousel" data-slide-to    ="3"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/connect.png"></div></a>
                 </div>
-        	</div>
-        </div>
-    </div>
+                <div class="item">
+                    <div style="display:inline-block; width: 33%; float: left;"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/transcribe.png"></div>
+                    <div style="display:inline-block; width: 60%; position: relative;">
+                        <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+                        </div>
+                        <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
+                            <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=transcribe"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div style="display:inline-block; width: 33%; float: left;"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/tag.png"></div>
+                    <div style="display:inline-block; width: 60%; position: relative;">
+                        <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+                        </div>
+                        <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
+                            <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=tag"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div style="display:inline-block; width: 33%; float: left;"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/connect.png"></div>
+                    <div style="display:inline-block; width: 60%; position: relative;">
+                        <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+                        </div>
+                        <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
+                            <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=connect"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Carousel controls -->
+            <a class="carousel-control left" href="#homepage-carousel" data-slide="prev" style="font-size: 450%">
+                &lsaquo;
+            </a>
+            <a class="carousel-control right" href="#homepage-carousel" data-slide="next" style="font-size: 450%">
+                &rsaquo;
+            </a>
+        </div> <!-- homepage-carousel -->
+        <br>
+        <div id="homepage-details" style="margin-top: 50px;">
+            <h3 class="m4j-main-text-color">WE ARE UNFOLDING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
+            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="float: left; margin-right: 20px; max-width: 120px;">
+            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tort    or quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricie    s mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, con    dimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orc    i, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id curs    us faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis,     accumsan porttitor, facilisis luctus, metus</p>
+            <div style="clear:left"></div>
+            <br>
+            <h3 class="m4j-main-text-color" style="clear: left;">POWERED BY INCITE</h3>
+            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="float: left; margin-right: 20px; max-width: 120px;">
+            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tort    or quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricie    s mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, con    dimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orc    i, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id curs    us faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis,     accumsan porttitor, facilisis luctus, metus</p>
+        </div>   <!-- homepage-details -->
+    </div> <!-- homepage-content -->
 
-<style>
-body { padding-top: 60px; 
-	   padding-bottom: 60px;
-}
-#myCarousel .nav a small {
-    display:block;
-}
-#myCarousel .nav {
-	background:#eee;
-}
-#myCarousel .nav a {
-    border-radius:0px;
-}
-</style>
-	<div class="container">
-		<div id="myCarousel" class="carousel slide" data-ride="carousel">
-			
-			<!-- Wrapper for slides -->
-			<div class="carousel-inner">
-			  
-				<div class="item active">
-					<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe">
-				   		<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Transcribe.png">
-
-				    	<div class="carousel-caption">
-							<h3>Transcribe</h3>
-							<p>Introduction to transcribe task.</p>
-				  		</div>
-				  	</a>
-				</div><!-- End Item -->
-				
-				<div class="item">
-					<a href="<?php echo getFullInciteUrl(); ?>/documents/tag">
-						<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Tag.png">
-					
-						<div class="carousel-caption">
-							<h3>Tag</h3>
-							<p>Intro to Tag task. </p>
-					  	</div>
-				  	</a>
-				</div><!-- End Item -->
-				
-				<div class="item">
-					<a href="<?php echo getFullInciteUrl(); ?>/documents/connect">
-				  		<img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/Connect.png">
-				  	
-					   	<div class="carousel-caption">
-							<h3>Connect</h3>
-							<p>Introduction to connect task.</p>
-					  	</div>
-					</a>
-				</div><!-- End Item -->
-						
-			</div><!-- End Carousel Inner -->
-
-
-			<ul class="nav nav-pills nav-justified">
-				<li data-target="#myCarousel" class="carouselNavLi active" data-slide-to="0"><a href="#">Transcribe<small>Searchable texts</small></a></li>
-				<li data-target="#myCarousel" class="carouselNavLi" data-slide-to="1"><a href="#">Tag<small>Find people, locations and organizations</small></a></li>
-				<li data-target="#myCarousel" class="carouselNavLi" data-slide-to="2"><a href="#">Connect<small>Concepts of documents</small></a></li>
-			</ul>
-
-		</div><!-- End Carousel -->
-
-			<div class="row"> 
-				<div class="col-lg-12 text-center" style="margin-bottom: 30px;">
-					<h2></h2>
-
-					<p style="margin-bottom: 30px; margin-top: 50px;">Based on the available information, we have found some search criteria for discovering documents you might be interested in. Click "Discover" to start when you are ready. Or you can tell us what you are interested in by changing the pre-populated information and click "Discover".</p>
-                    <button class="btn btn-primary" onclick="$('#navbar_search_button').click();">Surprise Me!</button>
-					<!-- <a class="btn" href="" style="" id="large-btn">Get Started</a> -->
-				</div> 
-			</div>
-
-		</div>
-    </div>
-</div>
-
-    </div>
-    <!-- /.container -->
 
     <script>
 $(document).ready(function(){

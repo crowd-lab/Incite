@@ -55,6 +55,7 @@ SQL
       CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_subject_conjunction (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
+        `tagged_trans_id`       int(11) NOT NULL,             
         `subject_concept_id`    int(11) NOT NULL,
         `is_positive`           int(5) NOT NULL,
         `user_id`               int(11) NOT NULL,
@@ -202,6 +203,7 @@ SQL
         `item_id`               int(11) NOT NULL,
         `transcription_id`      int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `tagged_transcription`  varchar(200000) NOT NULL,
         `is_approved`           int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
@@ -363,6 +365,10 @@ SQL
    );
     get_db()->query(<<<SQL
     DROP TABLE IF EXISTS {$this->_db->prefix}incite_group_instructions_seen_by
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_group
 SQL
    );
     }
