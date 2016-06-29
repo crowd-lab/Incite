@@ -239,6 +239,23 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return true;
     }
+    function editAccount($id, $password, $firstName, $lastName){
+
+        $db = DB_Connect::connectDB();
+        $hashedPassword = md5($password);
+        $stmt = $db->prepare("UPDATE omeka_incite_users SET first_name = ?, last_name = ?, password = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $firstName, $lastName, $hashedPassword, $id);
+
+        if (!$stmt->execute())
+        {
+            var_dump($stmt->error);
+            $stmt->close();
+            $db->close();
+            return false;
+        }
+        $stmt->close();
+        $db->close();
+        return true;}
     /*
      * REMOVE AND ADD TO API FOR GROUPS
     public function addGroupID($userID, $groupID, $privilege)

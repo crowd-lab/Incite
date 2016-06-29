@@ -34,11 +34,11 @@
 		var request = $.ajax({
 			type: "POST",
 			url: "<?php echo getFullInciteUrl().'/ajax/editaccount'; ?>",
-			data: {"username": $('#editNewUsername').val(), "password":
+			data: {"password":
 			$('#editNewPassword').val(), "fName": $('#editNewFirstName').val(), "lName": $('#editNewLastName').val()},
 			success: function (response) {
 				data = response.trim();
-
+				console.log(response);
 				if (data === "true") {
 					createAlertInEditProfile("User informattion succesfully changed", false);
 
@@ -85,7 +85,7 @@
 	* Check to see if user entered all the information that
 	*/
 	function attemptToEditProfile() {
-		if ($('#editNewUsername').val() !== "" && $('#editNewPassword').val() !== "" && $('#editNewConfirmPassword').val() !== "" && $('#editNewFirstName').val() !== "" && $('#editNewLastName').val() !== "") {
+		if ($('#editNewPassword').val() !== "" && $('#editNewConfirmPassword').val() !== "" && $('#editNewFirstName').val() !== "" && $('#editNewLastName').val() !== "") {
 			if ($('#editNewPassword').val() !== $('#editNewConfirmPassword').val()) {
 				createAlertInEditProfile('"Password" and "Confirm Password" fields do not match', true);
 				return;
@@ -115,10 +115,12 @@
 				$last = $this->user['last_name'];
 				?>
 
+				<h2>Edit Your Profile</h2><br>
 				<form>
 					<div class="form-group">
 						<label class="control-label">Username (email):</label>
-						<input type="text" class="form-control" id="editNewUsername" name="email" value="<?php echo $email ?>">
+						<!-- <input type="text" class="form-control" id="editNewUsername" name="email" value="<?php echo $email ?>"> -->
+						<p><?php echo $email ?></p>
 					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">Password:</label>

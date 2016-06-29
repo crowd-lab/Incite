@@ -110,21 +110,13 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
   public function editaccountAction() {
     if ($this->getRequest()->isPost()) {
       $id = $_SESSION['Incite']['USER_DATA']['id'];
-      $username = $_POST['username'];
       $password = $_POST['password'];
       $firstName = $_POST['fName'];
       $lastName = $_POST['lName'];
 
-      if (editAccount($id, $username, $password, $firstName, $lastName))
-      {
-        system_log('editing account success');
-        echo 'true';
-      }
-      else
-      {
-        system_log('failed to edit account');
-        echo 'false';
-      }
+      echo (editAccount($id, $password, $firstName, $lastName) ? 'true' : 'false');
+
+
     }
   }
 
