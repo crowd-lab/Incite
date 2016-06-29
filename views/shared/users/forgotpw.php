@@ -14,8 +14,10 @@
 
 		$('#forgot-submit-btn').on('click', attemptToSendNewPassword);
 		var cookieval = Cookies.get('name');
+
 		if(cookieval !== undefined){
-			document.getElementById("forgotpwUsername").value = cookieval;Cookies.remove('name');
+			document.getElementById("forgotpwUsername").value = cookieval;
+			Cookies.remove('name');
 		}
 
 	});

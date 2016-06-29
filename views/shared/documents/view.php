@@ -1,11 +1,4 @@
-<?php
 
-/**
-    Input: Location from Item Type Metadata (Format: State - County - City or "State - City Indep. City")
-    Output: array including "lat" and "long".
- */
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <?php

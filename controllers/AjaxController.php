@@ -21,6 +21,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Replies_Table.php");
     require_once("Incite_Questions_Table.php");
     require_once("DiscoverController.php");
+    require_once("DocumentsController.php");
+
     require_once("Incite_Search.php");
     require_once("Incite_Tag_Table.php");
     require_once("Incite_Transcription_Table.php");
@@ -244,27 +246,14 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
   public function getdocumentsAction(){
 
     if ($this->getRequest()->isPost()) {
-
-
       $current_page = $_POST['current_page'];
       $items_per_page = $_POST['items_per_page'];
-
-
 
       $records = array();
 
       $this->_helper->db->setDefaultModelName('Item');
 
-      if (isSearchQuerySpecifiedViaGet()) {
-        $searched_item_ids = getSearchResultsViaGetQuery();
-        $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
-        $query_str = getSearchQuerySpecifiedViaGetAsString();
-      } else {
-        $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
-        $query_str = "";
-      }
-
-
+      $document_ids = Incite_DocumentsController::populateTranscribeSearchResults();
 
       if (count($document_ids) > 0 ) {
 

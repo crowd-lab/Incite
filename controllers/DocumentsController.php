@@ -199,9 +199,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
         }
-
-        $this->createSearchResultPages($document_ids, 'Transcriptions');
+        if(count($document_ids) > 0){
         return $document_ids;
+      }else{
+        $this->createSearchResultPages($document_ids, 'Transcriptions');
+      }
     }
 
     public function tagAction() {
