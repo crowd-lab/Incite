@@ -40,6 +40,7 @@
 				data = response.trim();
 				console.log(response);
 				if (data === "true") {
+
 					createAlertInEditProfile("User informattion succesfully changed", false);
 
 					setTimeout(function () {
@@ -69,7 +70,6 @@
 			var textNode = document.createTextNode(displayMessage);
 			usernameError.style.textAlign = "center";
 			usernameError.appendChild(textNode);
-
 			usernameError.id = "errorView";
 
 			if (isError) {

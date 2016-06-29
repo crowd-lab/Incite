@@ -114,8 +114,16 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
       $firstName = $_POST['fName'];
       $lastName = $_POST['lName'];
 
-      echo (editAccount($id, $password, $firstName, $lastName) ? 'true' : 'false');
 
+      if (editAccount($id, $password, $firstName, $lastName))
+      {
+        $_SESSION['Incite']['USER_DATA']['first_name'] = $firstName;
+        echo 'true';
+      }
+      else
+      {
+        echo 'false';
+      }
 
     }
   }
