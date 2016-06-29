@@ -6,7 +6,10 @@
     require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
     require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
     require_once(dirname(__FILE__) . '/../../../controllers/Incite_Session.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Search.php');
     setup_session();
+
+    $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 ?>
 
 <head>
@@ -131,8 +134,32 @@
             margin-right: 15px;
         }
 
-        nav > li > a {
-            color: #8BB7C8;
+        .dropdown.dropdown-lg .dropdown-menu {
+            margin-top: -1px;
+            padding: 6px 20px;
+        }
+        .input-group-btn .btn-group {
+            display: flex !important;
+        }
+        .btn-group .btn {
+            border-radius: 0;
+            margin-left: -1px;
+        }
+        .btn-group .btn:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+        .btn-group .form-horizontal .btn[type="submit"] {
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+        .form-horizontal .form-group {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .form-group .form-control:last-child {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
         }
     </style>
 
@@ -232,6 +259,20 @@
             $('#keywords').val(<?php echo (isset($_GET['keywords']) ? sanitizeStringInput($_GET['keywords']) : sanitizeStringInput("")); ?>.value);
 
             $('#login-button').on('click', attemptToLoginOrSignup);
+
+            $('#navbar-search-btn').on('click', function (e) {
+                $('#adv-search-btn').click();
+            });
+
+            $('#adv-search-btn').on('click', function (e) {
+                $('#keywords').val($('#pre-keywords').val());
+            });
+
+            $('#pre-keywords').on('keyup', function(e) {
+                if (e.which == 13) { //enter key
+                    $('#adv-search-btn').click();
+                }
+            });
         });
 
         function deleteAlertFromLoginModal() {
@@ -360,17 +401,11 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1;" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1; height: 58px;" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 55px; margin-right: 5px;"></a>
-                <a class="navbar-brand" href="<?php echo getFullInciteUrl(); ?>">
-                    <div style="display: inline-block; font-size: 100%; margin-top: -8px;">
-                        <div style="font-size: 100%; color: #8BB7C8;">MAPPING THE FOURTH OF JULY IN CIVIL WAR ERA</div>
-                        <div style="font-size: 65%; color: #C76152;">BUILD WITH INCITE</div>
-                    </div>
-                </a>
+                <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 55px; margin-right: 5px; margin-top: 2px;"></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -407,48 +442,6 @@
                         <?php endif; ?>
                     </li>
                 </ul>
-                <form class="navbar-form navbar-right" role="search" action="<?php echo getFullInciteUrl(); ?>/discover" style="">
-                    <div class="form-group" style="width: 220px;">
-                        <div class="dropdown">
-                            <input id="adv-search" class="dropdown-toggle form-control" type="text" data-toggle="dropdown" aria-haspupus="true" aria-expanded="true" placeholder="Search..." style="width: 95%;" name="keywords">
-                            <ul class="dropdown-menu" aria-labelledby="adv-search">
-                                <li class="nav-dropdown-control">
-                                    <label>Task Type:</label><br>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="random" checked="checked"> find</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="transcribe"> transcribe</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="tag"> tag</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="connect"> connect</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="task" value="discuss"> discuss</label>
-                                    </div>
-                                </li>
-                                <li class="nav-dropdown-control">
-                                    <label>Location:</label><br>
-                                    <input id="location" type="text" class="form-control" placeholder="Location" name="location">
-                                </li>
-                                <li class="nav-dropdown-control">
-                                    <label>Time Range (1830-1870):</label><br>
-                                    <input style="width: 190px;" id="time_picker" type="text" class="form-control" placeholder="Time" name="time">
-                                </li>
-                                <li class="nav-dropdown-control">
-                                    <br>
-                                    <button id="navbar_search_button" type="submit" class="btn btn-default pull-right">
-                                        Search <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                                    </button>
-                                </li>
-                                <li><a href="#"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </form>
                 <ul class="nav navbar-nav navbar-right">
 <!-- To be added -->
 <!--
@@ -464,6 +457,46 @@
                     </li>
                     <li class="">
                         <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Contribute</a>
+                    </li>
+                    <li>
+                        <div class="input-group" id="adv-search" style="width: 261px; margin-top: 10px; margin-right: 10px; margin-left: 15px;">
+                            <input style="" type="text" class="form-control" placeholder="Search..." name="pre-keywords" id="pre-keywords" value="<?php if (isset($previous_search_results['keywords'])) echo $previous_search_results['keywords']; ?>" />
+                            <div class="input-group-btn">
+                                <div class="btn-group" role="group">
+                                    <div class="dropdown dropdown-lg">
+                                        <button style="width: 30px; height: 34px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+                                        <div style="width: 232px;" class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <form id="navbar-form" class="form-horizontal" role="form" action="<?php echo getFullInciteUrl(); ?>/discover" method="get">
+                                              <div class="form-group">
+                                                <label>Filter by</label><br>
+                                                <label>Task type:</label>
+                                                <select class="form-control" name="task">
+                                                    <option value="all" selected>All</option>
+                                                    <option value="transcribe">transcribe</option>
+                                                    <option value="tag">tag</option>
+                                                    <option value="connect">connect</option>
+                                                    <option value="discuss">discuss</option>
+                                                </select>
+                                              </div>
+                                              <div class="form-group">
+                                                <label>Location:</label>
+                                                <input class="form-control" type="text" value="<?php if (isset($previous_search_results['location'])) echo $previous_search_results['location']; ?>" placeholder="anywhere" name="location" />
+                                              </div>
+                                              <div class="form-group">
+                                                <label>Dates:</label><br>
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1830-01-01" name="time_from" value="<?php if (isset($previous_search_results['time_from'])) echo $previous_search_results['time_from']; else echo '1830-01-01'; ?>" />
+                                                <div style="display: inline-block; float: left; font-size: 100%; margin-left: 5px; margin-right: 5px; margin-top: 5px;"><b> to </b></div>
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1870-12-31" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1870-12-31'; ?>" /> 
+                                              </div>
+                                              <button id="adv-search-btn" type="submit" class="btn btn-default"><span style="font-size: 80%;" class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                              <input type="hidden" name="keywords" value="" id="keywords">
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <button id="navbar-search-btn" style="width: 30px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default"><span style="font-size: 80%;" class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
 

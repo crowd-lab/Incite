@@ -84,13 +84,13 @@ include(dirname(__FILE__).'/../common/header.php');
         </div> <!-- homepage-carousel -->
         <br>
         <div id="homepage-details" style="margin-top: 50px;">
-            <h3 class="m4j-main-text-color">WE ARE UNFOLDING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
+            <h3 style="color: #8BB7C8;">WE ARE UNCOVERING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
             <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="float: left; margin-right: 20px; max-width: 120px;">
             <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tort    or quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricie    s mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, con    dimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orc    i, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id curs    us faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis,     accumsan porttitor, facilisis luctus, metus</p>
             <div style="clear:left"></div>
             <br>
-            <h3 class="m4j-main-text-color" style="clear: left;">POWERED BY INCITE</h3>
-            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="float: left; margin-right: 20px; max-width: 120px;">
+            <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
+            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;">
             <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tort    or quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricie    s mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, con    dimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orc    i, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id curs    us faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis,     accumsan porttitor, facilisis luctus, metus</p>
         </div>   <!-- homepage-details -->
     </div> <!-- homepage-content -->

@@ -117,7 +117,7 @@
     </script>
 </head>
 
-<body>
+<div style="margin-left: 25px;">
     <span id="working-group-header">Working Group:
         <span id="working-group-info-glyphicon" class="glyphicon glyphicon-info-sign"></span>
     </span>
@@ -132,7 +132,7 @@
         <?php endforeach; ?>
         <option id="reset-option" value="0">Reset Working Group</option>
     </select>
-</body>
+</div>
 
 <style>
     #working-group-header {
