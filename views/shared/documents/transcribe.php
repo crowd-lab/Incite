@@ -39,10 +39,10 @@ var docs;
   <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>
   <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
   <br>
+  <!--  Just a place holder to append items after -->
   <div id = "document-list"></div>
 
 
-  <!--  (first_page) (previous_page) (current_page-2) (current_page-1) (current_page) (current_page+1) (current_page+2) (next_page) (last_page). -->
   <div id="pagination-bar" class="text-center">
     <nav>
       <ul class="pagination"></ul>
@@ -57,8 +57,6 @@ var docs;
 
 <script type="text/javascript">
 
-
-
 var ev, tl;
 ev = [];
 var width, height;
@@ -72,10 +70,11 @@ $('#map-div').ready( function (e) {
 
 $(document).ready( function (e) {
 
-
+  // getting the current_page that was saved (using setItem) before it was refreshed.
   var newCurrPage = localStorage.getItem("currPage");
   current_page = (newCurrPage != null ? newCurrPage : 1);
 
+  //setting up for the list
   setUpForDocumentsList();
 
 
@@ -103,10 +102,19 @@ $(document).ready( function (e) {
 
 });
 
+/**
+* Saving the current_page after a page number(link) was clicked.
+* This will be triggered before redirect.
+*/
 function setCurrentPageNum(num){
   localStorage.setItem("currPage", num);
-
 }
+
+/**
+* Gets the current browser's width and height.
+* redefine the items_per_page according to the size.
+* Then, it will call getTranscribableDocumentsRequest to get documents.
+*/
 function setUpForDocumentsList(){
   width = $(window).width()
   height = $(window).height();
@@ -127,12 +135,121 @@ function setUpForDocumentsList(){
 
 }
 
-function generateHashForTimeLine(){
+/**
+* Ajax Request.
+* Send current_page of the list and number of items per page.
+* When succeed, response contains two items. 'total_pages' is the total number of pages
+* in the list. 'records' contains documents that we need to display.
+* This function will call other functions to build the map, timeline, pagination bar and the list. 
+*/
+function getTranscribableDocumentsRequest() {
+  var request = $.ajax({
+    type: "POST",
+    dataType:"json",
+    url: "<?php echo getFullInciteUrl().'/ajax/getdocuments'; ?>",
+    data: {"current_page": current_page, "items_per_page": items_per_page},
+    success: function (response)
+    {
+      if(response.length != 0){
+        total_pages = response['total_pages'];
+        docs = jQuery.extend(true, [], response['records']);
+        //display documents in the list
+        displayDocumentsList(response['records']);
+
+        //add markers to the map
+        buildMap();
+
+        //building the pagination bar
+        generatePaginationBar();
+        generateTimeLine();
+
+      }
+    },
+    error: function(xhr,textStatus,err)
+    {
+      console.log("readyState: " + xhr.readyState);
+      console.log("responseText: "+ xhr.responseText);
+      console.log("status: " + xhr.status);
+      console.log("text status: " + textStatus);
+      console.log("error: " + err);
+    }
+  });
+};
+
+function generatePaginationBar(){
+  var buffer ="";
+  var disableFirst = (current_page == 1 ? "disabled" : "");
+  var disableLast = (current_page == total_pages ? "disabled" : "");
+  var query = "<?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>";
+  var startNum;
+
+  // first page
+  $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\"1\"> <a class=\"page-link\" href=\"?page=1"+ query +"\" "+ "onclick=\"return " +(disableFirst != "" ? "false" : "setCurrentPageNum("+ (1) +")") + "\" > 1<span class=\"sr-only\">First</span></a></li>");
+
+  // previous page
+  $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\""+(current_page-1)+"\"> <a class=\"page-link\" href=\"?page="+ (current_page-1) +query +"\" onclick=\"return " +(disableFirst != "" ? "false" : "setCurrentPageNum("+ (current_page-1) +")") + "\" aria-label=\"Previous\">&laquo<span class=\"sr-only\"></span></a></li>");
+
+
+  if(total_pages >5){
+    if(current_page < 3){
+      startNum = 0;
+    }
+    else if(total_pages- current_page < 2){
+      startNum = total_pages - 5;
+    }
+    else{
+      startNum = current_page -3;
+    }
+  }
+  else{
+    startNum = 0;
+  }
+
+  for (i = startNum; i < startNum + 5; i++){
+    $(".pagination").append("<li class=\"page-item "+ (current_page == (i+1) ? "active" : "") +"\" value=\""+(i+1)+"\"> <a class=\"page-link\" href=\"?page="+ (i+1) + query +"\" onClick=\"return setCurrentPageNum("+ (i+1) +")\">"+ (i+1) + "<span class=\"sr-only\">(current)</span></a></li>" );
+  }
+
+  var nextPage = parseInt(current_page)+1;
+  $(".pagination").append("<li class=\"page-item "+ disableLast +"\" value=\""+nextPage+"\"> <a class=\"page-link\" href=\"?page="+ nextPage +query +"\" onclick=\"return " +(disableLast != "" ? "false" : "setCurrentPageNum("+ nextPage +")") + "\" aria-label=\"Next\">&raquo<span class=\"sr-only\"></span></a></li>");
+
+  $(".pagination").append("<li class=\"page-item "+ disableLast +"\" value=\""+(total_pages)+"\"> <a class=\"page-link\" href=\"?page="+total_pages+ query +"\" "+ "onclick=\"return " +(disableLast != "" ? "false" : "setCurrentPageNum("+ total_pages +")") + "\" > "+total_pages+"<span class=\"sr-only\">Last</span></a></li>");
+
+
+}
+
+function displayDocumentsList(response) {
+
+  var buffer="";
+  $.each(response, function() {
+    buffer += "<div id=\"list_id"+this.id+"\" style=\"margin: 10px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + this.name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\">";
+
+    <?php if (isset($this->query_str) && $this->query_str !== ""): ?>
+    var query = "<?php echo $this->query_str; ?>";
+    var address = "<?php echo getFullInciteUrl().'/documents/transcribe/'; ?>";
+
+    buffer += "<a href=\""+ address +this.id+"?" + query +"\">";
+
+    <?php else: ?>
+
+    buffer += "<a href=\""+ address +this.id+ "\">";
+
+    <?php endif ?>
+
+    buffer += "<div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.uri+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"\">"+this.name+"</p></div></a></div>";
+  });
+
+  $(buffer).insertAfter('#document-list');
+};
+
+
+function generateTimeLine(){
   var i = 0;
   $.each(docs, function() {
     ev[i] = {'id': this.id, 'name': this.name, 'desc': this.desc, 'on':new Date(this.date)};
     i++;
   });
+
+  buildTimeLine(ev);
 }
 
 
@@ -164,107 +281,7 @@ function buildTimeLine(evt) {
   }
 
 
-  function getTranscribableDocumentsRequest() {
-    var request = $.ajax({
-      type: "POST",
-      dataType:"json",
-      url: "<?php echo getFullInciteUrl().'/ajax/getdocuments'; ?>",
-      data: {"width": width, "height": height, "current_page": current_page, "items_per_page": items_per_page},
-      success: function (response)
-      {
-        total_pages = response['total_pages'];
-        var doc_list = response['records'];
-        if(response.length == 0){
-          // alert("empty");
-          return;
-        } else {
-          docs = jQuery.extend(true, [], doc_list);
-          displayDocumentsList(doc_list);
-          buildMap();
-          generatePaginationBar();
-          generateHashForTimeLine();
-          buildTimeLine(ev);
 
-        }
-      },
-      error: function(xhr,textStatus,err)
-      {
-        console.log("readyState: " + xhr.readyState);
-        console.log("responseText: "+ xhr.responseText);
-        console.log("status: " + xhr.status);
-        console.log("text status: " + textStatus);
-        console.log("error: " + err);
-      }
-    });
-  };
-
-
-  function generatePaginationBar(){
-    var buffer ="";
-    var disableFirst = (current_page == 1 ? "disabled" : "");
-    var disableLast = (current_page == total_pages ? "disabled" : "");
-    var query = "<?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>";
-    var startNum;
-
-    // first page
-    $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\"1\"> <a class=\"page-link\" href=\"?page=1"+ query +"\" "+ "onclick=\"return " +(disableFirst != "" ? "false" : "setCurrentPageNum("+ (1) +")") + "\" > 1<span class=\"sr-only\">First</span></a></li>");
-
-    // previous page
-    $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\""+(current_page-1)+"\"> <a class=\"page-link\" href=\"?page="+ (current_page-1) +query +"\" onclick=\"return " +(disableFirst != "" ? "false" : "setCurrentPageNum("+ (current_page-1) +")") + "\" aria-label=\"Previous\">&laquo<span class=\"sr-only\"></span></a></li>");
-
-
-
-
-    if(total_pages >5){
-      if(current_page < 3){
-        startNum = 0;
-      }
-      else if(total_pages- current_page < 2){
-        startNum = total_pages - 5;
-      }
-      else{
-        startNum = current_page -3;
-      }
-    }
-    else{
-      startNum = 0;
-    }
-
-    for (i = startNum; i < startNum + 5; i++){
-      $(".pagination").append("<li class=\"page-item "+ (current_page == (i+1) ? "active" : "") +"\" value=\""+(i+1)+"\"> <a class=\"page-link\" href=\"?page="+ (i+1) + query +"\" onClick=\"return setCurrentPageNum("+ (i+1) +")\">"+ (i+1) + "<span class=\"sr-only\">(current)</span></a></li>" );
-    }
-
-    var nextPage = parseInt(current_page)+1;
-    $(".pagination").append("<li class=\"page-item "+ disableLast +"\" value=\""+nextPage+"\"> <a class=\"page-link\" href=\"?page="+ nextPage +query +"\" onclick=\"return " +(disableLast != "" ? "false" : "setCurrentPageNum("+ nextPage +")") + "\" aria-label=\"Next\">&raquo<span class=\"sr-only\"></span></a></li>");
-
-    $(".pagination").append("<li class=\"page-item "+ disableLast +"\" value=\""+(total_pages)+"\"> <a class=\"page-link\" href=\"?page="+total_pages+ query +"\" "+ "onclick=\"return " +(disableLast != "" ? "false" : "setCurrentPageNum("+ total_pages +")") + "\" > "+total_pages+"<span class=\"sr-only\">Last</span></a></li>");
-
-
-  }
-
-  function displayDocumentsList(response) {
-
-    var buffer="";
-    $.each(response, function() {
-      buffer += "<div id=\"list_id"+this.id+"\" style=\"margin: 10px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + this.name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\">";
-
-      <?php if (isset($this->query_str) && $this->query_str !== ""): ?>
-      var query = "<?php echo $this->query_str; ?>";
-      var address = "<?php echo getFullInciteUrl().'/documents/transcribe/'; ?>";
-
-      buffer += "<a href=\""+ address +this.id+"?" + query +"\">";
-
-      <?php else: ?>
-
-      buffer += "<a href=\""+ address +this.id+ "\">";
-
-      <?php endif ?>
-
-      buffer += "<div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.uri+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"\">"+this.name+"</p></div></a></div>";
-    });
-
-    $(buffer).insertAfter('#document-list');
-  };
 
 
   function x() {

@@ -67,7 +67,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
       $this->_redirect('/incite/'.$redirect_action);
     }
   }
-  
+
 
 
 }

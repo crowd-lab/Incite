@@ -245,8 +245,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 
     if ($this->getRequest()->isPost()) {
 
-      $width = $_POST['width'];
-      $height = $_POST['height'];
+
       $current_page = $_POST['current_page'];
       $items_per_page = $_POST['items_per_page'];
 

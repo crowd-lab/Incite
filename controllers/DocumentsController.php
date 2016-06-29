@@ -118,6 +118,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
            );
 
            $this->_helper->db->setDefaultModelName('Item');
+
            if ($this->_hasParam('id')) {
                $record = $this->_helper->db->find($this->_getParam('id'));
                if ($record != null) {
