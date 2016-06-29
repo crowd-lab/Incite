@@ -21,7 +21,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Replies_Table.php");
     require_once("Incite_Questions_Table.php");
     require_once("DiscoverController.php");
-    require_once("DocumentsController.php");
     require_once("Incite_Search.php");
     require_once("Incite_Tag_Table.php");
     require_once("Incite_Transcription_Table.php");
@@ -32,6 +31,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Env_Setting.php");
     require_once("DB_Connect.php");
     require_once("Email.php");
+
     require_once("Incite_Subject_Concept_Table.php");
 
   }
@@ -244,16 +244,32 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
   public function getdocumentsAction(){
 
     if ($this->getRequest()->isPost()) {
+
+
       $current_page = $_POST['current_page'];
       $items_per_page = $_POST['items_per_page'];
+
+
+
       $records = array();
-      $document_ids = populateTranscribeSearchResults();
+
+      $this->_helper->db->setDefaultModelName('Item');
+
+      if (isSearchQuerySpecifiedViaGet()) {
+        $searched_item_ids = getSearchResultsViaGetQuery();
+        $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+        $query_str = getSearchQuerySpecifiedViaGetAsString();
+      } else {
+        $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
+        $query_str = "";
+      }
+
+
 
       if (count($document_ids) > 0 ) {
 
         $total_pages = ceil(count($document_ids) / $items_per_page);
         $data['total_pages'] = $total_pages;
-
         for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page * $current_page; $i++) {
           if ($i >= MAXIMUM_SEARCH_RESULTS){
             break;
