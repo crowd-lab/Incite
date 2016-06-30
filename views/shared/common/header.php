@@ -22,7 +22,7 @@
     <title>Mapping the 4th</title>
     <?php echo js_tag('jquery'); ?>
     <?php echo js_tag('bootstrap.min'); ?>
-        <?php echo js_tag('js.cookie'); ?>
+    <?php echo js_tag('js.cookie'); ?>
     <?php echo js_tag('jquery-ui'); ?>
     <?php echo js_tag('jquery.mousewheel'); ?>
     <?php echo js_tag('jquery.iviewer'); ?>

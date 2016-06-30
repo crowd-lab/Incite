@@ -14,7 +14,14 @@ include(dirname(__FILE__).'/../common/header.php');
     .icon-container {
         position: relative;
         top: -20px;
+        display: inline-block;
+    }
+
+    .list-view-inline-doc-info {
+        position: relative;
+        top: -20px;
         margin-left: 45px;
+        display: inline-block;
     }
 
     .task-icon {
@@ -148,6 +155,12 @@ include(dirname(__FILE__).'/../common/header.php');
                     <p style="height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo metadata($document, array('Dublin Core', 'Title')); ?></p>
                 </div>
             </a>
+            <div class="list-view-inline-doc-info" style="display: inline-block;">
+                <?php echo year_of_full_iso_date(metadata($document, array('Dublin Core', 'Date'))); ?>
+                ,
+                <?php echo location_to_city_state_str(metadata($document, array('Item Type Metadata', 'Location'))); ?>
+                ,
+            </div>
         </div>
 
         <?php
