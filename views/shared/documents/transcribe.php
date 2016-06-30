@@ -64,17 +64,8 @@ function addTaskCompletionIconsToResultsRow(documentId) {
 
 <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white; border: solid 1.5px; border-color: #B2B1B1;">
 
-    <!-- <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span>
-    <br> -->
-    <!--  Just a place holder to append items after -->
-    <div id = "document-list"></div>
 
 
-    <div id="pagination-bar" class="text-center">
-        <nav>
-            <ul class="pagination"></ul>
-        </nav>
-    </div>
 </div>
 
 <div id="timeline"></div>
@@ -224,6 +215,7 @@ function generatePaginationBar(){
     var startNum;
     var endNum;
 
+$('#list-view').append("<div id=\"pagination-bar\" class=\"text-center\"><nav><ul class=\"pagination\"></ul></nav></div>");
     if (total_pages != 0){
         // first page
         $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\"1\"> <a class=\"page-link\" href=\"?page=1"+ query +"\" "+ "onclick=\"return " +(disableFirst != "" ? "false" : "setCurrentPageNum("+ (1) +")") + "\" > 1<span class=\"sr-only\">First</span></a></li>");
@@ -277,8 +269,7 @@ function displayDocumentsList(response) {
 
     $.each(response, function(){
 
-            $('#list-view').prepend("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + this.name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id + (query != "" ? "?" + query : "\">") + "<div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></div>");
-
+            $('#list-view').append("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + this.name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id + (query != "" ? "?" + query : "\">") + "<div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></div>");
 
     addTaskCompletionIconsToResultsRow(this.id);
     });
