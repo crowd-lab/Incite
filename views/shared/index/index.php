@@ -46,7 +46,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div class="item">
                     <div style="display:inline-block; width: 33%; float: left;"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/transcribe.png"></div>
                     <div style="display:inline-block; width: 60%; position: relative;">
-                        <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+                        <div style="font-size: 180%;">Make historical documents more accessible and searchable. 
                         </div>
                         <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
                             <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=transcribe"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
@@ -56,7 +56,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div class="item">
                     <div style="display:inline-block; width: 33%; float: left;"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/tag.png"></div>
                     <div style="display:inline-block; width: 60%; position: relative;">
-                        <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+                        <div style="font-size: 180%;">Find people, places, organizations and events in history.
                         </div>
                         <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
                             <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=tag"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
@@ -66,7 +66,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div class="item">
                     <div style="display:inline-block; width: 33%; float: left;"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/connect.png"></div>
                     <div style="display:inline-block; width: 60%; position: relative;">
-                        <div style="">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis e    gestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas     semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+                        <div style="font-size: 180%;">Connect historical documents with meaningful topics and themes.
                         </div>
                         <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
                             <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=connect"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
@@ -85,13 +85,20 @@ include(dirname(__FILE__).'/../common/header.php');
         <br>
         <div id="homepage-details" style="margin-top: 50px;">
             <h3 style="color: #8BB7C8;">WE ARE UNCOVERING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
-            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="float: left; margin-right: 20px; max-width: 120px;">
-            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tort    or quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricie    s mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, con    dimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orc    i, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id curs    us faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis,     accumsan porttitor, facilisis luctus, metus</p>
+            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="margin-right: 20px; max-width: 120px; float: left;">
+            <p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p>
             <div style="clear:left"></div>
             <br>
             <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
             <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;">
-            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tort    or quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricie    s mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, con    dimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orc    i, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id curs    us faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis,     accumsan porttitor, facilisis luctus, metus</p>
+            <p>Incite is an open-source plugin to Omeka and allows users to interact with collections in the Omeka database. Users can help 
+                <ul style="margin-left: 140px;">
+                    <li> <b>transcribe</b> digitized documents to make them searchable, </li>
+                    <li> <b>tag</b> people, locations, organizations and events that are not recognized by state-of-the-art automated techniques,</li>
+                    <li> <b>connect</b> documents to high-level concepts of interest (e.g., topics and themes), and </li>
+                    <li> <b>discuss</b> their discoveries in the archives.</li>
+                </ul>
+            </p>
         </div>   <!-- homepage-details -->
     </div> <!-- homepage-content -->
 
@@ -172,6 +179,10 @@ $(document).ready(function(){
 	});
 });
 </script>
+
+<?php   
+include(dirname(__FILE__).'/../common/footer.php');
+?>
 
 </body>
 
