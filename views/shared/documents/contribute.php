@@ -5,20 +5,22 @@ include(dirname(__FILE__).'/../common/header.php');
 ?>
 
     <div id="homepage-content" style="margin-top: 75px; margin-left: 12.5%; margin-right:12.5%; margin-bottom: 25px;">
+
         <form class="form-inline" id="contribute_form" method="get" action="<?php echo getFullInciteUrl(); ?>/discover">
             <div id="contribute-confirmation" style="margin: 40px; text-align: center;">
-                <h2>I want to 
+                <h2>I want to
                     <select class="form-control" style="font-size: 60%; width: 150px;" name="task">
                         <option value="transcribe" <?php if ($this->task_type === 'transcribe') echo 'selected="selected"'; ?>>transcribe</option>
                         <option value="tag" <?php if ($this->task_type === 'tag') echo 'selected="selected"'; ?>>tag</option>
                         <option value="connect" <?php if ($this->task_type === 'connect') echo 'selected="selected"'; ?>>connect</option>
-                    </select> documents published in 
-                    <input type="text" class="form-control" value="" style="font-size: 60%; width: 150px;" name="location" placeholder="anywhere"> 
+
+                    </select> documents published in
+                    <input type="text" class="form-control" value="" style="font-size: 60%; width: 150px;" name="location" placeholder="anywhere">
                     <br>
                     <br>
-                    between 
+                    between
                     <select class="form-control" style="font-size: 60%; width: 85px;" id="time_from" name="time_from">
-                        <option value="1830" selected="selected">1830</option>
+        <option value="1830" selected="selected">1830</option>
                         <option value="1831">1831</option>
                         <option value="1832">1832</option>
                         <option value="1833">1833</option>
@@ -59,8 +61,10 @@ include(dirname(__FILE__).'/../common/header.php');
                         <option value="1868">1868</option>
                         <option value="1869">1869</option>
                         <option value="1870">1870</option>
-                    </select> and 
+
+                    </select> and
                     <select class="form-control" style="font-size: 60%; width: 85px;" id="time_to" name="time_to">
+
                         <option value="1830">1830</option>
                         <option value="1831">1831</option>
                         <option value="1832">1832</option>
@@ -106,10 +110,12 @@ include(dirname(__FILE__).'/../common/header.php');
                 </h2>
             </div>   <!-- contribute-confirmation -->
             <div style="text-align: center;">
+
                 <button type="button" id="contribute_button" style="margin: 40px;" class="btn btn-danger">TRY IT NOW</button>
             </div>
         </form>
     </div> <!-- homepage-content -->
+
 
     <script>
        $(document).ready( function () {
@@ -125,7 +131,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 }
             });
 
-        }); 
+        });
     </script>
 
 

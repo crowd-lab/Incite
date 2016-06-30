@@ -1,110 +1,4 @@
-<?php
 
-/**
-    Input: Location from Item Type Metadata (Format: State - County - City or "State - City Indep. City")
-    Output: array including "lat" and "long".
- */
-function loc_to_lat_long($loc_str)
-{
-    $states = array(
-        'Alabama'=>'AL',
-        'Alaska'=>'AK',
-        'Arizona'=>'AZ',
-        'Arkansas'=>'AR',
-        'California'=>'CA',
-        'Colorado'=>'CO',
-        'Connecticut'=>'CT',
-        'Delaware'=>'DE',
-        'Florida'=>'FL',
-        'Georgia'=>'GA',
-        'Hawaii'=>'HI',
-        'Idaho'=>'ID',
-        'Illinois'=>'IL',
-        'Indiana'=>'IN',
-        'Iowa'=>'IA',
-        'Kansas'=>'KS',
-        'Kentucky'=>'KY',
-        'Louisiana'=>'LA',
-        'Maine'=>'ME',
-        'Maryland'=>'MD',
-        'Massachusetts'=>'MA',
-        'Michigan'=>'MI',
-        'Minnesota'=>'MN',
-        'Mississippi'=>'MS',
-        'Missouri'=>'MO',
-        'Montana'=>'MT',
-        'Nebraska'=>'NE',
-        'Nevada'=>'NV',
-        'New Hampshire'=>'NH',
-        'New Jersey'=>'NJ',
-        'New Mexico'=>'NM',
-        'New York'=>'NY',
-        'North Carolina'=>'NC',
-        'North Dakota'=>'ND',
-        'Ohio'=>'OH',
-        'Oklahoma'=>'OK',
-        'Oregon'=>'OR',
-        'Pennsylvania'=>'PA',
-        'Rhode Island'=>'RI',
-        'South Carolina'=>'SC',
-        'South Dakota'=>'SD',
-        'Tennessee'=>'TN',
-        'Texas'=>'TX',
-        'Utah'=>'UT',
-        'Vermont'=>'VT',
-        'Virginia'=>'VA',
-        'Washington'=>'WA',
-        'West Virginia'=>'WV',
-        'Wisconsin'=>'WI',
-        'Wyoming'=>'WY');
-
-    //mostly only use state and city but in case of no such city, we use county instead
-    $elem  = explode("-", $loc_str);
-    $state = "";
-    $city  = "";
-    $county = "";
-
-    //Parse state and city names
-    if (count($elem) >= 3) { //currently ignore extra info about location. Item 11 is an exception here!
-        $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
-        if (!isset($states[$state_index]))
-            return array('lat' => '37.23', 'long' => '-80.4178');
-        $state  = $states[$state_index];
-        $city   = trim($elem[2]);
-        $county = trim(str_replace('County', '', $elem[1]));
-    } else if (count($elem) == 2) {
-        $state = $states[trim(str_replace('State', '', str_replace('state', '', $elem[0])))];
-        $city  = strstr(trim($elem[1]), ' Indep.', true);
-        if ($city == "")
-            $city = trim($elem[1]);
-    } else {
-        //Should send to log and to alert new format of location!
-    }
-
-    //Convert state and city to lat and long
-    $result = array();
-    $latlong_file = fopen('./plugins/Incite/zip_codes_states.csv', 'r') or die('no zip file!');
-
-    while (($row = fgetcsv($latlong_file)) != FALSE) {
-        //Just use the last result as our county guess
-        if ($county == $row[5] && $state == $row[4]) {
-            $result['lat']  = $row[1];
-            $result['long'] = $row[2];
-        }
-        //Just use the first result as our final result!
-        if ($city == $row[3] && $state == $row[4]) {
-            $result['lat']  = $row[1];
-            $result['long'] = $row[2];
-            break;
-        }
-    }
-    fclose($latlong_file);
-
-    return $result;
-}
-
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <?php
@@ -179,11 +73,11 @@ include(dirname(__FILE__).'/../common/header.php');
         if (isTranscribed) {
             transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
                 '<span title="Document has been transcribed - Click to edit" class="glyphicon glyphicon-pencil task-icon black-color"></span></a>');
-            
+
             if (isTagged) {
                 taggedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/tag/' + documentId + '">' +
                     '<span title="Document has been tagged - Click to edit" class="glyphicon glyphicon-tags task-icon black-color"></span></a>');
-            
+
                 if (isConnected) {
                     connectedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/connect/' + documentId + '">' +
                         '<span title="Document has been connected - Click to edit" class="glyphicon glyphicon-tasks task-icon black-color"></span></a>');
@@ -206,7 +100,7 @@ include(dirname(__FILE__).'/../common/header.php');
             link.attr("href", link.attr("href").replace("/documents/view/", "/documents/transcribe/"));
 
             transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
-                '<span title="Document has not yet been transcribed - Click to transcribe it" class="glyphicon glyphicon-pencil task-icon light-grey-color"></span></a>');    
+                '<span title="Document has not yet been transcribed - Click to transcribe it" class="glyphicon glyphicon-pencil task-icon light-grey-color"></span></a>');
         }
 
         if (transcribedIcon !== null) {
@@ -236,11 +130,11 @@ include(dirname(__FILE__).'/../common/header.php');
         <!--<div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>-->
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
         <br>
-<?php foreach ((array)$this->Documents as $document): ?>    
-        <div id="list_id<?php echo $document->id; ?>" style="margin: 10px; height: 45px;" 
+<?php foreach ((array)$this->Documents as $document): ?>
+        <div id="list_id<?php echo $document->id; ?>" style="margin: 10px; height: 45px;"
             data-toggle="popover" data-trigger="hover" data-html="true"
             data-title="<?php echo "<strong>" . metadata($document, array('Dublin Core', 'Title')) . "</strong>";?>"
-            data-placement="left" data-id="<?php echo $document->id; ?>" 
+            data-placement="left" data-id="<?php echo $document->id; ?>"
         >
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
             <a href="<?php echo getFullInciteUrl().'/documents/view/'.$document->id."?".$this->query_str; ?>">
@@ -248,7 +142,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <a href="<?php echo getFullInciteUrl().'/documents/view/'.$document->id; ?>">
 <?php endif; ?>
                 <div style="height: 40px; width:40px; float: left;">
-                    <img src="<?php echo get_image_url_for_item($document, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">    
+                    <img src="<?php echo get_image_url_for_item($document, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
                 <div style="height: 40px; margin-left: 45px;">
                     <p style="height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo metadata($document, array('Dublin Core', 'Title')); ?></p>
@@ -276,7 +170,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="timeline"></div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
-                     
+
     </div>
     <script type="text/javascript">
         var ev, tl;
@@ -296,14 +190,14 @@ include(dirname(__FILE__).'/../common/header.php');
             });
             $('#list-view-switch').one("click", hideListView);
         }
-        
+
         function hideListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view-switch').width()-5 }, 'slow', function() {
                 $('#list-view-switch').html('Show');
             });
             $('#list-view-switch').one("click", showListView);
         }
-        
+
         function buildTimeLine(evt) {
             $('#timeline').empty();
             tl = $('#timeline').jqtimeline({
@@ -325,7 +219,7 @@ include(dirname(__FILE__).'/../common/header.php');
             //$('#map-div').width($(window).width()*0.68);
             $('#timeline').width($(window).width()-30);
             document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
-            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
             document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
             //showListView();
             //buildTimeLine(ev);
@@ -334,7 +228,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 $('#timeline').width($(window).width()-30);
                 $('#map-div').height($(window).height()-200);
                 document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
-                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
                 document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
                 //showListView();
                 //buildTimeLine(ev);
@@ -383,7 +277,7 @@ include(dirname(__FILE__).'/../common/header.php');
 
         unset($_SESSION['incite']['message']);
     }
-?>          
+?>
             buildPopoverContent();
         });
 

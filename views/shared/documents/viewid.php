@@ -132,7 +132,7 @@
         }
     </style>
 </head>
-    
+
 <body>
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
@@ -154,8 +154,8 @@
                         aria-hidden="true" data-trigger="hover"
                         data-toggle="popover" data-html="true"
                         data-viewport="#right-column";
-                        data-title="<strong>Viewing Tasks</strong>" 
-                        data-content="<?php echo "See below for details about which document tasks have been completed thus far." ?>" 
+                        data-title="<strong>Viewing Tasks</strong>"
+                        data-content="<?php echo "See below for details about which document tasks have been completed thus far." ?>"
                         data-placement="bottom">
                     </span>
                 </p>
@@ -198,11 +198,10 @@
                 <?php
                     include(dirname(__FILE__) . '/../common/task_comments_section.php');
                 ?>
-            </div> 
+            </div>
 
         </div>
     </div>
 
 </body>
 </html>
-

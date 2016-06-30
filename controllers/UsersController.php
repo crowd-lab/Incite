@@ -21,7 +21,7 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
     }
 
     public function indexAction() {
-        
+
         $this->_helper->viewRenderer->setNoRender(TRUE);
         echo getDiscussionCountByUserId(3);
     }
@@ -53,6 +53,29 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
             $this->view->users = "";
         }
     }
+
+/**
+* Direct to Edit profile page.
+*/
+public function editAction(){
+    if ($this->_hasParam('id')) {
+        $this->_helper->viewRenderer('editprofile');
+        $user_id = $this->_getParam('id');
+        $this->view->user = getUserDataByUserId($user_id);
+
+    } else {
+        $this->view->users = "";
+    }
+}
+
+/**
+* Direct to Forgot Password Page.
+*/
+public function forgotAction(){
+
+    $this->_helper->viewRenderer('forgotpw');
+}
+
 }
 
 ?>

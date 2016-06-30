@@ -35,7 +35,7 @@ require_once("Incite_Groups_Table.php");
         else {
             system_log('Incite_Users_Table:verifyUser:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
         }
-        
+
     }
     function userExists($email)
     {
@@ -55,7 +55,7 @@ require_once("Incite_Groups_Table.php");
         else {
             system_log('Incite_Users_Table:userExists:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
         }
-        
+
     }
     /**
      * Gets information about the user in an array
@@ -74,7 +74,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr['id'] = $id;
         $arr['first_name'] = $firstname;
         $arr['last_name'] = $lastname;
@@ -95,7 +95,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr[0] = $id;
         $arr[1] = $firstname;
         $arr[2] = $lastname;
@@ -120,7 +120,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr[0] = $firstname;
         $arr[1] = $lastname;
         $arr[2] = $email;
@@ -140,7 +140,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr['first_name'] = $firstname;
         $arr['last_name'] = $lastname;
         $arr['email'] = $email;
@@ -197,7 +197,7 @@ require_once("Incite_Groups_Table.php");
     /**
      * Upgrade or Downgrade user's experience level
      * @param string $email associated with account
-     * @param int $experienceLevel to change to 
+     * @param int $experienceLevel to change to
      * @return boolean true if successful, false otherwise
      */
     function changeExperienceLevel($email, $experienceLevel)
@@ -239,6 +239,23 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return true;
     }
+    function editAccount($id, $password, $firstName, $lastName){
+
+        $db = DB_Connect::connectDB();
+        $hashedPassword = md5($password);
+        $stmt = $db->prepare("UPDATE omeka_incite_users SET first_name = ?, last_name = ?, password = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $firstName, $lastName, $hashedPassword, $id);
+
+        if (!$stmt->execute())
+        {
+            var_dump($stmt->error);
+            $stmt->close();
+            $db->close();
+            return false;
+        }
+        $stmt->close();
+        $db->close();
+        return true;}
     /*
      * REMOVE AND ADD TO API FOR GROUPS
     public function addGroupID($userID, $groupID, $privilege)
@@ -264,19 +281,19 @@ require_once("Incite_Groups_Table.php");
         else
         {
             var_dump("ERROR: You are already added");
-        }        
+        }
     }
     public function removeGroupID($userID, $groupID)
     {
-        
-        
+
+
     }
      *
      */
     /**
      * Safe way to 'remove' an account by setting it's active status to '0'
      * @param string $email associated with the account to deactivate
-     * @return boolean true if worked, false otherwise 
+     * @return boolean true if worked, false otherwise
      */
     function deactivateAccount($email)
     {
@@ -293,7 +310,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->close();
         $db->close();
         return true;
-        
+
     }
     /**
      * If account is inactive, reactivate the account
@@ -367,7 +384,7 @@ require_once("Incite_Groups_Table.php");
         $db->close();
     }
     /**
-     * Generate an 11 digit random user id. Used only for making an 
+     * Generate an 11 digit random user id. Used only for making an
      * anonymous cookie for unlogged-in users
      * @return int 11 digit random number
      */
@@ -389,7 +406,7 @@ require_once("Incite_Groups_Table.php");
     {
         return implode(explode(" ", microtime()));
     }
-    
+
     function createGuestSession()
     {
         $id = generateRandomUserId();

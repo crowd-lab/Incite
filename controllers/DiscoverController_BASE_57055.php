@@ -1,13 +1,13 @@
 <?php
 /**
- * Incite
+ * Incite 
  *
  */
 
 /**
  * Plugin "Incite"
  *
- * @package Incite
+ * @package Incite 
  */
 require_once("DB_Connect.php");
 
@@ -31,18 +31,8 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
             }
 
             //Process time search
-            if (isset($_GET['time']) && $_GET['time'] != "") { //for advanced search. We also have dates
+            if (isset($_GET['time']) && $_GET['time'] != "") {
                 $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time'];
-            } else if (isset($_GET['time_from']) &&  //from landing page. We only have years.
-                       isset($_GET['time_to']) &&
-                       $_GET['time_from'] != "" &&
-                       $_GET['time_to'] != "") {
-                if (strlen($_GET['time_from']) == 4 && strlen($_GET['time_to']) == 4)
-                    $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time_from'].'-01-01 - '.$_GET['time_to'].'-12-31';
-                else if (strlen($_GET['time_from']) == 10 && strlen($_GET['time_to']) == 10)
-                    $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time_from'].' - '.$_GET['time_to'];
-                else //unknown format
-                    $query .= "";
             }
 
             //Process keyword search
@@ -62,15 +52,14 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
 				} else if ($_GET['task'] == "discuss") {
                     $redirect_action = 'discussions/discuss';
 				} else { //then...random! but currently need more transcriptions
-                    $redirect_action = 'documents/view';
+                    $redirect_action = 'documents/transcribe';
 				}
 			}
-
             if (strlen($query) > 1)  //more than "?"
                 $this->_redirect('/incite/'.$redirect_action.$query);
             else
                 $this->_redirect('/incite/'.$redirect_action);
-		}
+		}	
     }
 
 }

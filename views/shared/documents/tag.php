@@ -195,17 +195,17 @@ include(dirname(__FILE__).'/../common/header.php');
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span>
         <br>
 <?php foreach ((array)$this->Tags as $tag): ?>
-        <div id="list_id<?php echo $tag->id;?>" style="margin: 10px; height: 45px;" data-toggle="popover" 
+        <div id="list_id<?php echo $tag->id;?>" style="margin: 10px; height: 45px;" data-toggle="popover"
             data-trigger="hover" data-html="true"
-            data-title="<?php echo "<strong>" . metadata($tag, array('Dublin Core', 'Title')) . "</strong>";?>" 
+            data-title="<?php echo "<strong>" . metadata($tag, array('Dublin Core', 'Title')) . "</strong>";?>"
             data-placement="left" data-id="<?php echo $tag->id; ?>">
 <?php if (isset($this->query_str) && $this->query !== ""): ?>
             <a href="<?php echo getFullInciteUrl().'/documents/tag/'.$tag->id."?".$this->query_str; ?>">
 <?php else: ?>
             <a href="<?php echo getFullInciteUrl().'/documents/tag/'.$tag->id; ?>">
 <?php endif; ?>
-                <div style="height: 40px; width:40px; float: left;">    
-                    <img src="<?php echo get_image_url_for_item($tag, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">      
+                <div style="height: 40px; width:40px; float: left;">
+                    <img src="<?php echo get_image_url_for_item($tag, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
                 <div style="height: 40px; margin-left: 45px;">
                     <p style="height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo metadata($tag, array('Dublin Core', 'Title')); ?></p>
@@ -232,7 +232,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="timeline"></div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
-                     
+
     </div>
     <script type="text/javascript">
         var ev = [
@@ -251,14 +251,14 @@ include(dirname(__FILE__).'/../common/header.php');
             });
             $('#list-view-switch').one("click", hideListView);
         }
-        
+
         function hideListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view-switch').width()-5 }, 'slow', function() {
                 $('#list-view-switch').html('Show');
             });
             $('#list-view-switch').one("click", showListView);
         }
-        
+
         function buildTimeLine(evt) {
             $('#timeline').empty();
             tl = $('#timeline').jqtimeline({
@@ -280,7 +280,7 @@ include(dirname(__FILE__).'/../common/header.php');
             //$('#map-div').width($(window).width());
             $('#timeline').width($(window).width()-30);
             document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
-            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
             document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
             //showListView();
             //buildTimeLine(ev);
@@ -289,7 +289,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 $('#timeline').width($(window).width()-30);
                 $('#map-div').height($(window).height()-200);
                 document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
-                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
                 document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
                 //showListView();
                 //buildTimeLine(ev);
@@ -333,7 +333,7 @@ include(dirname(__FILE__).'/../common/header.php');
         } else {
             echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
         }
-        
+
         unset($_SESSION['incite']['message']);
     }
 ?>

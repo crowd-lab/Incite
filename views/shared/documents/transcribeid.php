@@ -28,17 +28,17 @@
                         aria-hidden="true" data-trigger="hover"
                         data-toggle="popover" data-html="true"
                         data-viewport="#transcribe-form"
-                        data-title="<strong>Transcribing a document</strong>" 
+                        data-title="<strong>Transcribing a document</strong>"
                         data-content="<?php echo "<ul>"
                         . "<li>Copy the text exactly as is, including misspellings and abbreviations.</li>"
                         . "<li>You don't need to account for formatting (e.g. spacing, line breaks, alignment).</li>"
-                        . "<li>If you can't make out a word replace it with '[illegible]'.</li>" 
-                        . "<li>If you are uncertain about a word surround it with square brackets, e.g. '[town?]'</li>"?>" 
+                        . "<li>If you can't make out a word replace it with '[illegible]'.</li>"
+                        . "<li>If you are uncertain about a word surround it with square brackets, e.g. '[town?]'</li>"?>"
                         data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                 </p>
-                
+
                 <textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
                 <p class="step">
                     <i>Step 2 of 3: Summarize</i>
@@ -46,8 +46,8 @@
                         aria-hidden="true" data-trigger="hover"
                         data-toggle="popover" data-html="true"
                         data-viewport="#transcribe-form"
-                        data-title="<strong>Summarizing a document</strong>" 
-                        data-content="<?php echo "Using your own wording, summarize the document in 1-2 sentences." ?>" 
+                        data-title="<strong>Summarizing a document</strong>"
+                        data-content="<?php echo "Using your own wording, summarize the document in 1-2 sentences." ?>"
                         data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                 </p>
@@ -59,8 +59,8 @@
                             aria-hidden="true" data-trigger="hover"
                             data-toggle="popover" data-html="true"
                             data-viewport="#transcribe-form"
-                            data-title="<strong>Selecting document tone</strong>" 
-                            data-content="<?php echo "Choose the tone from the dropdown that most accurately categorizes the overall tone of the document." ?>" 
+                            data-title="<strong>Selecting document tone</strong>"
+                            data-content="<?php echo "Choose the tone from the dropdown that most accurately categorizes the overall tone of the document." ?>"
                             data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                         </span>
                     </p>
@@ -74,7 +74,7 @@
                     </select>
                 </div>
                 <button id="submit_transcription" type="button" class="btn btn-primary">Submit</button>
-                <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
+                <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
             </form>
 
             <?php
@@ -89,7 +89,7 @@
             <?php
                 include(dirname(__FILE__) . '/../common/task_comments_section.php');
             ?>
-        </div> 
+        </div>
     </div>
     <!-- /.container -->
     <script type="text/javascript">
@@ -119,8 +119,8 @@
             ?>
 
             <?php if ($this->is_being_edited): ?>
-                styleForEditing();    
-            <?php endif; ?> 
+                styleForEditing();
+            <?php endif; ?>
         });
 
         function styleForEditing() {
@@ -191,7 +191,7 @@
         }
 
         #summary-textarea {
-            width: 100%; 
+            width: 100%;
             height: 66px;
         }
 

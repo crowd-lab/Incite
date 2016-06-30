@@ -27,6 +27,7 @@
             populateActivityFeed();
             addGroupCreateOrJoinListeners();
             addListenersToGroupSelector();
+            redirectToProfileEditPage();
         });
 
         function hideElementsByDefault() {
@@ -118,24 +119,24 @@
                 $("#number-connected").html("<?php echo count($this->connected_docs); ?>" + " document(s)");
                 $("#number-discussed").html("<?php echo count($this->discussions); ?>" + " discussion(s)");
             }
-            
+
         };
 
         function populateActivityFeed() {
             <?php foreach ((array)$this->activities as $activity): ?>
-                generateAndAppendRow($("#userprofile-activity-feed-table"), 
-                    "<?php echo $activity['activity_type']; ?>", 
-                    <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? 
-                        $activity['discussion_title'] : $activity['document_title']); ?>.value, 
-                    <?php echo (($activity['activity_type'] === 'Discuss') ? 
+                generateAndAppendRow($("#userprofile-activity-feed-table"),
+                    "<?php echo $activity['activity_type']; ?>",
+                    <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ?
+                        $activity['discussion_title'] : $activity['document_title']); ?>.value,
+                    <?php echo (($activity['activity_type'] === 'Discuss') ?
                         $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>"
                 );
             <?php endforeach; ?>
         };
 
         function generateAndAppendRow(table, task, docTitle, docID, date) {
-            var emptyRow = $('<tr class="activity-feed-row">' + 
-                '<td><span class="task-data">' + task + '</span></td>' + 
+            var emptyRow = $('<tr class="activity-feed-row">' +
+                '<td><span class="task-data">' + task + '</span></td>' +
                 '<td><span class="document-data"><a href="<?php echo getFullInciteUrl(); ?>'+
                 (task === 'Discuss' ? '/discussions/discuss/' : '/documents/view/') +
                 docID+'" target="_BLANK">' + docTitle + '</a></span></td>' +
@@ -217,7 +218,7 @@
                 data: {"searchTerm": $('#search-groups-input').val()},
                 success: function (response) {
                     groups = JSON.parse(response);
-                    
+
                     if (groups) {
                         groups.forEach(function(group) {
                             addGroupToJoinRow(group['name'], group['id']);
@@ -238,9 +239,9 @@
         function addGroupToJoinRow(groupName, groupId) {
             var table = $('#join-group-table');
 
-            var emptyRow = $('<tr>' + 
+            var emptyRow = $('<tr>' +
                     '<td><a class="group-name-data" href="<?php echo getFullInciteUrl(); ?>' +
-                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' + 
+                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' +
                     '<td><button class="btn btn-primary request-join-btn">Request!</button></td>' +
                 '</tr>');
 
@@ -258,7 +259,7 @@
                 data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
                 success: function (response) {
                     var privilege = JSON.parse(response);
-                        
+
                     if (privilege === 0) {
                         button.prop('disabled', true);
                         button.html("Member of group");
@@ -345,9 +346,17 @@
                 }
             });
         };
+
+
+        function redirectToProfileEditPage(){
+            $('#edit-profile-btn').click(function(event){
+                var url = "<?php echo getFullInciteUrl() . '/users/edit/' . $_SESSION['Incite']['USER_DATA']['id']; ?>";
+                window.location.href = url;
+            });
+        };
     </script>
 
-    <style> 
+    <style>
         #join-or-create-info-container {
             padding: 15px;
         }
@@ -439,7 +448,7 @@
 
         .connect-color {
             background-color: #C9D1F8;
-        } 
+        }
 
         .discuss-color {
             background-color: #C5F7EB;
@@ -509,12 +518,21 @@
         }
     </style>
 </head>
-    
+
 <body>
-    <div id="userprofile-header">
+  <div id="userprofile-header">
         <?php
-            echo '<h1> Username: '. $this->user['email'] . '</h1>';
+
+        echo '<h1> Username: '. $this->user['email'] . '</h1>';
+        if ($this->user['id'] == $_SESSION['Incite']['USER_DATA']['id']) {
+            ?>
+            <div>
+                <input id="edit-profile-btn" class="btn btn-primary" type="submit" value="Edit Profile" >
+            </div>
+            <?php
+        }
         ?>
+
 
         <div>
             <p id="groups-list">Belongs to group(s): </p>
@@ -534,7 +552,7 @@
                 <div id="search-groups-section">
                     <span>
                         <label class="control-label" for="group-name-input">Search Groups By Keyword: </label>
-                        <input id="search-groups-input" class="form-control" type="text" name="field" placeholder="Keyword" />        
+                        <input id="search-groups-input" class="form-control" type="text" name="field" placeholder="Keyword" />
                         <button id="group-search-btn" class="btn btn-primary">
                             Find Groups to Join <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         </button>
@@ -615,7 +633,7 @@
                         Document/Discussion
                     </th>
                     <th>
-                        Date 
+                        Date
                     </th>
                 </tr>
             </table>
@@ -623,4 +641,3 @@
     </div>
 </body>
 </html>
-

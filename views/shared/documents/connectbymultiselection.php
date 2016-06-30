@@ -35,22 +35,22 @@
                             aria-hidden="true" data-trigger="hover"
                             data-toggle="popover" data-html="true"
                             data-viewport="#subject-form";
-                            data-title="<strong>Marking Categories</strong>" 
-                            data-content="<?php echo "Simply choose all of the categories you think apply to this document. If none apply, select 'None of the above topics applied'." ?>" 
+                            data-title="<strong>Marking Categories</strong>"
+                            data-content="<?php echo "Simply choose all of the categories you think apply to this document. If none apply, select 'None of the above topics applied'." ?>"
                             data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                         </span>
                     </p>
 
                     <form id="subject-form" method="post">
                         <?php foreach ((array)$this->subjects as $subject): ?>
-                                            <input type="checkbox" class="subject-checkbox" name="subjects[]" value="<?php echo $subject['id']; ?>">  
+                                            <input type="checkbox" class="subject-checkbox" name="subjects[]" value="<?php echo $subject['id']; ?>">
                                             <label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label>
                                             <br>
                         <?php endforeach; ?>
-                        <input type="checkbox" class="none-checkbox" name="no_subjects" value="100">  
+                        <input type="checkbox" class="none-checkbox" name="no_subjects" value="100">
                         <label>None of the above topics applied</label>
                         <br>
-                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
+                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                         <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
                     </form>
                 </div>
@@ -64,7 +64,7 @@
                 <?php
                     include(dirname(__FILE__) . '/../common/task_comments_section.php');
                 ?>
-            </div> 
+            </div>
         </div>
     </div>
     <!-- /.container -->
@@ -83,7 +83,7 @@
 
             addButtonAndCheckboxListeners();
 
-            <?php if ($this->is_being_edited): ?> 
+            <?php if ($this->is_being_edited): ?>
                 styleForEditing();
             <?php endif; ?>
         });

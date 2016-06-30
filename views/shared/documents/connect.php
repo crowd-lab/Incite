@@ -1,111 +1,4 @@
 
-<?php
-
-/**
-    Input: Location from Item Type Metadata (Format: State - County - City or "State - City Indep. City")
-    Output: array including "lat" and "long".
- */
-function loc_to_lat_long($loc_str)
-{
-    $states = array(
-        'Alabama'=>'AL',
-        'Alaska'=>'AK',
-        'Arizona'=>'AZ',
-        'Arkansas'=>'AR',
-        'California'=>'CA',
-        'Colorado'=>'CO',
-        'Connecticut'=>'CT',
-        'Delaware'=>'DE',
-        'Florida'=>'FL',
-        'Georgia'=>'GA',
-        'Hawaii'=>'HI',
-        'Idaho'=>'ID',
-        'Illinois'=>'IL',
-        'Indiana'=>'IN',
-        'Iowa'=>'IA',
-        'Kansas'=>'KS',
-        'Kentucky'=>'KY',
-        'Louisiana'=>'LA',
-        'Maine'=>'ME',
-        'Maryland'=>'MD',
-        'Massachusetts'=>'MA',
-        'Michigan'=>'MI',
-        'Minnesota'=>'MN',
-        'Mississippi'=>'MS',
-        'Missouri'=>'MO',
-        'Montana'=>'MT',
-        'Nebraska'=>'NE',
-        'Nevada'=>'NV',
-        'New Hampshire'=>'NH',
-        'New Jersey'=>'NJ',
-        'New Mexico'=>'NM',
-        'New York'=>'NY',
-        'North Carolina'=>'NC',
-        'North Dakota'=>'ND',
-        'Ohio'=>'OH',
-        'Oklahoma'=>'OK',
-        'Oregon'=>'OR',
-        'Pennsylvania'=>'PA',
-        'Rhode Island'=>'RI',
-        'South Carolina'=>'SC',
-        'South Dakota'=>'SD',
-        'Tennessee'=>'TN',
-        'Texas'=>'TX',
-        'Utah'=>'UT',
-        'Vermont'=>'VT',
-        'Virginia'=>'VA',
-        'Washington'=>'WA',
-        'West Virginia'=>'WV',
-        'Wisconsin'=>'WI',
-        'Wyoming'=>'WY');
-
-    //mostly only use state and city but in case of no such city, we use county instead
-    $elem  = explode("-", $loc_str);
-    $state = "";
-    $city  = "";
-    $county = "";
-
-    //Parse state and city names
-    if (count($elem) >= 3) { //currently ignore extra info about location. Item 11 is an exception here!
-        $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
-        if (!isset($states[$state_index]))
-            return array('lat' => '37.23', 'long' => '-80.4178');
-        $state  = $states[$state_index];
-        $city   = trim($elem[2]);
-        $county = trim(str_replace('County', '', $elem[1]));
-    } else if (count($elem) == 2) {
-        $state = $states[trim(str_replace('State', '', str_replace('state', '', $elem[0])))];
-        $city  = strstr(trim($elem[1]), ' Indep.', true);
-        if ($city == "")
-            $city = trim($elem[1]);
-    } else {
-        //Should send to log and to alert new format of location!
-    }
-
-    //Convert state and city to lat and long
-    $result = array();
-    $latlong_file = fopen('./plugins/Incite/zip_codes_states.csv', 'r') or die('no zip file!');
-
-    while (($row = fgetcsv($latlong_file)) != FALSE) {
-        //Just use the last result as our county guess
-        if ($county == $row[5] && $state == $row[4]) {
-            $result['lat']  = $row[1];
-            $result['long'] = $row[2];
-        }
-        //Just use the first result as our final result!
-        if ($city == $row[3] && $state == $row[4]) {
-            $result['lat']  = $row[1];
-            $result['long'] = $row[2];
-            break;
-        }
-    }
-    fclose($latlong_file);
-
-    return $result;
-}
-
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <?php
@@ -199,8 +92,9 @@ include(dirname(__FILE__).'/../common/header.php');
         <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span>
         <br>
 <?php foreach ((array)$this->Connections as $connection): ?>
-        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px; height: 45px;" 
-            data-toggle="popover" 
+
+        <div id="list_id<?php echo $connection->id;?>" style="margin: 10px; height: 45px;"
+            data-toggle="popover"
             data-trigger="hover" data-html="true"
             data-title="<?php echo "<strong>" . metadata($connection, array('Dublin Core', 'Title')) . "</strong>";?>"
             data-placement="left" data-id="<?php echo $connection->id; ?>"
@@ -238,7 +132,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="timeline"></div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
 
-                     
+
 </div>
     <script type="text/javascript">
             var ev = [
@@ -257,14 +151,14 @@ include(dirname(__FILE__).'/../common/header.php');
             });
             $('#list-view-switch').one("click", hideListView);
         }
-        
+
         function hideListView() {
             $('#list-view').animate({ left: $(window).width()-$('#list-view-switch').width()-5 }, 'slow', function() {
                 $('#list-view-switch').html('Show');
             });
             $('#list-view-switch').one("click", showListView);
         }
-        
+
         function buildTimeLine(evt) {
             $('#timeline').empty();
             tl = $('#timeline').jqtimeline({
@@ -288,7 +182,7 @@ include(dirname(__FILE__).'/../common/header.php');
             //$('#map-div').width($(window).width());
             $('#timeline').width($(window).width()-30);
             document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
-            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+            document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
             document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
             //showListView();
             //buildTimeLine(ev);
@@ -297,7 +191,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 $('#timeline').width($(window).width()-30);
                 $('#map-div').height($(window).height()-200);
                 document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
-                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px'; 
+                document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
                 document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
                 //showListView();
                 //buildTimeLine(ev);
@@ -341,7 +235,7 @@ include(dirname(__FILE__).'/../common/header.php');
         } else {
             echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
         }
-        
+
         unset($_SESSION['incite']['message']);
     }
 ?>

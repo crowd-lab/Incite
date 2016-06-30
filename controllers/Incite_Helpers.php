@@ -1,4 +1,5 @@
 <?php
+require_once("Email.php");
 
 function get_image_url_for_item($item, $is_thumbnail = false) {
     //$url_path = (isset($_SERVER['HTTPS']) ? "https" : "http") . '://'. $_SERVER['HTTP_HOST'] . '/m4j/files/original/';
@@ -53,7 +54,7 @@ function merge_images($filenames, $filename_result) {
     foreach ((array)$filenames as $filename) {
         $file_names .= $filename['file']." ";
     }
-    
+
     //full size
     system('convert '.$file_names.'-append '.$filename_result);
 
@@ -165,6 +166,9 @@ function getReadableTimeFromMySQL($time)
 {
 }
 
+
+
+
 /**
  * A helper function that protects again two large bugs:
  *
@@ -178,7 +182,7 @@ function sanitizeStringInput($input) {
     }
 
     $json_encoded_array = json_encode(array('value' => strip_tags($input)));
-    
+
     //json_encode will fail if ?bad characters? are present, not sure what exactly causes this
     if (empty($json_encoded_array)) {
         return json_encode(array('value' => "PARSING ERROR, BAD CHARACTERS"));
@@ -198,6 +202,6 @@ function debug_to_console( $data ) {
 }
 
 function getPositiveSubjects($subjects) {
-    
+
 }
 ?>

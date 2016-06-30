@@ -22,6 +22,7 @@
     <title>Mapping the 4th</title>
     <?php echo js_tag('jquery'); ?>
     <?php echo js_tag('bootstrap.min'); ?>
+        <?php echo js_tag('js.cookie'); ?>
     <?php echo js_tag('jquery-ui'); ?>
     <?php echo js_tag('jquery.mousewheel'); ?>
     <?php echo js_tag('jquery.iviewer'); ?>
@@ -42,7 +43,7 @@
      <?php
         function loadWorkingGroupInstructions() {
             $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
-            
+
             $workingGroupId = 0;
             $workingGroupHasInstructions = false;
             if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
@@ -52,7 +53,7 @@
             foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
                 if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
                     $workingGroupHasInstructions = true;
-                                    
+
                     if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
                         echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
                     } else {
@@ -83,9 +84,9 @@
     <style>
         #user_profile {
             background:none!important;
-            border:none; 
+            border:none;
             padding:0!important;
-            font: inherit; 
+            font: inherit;
             color: #9D9D9D;
             height: 34px;
         }
@@ -209,7 +210,7 @@
                     .addClass('glyphicon-info-sign')
                     .css('color', '#9D9D9D');
             }
-            
+
         }
 
         function updateSeenInstructionsAjaxRequest(groupId) {
@@ -233,6 +234,11 @@
         ?>
 
         $(document).ready(function () {
+
+          $("a#forgotpw").bind("click", function() {
+            Cookies.set('name', $('#username').val());
+          });
+
            <?php loadWorkingGroupInstructions(); ?>
 
             $('#time_picker').daterangepicker({
@@ -273,6 +279,7 @@
                     $('#adv-search-btn').click();
                 }
             });
+
         });
 
         function deleteAlertFromLoginModal() {
@@ -302,7 +309,7 @@
             } else {
                 usernameError.className = "alert alert-block alert-success messages status";
             }
-            
+
             var submitButton = document.getElementById("login-button");
             loginDiv.insertBefore(usernameError, submitButton);
         };
@@ -383,7 +390,7 @@
             var request = $.ajax({
                 type: "POST",
                 url: "<?php echo getFullInciteUrl().'/ajax/logout'; ?>",
-                success: function () 
+                success: function ()
                 {
                     notifyOfSuccessfulActionWithTimeout("You've logged out!");
 
@@ -421,7 +428,7 @@
 
                     <li class="dropdown" id="navbar-account-interaction-area">
                         <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
-                            <button id="user_profile" type="button" 
+                            <button id="user_profile" type="button"
                                     class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false"
                                     style="height: 34px; color: #8BB7C8;">
@@ -450,13 +457,13 @@
                     </li>
 -->
                     <li class="">
-                        <a href="" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">About</a>
+                      <a href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">About</a>
                     </li>
                     <li class="">
-                        <a href="" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Teachers</a>
-                    </li>
-                    <li class="">
-                        <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Contribute</a>
+                      <a href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Teachers</a>
+                  </li>
+                  <li class="">
+                      <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Contribute</a>
                     </li>
                     <li>
                         <div class="input-group" id="adv-search" style="width: 261px; margin-top: 10px; margin-right: 10px; margin-left: 15px;">
@@ -486,7 +493,7 @@
                                                 <label>Dates:</label><br>
                                                 <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1830-01-01" name="time_from" value="<?php if (isset($previous_search_results['time_from'])) echo $previous_search_results['time_from']; else echo '1830-01-01'; ?>" />
                                                 <div style="display: inline-block; float: left; font-size: 100%; margin-left: 5px; margin-right: 5px; margin-top: 5px;"><b> to </b></div>
-                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1870-12-31" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1870-12-31'; ?>" /> 
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1870-12-31" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1870-12-31'; ?>" />
                                               </div>
                                               <button id="adv-search-btn" type="submit" class="btn btn-default"><span style="font-size: 80%;" class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
                                               <input type="hidden" name="keywords" value="" id="keywords">
@@ -531,6 +538,7 @@
                                     <label for="message-text" class="control-label">Password:</label>
                                     <input type="password" class="form-control" id="password" name="password">
                                 </div>
+                                 <a href="<?php echo getFullInciteUrl() . '/users/forgot'?>" id="forgotpw">forgot password?</a>
                             </form>
                         </div>
                         <div class="tab-pane" id="tab2">
