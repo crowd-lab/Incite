@@ -37,7 +37,12 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
                        isset($_GET['time_to']) &&
                        $_GET['time_from'] != "" &&
                        $_GET['time_to'] != "") {
-                $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time_from'].'-01-01 - '.$_GET['time_to'].'-12-31';
+                if (strlen($_GET['time_from']) == 4 && strlen($_GET['time_to']) == 4)
+                    $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time_from'].'-01-01 - '.$_GET['time_to'].'-12-31';
+                else if (strlen($_GET['time_from']) == 10 && strlen($_GET['time_to']) == 10)
+                    $query .= (strlen($query) > 1 ? '&' : '').'time='.$_GET['time_from'].' - '.$_GET['time_to'];
+                else //unknown format
+                    $query .= "";
             }
 
             //Process keyword search
@@ -60,6 +65,7 @@ class Incite_DiscoverController extends Omeka_Controller_AbstractActionControlle
                     $redirect_action = 'documents/view';
 				}
 			}
+
             if (strlen($query) > 1)  //more than "?"
                 $this->_redirect('/incite/'.$redirect_action.$query);
             else

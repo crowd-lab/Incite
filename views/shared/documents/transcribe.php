@@ -87,7 +87,7 @@ var ev, tl;
 ev = [];
 var width, height;
 var current_page;
-var total_page;
+var total_pages = 0;
 var items_per_page;
 
 $('#map-div').ready( function (e) {
@@ -169,27 +169,27 @@ function setUpForDocumentsList(){
 * This function will call other functions to build the map, timeline, pagination bar and the list.
 */
 function getTranscribableDocumentsRequest() {
+
+
   var request = $.ajax({
-    type: "POST",
-    dataType:"json",
+    type: "GET",
+    // dataType:"json",
     url: "<?php echo getFullInciteUrl().'/ajax/getdocuments'; ?>",
-    data: {"current_page": current_page, "items_per_page": items_per_page},
+    data: {"current_page": current_page, "items_per_page": items_per_page<?php if (isset($_GET['location'])) echo ', "location":"'.$_GET['location'].'"';?><?php if (isset($_GET['time'])) echo ', "time":"'.$_GET['time'].'"';?>
+    <?php if (isset($_GET['keywords'])) echo ', "keywords":"'.$_GET['keywords'].'"';?>},
     success: function (response)
     {
-      if(response.length != 0){
-        total_pages = response['total_pages'];
-        docs = jQuery.extend(true, [], response['records']);
+      if(response != "false"){
+        var data =  $.parseJSON(response);
+        total_pages = data['total_pages'];
+        docs = jQuery.extend(true, [], data['records']);
         //display documents in the list
-        displayDocumentsList(response['records']);
-
-        //add markers to the map
-        buildMap();
-
-        //building the pagination bar
-        generatePaginationBar();
-        generateTimeLine();
-
+        displayDocumentsList(data['records']);
       }
+      //build map and pagination
+      generatePaginationBar();
+      buildMap();
+
     },
     error: function(xhr,textStatus,err)
     {
@@ -204,19 +204,23 @@ function getTranscribableDocumentsRequest() {
 
 function generatePaginationBar(){
   var buffer ="";
-  var disableFirst = (current_page == 1 ? "disabled" : "");
-  var disableLast = (current_page == total_pages ? "disabled" : "");
+  var disableFirst = (current_page == 1 || total_pages == 0? "disabled" : "");
+  var disableLast = (current_page == total_pages || total_pages == 0? "disabled" : "");
   var query = "<?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>";
   var startNum;
+  var endNum;
 
+  if (total_pages != 0){
   // first page
   $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\"1\"> <a class=\"page-link\" href=\"?page=1"+ query +"\" "+ "onclick=\"return " +(disableFirst != "" ? "false" : "setCurrentPageNum("+ (1) +")") + "\" > 1<span class=\"sr-only\">First</span></a></li>");
+
+}
 
   // previous page
   $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\""+(current_page-1)+"\"> <a class=\"page-link\" href=\"?page="+ (current_page-1) +query +"\" onclick=\"return " +(disableFirst != "" ? "false" : "setCurrentPageNum("+ (current_page-1) +")") + "\" aria-label=\"Previous\">&laquo<span class=\"sr-only\"></span></a></li>");
 
 
-  if(total_pages >5){
+  if(total_pages > 5){
     if(current_page < 3){
       startNum = 0;
     }
@@ -230,15 +234,24 @@ function generatePaginationBar(){
   else{
     startNum = 0;
   }
+  if(total_pages < 5){
+      endNum = total_pages;
+  }
+  else{
+      endNum = startNum + 5;
+  }
 
-  for (i = startNum; i < startNum + 5; i++){
+
+  for (i = startNum; i < endNum; i++){
     $(".pagination").append("<li class=\"page-item "+ (current_page == (i+1) ? "active" : "") +"\" value=\""+(i+1)+"\"> <a class=\"page-link\" href=\"?page="+ (i+1) + query +"\" onClick=\"return setCurrentPageNum("+ (i+1) +")\">"+ (i+1) + "<span class=\"sr-only\">(current)</span></a></li>" );
   }
 
   var nextPage = parseInt(current_page)+1;
-  $(".pagination").append("<li class=\"page-item "+ disableLast +"\" value=\""+nextPage+"\"> <a class=\"page-link\" href=\"?page="+ nextPage +query +"\" onclick=\"return " +(disableLast != "" ? "false" : "setCurrentPageNum("+ nextPage +")") + "\" aria-label=\"Next\">&raquo<span class=\"sr-only\"></span></a></li>");
+  $(".pagination").append("<li class=\"page-item "+ disableLast +"\" value=\""+nextPage+"\"> <a class=\"page-link\" href=\"?page="+ nextPage +query +"\" onclick=\"return " +((disableLast != "") ? "false" : "setCurrentPageNum("+ nextPage +")") + "\" aria-label=\"Next\">&raquo<span class=\"sr-only\"></span></a></li>");
 
+if(total_pages != 0){
   $(".pagination").append("<li class=\"page-item "+ disableLast +"\" value=\""+(total_pages)+"\"> <a class=\"page-link\" href=\"?page="+total_pages+ query +"\" "+ "onclick=\"return " +(disableLast != "" ? "false" : "setCurrentPageNum("+ total_pages +")") + "\" > "+total_pages+"<span class=\"sr-only\">Last</span></a></li>");
+  }
 
 
 }
@@ -318,7 +331,7 @@ function buildTimeLine(evt) {
     }).addTo(map);
     var marker;
 
-
+if (docs){
     $.each(docs, function() {
 
       var lat_long_var = this.lat_long;
@@ -333,15 +346,18 @@ function buildTimeLine(evt) {
       }
     });
   }
+  }
 
   function buildMap(){
 
     x();
 
+    if(nomarkers_array){
     $.each(nomarkers_array, function (idx) {
       $('#list_id'+this['id']).addClass('no-map-marker');
     });
-
+}
+    if(markers_array){
     $.each(markers_array, function (idx) {
       this['marker'].on('mouseover', function (e) {
         $('div[data-id='+marker_to_id[this._leaflet_id]+']').popover('show');
@@ -356,6 +372,7 @@ function buildTimeLine(evt) {
         window.location.href="/m4j/incite/documents/transcribe/"+marker_to_id[this._leaflet_id];
       });
     });
+}
 
     $('[data-toggle="popover"]').each( function (idx) {
       $(this).on('shown.bs.popover', function (e) {
@@ -387,6 +404,7 @@ function buildTimeLine(evt) {
   }
 
   function buildPopoverContent() {
+      if(docs){
     $.each(docs, function () {
       var content = '';
       var date = this.date;
@@ -428,6 +446,7 @@ function buildTimeLine(evt) {
       }
 
     });
+}
   }
   </script>
 

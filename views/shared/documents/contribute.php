@@ -13,8 +13,12 @@ include(dirname(__FILE__).'/../common/header.php');
                         <option value="transcribe" <?php if ($this->task_type === 'transcribe') echo 'selected="selected"'; ?>>transcribe</option>
                         <option value="tag" <?php if ($this->task_type === 'tag') echo 'selected="selected"'; ?>>tag</option>
                         <option value="connect" <?php if ($this->task_type === 'connect') echo 'selected="selected"'; ?>>connect</option>
-                    </select> documents in
-                    <input type="text" class="form-control" value="" style="font-size: 60%; width: 150px;" name="location" placeholder="anywhere"> from
+
+                    </select> documents published in
+                    <input type="text" class="form-control" value="" style="font-size: 60%; width: 150px;" name="location" placeholder="anywhere">
+                    <br>
+                    <br>
+                    between
                     <select class="form-control" style="font-size: 60%; width: 85px;" id="time_from" name="time_from">
         <option value="1830" selected="selected">1830</option>
                         <option value="1831">1831</option>
@@ -58,7 +62,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         <option value="1869">1869</option>
                         <option value="1870">1870</option>
 
-                    </select> to
+                    </select> and
                     <select class="form-control" style="font-size: 60%; width: 85px;" id="time_to" name="time_to">
 
                         <option value="1830">1830</option>

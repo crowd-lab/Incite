@@ -245,9 +245,18 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 
   public function getdocumentsAction(){
 
-    if ($this->getRequest()->isPost()) {
-      $current_page = $_POST['current_page'];
-      $items_per_page = $_POST['items_per_page'];
+    if ($this->getRequest()->isGet()) {
+      $current_page = $_GET['current_page'];
+      $items_per_page = $_GET['items_per_page'];
+      if(isset($_GET['location'])){
+        $loction = $_GET['location'];
+      }
+      if(isset($_GET['date'])){
+        $date = $_GET['date'];
+      }
+      if(isset($_GET['keywords'])){
+        $keywords = $_GET['keywords'];
+      }
 
       $records = array();
 
@@ -282,13 +291,14 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 
           }
         }
+        $data['records'] = $records;
+        echo json_encode($data);
+
+      }else{
+        Incite_DocumentsController::createSearchResultPages($document_ids, 'Transcriptions');
+        echo 'false';
       }
-      $data['records'] = $records;
 
-      echo json_encode($data);
-
-    }else{
-      echo 'false';
     }
   }
 

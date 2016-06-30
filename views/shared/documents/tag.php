@@ -147,7 +147,7 @@ include(dirname(__FILE__).'/../common/header.php');
     var id_to_marker = {};
     function x() {
         $('[data-toggle="popover"]').popover({ trigger: "hover" });
-        map = L.map('map-div').setView([37.8, -70], 4);
+        map = L.map('map-div').setView([37.8, -95], 4);
           L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
               attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
@@ -208,7 +208,7 @@ include(dirname(__FILE__).'/../common/header.php');
                     <img src="<?php echo get_image_url_for_item($tag, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
                 </div>
                 <div style="height: 40px; margin-left: 45px;">
-                    <p style=""><?php echo metadata($tag, array('Dublin Core', 'Title')); ?></p>
+                    <p style="height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo metadata($tag, array('Dublin Core', 'Title')); ?></p>
                 </div>
             </a>
 

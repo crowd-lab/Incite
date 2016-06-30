@@ -166,4 +166,25 @@ function getSearchQuerySpecifiedViaGetAsString()
 }
 
 
+function getSearchQuerySpecifiedViaGetAsArray()
+{
+    $results = array();
+    if (isset($_GET['location']) && $_GET['location'] != "")
+        $results['location'] = $_GET['location'];
+
+    if (isset($_GET['time']) && $_GET['time'] != "") {
+        $times = explode(' - ', $_GET['time']);
+        if (count($times) == 2 && strlen($times[0]) == 10 && strlen($times[1]) == 10) {
+            $results['time_from'] = $times[0];
+            $results['time_to']   = $times[1];
+        }
+        $results['time'] = $_GET['time'];
+    }
+
+    if (isset($_GET['keywords']) && $_GET['keywords'] != "")
+        $results['keywords'] = $_GET['keywords'];
+
+    return $results;
+}
+
 ?>
