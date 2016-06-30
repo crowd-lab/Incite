@@ -61,10 +61,11 @@ function addTaskCompletionIconsToResultsRow(documentId) {
     </span>
 </div>
 <div id="map-view" style="margin: 5px; width: 69%;"><div id="map-div" style=""></div></div>
+
 <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white; border: solid 1.5px; border-color: #B2B1B1;">
-    <!-- <div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div> -->
-    <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span>
-    <br>
+
+    <!-- <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span>
+    <br> -->
     <!--  Just a place holder to append items after -->
     <div id = "document-list"></div>
 
@@ -270,27 +271,20 @@ function generatePaginationBar(){
 }
 
 function displayDocumentsList(response) {
+    var query = "<?php (isset($this->query_str) && $this->query_str !== "") ? $this->query_str : ""?>";
+    var address = "<?php echo getFullInciteUrl().'/documents/transcribe/'; ?>";
 
-    var buffer="";
-    $.each(response, function() {
-        buffer += "<div id=\"list_id"+this.id+"\" style=\"margin: 10px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + this.name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\">";
 
-        <?php if (isset($this->query_str) && $this->query_str !== ""): ?>
-        var query = "<?php echo $this->query_str; ?>";
-        var address = "<?php echo getFullInciteUrl().'/documents/transcribe/'; ?>";
+    $.each(response, function(){
 
-        buffer += "<a href=\""+ address +this.id+"?" + query +"\">";
+            $('#list-view').prepend("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + this.name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id + (query != "" ? "?" + query : "\">") + "<div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></div>");
 
-        <?php else: ?>
 
-        buffer += "<a href=\""+ address +this.id+ "\">";
-
-        <?php endif ?>
-
-        buffer += "<div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.uri+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"\">"+this.name+"</p></div></a></div>";
+    addTaskCompletionIconsToResultsRow(this.id);
     });
+    $('#list-view').prepend("<span style=\"width: 20px; background: #EEEEEE; margin-right: 5px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span><br>");
 
-    $(buffer).insertAfter('#document-list');
+
 };
 
 
