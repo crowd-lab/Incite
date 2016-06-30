@@ -295,7 +295,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         echo json_encode($data);
 
       }else{
-        Incite_DocumentsController::createSearchResultPages($document_ids, 'Transcriptions');
+        // Incite_DocumentsController::createSearchResultPages($document_ids, 'Transcriptions');
         echo 'false';
       }
 
