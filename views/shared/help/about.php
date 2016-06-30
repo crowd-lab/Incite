@@ -39,8 +39,8 @@ p{
       ♦ David Hicks  (project co-director) is associate professor of history and social science education (Social Studies) in Virginia Tech’s School of Education.<br>
       ♦ Kurt Luther  (project co-director) is assistant professor of Computer Science at Virginia Tech, where he is also a member of the Center for Human-Computer Interaction and the Institute for Creativity, Arts, and Technology.<br>
       ♦ Andrea Ogier, Steven Tatum, and Edwin Brooks, all from the Virginia Tech University Libraries, contribute expertise in data management, the Omeka platform, and GIS mapping.<br>
-      ♦ Nai-Ching Wang […please fill in and describe your role…]<br>
-      ♦ Other students from the departments of history and computer science: Kevin Caprice, Daniel Newcomb [please add all CS students who’ve been involved]<br>
+      ♦ Nai-Ching Wang  (major developer and designer of Incite) is a PhD student of Computer Science at Virginia Tech.<br>
+      ♦ Other students from the departments of history and computer science: Kevin Caprice, Daniel Newcomb, Amit Dayal, Vijay Kuruvilla, Jayanth Prathipati, Seth Nute, Abby Jetmundsen, and So Hyun Jo.<br>
       <br>
 
       Questions? Please email <a href="mailto:july4.civilwar-g@vt.edu">july4.civilwar-g@vt.edu</a>
