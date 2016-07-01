@@ -329,7 +329,7 @@
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
             if ($(this).find('option:selected').text() !== "") {
-                $.each(categories[$(this).val()-1]['subcategory'][$(this).val()-1], function (idx) {
+                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
                     subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                 });
             } else {

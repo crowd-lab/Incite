@@ -443,7 +443,6 @@
         };
 
         function location_to_city_state_str(loc_str) {
-            console.log(loc_str);
             if (loc_str == null)
                 return '';
             var elements = loc_str.split("-");
