@@ -1,17 +1,4 @@
 <head>
-	<?php
-		$currentURL = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-
-		if (strpos($currentURL, "/tag/") !== false) {
-		    $currentTask = $this->tag;
-		} else if (strpos($currentURL, "/connect/") !== false) {
-		    $currentTask = $this->connection;
-		} else {
-			echo "Not on a connection or tagging page";
-			die();
-		}
-	?>
-
 	<script type="text/javascript">
         function migrateTaggedDocumentsFromV1toV2() {
             $('#transcribe_copy em').each( function (idx) {
@@ -65,31 +52,64 @@
 	            zoom_min: 1,
 	            zoom: "fit"
         	});
+
+            buildPopoverContent();
 		});
+
+        function buildPopoverContent() {
+            var content = '';
+            var date = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Date'))); ?>.value;
+            var location = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Item Type Metadata', 'Location'))); ?>.value;
+            var source = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Source'))); ?>.value;
+            var contributor = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Contributor'))); ?>.value;
+            var rights = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Rights'))); ?>.value;
+
+            if (date) {
+                content += '<strong>Date: </strong>' + date + '<br><br>';
+            }
+
+            if (location) {
+                content += '<strong>Location: </strong>' + location + '<br><br>';
+            }
+
+            if (source) {
+                content += '<strong>Source: </strong>' + source + '<br><br>';
+            }
+
+            if (contributor) {
+                content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
+            }
+
+            if (rights) {
+                content += '<strong>Rights: </strong>' + rights + '<br><br>';
+            } else {
+                content += '<strong>Rights: </strong>Public Domain<br><br>';
+            }
+
+
+            if (content) {
+                //cut off the last <br><br>
+                content = content.slice(0, -8);
+
+                $('#document-info-glphicon').attr('data-content', content);
+            } else {
+                $('#document-info-glphicon').attr('data-content', "No available document information, sorry!");
+            }
+        }
 	</script>
 </head>
 
 <body>
 	<div style="position: fixed;" id="work-view">
         <div class="document-header">
-            <span class="document-title" title="<?php echo metadata($currentTask, array('Dublin Core', 'Title')); ?>">
-                <b>Title:</b> <?php echo metadata($currentTask, array('Dublin Core', 'Title')); ?>
+            <span class="document-title" title="<?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>">
+                <b>Title:</b> <?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>
             </span>
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
                 data-toggle="popover" data-html="true" data-trigger="hover"
                 data-viewport=".document-header" aria-hidden="true"
                 data-title="<strong>Document Information</strong>" 
-                data-content="<?php echo "<strong>Title:</strong> "
-                    	. metadata($currentTask, array('Dublin Core', 'Title'))
-                		. "<br><br> <strong>Date:</strong> " 
-                        . metadata($currentTask, array('Dublin Core', 'Date')) 
-                        . "<br><br> <strong>Location:</strong> " 
-                        . metadata($currentTask, array('Item Type Metadata', 'Location')) 
-                        . "<br><br> <strong>Description:</strong> " 
-                        . metadata($currentTask, array('Dublin Core', 'Description'))
-                        . "<br><br> <strong>Rights:</strong> " 
-                        . metadata($currentTask, array('Dublin Core', 'Rights')); ?>" 
-                data-placement="bottom" data-id="<?php echo $currentTask->id; ?>">
+                data-placement="bottom" data-id="<?php echo $this->document_metadata->id; ?>">
             </span>
         </div> 
         
@@ -118,8 +138,12 @@
 </body>
 
 <style>
-	.document-header {
+	#work-view {
+        position: fixed; 
         margin-top: -30px;
+    }
+
+	.document-header {
     }
 
 	.document-title {

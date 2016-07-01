@@ -17,6 +17,10 @@
 		    	alert("Using task headers on a non-task page");
 		    }
 
+            <?php if ($this->is_being_edited): ?>
+                currentTask += ' - Editing';   
+            <?php endif; ?>
+
         	$(".task-header").html(currentTask); 
         });
 	</script>
@@ -25,17 +29,20 @@
 <body>
 	<div id="task_description">
         <h1 class="task-header">Loading..</h1>
+        <?php
+            include(dirname(__FILE__) . '/../common/group_instructions_section.php');
+        ?>
     </div>
 </body>
 
 <style>
 	.task-header {
         text-align: center; 
-        margin-bottom: 40px; 
-        margin-top: 0px;
+        margin-top: 5px;
     }
 
     #task_description {
         text-align: center;
+        margin-bottom: 40px; 
     }
 </style>

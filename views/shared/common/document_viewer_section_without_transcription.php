@@ -14,7 +14,50 @@
                 zoom_min: 1,
                 zoom: "fit"
             });
+
+            buildPopoverContent();
         });
+
+        function buildPopoverContent() {
+            var content = '';
+            var date = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Date'))); ?>.value;
+            var location = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Item Type Metadata', 'Location'))); ?>.value;
+            var source = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Source'))); ?>.value;
+            var contributor = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Contributor'))); ?>.value;
+            var rights = <?php echo sanitizeStringInput(metadata($this->document_metadata, array('Dublin Core', 'Rights'))); ?>.value;
+
+            if (date) {
+                content += '<strong>Date: </strong>' + date + '<br><br>';
+            }
+
+            if (location) {
+                content += '<strong>Location: </strong>' + location + '<br><br>';
+            }
+
+            if (source) {
+                content += '<strong>Source: </strong>' + source + '<br><br>';
+            }
+
+            if (contributor) {
+                content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
+            }
+
+            if (rights) {
+                content += '<strong>Rights: </strong>' + rights + '<br><br>';
+            } else {
+                content += '<strong>Rights: </strong>Public Domain<br><br>';
+            }
+
+
+            if (content) {
+                //cut off the last <br><br>
+                content = content.slice(0, -8);
+
+                $('#document-info-glyphicon').attr('data-content', content);
+            } else {
+                $('#document-info-glyphicon').attr('data-content', "No available document information, sorry!");
+            }
+        }
     </script>
 </head>
 
@@ -22,25 +65,15 @@
 	<div class="col-md-6" id="work-zone">
         <div id="work-view">
             <div class="document-header">
-                <span class="document-title" title="<?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?>" ><b>Title:</b> <?php echo metadata($this->transcription, array('Dublin Core', 'Title')); ?></span>
+                <span class="document-title" title="<?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>" ><b>Title:</b> <?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?></span>
                 <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
                 	aria-hidden="true" data-trigger="hover"
                     data-toggle="popover" data-html="true"
-                    data-viewport=".document-header"  
-                    data-title="<strong>Document Information</strong>" 
-                    data-content="<?php echo "<strong>Title:</strong> "
-                    		. metadata($transcription, array('Dublin Core', 'Title'))
-                    		. "<br><br> <strong>Date:</strong> " 
-                            . metadata($transcription, array('Dublin Core', 'Date')) 
-                            . "<br><br> <strong>Location:</strong> " 
-                            . metadata($this->transcription, array('Item Type Metadata', 'Location')) 
-                            . "<br><br> <strong>Description:</strong> " 
-                            . metadata($this->transcription, array('Dublin Core', 'Description'))
-                            . "<br><br> <strong>Rights:</strong> " 
-                            . metadata($this->transcription, array('Dublin Core', 'Rights')); ?>" 
-                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                    data-viewport=".document-header"
+                    data-title="<strong>Document Information</strong>"
+                    data-placement="bottom" data-id="<?php echo $this->document_metadata->id; ?>">
                 </span>
-            </div> 
+            </div>
             <div class="wrapper">
                 <div id="viewer2" class="viewer"></div>
             </div>
@@ -50,8 +83,9 @@
 
 <style>
 	#work-view {
-        position: fixed; 
+        position: fixed;
         width: 35%;
+        margin-top: -39px;
     }
 
     .viewer {
@@ -66,12 +100,11 @@
     }
 
     .document-header {
-        margin-top: -39px;
     }
 
     .document-title {
-        font-size: 25px; 
-        position: relative; 
+        font-size: 25px;
+        position: relative;
         top: -5px;
         display: inline-block;
         overflow: hidden;
@@ -82,7 +115,7 @@
     }
 
     #document-info-glyphicon {
-        color: #337AB7; 
+        color: #337AB7;
         font-size: 20px;
         top: -8px;
     }

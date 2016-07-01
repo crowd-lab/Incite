@@ -43,7 +43,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-      
+
                 <h2>Does this document talk about <a href="" data-toggle="popover" title="Definition" data-content="<?php echo $this->subject_definition; ?>"><?php echo $this->subject; ?></a>?</h2>
                 <form method="post">
                     <button type="submit" class="btn btn-default" name="connection" value="true">Yes</button>
@@ -78,13 +78,13 @@
                     <ul id="comments">
                     </ul>
                 </div>
-            </div> 
+            </div>
         </div>
 
 
 
 
-  
+
 </div>
 
     </div>
@@ -138,7 +138,7 @@ $(document).ready(function(){
                 border: 1px solid black;
                 position: relative;
             }
-            
+
             .wrapper
             {
                 overflow: hidden;

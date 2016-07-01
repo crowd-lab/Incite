@@ -26,6 +26,8 @@
             populateActivityOverview();
             populateActivityFeed();
             addGroupCreateOrJoinListeners();
+            addListenersToGroupSelector();
+            redirectToProfileEditPage();
         });
 
         function hideElementsByDefault() {
@@ -95,7 +97,7 @@
                     span = $('<span class="group-member-link">, </span>');
                 }
 
-                span.append(createGroupLink("<?php echo $group['name']; ?>", <?php echo $group['id']; ?>));
+                span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
 
                 $('#groups-list').append(span);
             <?php endforeach; ?>
@@ -105,22 +107,36 @@
             return $('<span class="group-link"><a href="<?php echo getFullInciteUrl(); ?>/groups/view/'+groupid+'" target="_BLANK">' + groupname + '</a></span>');
         };
 
-        function populateActivityOverview() {
-            $("#number-transcribed").html("<?php echo count($this->transcribed_docs); ?>" + " document(s)");
-            $("#number-tagged").html("<?php echo count($this->tagged_docs); ?>" + " document(s)");
-            $("#number-connected").html("<?php echo count($this->connected_docs); ?>" + " document(s)");
-            $("#number-discussed").html("<?php echo count($this->discussions); ?>" + " discussion(s)");
+        function populateActivityOverview(transcribeCount, tagCount, connectCount, discussCount) {
+            if (transcribeCount >= 0 && tagCount >= 0 && connectCount >= 0 && discussCount >= 0) {
+                $("#number-transcribed").html(transcribeCount + " document(s)");
+                $("#number-tagged").html(tagCount + " document(s)");
+                $("#number-connected").html(connectCount + " document(s)");
+                $("#number-discussed").html(discussCount + " discussion(s)");
+            } else {
+                $("#number-transcribed").html("<?php echo count($this->transcribed_docs); ?>" + " document(s)");
+                $("#number-tagged").html("<?php echo count($this->tagged_docs); ?>" + " document(s)");
+                $("#number-connected").html("<?php echo count($this->connected_docs); ?>" + " document(s)");
+                $("#number-discussed").html("<?php echo count($this->discussions); ?>" + " discussion(s)");
+            }
+
         };
 
         function populateActivityFeed() {
             <?php foreach ((array)$this->activities as $activity): ?>
-                generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", "<?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>", <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+                generateAndAppendRow($("#userprofile-activity-feed-table"),
+                    "<?php echo $activity['activity_type']; ?>",
+                    <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ?
+                        $activity['discussion_title'] : $activity['document_title']); ?>.value,
+                    <?php echo (($activity['activity_type'] === 'Discuss') ?
+                        $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>"
+                );
             <?php endforeach; ?>
         };
 
         function generateAndAppendRow(table, task, docTitle, docID, date) {
-            var emptyRow = $('<tr>' + 
-                '<td><span class="task-data">' + task + '</span></td>' + 
+            var emptyRow = $('<tr class="activity-feed-row">' +
+                '<td><span class="task-data">' + task + '</span></td>' +
                 '<td><span class="document-data"><a href="<?php echo getFullInciteUrl(); ?>'+
                 (task === 'Discuss' ? '/discussions/discuss/' : '/documents/view/') +
                 docID+'" target="_BLANK">' + docTitle + '</a></span></td>' +
@@ -202,7 +218,7 @@
                 data: {"searchTerm": $('#search-groups-input').val()},
                 success: function (response) {
                     groups = JSON.parse(response);
-                    
+
                     if (groups) {
                         groups.forEach(function(group) {
                             addGroupToJoinRow(group['name'], group['id']);
@@ -223,9 +239,9 @@
         function addGroupToJoinRow(groupName, groupId) {
             var table = $('#join-group-table');
 
-            var emptyRow = $('<tr>' + 
+            var emptyRow = $('<tr>' +
                     '<td><a class="group-name-data" href="<?php echo getFullInciteUrl(); ?>' +
-                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' + 
+                    '/groups/view/' + groupId + '">' + groupName + '</a></td>' +
                     '<td><button class="btn btn-primary request-join-btn">Request!</button></td>' +
                 '</tr>');
 
@@ -243,7 +259,7 @@
                 data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
                 success: function (response) {
                     var privilege = JSON.parse(response);
-                        
+
                     if (privilege === 0) {
                         button.prop('disabled', true);
                         button.html("Member of group");
@@ -274,9 +290,73 @@
                 }
             });
         };
+
+        function addListenersToGroupSelector() {
+            $('#activity-feed-group-selector-filter').change(function(e) {
+                var groupId = $('#activity-feed-group-selector-filter option:selected').val();
+
+                clearActivityTable();
+
+                if (groupId !== "All groups") {
+                    populateActivityFeedAndOverviewForGroup(groupId);
+                } else {
+                    populateActivityFeed();
+                    populateActivityOverview();
+                }
+
+                resetFilters();
+            });
+        };
+
+        function clearActivityTable() {
+            $('.activity-feed-row').remove();
+        };
+
+        function populateActivityFeedAndOverviewForGroup(groupId) {
+            var Transcribe = 0;
+            var Tag = 0;
+            var Connect = 0;
+            var Discuss = 0;
+
+            <?php foreach ((array)$this->activities as $activity): ?>
+                if (parseInt(groupId) === <?php echo $activity['working_group_id']; ?>) {
+                    <?php echo $activity['activity_type']; ?>++;
+                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+                }
+            <?php endforeach; ?>
+
+            populateActivityOverview(Transcribe, Tag, Connect, Discuss);
+        };
+
+        function resetFilters() {
+            filters = ["transcribe", "tag", "connect", "discuss"];
+            filterActivityFeed();
+
+            $('.overview-section').each(function(index, ele) {
+                var id = this.id;
+
+                if (id === "transcribe-overview-section" && !$(this).hasClass("transcribe-color")) {
+                    $(this).toggleClass("transcribe-color");
+                } else if (id === "tag-overview-section" && !$(this).hasClass("tag-color")) {
+                    $(this).toggleClass("tag-color");
+                } else if (id === "connect-overview-section" && !$(this).hasClass("connect-color")) {
+                    $(this).toggleClass("connect-color");
+                } else if (id === "discuss-overview-section" && !$(this).hasClass("discuss-color")) {
+                    $(this).toggleClass("discuss-color");
+                }
+            });
+        };
+
+
+        function redirectToProfileEditPage(){
+            $('#edit-profile-btn').click(function(event){
+                var url = "<?php echo getFullInciteUrl() . '/users/edit/' . $_SESSION['Incite']['USER_DATA']['id']; ?>";
+                window.location.href = url;
+            });
+        };
     </script>
 
-    <style> 
+    <style>
         #join-or-create-info-container {
             padding: 15px;
         }
@@ -368,7 +448,7 @@
 
         .connect-color {
             background-color: #C9D1F8;
-        } 
+        }
 
         .discuss-color {
             background-color: #C5F7EB;
@@ -388,7 +468,7 @@
 
         #group-create-submit-btn {
             display: block;
-            width: 390px;
+            width: 500px;
             margin: 0 auto;
         }
 
@@ -409,14 +489,50 @@
             max-height: 300px;
             overflow-y: scroll;
         }
+
+        #group-search-btn {
+            display: block;
+            margin: 0px auto;
+            margin-top: 6px;
+            width: 390px;
+        }
+
+        #search-groups-input {
+            display: inline;
+            width: 200px;
+        }
+
+        #userprofile-activity-feed {
+            text-align: center;
+        }
+
+        #activity-feed-title {
+            display: inline;
+        }
+
+        #activity-feed-group-selector-filter {
+            display: inline;
+            width: 200px;
+            position: relative;
+            bottom: 5px;
+        }
     </style>
 </head>
-    
+
 <body>
-    <div id="userprofile-header">
+  <div id="userprofile-header">
         <?php
-            echo '<h1> Username: '. $this->user['email'] . '</h1>';
+
+        echo '<h1> Username: '. $this->user['email'] . '</h1>';
+        if ($this->user['id'] == $_SESSION['Incite']['USER_DATA']['id']) {
+            ?>
+            <div>
+                <input id="edit-profile-btn" class="btn btn-primary" type="submit" value="Edit Profile" >
+            </div>
+            <?php
+        }
         ?>
+
 
         <div>
             <p id="groups-list">Belongs to group(s): </p>
@@ -435,8 +551,11 @@
 
                 <div id="search-groups-section">
                     <span>
-                        <input id="search-groups-input" type="text" name="field" placeholder="Ex: July" />        
-                        <button id="group-search-btn" class="btn btn-primary">Search</button>
+                        <label class="control-label" for="group-name-input">Search Groups By Keyword: </label>
+                        <input id="search-groups-input" class="form-control" type="text" name="field" placeholder="Keyword" />
+                        <button id="group-search-btn" class="btn btn-primary">
+                            Find Groups to Join <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
                         <p id="no-groups-found-paragraph">No results found</p>
                     </span>
                     <table class="table" id="join-group-table">
@@ -453,8 +572,8 @@
 
                 <div id="create-group-div">
                     <span>
-                        <label class="control-label" for="group-name-input">Group name (can't be blank):</label>
-                        <input id="group-name-input" type="text" class="form-control" name="field" placeholder="Ex: Mr. Smith's History Class" />
+                        <label class="control-label" for="group-name-input">Group Name (can't be blank):</label>
+                        <input id="group-name-input" type="text" class="form-control" name="field" placeholder="Group Name" />
                     </span>
                     <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
                 </div>
@@ -497,7 +616,14 @@
         <hr size=2>
 
         <div id="userprofile-activity-feed">
-            <h2 class="activity-title">Activity Feed</h2>
+            <h2 class="activity-title" id="activity-feed-title">Activity Feed for Work Done in </h2>
+            <select id="activity-feed-group-selector-filter" class="form-control" name="task">
+                <option id="default-group-selector-option" value="All groups" selected>All Groups</option>
+
+                <?php foreach ((array)$this->groups as $group): ?>
+                    <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 30) ? substr($group['name'],0,27).'...' : $group['name']; ?></option>
+                <?php endforeach; ?>
+            </select>
             <table class="table" id="userprofile-activity-feed-table">
                 <tr class="activity-feed-table-header">
                     <th>
@@ -507,7 +633,7 @@
                         Document/Discussion
                     </th>
                     <th>
-                        Date 
+                        Date
                     </th>
                 </tr>
             </table>
@@ -515,4 +641,3 @@
     </div>
 </body>
 </html>
-

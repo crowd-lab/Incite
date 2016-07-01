@@ -4,7 +4,7 @@
         <?php
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
-        
+
             $category_object = getAllCategories();
             $subcategory_id_name_table = getSubcategoryIdAndNames();
         ?>
@@ -28,8 +28,9 @@
             </div>
 
             <div class="col-md-7">
-                <div class="col-md-12" id="tagging-container">
+                <div id="tagging-container">
                     <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
+                    <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
                             <th>
@@ -38,9 +39,14 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Creating a tag</strong>" 
-                                    data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-title="<strong>Creating a tag</strong>"
+
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Tags in this upper table were generated or confirmed accurate by some other user. If no tags are present, then whoever completed tagging this document felt no tags were necessary. You can always delete the tags present here via the trash can icon. Add more tags by highlighting them in the transcription to the left." ?>"
+                                    <?php else: ?>
+                                        data-content="<?php echo "Tags in this upper table are computer generated. If no tags are present, then the computer did not find anything it could tag accurately." ?>"
+                                    <?php endif; ?>
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -49,9 +55,14 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a category</strong>" 
-                                    data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+
+                                    data-title="<strong>Selecting a category</strong>"
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Please confirm that the categories for these tags are accurate, feel free to change them as you see fit." ?>"
+                                    <?php else: ?>
+                                        data-content="<?php echo "The computer has tried to identify the category of this tag, please ensure it is accurate and change it if needed." ?>"
+                                    <?php endif; ?>
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -60,9 +71,14 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a subcategory</strong>" 
-                                    data-content="<?php echo "The computer has tried to identify the subcategories for this tag, please ensure they are accurate and change them if needed." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+
+                                    data-title="<strong>Selecting a subcategory</strong>"
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Please confirm that all tags have an appropriate subcategory, feel free to change the subcategory as you see fit." ?>"
+                                    <?php else: ?>
+                                        data-content="<?php echo "The computer has tried to identify the subcategories for these tags, please ensure they are accurate and change them if needed." ?>"
+                                    <?php endif; ?>
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -71,9 +87,14 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Adding details</strong>" 
-                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+
+                                    data-title="<strong>Adding details</strong>"
+                                    <?php if ($this->is_being_edited): ?>
+                                        data-content="<?php echo "Please confirm the additional details of each tag, feel free to edit them as you see fit." ?>"
+                                    <?php else: ?>
+                                        data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>"
+                                    <?php endif; ?>
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>Not a tag?</th></tr>
@@ -88,9 +109,10 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-title="<strong>Creating a tag</strong>"
-                                    data-viewport="#tagging-container"; 
-                                    data-content="<?php echo "Computers can't always recognize tags, so we need your help! Highlighting a word in the transcription box to the left will generate a new tag." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+
+                                    data-viewport="#tagging-container";
+                                    data-content="<?php echo "Add any tags that aren't present in the upper table by highlighting the word(s) you want to tag in the transcription to the left." ?>"
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -99,9 +121,9 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a category</strong>" 
-                                    data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than 'unknown' to be accepted." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-title="<strong>Selecting a category</strong>"
+                                    data-content="<?php echo "For the given tag, select the category which it falls into most easily. A tag must have a category other than empty to be accepted." ?>"
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -110,9 +132,9 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Selecting a subcategory</strong>" 
-                                    data-content="<?php echo "For the given tag and category, select the appropriate subcategories, if any. If it doesn't fall into any subcategories simply leave none selected." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-title="<strong>Selecting a subcategory</strong>"
+                                    data-content="<?php echo "For the given tag and category, select the appropriate subcategories, if any. If it doesn't fall into any subcategories simply leave none selected." ?>"
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>
@@ -121,9 +143,9 @@
                                     aria-hidden="true" data-trigger="hover"
                                     data-toggle="popover" data-html="true"
                                     data-viewport="#tagging-container";
-                                    data-title="<strong>Adding details</strong>" 
-                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>" 
-                                    data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
+                                    data-title="<strong>Adding details</strong>"
+                                    data-content="<?php echo "Add any details you feel are appropriate for the tag. You need not repeat information that can be gained from the tag name, category or selected subcategories." ?>"
+                                    data-placement="bottom">
                                 </span>
                             </th>
                             <th>Not a tag?</th></tr>
@@ -134,25 +156,30 @@
                         <input id="entity-info" type="hidden" name="entities" />
                         <input id="tagged-doc" type="hidden" name="tagged_doc" />
                         <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
-                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">  
+                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                     </form>
 
-                    <hr size=2 class="discussion-seperation-line">
                 </div>
+                <hr size=2 class="discussion-seperation-line">
+
+                <?php
+                    include(dirname(__FILE__) . '/../common/revision_history_for_task_id_pages.php');
+                ?>
 
                 <?php
                     include(dirname(__FILE__) . '/../common/task_comments_section.php');
                 ?>
-            </div> 
+            </div>
         </div>
     <!-- End work container -->
 
 <script type="text/javascript">
     //Global variable to store categories/counters
     var categories = <?php echo json_encode($category_object).";\n"; ?>
+    // alert(categories[2]['subcategory'].length);
     var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
-    
+
     function set_tag_id_counter() {
         var max_id = 0;
         $('#entity-table tr').each( function (idx) {
@@ -167,7 +194,7 @@
 
     function addUserTag(text, span_id) {
         var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
-        
+
         new_entity.find('.subcategory-select').multiselect({
             enableFiltering: true,
             filterBehavior: 'text',
@@ -176,7 +203,7 @@
             disableIfEmpty: true,
             numberDisplayed: 1
         });
-        new_entity.find('.category-select').append('<option value="0">Unknown</option>');
+        new_entity.find('.category-select').append('<option value="0">&nbsp;</option>');
 
         <?php for ($i = 0; $i < sizeof($category_object); $i++) {
             echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
@@ -186,7 +213,7 @@
             disableIfEmpty: true
         });
 
-        $('.category-select').multiselect('rebuild');    
+        $('.category-select').multiselect('rebuild');
         $('#user-entity-table').append(new_entity);
         new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
     }
@@ -203,7 +230,7 @@
                 disableIfEmpty: true,
                 numberDisplayed: 1
             });
-            
+
             <?php for ($i = 0; $i < sizeof($category_object); $i++){
                 echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
             }
@@ -212,7 +239,7 @@
                 disableIfEmpty: true
             });
             $('.category-select').multiselect('rebuild');
-                
+
             $('#entity-table').append(new_entity);
             new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
             new_entity.find('.category-select')
@@ -229,6 +256,9 @@
                 } else if (new_entity.find('.category-select').hasClass('event')) {
                     cat = 2;
                     new_entity.find('.category-select option[value=2]').attr('selected', 'selected');
+                } else if (new_entity.find('.category-select').hasClass('other')) {
+                    cat = 5;
+                    new_entity.find('.category-select option[value=5]').attr('selected', 'selected');
                 } else {  //Unknown category!
                     cat = 0;
                     new_entity.find('.category-select option[value=0]').attr('selected', 'selected');
@@ -236,9 +266,9 @@
                 new_entity.find('.category-select').multiselect('rebuild');
                 var subcategory_menu = new_entity.find('.subcategory-select');
                 $(subcategory_menu).empty();
-                if (new_entity.find('.category-select option:selected').text() !== "Unknown") {
+                if (new_entity.find('.category-select').val() != 0) {
                     $.each(categories[new_entity.find('.category-select').val()-1]['subcategory'], function (idx) {
-                        subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                        subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                     });
                 } else {
                     subcategory_menu.multiselect('rebuild');
@@ -253,16 +283,19 @@
             if (this.dataset.details !== "") {
                 $('#'+this.id+'_table .entity-details').val(this.dataset.details);
             }
-            
+
         });
     }
 
-    
 
     $(document).ready(function () {
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
+
+        <?php if ($this->is_being_edited): ?>
+            styleForEditing();
+        <?php endif; ?>
 
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
@@ -271,9 +304,9 @@
         $('#user-entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            if ($(this).find('option:selected').text() !== "Unknown") {
+            if ($(this).val() != 0) {
                 $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                 });
             } else {
                 subcategory_menu.multiselect('rebuild');
@@ -295,9 +328,9 @@
         $('#entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            if ($(this).find('option:selected').text() !== "Unknown") {
+            if ($(this).find('option:selected').text() !== "") {
                 $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
-                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this['subcategory']+'</option>').multiselect('rebuild');
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                 });
             } else {
                 subcategory_menu.multiselect('rebuild');
@@ -308,7 +341,7 @@
 
         $('#confirm-button').on('click', function (e) {
             if ($('.category-select option:selected[value=0]').length > 0) {
-                notifyOfErrorInForm('Tag category cannot be set to "Unknown"');
+                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
             }
             var entities = [];
@@ -373,12 +406,12 @@
 
         //Add entities by selection
         $('#transcribe_copy').on('mouseup', function (e) {
-            var parentOffset = $(this).offset(); 
+            var parentOffset = $(this).offset();
             var relX = e.pageX - parentOffset.left;
             var relY = e.pageY - parentOffset.top;
 
             //Bug fix - make sure the selection is still within the transcription on mouseup
-            //so you can't tag anything outside the transcription. Can't just check for hover here 
+            //so you can't tag anything outside the transcription. Can't just check for hover here
             //due to selection weirdness
             if (relX >= 0 && relY >= 0) {
                 var tag_selection = document.getSelection();
@@ -394,7 +427,7 @@
                     var tag_range = tag_selection.getRangeAt(0);
                     var tag_em = document.createElement('em');
                     tag_em.id = 'tag_id_'+tagid_id_counter;
-                    tag_em.className = 'unknown tagged-text';
+                    tag_em.className = 'other tagged-text';
                     tag_em.appendChild(document.createTextNode(tag_text));
                     tag_range.deleteContents();
 
@@ -442,6 +475,59 @@
             }
         ?>
     });
+
+    function styleForEditing() {
+        addRevisionHistoryListeners();
+    }
+
+    function addRevisionHistoryListeners() {
+        $('#view-revision-history-link').show();
+
+        $('#view-revision-history-link').click(function(e) {
+            $('#tagging-container').hide();
+            $('#revision-history-container').show();
+        });
+
+        $('#view-editing-link').click(function(e) {
+            $('#revision-history-container').hide();
+            $('#tagging-container').show();
+        });
+    }
+    var tour = new Tour({
+    steps: [
+        {
+            element: "#work-view",
+            title: "Document Viewer",
+            content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. The tab "Transcription" below title shows the current transcription of the document.<br>3. The tab "Document" below title is an image viewer that shows the original image of the document.<br>4. The legend at the top right corner shows different types of tags.',
+            placement: "right"
+        },
+        {
+            element: "#tagging-container",
+            title: "Tag Task",
+            content: '1. Please follow the two steps to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of each step provides detailed instructions.<br>3. If you are editing existing tags, you can view revision history by clicking the link at the top right corner of Step 1.',
+            placement: "left"
+        },
+        {
+            element: "#comment-container",
+            title: "Comment",
+            content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
+            placement: "left"
+        },
+        {
+            element: "#navbar-bottom",
+            title: "Status of The Document",
+            content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
+            placement: "top"
+        }
+    ],
+    backdrop: true,
+    storage: false});
+
+    // Initialize the tour
+    tour.init();
+
+    // Start the tour
+    tour.start(true);
 </script>
 
 <style>
@@ -451,11 +537,24 @@
 
     #tagging-container {
         padding-right: 0px;
+        margin-top: -32px;
     }
 
     .comments-section-container {
         padding-left: 15px;
     }
+
+    #revision-history-container {
+        padding-left: 1.5%;
+    }
+
+    #view-revision-history-link {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+        margin-top: -32px;
+    }
+
 </style>
 
 </body>

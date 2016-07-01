@@ -32,11 +32,17 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
     public function createAction()
     {
         if ($this->getRequest()->isPost()) {
+            $workingGroupId = 0;
+
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
+
             //Discussion type is 4 (between-document)
             if (empty($_POST['references']))
-                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], array(), 4);
+                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, array(), 4);
             else
-                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], explode(',', $_POST['references']), 4);
+                $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, explode(',', $_POST['references']), 4);
 
             replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA']['id'], $discussionID, array());
             $_SESSION['incite']['redirect'] = array(
@@ -74,9 +80,10 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                 $this->view->title = $discussion_title;
                 $replies = array();
                 foreach ((array)$discussion_reply_ids as $reply_id) {
-                    $userdata = getUserDataID(getUserIdForReply($reply_id));
-                    $first_name = $userdata[0];
-                    $replies[] = array('id' => $reply_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id), 'time' => getReplyTimestamp($reply_id));
+                    $userdata = getUserDataByUserId(getUserIdForReply($reply_id));
+                    $first_name = $userdata['first_name'];
+                    $user_id = $userdata['id'];
+                    $replies[] = array('id' => $reply_id, 'user_id' => $user_id, 'first_name' => $first_name, 'content' => getReplyText($reply_id), 'time' => getReplyTimestamp($reply_id));
                 }
                 $this->view->discussions = $replies;
 
@@ -85,7 +92,7 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                     $record = $this->_helper->db->find($reference_id);
                     if ($record == null)
                         continue;
-                    $approved_transcriptions = getIsAnyTranscriptionApproved($reference_id);
+                    $approved_transcriptions = getApprovedTranscriptionIDs($reference_id);
                     $transcription = "no transcription available";
                     if ($approved_transcriptions != null) 
                         $transcription = getTranscriptionText($approved_transcriptions[0]);

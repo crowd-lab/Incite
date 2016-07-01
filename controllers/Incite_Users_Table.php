@@ -35,7 +35,7 @@ require_once("Incite_Groups_Table.php");
         else {
             system_log('Incite_Users_Table:verifyUser:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
         }
-        
+
     }
     function userExists($email)
     {
@@ -55,11 +55,11 @@ require_once("Incite_Groups_Table.php");
         else {
             system_log('Incite_Users_Table:userExists:wrong $count @line: '.__LINE__.' in '.__FILE__.'.');
         }
-        
+
     }
     /**
      * Gets information about the user in an array
-     * array format = [ID, FIRSTNAME, LASTNAME, PRIVILEGE_LEVEL, EXPERIENCE_LEVEL]
+     * array format = [ID, FIRSTNAME, LASTNAME, PRIVILEGE_LEVEL, EXPERIENCE_LEVEL, WORKING_GROUP]
      * @param type $email requires an email to check against
      * @return array containing information requested
      */
@@ -67,20 +67,21 @@ require_once("Incite_Groups_Table.php");
     {
         $arr = Array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT id, first_name, last_name, privilege_level, experience_level FROM omeka_incite_users WHERE email = ?");
+        $stmt = $db->prepare("SELECT id, first_name, last_name, privilege_level, experience_level, working_group_id FROM omeka_incite_users WHERE email = ?");
         $stmt->bind_param("s", $email);
-        $stmt->bind_result($id, $firstname, $lastname, $priv, $exp);
+        $stmt->bind_result($id, $firstname, $lastname, $priv, $exp, $groupId);
         $stmt->execute();
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr['id'] = $id;
         $arr['first_name'] = $firstname;
         $arr['last_name'] = $lastname;
         $arr['privilege'] = $priv;
         $arr['experience'] = $exp;
         $arr['email'] = $email;
+        $arr['working_group'] = getGroupInfoByGroupId($groupId);
         return $arr;
     }
     function getUserDataOld($email)
@@ -94,7 +95,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr[0] = $id;
         $arr[1] = $firstname;
         $arr[2] = $lastname;
@@ -119,7 +120,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr[0] = $firstname;
         $arr[1] = $lastname;
         $arr[2] = $email;
@@ -139,7 +140,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->fetch();
         $stmt->close();
         $db->close();
-        
+
         $arr['first_name'] = $firstname;
         $arr['last_name'] = $lastname;
         $arr['email'] = $email;
@@ -196,7 +197,7 @@ require_once("Incite_Groups_Table.php");
     /**
      * Upgrade or Downgrade user's experience level
      * @param string $email associated with account
-     * @param int $experienceLevel to change to 
+     * @param int $experienceLevel to change to
      * @return boolean true if successful, false otherwise
      */
     function changeExperienceLevel($email, $experienceLevel)
@@ -215,6 +216,46 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return true;
     }
+    /**
+     * Set a user's working group
+     *
+     * @param int $userId the id of the user
+     * @param int $groupId the id of the working group to change to
+     * @return boolean true if successful, false otherwise
+     */
+    function setWorkingGroup($userId, $groupId)
+    {
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("UPDATE omeka_incite_users SET working_group_id = ? WHERE id = ?");
+        $stmt->bind_param("ii", $groupId, $userId);
+        if (!$stmt->execute())
+        {
+            var_dump($stmt->error);
+            $stmt->close();
+            $db->close();
+            return false;
+        }
+        $stmt->close();
+        $db->close();
+        return true;
+    }
+    function editAccount($id, $password, $firstName, $lastName){
+
+        $db = DB_Connect::connectDB();
+        $hashedPassword = md5($password);
+        $stmt = $db->prepare("UPDATE omeka_incite_users SET first_name = ?, last_name = ?, password = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $firstName, $lastName, $hashedPassword, $id);
+
+        if (!$stmt->execute())
+        {
+            var_dump($stmt->error);
+            $stmt->close();
+            $db->close();
+            return false;
+        }
+        $stmt->close();
+        $db->close();
+        return true;}
     /*
      * REMOVE AND ADD TO API FOR GROUPS
     public function addGroupID($userID, $groupID, $privilege)
@@ -240,19 +281,19 @@ require_once("Incite_Groups_Table.php");
         else
         {
             var_dump("ERROR: You are already added");
-        }        
+        }
     }
     public function removeGroupID($userID, $groupID)
     {
-        
-        
+
+
     }
      *
      */
     /**
      * Safe way to 'remove' an account by setting it's active status to '0'
      * @param string $email associated with the account to deactivate
-     * @return boolean true if worked, false otherwise 
+     * @return boolean true if worked, false otherwise
      */
     function deactivateAccount($email)
     {
@@ -269,7 +310,7 @@ require_once("Incite_Groups_Table.php");
         $stmt->close();
         $db->close();
         return true;
-        
+
     }
     /**
      * If account is inactive, reactivate the account
@@ -317,7 +358,7 @@ require_once("Incite_Groups_Table.php");
         if ($count == 0)
         {
             $hashedPassword = md5($password);
-            $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)");
+            $stmt = $db->prepare("INSERT INTO omeka_incite_users VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, 0, CURRENT_TIMESTAMP)");
             $stmt->bind_param("ssssii", $firstName, $lastName, $email, $hashedPassword, $privilege, $experienceLevel);
             $stmt->execute();
             $stmt->close();
@@ -343,7 +384,7 @@ require_once("Incite_Groups_Table.php");
         $db->close();
     }
     /**
-     * Generate an 11 digit random user id. Used only for making an 
+     * Generate an 11 digit random user id. Used only for making an
      * anonymous cookie for unlogged-in users
      * @return int 11 digit random number
      */
@@ -365,7 +406,7 @@ require_once("Incite_Groups_Table.php");
     {
         return implode(explode(" ", microtime()));
     }
-    
+
     function createGuestSession()
     {
         $id = generateRandomUserId();
@@ -456,12 +497,12 @@ require_once("Incite_Groups_Table.php");
         $docs = array();
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
-        $stmt = $db->prepare("SELECT document_id, timestamp_creation, text from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY document_id");
+        $stmt = $db->prepare("SELECT document_id, timestamp_creation, text, working_group_id from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY document_id");
         $stmt->bind_param("ii", $element_id_for_title, $userid);
-        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->bind_result($doc, $time, $doc_title, $working_group_id);
         $stmt->execute();
         while ($stmt->fetch()) {
-            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title, 'working_group_id' => $working_group_id);
         }
         $db->close();
         return $docs;
@@ -478,20 +519,34 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $count;
     }
+
+    function getTranscribedDocumentCountByUserIdAndGroupId($userid, $groupid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT document_id) from omeka_incite_transcriptions INNER JOIN omeka_element_texts ON document_id = record_id WHERE element_id = ? AND user_id = ? AND working_group_id = ?");
+        $stmt->bind_param("iii", $element_id_for_title, $userid, $groupid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+
     function getTaggedDocumentsByUserId($userid) {
         $docs = array();
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
-        $stmt = $db->prepare("SELECT item_id, timestamp_creation, text FROM omeka_incite_tagged_transcriptions INNER JOIN omeka_element_texts ON item_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY item_id");
+        $stmt = $db->prepare("SELECT item_id, timestamp_creation, text, working_group_id FROM omeka_incite_tagged_transcriptions INNER JOIN omeka_element_texts ON item_id = record_id WHERE element_id = ? AND user_id = ? GROUP BY item_id");
         $stmt->bind_param("ii", $element_id_for_title, $userid);
-        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->bind_result($doc, $time, $doc_title, $working_group_id);
         $stmt->execute();
         while ($stmt->fetch()) {
-            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title, 'working_group_id' => $working_group_id);
         }
         $db->close();
         return $docs;
     }
+
     function getTaggedDocumentCountByUserId($userid) {
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
@@ -505,17 +560,28 @@ require_once("Incite_Groups_Table.php");
         return $count;
     }
 
+     function getTaggedDocumentCountByUserIdAndGroupId($userid, $groupid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_timestamp, text) FROM omeka_incite_documents doc, omeka_incite_documents_tags_conjunction tag_con, omeka_incite_tags tag, omeka_element_texts WHERE doc.id = tag_con.document_id AND tag_con.tag_id = tag.id AND item_id = record_id AND element_id = ? AND tag.user_id = ? AND tag.working_group_id = ?");
+        $stmt->bind_param("iii", $element_id_for_title, $userid, $groupid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
 
     function getConnectedDocumentsByUserId($userid) {
         $docs = array();
         $db = DB_Connect::connectDB();
         $element_id_for_title = 50;
-        $stmt = $db->prepare("SELECT DISTINCT item_id, created_time, text from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ?");
+        $stmt = $db->prepare("SELECT DISTINCT item_id, created_time, text, working_group_id from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ?");
         $stmt->bind_param("ii", $element_id_for_title, $userid);
-        $stmt->bind_result($doc, $time, $doc_title);
+        $stmt->bind_result($doc, $time, $doc_title, $working_group_id);
         $stmt->execute();
         while ($stmt->fetch()) {
-            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title);
+            $docs[] = array('time' => $time, 'document_id' => $doc, 'document_title' => $doc_title, 'working_group_id' => $working_group_id);
         }
         $db->close();
         return $docs;
@@ -532,19 +598,33 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $count;
     }
+
+    function getConnectedDocumentCountByUserIdAndGroupId($userid, $groupid) {
+        $db = DB_Connect::connectDB();
+        $element_id_for_title = 50;
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT item_id, created_time, text) from omeka_incite_documents_subject_conjunction sub, omeka_element_texts, omeka_incite_documents doc WHERE doc.id = document_id AND item_id = record_id AND element_id = ? AND sub.user_id = ? AND sub.working_group_id = ?");
+        $stmt->bind_param("iii", $element_id_for_title, $userid, $groupid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+
     function getDiscussionsByUserId($userid) {
         $diss = array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT id, timestamp, question_text from omeka_incite_questions WHERE user_id = ? AND question_type = 4");
+        $stmt = $db->prepare("SELECT id, timestamp, question_text, working_group_id from omeka_incite_questions WHERE user_id = ? AND question_type = 4");
         $stmt->bind_param("i", $userid);
-        $stmt->bind_result($dis, $time, $dis_title);
+        $stmt->bind_result($dis, $time, $dis_title, $working_group_id);
         $stmt->execute();
         while ($stmt->fetch()) {
-            $diss[] = array('time' => $time, 'discussion_id' => $dis, 'discussion_title' => $dis_title);
+            $diss[] = array('time' => $time, 'discussion_id' => $dis, 'discussion_title' => $dis_title, 'working_group_id' => $working_group_id);
         }
         $db->close();
         return $diss;
     }
+
     function getDiscussionCountByUserId($userid) {
         $diss = array();
         $db = DB_Connect::connectDB();
@@ -556,6 +636,19 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $count;
     }
+
+    function getDiscussionCountByUserIdAndGroupId($userid, $groupid) {
+        $diss = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT COUNT(*) from omeka_incite_questions WHERE user_id = ? AND working_group_id = ? AND question_type = 4");
+        $stmt->bind_param("ii", $userid, $groupid);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        $stmt->fetch();
+        $db->close();
+        return $count;
+    }
+
     function getGroupsByUserId($userid) {
         $groups = array();
         $db = DB_Connect::connectDB();
@@ -570,5 +663,17 @@ require_once("Incite_Groups_Table.php");
         $db->close();
         return $groups;
     }
-
+    function getGroupInstructionsSeenByUserId($userid) {
+        $groups = array();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT group_id from omeka_incite_group_instructions_seen_by WHERE user_id = ?");
+        $stmt->bind_param("i", $userid);
+        $stmt->bind_result($group);
+        $stmt->execute();
+        while ($stmt->fetch()) {
+            $groups[] = $group;
+        }
+        $db->close();
+        return $groups;
+    }
 ?>

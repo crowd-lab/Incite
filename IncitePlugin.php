@@ -44,6 +44,7 @@ SQL
         `name`              varchar(200) NOT NULL,
         `creator`           int(11) NOT NULL,
         `group_type`        int(11) NOT NULL,
+        `instructions`      varchar(3000) NOT NULL,
         `timestamp`         timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
@@ -54,9 +55,11 @@ SQL
       CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_subject_conjunction (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
+        `tagged_trans_id`       int(11) NOT NULL,             
         `subject_concept_id`    int(11) NOT NULL,
         `is_positive`           int(5) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `created_time`          timestamp NOT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -84,11 +87,22 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
+
+        get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_group_instructions_seen_by (
+        `user_id`       int(11) NOT NULL,
+        `group_id`      int(11) NOT NULL,
+        
+        PRIMARY KEY (`user_id`, `group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
    
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_questions (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `question_text`         varchar(1000) NOT NULL,
         `is_active`             int(11) NOT NULL,
         `timestamp`             timestamp NOT NULL,
@@ -146,7 +160,7 @@ SQL
 SQL
         );
         get_db()->query(<<<SQL
-    INSERT INTO {$db->prefix}incite_subject_concepts (`id`, `name`, `definition`) VALUES (NULL, 'Religion', 'This document talks about worship of a god'), (NULL, 'White Supremacy', 'This document talks about the belief that white people are superior to other races'), (NULL, 'Racial Equality', 'This document talks about equal regard to all races'), (NULL, 'Gender Equality/Inequality', 'This document talks about equal regard or complete disregard in relation to one''s gender'), (NULL, 'Human Equality', 'This document talks about all humans being equal'), (NULL, 'Self Goverment', 'This document talks about people who want a country to be ruled by it''s own people'), (NULL, 'America as a Global Beacon', 'This document talks about America''s domination in the world'), (NULL, 'Celebration of Revolutionary Generation', 'This document talks about celebrations in regards to the first generation post-civil war');
+    INSERT INTO {$db->prefix}incite_subject_concepts (`id`, `name`, `definition`) VALUES (NULL, 'Religion', 'This document refers to religious ideas, prayers, ministers, etc.'), (NULL, 'White Supremacy', 'This document discusses the belief that white people are racially superior.'), (NULL, 'Racial Equality', 'This document discusses the belief that people of all racial backgrounds are equal.'), (NULL, 'Gender Equality/Inequality', 'This document discusses the status of men and/or women.'), (NULL, 'Human Equality', 'This document refers to the idea that all people are equal.'), (NULL, 'Self Goverment', 'This document refers to democracy, the idea that people should have a say in their own governance.'), (NULL, 'America as a Global Beacon', 'This document celebrates America''s status as an example for the rest of the world to follow.'), (NULL, 'Celebration of Revolutionary Generation', 'This document glorifies the Americans who fought the revolution.'), (NULL, 'White Southerners', 'This document discusses whether or not white southerners should celebrate July 4.');
 SQL
    );
 
@@ -154,6 +168,7 @@ SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `tag_text`              varchar(30) NOT NULL,
         `created_timestamp`     timestamp NOT NULL,
         `category_id`           int(11) NOT NULL,
@@ -169,6 +184,7 @@ SQL
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `document_id`           int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `transcribed_text`      varchar(200000) NOT NULL,
         `summarized_text`       varchar(1000) NOT NULL,
         `tone`                  varchar(50) NOT NULL,
@@ -187,6 +203,7 @@ SQL
         `item_id`               int(11) NOT NULL,
         `transcription_id`      int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
+        `working_group_id`      int(11) NOT NULL,
         `tagged_transcription`  varchar(200000) NOT NULL,
         `is_approved`           int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
@@ -206,6 +223,7 @@ SQL
         `privilege_level`   int(11) NOT NULL,
         `experience_level`  int(11) NOT NULL,
         `is_active`         int(11) NOT NULL,
+        `working_group_id`  int(11) NOT NULL,
         `timestamp`         timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
@@ -240,7 +258,7 @@ SQL
 SQL
    );
         get_db()->query(<<<SQL
-    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization');
+    INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization'), (NULL, 'Other');
     
 SQL
    );
@@ -343,6 +361,14 @@ SQL
    );
     get_db()->query(<<<SQL
     DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_replies_conjunction
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_group_instructions_seen_by
+SQL
+   );
+    get_db()->query(<<<SQL
+    DROP TABLE IF EXISTS {$this->_db->prefix}incite_group
 SQL
    );
     }
