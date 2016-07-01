@@ -164,9 +164,34 @@
             border-bottom-left-radius: 4px;
         }
 
-        a.navbar-links:hover {
-            font-weight: bold;
+        .nav > li > a:hover {
+            text-decoration: underline;
         }
+
+        .nav > li > a {
+            color: #8BB7C8;
+        }
+
+        .navbar-inverse .navbar-nav > li > a:hover {
+            color: #3B6778;
+        }
+
+        .navbar-inverse .navbar-nav > li > a {
+            color: #8BB7C8;
+        }
+
+        .navbar-links {
+            color: #8BB7C8;
+        }
+
+        .navbar-links:hover {
+            color: #3B6778;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0; // remove the gap so it doesn't close
+         }
 
         /* for list view in search result page */
         .icon-container {
@@ -314,6 +339,14 @@
 
             $('#navbar-signup-button').on('click', function (e) {
                 $('#signup-tab a').click();
+            });
+
+            $('#signup-tab a').on('click', function (e) {
+                $('#login-button').text('Sign Up');
+            });
+
+            $('#login-tab a').on('click', function (e) {
+                $('#login-button').text('Log In');
             });
 
             $('#navbar-login-button').on('click', function (e) {
@@ -496,7 +529,7 @@
                     <li class="dropdown" id="navbar-account-interaction-area">
                         <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                             <button id="user_profile" type="button"
-                                    class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"
+                                    class="btn btn-default navbar-btn dropdown-toggle navbar-links" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false"
                                     style="height: 34px; color: #8BB7C8;">
                                 <?php echo $_SESSION['Incite']['USER_DATA']['first_name']; ?>
@@ -513,8 +546,8 @@
                             </ul>
                         <?php else: ?>
                             <a href="" style="color: #8BB7C8; font-size: 110%; margin-top: -8px; padding-left: 10px; padding-right: 10px; padding-top: 20px;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">
-                                <button id="navbar-login-button" class="btn btn-success">Login</button>
-                                <button id="navbar-signup-button" class="btn btn-info">Signup</button>
+                                <button id="navbar-login-button" class="btn btn-default">Login</button>
+                                <button id="navbar-signup-button" class="btn btn-default">Signup</button>
                             </a>
                         <?php endif; ?>
                     </li>
@@ -527,10 +560,10 @@
                     </li>
 -->
                     <li class="">
-                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
                     </li>
                     <li class="">
-                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teachers</a>
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teachers</a>
                   </li>
                   <li class="">
                       <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>
@@ -592,31 +625,30 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="login-signup-dialog-label">User Login/Sign-up</h4>
                 </div>
                 <div class="modal-body">
                     <ul class="nav nav-tabs nav-justified nav-pills">
-                        <li class="active" id="login-tab"><a href="#tab1" data-toggle="tab">Login</a></li>
-                        <li id="signup-tab"><a href="#tab2" data-toggle="tab">Sign-up</a></li>
+                        <li class="active" id="login-tab"><a href="#tab1" data-toggle="tab">Log In</a></li>
+                        <li id="signup-tab"><a href="#tab2" data-toggle="tab">Sign Up</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
                             <form>
                                 <div class="form-group">
-                                    <label for="recipient-name" class="control-label">Username (email):</label>
+                                    <label for="recipient-name" class="control-label">Email:</label>
                                     <input type="text" class="form-control" id="username" name="username">
                                 </div>
                                 <div class="form-group">
                                     <label for="message-text" class="control-label">Password:</label>
                                     <input type="password" class="form-control" id="password" name="password">
                                 </div>
-                                 <a href="<?php echo getFullInciteUrl() . '/users/forgot'?>" id="forgotpw">forgot password?</a>
+                                 <a href="<?php echo getFullInciteUrl() . '/users/forgot'?>" id="forgotpw">Forgot password?</a>
                             </form>
                         </div>
                         <div class="tab-pane" id="tab2">
                             <form>
                                 <div class="form-group">
-                                    <label class="control-label">Username (email):</label>
+                                    <label class="control-label">Email:</label>
                                     <input type="text" class="form-control" id="newUsername" name="email">
                                 </div>
                                 <div class="form-group">

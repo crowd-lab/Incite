@@ -94,7 +94,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
             <div style="margin-left: 140px;">
                 <div style="float: right; width:100%;">
-                    <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in For <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can: 
+                    <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in for <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can: 
                         <ul style="margin-left: -10px;">
                             <li> <b>transcribe</b> digitized documents to make them searchable;</li>
                             <li> <b>tag</b> people, locations, organizations and events with help from natural language processing tools;</li>

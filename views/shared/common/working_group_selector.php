@@ -158,7 +158,7 @@
     }
 
     #working-group-info-glyphicon:hover {
-        color: white;
+        color: #3B6778; 
         cursor: pointer;
     }
 
