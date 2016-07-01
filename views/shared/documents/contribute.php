@@ -21,15 +21,15 @@ include(dirname(__FILE__).'/../common/header.php');
                     between
                     <select class="form-control" style="font-size: 60%; width: 95px;" id="time_from" name="time_from">
         <option value="1830" selected="selected">1830</option>
-<?php for ($i = 1831; $i <= 1870; $i++): ?>
+<?php for ($i = 1831; $i <= 1880; $i++): ?>
                         <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
 <?php endfor; ?>
                     </select> and
                     <select class="form-control" style="font-size: 60%; width: 95px;" id="time_to" name="time_to">
-<?php for ($i = 1830; $i <= 1869; $i++): ?>
+<?php for ($i = 1830; $i <= 1879; $i++): ?>
                         <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
 <?php endfor; ?>
-                        <option value="1870" selected="selected">1870</option>
+                        <option value="1880" selected="selected">1880</option>
                     </select>.
                 </h2>
             </div>   <!-- contribute-confirmation -->

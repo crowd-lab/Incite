@@ -565,7 +565,7 @@
                                                 <label style="font-size: 80%;">Dates:</label><br>
                                                 <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1830-01-01" id="navbar-time-from" name="time_from" value="<?php if (isset($previous_search_results['time_from'])) echo $previous_search_results['time_from']; else echo '1830-01-01'; ?>" />
                                                 <div style="display: inline-block; float: left; font-size: 100%; margin-left: 5px; margin-right: 5px; margin-top: 5px;"><b> to </b></div>
-                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1870-12-31" id="navbar-time-to" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1870-12-31'; ?>" />
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1880-12-31" id="navbar-time-to" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1880-12-31'; ?>" />
                                               </div>
                                               <button id="adv-search-btn" type="button" class="btn btn-default">Search</button>
                                               <input type="hidden" name="keywords" value="" id="keywords">
