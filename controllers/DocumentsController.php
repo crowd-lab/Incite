@@ -469,7 +469,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $this->view->query_str = "";
     }
 
-    $this->createSearchResultPages($document_ids, 'Connections');
+    // $this->createSearchResultPages($document_ids, 'Connections');
+    return $document_ids;
   }
 
   public function discussAction() {

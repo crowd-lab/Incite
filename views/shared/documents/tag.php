@@ -111,7 +111,7 @@ function addTaskCompletionIconsToResultsRow(documentId) {
 }
     function setUpForDocumentsList(){
 
-        width = $(window).width()
+        width = $(window).width();
         height = $(window).height();
 
         items_per_page = getItemsPerPage(width, height);
@@ -124,6 +124,7 @@ function addTaskCompletionIconsToResultsRow(documentId) {
 
     function getTaggableDocumentsRequest() {
         current_page = <?php echo (isset($_GET['page']) ? $_GET['page'] : 1); ?>;
+
 
         var request = $.ajax({
             type: "GET",
@@ -138,6 +139,9 @@ function addTaskCompletionIconsToResultsRow(documentId) {
                     total_pages = data['total_pages'];
                     docs = jQuery.extend(true, [], data['records']);
                     //display documents in the list
+                    if(total_pages < current_page){
+
+                    }
                     displayDocumentsList(data['records']);
                 }
                 //build map and pagination
