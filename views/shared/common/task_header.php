@@ -38,7 +38,7 @@
 <style>
 	.task-header {
         text-align: center; 
-        margin-top: 0px;
+        margin-top: 5px;
     }
 
     #task_description {

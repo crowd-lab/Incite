@@ -38,6 +38,8 @@
 	        } else {
 	        	alert("Using progress indicator on incorrect page, please contact the developers");
 	        }
+
+            $('#navbar-bottom').css({top: $('.navbar-fixed-bottom').position().top-70+'px'});
 	    });
 
 		/*
@@ -195,52 +197,54 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-default navbar-fixed-bottom">
-		<div class="container progress-indicator-container">
-			<div class="progress">
-				<div class="progress-bar progress-bar-success progress-bar-striped active" id="success-indicator-bar-active-transcribe" style="width: 0%">
-					<span class="sr-only"></span>
-				</div>
+    <div id="navbar-bottom" style="">
+        <nav class="navbar navbar-default navbar-fixed-bottom">
+            <div class="container progress-indicator-container">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success progress-bar-striped active" id="success-indicator-bar-active-transcribe" style="width: 0%">
+                        <span class="sr-only"></span>
+                    </div>
 
-				<div class="progress-bar progress-bar-success" id="success-indicator-bar" style="width: 0%">
-					<span class="sr-only"></span>
-				</div>
+                    <div class="progress-bar progress-bar-success" id="success-indicator-bar" style="width: 0%">
+                        <span class="sr-only"></span>
+                    </div>
 
-				<div class="progress-bar progress-bar-success progress-bar-striped active" id="success-indicator-bar-active" style="width: 0%">
-					<span class="sr-only"></span>
-				</div>
+                    <div class="progress-bar progress-bar-success progress-bar-striped active" id="success-indicator-bar-active" style="width: 0%">
+                        <span class="sr-only"></span>
+                    </div>
 
-				<div class="progress-bar progress-bar-success" id="success-indicator-bar-connect" style="width: 0%">
-					<span class="sr-only"></span>
-				</div>
+                    <div class="progress-bar progress-bar-success" id="success-indicator-bar-connect" style="width: 0%">
+                        <span class="sr-only"></span>
+                    </div>
 
-				<div class="progress-bar progress-bar-warning progress-bar-striped active" id="progress-indicator-bar-active" 
-					style="width:0%">
-					<span class="sr-only"></span>
-				</div>
-			</div>
+                    <div class="progress-bar progress-bar-warning progress-bar-striped active" id="progress-indicator-bar-active" 
+                        style="width:0%">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
 
-			<!-- The comments around the divs below are a hack to avoid the spacing between inline-block elements -->
-			<div class="task-section" id="transcribe-progress-section">
-				<p class="task-description vertical-align">
-					Transcribe
-					<span class="glyphicon glyphicon-unchecked" id="transcribe-progress-glyph-span" aria-hidden="true"></span>
-				</p>
-			</div><!--
-			--><div class="task-section" id="tag-progress-section">
-				<p class="task-description vertical-align">
-					Tag
-					<span class="glyphicon glyphicon-unchecked" id="tag-progress-glyph-span" aria-hidden="true"></span>
-				</p>
-			</div><!--
-			--><div class="task-section" id="connect-progress-section">
-				<p class="task-description vertical-align">
-					Connect
-					<span class="glyphicon glyphicon-unchecked" id="connect-progress-glyph-span" aria-hidden="true"></span>
-				</p>
-			</div>
-		</div>
-	</nav>
+                <!-- The comments around the divs below are a hack to avoid the spacing between inline-block elements -->
+                <div class="task-section" id="transcribe-progress-section">
+                    <p class="task-description vertical-align">
+                        Transcribe
+                        <span class="glyphicon glyphicon-unchecked" id="transcribe-progress-glyph-span" aria-hidden="true"></span>
+                    </p>
+                </div><!--
+                --><div class="task-section" id="tag-progress-section">
+                    <p class="task-description vertical-align">
+                        Tag
+                        <span class="glyphicon glyphicon-unchecked" id="tag-progress-glyph-span" aria-hidden="true"></span>
+                    </p>
+                </div><!--
+                --><div class="task-section" id="connect-progress-section">
+                    <p class="task-description vertical-align">
+                        Connect
+                        <span class="glyphicon glyphicon-unchecked" id="connect-progress-glyph-span" aria-hidden="true"></span>
+                    </p>
+                </div>
+            </div>
+        </nav>
+    </div>
 </body>
 
 <style>
