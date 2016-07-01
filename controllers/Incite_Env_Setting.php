@@ -12,7 +12,7 @@ $categories = array('ORGANIZATION', 'PERSON', 'LOCATION', 'EVENT');
 $category_colors = array('ORGANIZATION' => 'red', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'gray');
 
 //Search
-define('MAXIMUM_SEARCH_RESULTS', 50);
+define('MAXIMUM_SEARCH_RESULTS', 2000);
 define('SEARCH_RESULTS_PER_PAGE', 8);
 
 //Connect
