@@ -319,7 +319,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
       if (count($document_ids) > 0 ) {
         $total_pages = ceil(count($document_ids) / $items_per_page);
         $data['total_pages'] = $total_pages;
-//24 12*3 36
         for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page * $current_page; $i++) {
           if ($i >= count($document_ids)){
             break;

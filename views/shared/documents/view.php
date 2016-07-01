@@ -42,7 +42,67 @@ include(dirname(__FILE__).'/../common/header.php');
     }
 </style>
 
-<script type="text/javascript">
+
+    <!-- Page Content -->
+    <div id="task_description" style="text-align: center;">
+        <h3 style="text-align: center;">Search Results for All Documents</h3>
+        <span style="text-align: center;">You can mouse over the pins on the map or document thumbnails to see more details and click them to view more document info!
+        </span>
+    </div>
+    <div id="map-view" style="margin: 5px; width: 69%;"><div id="map-div" style=""></div></div>
+    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white; border: solid 1.5px; border-color: #B2B1B1;">
+        <!--<div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>-->
+        <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
+        <br>
+<?php foreach ((array)$this->Documents as $document): ?>
+        <div id="list_id<?php echo $document->id; ?>" style="margin: 10px; height: 45px;"
+            data-toggle="popover" data-trigger="hover" data-html="true"
+            data-title="<?php echo "<strong>" . metadata($document, array('Dublin Core', 'Title')) . "</strong>";?>"
+            data-placement="left" data-id="<?php echo $document->id; ?>"
+        >
+<?php if (isset($this->query_str) && $this->query !== ""): ?>
+            <a href="<?php echo getFullInciteUrl().'/documents/view/'.$document->id."?".$this->query_str; ?>">
+<?php else: ?>
+            <a href="<?php echo getFullInciteUrl().'/documents/view/'.$document->id; ?>">
+<?php endif; ?>
+                <div style="height: 40px; width:40px; float: left;">
+                    <img src="<?php echo get_image_url_for_item($document, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
+                </div>
+                <div style="height: 40px; margin-left: 45px;">
+                    <p style="height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo metadata($document, array('Dublin Core', 'Title')); ?></p>
+                </div>
+            </a>
+            <div class="list-view-inline-doc-info" style="display: inline-block;">
+                <?php echo year_of_full_iso_date(metadata($document, array('Dublin Core', 'Date'))); ?>
+                ,
+                <?php echo location_to_city_state_str(metadata($document, array('Item Type Metadata', 'Location'))); ?>
+                ,
+            </div>
+        </div>
+
+        <?php
+            $taskInfo = getTaskCompletionInfoFor($document->id);
+            echo '<script type="text/javascript">addTaskCompletionIconsToResultsRow(' . json_encode($taskInfo["isTranscribed"]) . ' ,' . json_encode($taskInfo["isTagged"]) . ' ,' . json_encode($taskInfo["isConnected"]) . ' ,' . $document->id . ');</script>';
+        ?>
+<?php endforeach; ?>
+        <div id="pagination-bar" class="text-center">
+            <nav>
+              <ul class="pagination">
+                <li class="<?php echo ($this->current_page == 1 ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == 1 ? "" : 'href="?page='.($this->current_page-1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+<?php for ($i = 0; $i < $this->total_pages; $i++): ?>
+                <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
+<?php endfor; ?>
+                <li class="<?php echo ($this->total_pages == $this->current_page ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == $this->total_pages ? "" : 'href="?page='.($this->current_page+1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+              </ul>
+            </nav>
+        </div>
+    </div>
+    <div id="timeline"></div>
+    <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
+
+
+    </div>
+    <script type="text/javascript">
     var map;
     var msgbox;
     var markers_array = [];
@@ -124,68 +184,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
         row.append(iconContainer);
     }
-</script>
-
-    <!-- Page Content -->
-    <div id="task_description" style="text-align: center;">
-        <h3 style="text-align: center;">Search Results for All Documents</h3>
-        <span style="text-align: center;">You can mouse over the pins on the map or document thumbnails to see more details and click them to view more document info!
-        </span>
-    </div>
-    <div id="map-view" style="margin: 5px; width: 69%;"><div id="map-div" style=""></div></div>
-    <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white; border: solid 1.5px; border-color: #B2B1B1;">
-        <!--<div id="list-view-switch" style="cursor: pointer; border:1px solid; float: left; margin-right: 10px;">Show</div>-->
-        <span style="width: 20px; background: #EEEEEE; margin-right: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location unknown.</span>
-        <br>
-<?php foreach ((array)$this->Documents as $document): ?>
-        <div id="list_id<?php echo $document->id; ?>" style="margin: 10px; height: 45px;"
-            data-toggle="popover" data-trigger="hover" data-html="true"
-            data-title="<?php echo "<strong>" . metadata($document, array('Dublin Core', 'Title')) . "</strong>";?>"
-            data-placement="left" data-id="<?php echo $document->id; ?>"
-        >
-<?php if (isset($this->query_str) && $this->query !== ""): ?>
-            <a href="<?php echo getFullInciteUrl().'/documents/view/'.$document->id."?".$this->query_str; ?>">
-<?php else: ?>
-            <a href="<?php echo getFullInciteUrl().'/documents/view/'.$document->id; ?>">
-<?php endif; ?>
-                <div style="height: 40px; width:40px; float: left;">
-                    <img src="<?php echo get_image_url_for_item($document, true); ?>" class="thumbnail img-responsive" style="width: 40px; height: 40px;">
-                </div>
-                <div style="height: 40px; margin-left: 45px;">
-                    <p style="height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo metadata($document, array('Dublin Core', 'Title')); ?></p>
-                </div>
-            </a>
-            <div class="list-view-inline-doc-info" style="display: inline-block;">
-                <?php echo year_of_full_iso_date(metadata($document, array('Dublin Core', 'Date'))); ?>
-                ,
-                <?php echo location_to_city_state_str(metadata($document, array('Item Type Metadata', 'Location'))); ?>
-                ,
-            </div>
-        </div>
-
-        <?php
-            $taskInfo = getTaskCompletionInfoFor($document->id);
-            echo '<script type="text/javascript">addTaskCompletionIconsToResultsRow(' . json_encode($taskInfo["isTranscribed"]) . ' ,' . json_encode($taskInfo["isTagged"]) . ' ,' . json_encode($taskInfo["isConnected"]) . ' ,' . $document->id . ');</script>';
-        ?>
-<?php endforeach; ?>
-        <div id="pagination-bar" class="text-center">
-            <nav>
-              <ul class="pagination">
-                <li class="<?php echo ($this->current_page == 1 ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == 1 ? "" : 'href="?page='.($this->current_page-1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-<?php for ($i = 0; $i < $this->total_pages; $i++): ?>
-                <li class="<?php if ($this->current_page == ($i+1)) echo 'active'; ?>"><a href="?page=<?php echo ($i+1); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>"><?php echo ($i+1); ?><span class="sr-only">(current)</span></a></li>
-<?php endfor; ?>
-                <li class="<?php echo ($this->total_pages == $this->current_page ? "disabled" : ""); ?>"><a <?php echo ($this->current_page == $this->total_pages ? "" : 'href="?page='.($this->current_page+1)); ?><?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-              </ul>
-            </nav>
-        </div>
-    </div>
-    <div id="timeline"></div>
-    <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>
-
-
-    </div>
-    <script type="text/javascript">
         var ev, tl;
             ev = [
         <?php for ($i = 0; $i < count($this->Documents); $i++): ?>

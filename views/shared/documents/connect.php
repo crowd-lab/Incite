@@ -60,7 +60,7 @@ var id_to_marker = {};
 
 var docs;
 
-
+var query_str;
 var ev, tl;
 ev = [];
 var width, height;
@@ -73,6 +73,8 @@ $('#map-div').ready( function (e) {
 });
 
 $(document).ready( function (e) {
+    query_str = "<?php echo getSearchQuerySpecifiedViaGetAsString(); ?>";
+    setUpForDocumentsList();
     setUpForDocumentsList();
     //$('#map-div').width($(window).width());
     $('#timeline').width($(window).width()-30);
@@ -147,7 +149,8 @@ var request = $.ajax({
 function generatePaginationBar(){
     var disableFirst = (current_page == 1 || total_pages == 0? "disabled" : "");
     var disableLast = (current_page == total_pages || total_pages == 0? "disabled" : "");
-    var query = "<?php echo ($this->query_str == "" ? "" : "&".$this->query_str); ?>";
+    var query = ((query_str == "")? "":"&"+query_str);
+
     var startNum = getStartNumForPagination(total_pages, current_page);
     var endNum= getEndNumForPagination(total_pages, startNum);
 
@@ -186,7 +189,8 @@ $.each(response, function(){
 
     var name = (this.name).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
-    $('#list-view').append("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id + (query != "" ? "?" + query : "\">") + "<div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></div>");
+    $('#list-view').append("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id +
+    (query_str != "" ? "?" + query_str : "") +  "\"> <div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></div>");
 
     addTaskCompletionIconsToResultsRow(this.id);
 });

@@ -402,7 +402,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function populateDataForConnectTask() {
     $is_connectable_by_tags = true;
     $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
+
     $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+    
+
 
     if ($this->view->document_metadata != null) {
       if ($this->view->document_metadata->getFile() == null) {
