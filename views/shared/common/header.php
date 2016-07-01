@@ -100,6 +100,10 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
         color: white;
     }
 
+    #navbar-account-interaction-area:hover .dropdown-menu {
+    display: block;
+    }
+
     #user-dropdown-menu {
         right: -15px;
     }
@@ -165,7 +169,9 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     }
 
     a.navbar-links:hover {
-        font-weight: bold;
+     text-decoration: underline !important;
+     /*text-decoration: underline !important;*/
+
     }
 
     /* for list view in search result page */
