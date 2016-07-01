@@ -276,6 +276,17 @@
 
             $('#adv-search-btn').on('click', function (e) {
                 $('#keywords').val($('#pre-keywords').val());
+
+                //check dates
+                if (new Date($('#navbar-time-from').val()) > new Date ($('#navbar-time-to').val())) {
+                    notif({
+                        type: "warning",
+                        msg: "<b>Warning:</b> \"from\" time cannot be later than \"to\" time!",
+                        position: "right"
+                    });
+                    return;
+                }
+                $('#navbar-form').submit();
             });
 
             $('#pre-keywords').on('keyup', function(e) {
@@ -511,7 +522,7 @@
                                                 <div style="display: inline-block; float: left; font-size: 100%; margin-left: 5px; margin-right: 5px; margin-top: 5px;"><b> to </b></div>
                                                 <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1870-12-31" id="navbar-time-to" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1870-12-31'; ?>" />
                                               </div>
-                                              <button id="adv-search-btn" type="submit" class="btn btn-default">Search</button>
+                                              <button id="adv-search-btn" type="button" class="btn btn-default">Search</button>
                                               <input type="hidden" name="keywords" value="" id="keywords">
                                             </form>
                                         </div>
