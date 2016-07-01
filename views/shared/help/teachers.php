@@ -27,53 +27,41 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <body>
 
-		<div class="col-md-6 col-md-offset-3">
-      <div class="panel-group" id="accordion">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-            Is there a High School Assignment Guideline?
-          </a>
-        </h4>
-      </div>
-      <div id="collapseOne" class="panel-collapse collapse in">
-        <div class="panel-body">
-          Yes, there is! Please click <a target="_blank" href="https://docs.google.com/document/d/1pWJuNW4t3rVqLDc9qGngukz6fTxf5PYVecxVNUn2MwI/edit?usp=sharing">here</a>.
-        </div>
-      </div>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">High School Assignment Guideline</h3>
+            </div>
+            <div>
+                <br>
+                The guildeline includes the following scenarios uses:
+                <ul>
+                    <li>In-Class Tagging Activity</li>
+                    <li>In-Class Primary Source Transcription and Tagging Activity</li>
+                    <li>Pre-packaged Documents</li>
+                    <li>Homework Assignment</li>
+                    <li>Semester Long Project</li>
+                </ul>
+              Please click <a target="_blank" href="https://docs.google.com/document/d/1pWJuNW4t3rVqLDc9qGngukz6fTxf5PYVecxVNUn2MwI/edit?usp=sharing">here</a> for more details. 
+            </div>
+        </div> 
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">College Assignment Guideline</h3>
+            </div>
+            <div>
+                <br>
+                The guideline includes the following scenario uses:
+                <ul>
+                    <li>Homework assignment and in-class activity for a course in U.S. history</li>
+                    <li>Multiple homework assignments and in-class activities for a course on the American Civil War Era</li>
+                    <li>Archival research project with document upload</li>
+                    <li>Semester-long research project for an advanced course in U.S. history</li>
+                </ul>
+              Please click <a target="_blank" href="https://drive.google.com/open?id=0B4qOgF-3g8gfTEJYdDRrN054RTA">here</a> for more details.
+            </div>
+        </div> 
     </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-            Collapsible Group Item #2
-          </a>
-        </h4>
-      </div>
-      <div id="collapseTwo" class="panel-collapse collapse">
-        <div class="panel-body">
-          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-            Collapsible Group Item #3
-          </a>
-        </h4>
-      </div>
-      <div id="collapseThree" class="panel-collapse collapse">
-        <div class="panel-body">
-          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
 </body>
 
 </html>
