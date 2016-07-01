@@ -298,6 +298,7 @@
                     notif({
                         type: "warning",
                         msg: "<b>Warning:</b> \"from\" time cannot be later than \"to\" time!",
+                        width: 550,
                         position: "right"
                     });
                     return;

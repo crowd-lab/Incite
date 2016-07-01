@@ -144,7 +144,18 @@ function addTaskCompletionIconsToResultsRow(documentId) {
 
                     }
                     displayDocumentsList(data['records']);
+                } else {
+                    notif({
+                        type: "info",
+                        msg: "Unfortunately, we found no documents related to your search criteria. Please change your search criteria and try again.",
+                        position: 'right',
+                        width: 550,
+                        multiline: true,
+                        autohide: false,
+                        clickable: true
+                    });
                 }
+
                 //build map and pagination
                 generatePaginationBar();
                 buildMap();
