@@ -200,7 +200,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
       debug_to_console("no queries");
-      
+
     }
 
 
@@ -349,8 +349,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $document_ids = array_slice(array_values(getDocumentsWithoutTagsForLatestTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
     }
-
-    $this->createSearchResultPages($document_ids, 'Tags');
+    return $document_ids;
+    // $this->createSearchResultPages($document_ids, 'Tags');
   }
 
   public function connectAction() {

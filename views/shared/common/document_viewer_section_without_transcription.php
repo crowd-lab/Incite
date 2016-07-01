@@ -69,11 +69,11 @@
                 <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
                 	aria-hidden="true" data-trigger="hover"
                     data-toggle="popover" data-html="true"
-                    data-viewport=".document-header"  
-                    data-title="<strong>Document Information</strong>" 
+                    data-viewport=".document-header"
+                    data-title="<strong>Document Information</strong>"
                     data-placement="bottom" data-id="<?php echo $this->document_metadata->id; ?>">
                 </span>
-            </div> 
+            </div>
             <div class="wrapper">
                 <div id="viewer2" class="viewer"></div>
             </div>
@@ -83,7 +83,7 @@
 
 <style>
 	#work-view {
-        position: fixed; 
+        position: fixed;
         width: 35%;
         margin-top: -39px;
     }
@@ -103,8 +103,8 @@
     }
 
     .document-title {
-        font-size: 25px; 
-        position: relative; 
+        font-size: 25px;
+        position: relative;
         top: -5px;
         display: inline-block;
         overflow: hidden;
@@ -115,7 +115,7 @@
     }
 
     #document-info-glyphicon {
-        color: #337AB7; 
+        color: #337AB7;
         font-size: 20px;
         top: -8px;
     }
