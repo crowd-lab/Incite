@@ -216,7 +216,7 @@ $.each(response, function(){
     var name = (this.name).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
     $('#list-view').append("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id +
-    (query_str != "" ? "?" + query_str : "") +  "\"> <div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></div>");
+    (query_str != "" ? "?" + query_str : "") +  "\"> <div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+'</p></div></a><div class="list-view-inline-doc-info" style="display: in-block;">'+year_of_full_iso_date(this.date)+', '+location_to_city_state_str(this.loc)+'</div>');
 
     addTaskCompletionIconsToResultsRow(this.id);
 });

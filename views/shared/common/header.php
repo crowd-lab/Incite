@@ -167,6 +167,21 @@
         a.navbar-links:hover {
             font-weight: bold;
         }
+
+        /* for list view in search result page */
+        .icon-container {
+            position: relative;
+            top: -20px;
+            display: inline-block;
+            margin-left: 25px;
+        }
+
+        .list-view-inline-doc-info {
+            position: relative;
+            top: -20px;
+            margin-left: 45px;
+            display: inline-block;
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -426,6 +441,35 @@
                 }
             });
         };
+
+        function location_to_city_state_str(loc_str) {
+            console.log(loc_str);
+            if (loc_str == null)
+                return '';
+            var elements = loc_str.split("-");
+            if (elements.length < 2)
+                elements = loc_str.split(",");
+
+            if (elements.length < 2)
+                return loc_str;
+
+            var state = elements[0].replace('State', '').replace('state', '').trim();
+            var city = elements[elements.length-1].trim();
+            if (elements[elements.length-1].indexOf(' Indep.') != -1) {
+                city = elements[elements.length-1].trim().substring(0, elements[elements.length-1].indexOf(' Indep.'));
+            }
+
+            return city+', '+state;
+        }
+
+        function year_of_full_iso_date(date) {
+
+            var elements = date.split('-');
+            if (elements.length != 3)
+                return '???';
+
+            return elements[0];
+        }
     </script>
 </head>
 
