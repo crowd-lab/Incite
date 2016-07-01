@@ -75,7 +75,6 @@ $('#map-div').ready( function (e) {
 $(document).ready( function (e) {
     query_str = "<?php echo getSearchQuerySpecifiedViaGetAsString(); ?>";
     setUpForDocumentsList();
-    setUpForDocumentsList();
     //$('#map-div').width($(window).width());
     $('#timeline').width($(window).width()-30);
     document.getElementById('list-view').style.top = ($('#map-div').offset().top)+'px';
