@@ -92,15 +92,20 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
             <br>
             <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
-            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;">
-            <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in For <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can: 
-                <ul style="margin-left: 140px;">
-                    <li> <b>transcribe</b> digitized documents to make them searchable;</li>
-                    <li> <b>tag</b> people, locations, organizations and events with help from natural language processing tools;</li>
-                    <li> <b>connect</b> documents to high-level concepts of interest; and </li>
-                    <li> <b>discuss</b> their discoveries in context.</li>
-                </ul>
-            </p>
+            <div style="margin-left: 140px;">
+                <div style="float: right; width:100%;">
+                    <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in For <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can: 
+                        <ul style="margin-left: -10px;">
+                            <li> <b>transcribe</b> digitized documents to make them searchable;</li>
+                            <li> <b>tag</b> people, locations, organizations and events with help from natural language processing tools;</li>
+                            <li> <b>connect</b> documents to high-level concepts of interest; and </li>
+                            <li> <b>discuss</b> their discoveries in context.</li>
+                        </ul>
+                    </p>
+                </div>
+                <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;"></div>
+                <div style="clear:both"></div>
+            </div>
         </div>   <!-- homepage-details -->
     </div> <!-- homepage-content -->
 
