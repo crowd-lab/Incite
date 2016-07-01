@@ -181,7 +181,8 @@ function loc_to_lat_long($loc_str)
             'Washington'=>'WA',
             'West Virginia'=>'WV',
             'Wisconsin'=>'WI',
-            'Wyoming'=>'WY');
+            'Wyoming'=>'WY',
+        'District of Columbia' => 'DC');
 
     //mostly only use state and city but in case of no such city, we use county instead
     $elem  = explode("-", $loc_str);
