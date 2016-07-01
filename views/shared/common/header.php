@@ -163,6 +163,10 @@
             border-top-left-radius: 4px;
             border-bottom-left-radius: 4px;
         }
+
+        a.navbar-links:hover {
+            font-weight: bold;
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -273,6 +277,17 @@
 
             $('#adv-search-btn').on('click', function (e) {
                 $('#keywords').val($('#pre-keywords').val());
+
+                //check dates
+                if (new Date($('#navbar-time-from').val()) > new Date ($('#navbar-time-to').val())) {
+                    notif({
+                        type: "warning",
+                        msg: "<b>Warning:</b> \"from\" time cannot be later than \"to\" time!",
+                        position: "right"
+                    });
+                    return;
+                }
+                $('#navbar-form').submit();
             });
 
             $('#pre-keywords').on('keyup', function(e) {
@@ -281,6 +296,13 @@
                 }
             });
 
+            $('#navbar-signup-button').on('click', function (e) {
+                $('#signup-tab a').click();
+            });
+
+            $('#navbar-login-button').on('click', function (e) {
+                $('#login-tab a').click();
+            });
         });
 
         function deleteAlertFromLoginModal() {
@@ -409,15 +431,15 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1; height: 58px;" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1; height: 68px;" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 55px; margin-right: 5px; margin-top: 2px;"></a>
+                <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="margin-top: 6px;">
                 <ul class="nav navbar-nav navbar-right" style="position: relative; right: 15px;">
                     <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                         <li id="working-group-interaction-area">
@@ -446,7 +468,10 @@
                                 <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
                             </ul>
                         <?php else: ?>
-                            <a href="" style="color: #8BB7C8; font-size: 110%; padding-left: 10px; padding-right: 10px;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">Login/Sign-up</a>
+                            <a href="" style="color: #8BB7C8; font-size: 110%; margin-top: -8px; padding-left: 10px; padding-right: 10px; padding-top: 20px;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">
+                                <button id="navbar-login-button" class="btn btn-success">Login</button>
+                                <button id="navbar-signup-button" class="btn btn-info">Signup</button>
+                            </a>
                         <?php endif; ?>
                     </li>
                 </ul>
@@ -458,45 +483,47 @@
                     </li>
 -->
                     <li class="">
-                      <a href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">About</a>
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
                     </li>
                     <li class="">
-                      <a href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Teachers</a>
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teachers</a>
                   </li>
                   <li class="">
-                      <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; color: #8BB7C8; padding-left: 10px; padding-right: 10px;">Contribute</a>
+                      <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>
                     </li>
                     <li>
-                        <div class="input-group" id="adv-search" style="width: 261px; margin-top: 10px; margin-right: 10px; margin-left: 15px;">
-                            <input style="" type="text" class="form-control" placeholder="Search..." name="pre-keywords" id="pre-keywords" value="<?php if (isset($previous_search_results['keywords'])) echo $previous_search_results['keywords']; ?>" />
+                        <div class="input-group" id="adv-search" style="width: 261px; margin-top: 12px; margin-right: 0px; margin-left: 15px;">
                             <div class="input-group-btn">
                                 <div class="btn-group" role="group">
                                     <div class="dropdown dropdown-lg">
-                                        <button style="width: 30px; height: 34px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+                                        <input style="width: 232px;" type="text" class="form-control" data-toggle="dropdown" placeholder="Search..." name="pre-keywords" id="pre-keywords" value="<?php if (isset($previous_search_results['keywords'])) echo $previous_search_results['keywords']; ?>" />
+<!--
+                                        <button id="navbar-dropdown-button" style="width: 30px; height: 34px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+-->
                                         <div style="width: 232px;" class="dropdown-menu dropdown-menu-right" role="menu">
                                             <form id="navbar-form" class="form-horizontal" role="form" action="<?php echo getFullInciteUrl(); ?>/discover" method="get">
                                               <div class="form-group">
                                                 <label>Filter by</label><br>
-                                                <label>Task type:</label>
+                                                <label style="font-size: 80%;">Task type:</label>
                                                 <select class="form-control" name="task">
                                                     <option value="all" selected>All</option>
-                                                    <option value="transcribe">transcribe</option>
-                                                    <option value="tag">tag</option>
-                                                    <option value="connect">connect</option>
-                                                    <option value="discuss">discuss</option>
+                                                    <option value="transcribe">Transcribe</option>
+                                                    <option value="tag">Tag</option>
+                                                    <option value="connect">Connect</option>
+                                                    <option value="discuss">Discuss</option>
                                                 </select>
                                               </div>
                                               <div class="form-group">
-                                                <label>Location:</label>
+                                                <label style="font-size: 80%;">Location:</label>
                                                 <input class="form-control" type="text" value="<?php if (isset($previous_search_results['location'])) echo $previous_search_results['location']; ?>" placeholder="anywhere" name="location" />
                                               </div>
                                               <div class="form-group">
-                                                <label>Dates:</label><br>
-                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1830-01-01" name="time_from" value="<?php if (isset($previous_search_results['time_from'])) echo $previous_search_results['time_from']; else echo '1830-01-01'; ?>" />
+                                                <label style="font-size: 80%;">Dates:</label><br>
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1830-01-01" id="navbar-time-from" name="time_from" value="<?php if (isset($previous_search_results['time_from'])) echo $previous_search_results['time_from']; else echo '1830-01-01'; ?>" />
                                                 <div style="display: inline-block; float: left; font-size: 100%; margin-left: 5px; margin-right: 5px; margin-top: 5px;"><b> to </b></div>
-                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1870-12-31" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1870-12-31'; ?>" />
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1870-12-31" id="navbar-time-to" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1870-12-31'; ?>" />
                                               </div>
-                                              <button id="adv-search-btn" type="submit" class="btn btn-default"><span style="font-size: 80%;" class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                              <button id="adv-search-btn" type="button" class="btn btn-default">Search</button>
                                               <input type="hidden" name="keywords" value="" id="keywords">
                                             </form>
                                         </div>

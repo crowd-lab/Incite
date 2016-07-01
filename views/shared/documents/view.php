@@ -54,7 +54,6 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="map-view" style="margin: 5px; width: 69%;"><div id="map-div" style=""></div></div>
     <div id="list-view" style="position: absolute; top: 80px; right: 0; left: 100px; width: 30%; height: 500px; background-color: white; border: solid 1.5px; border-color: #B2B1B1;">
 
-
     </div>
     <div id="timeline"></div>
     <div id="timeline-spacing" class="col-md-8" style="height:100px;"></div>

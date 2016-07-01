@@ -27,14 +27,13 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <body>
 
-    <div class="col-md-6 col-md-offset-3">
+    <div style="margin-top: 40px;" class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">High School Assignment Guideline</h3>
+                <h3 class="panel-title">High School Assignment Guidelines</h3>
             </div>
-            <div>
-                <br>
-                The guildeline includes the following scenarios uses:
+            <div style="padding: 15px;">
+                These guildelines include the following sample assignments:
                 <ul>
                     <li>In-Class Tagging Activity</li>
                     <li>In-Class Primary Source Transcription and Tagging Activity</li>
@@ -47,11 +46,10 @@ include(dirname(__FILE__).'/../common/header.php');
         </div> 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">College Assignment Guideline</h3>
+                <h3 class="panel-title">College Assignment Guidelines</h3>
             </div>
-            <div>
-                <br>
-                The guideline includes the following scenario uses:
+            <div style="padding: 15px;">
+                These guildelines include the following sample assignments:
                 <ul>
                     <li>Homework assignment and in-class activity for a course in U.S. history</li>
                     <li>Multiple homework assignments and in-class activities for a course on the American Civil War Era</li>

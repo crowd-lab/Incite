@@ -85,18 +85,20 @@ include(dirname(__FILE__).'/../common/header.php');
         <br>
         <div id="homepage-details" style="margin-top: 50px;">
             <h3 style="color: #8BB7C8;">WE ARE UNCOVERING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
-            <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="margin-right: 20px; max-width: 120px; float: left;">
-            <p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p>
-            <div style="clear:left"></div>
+            <div style="margin-left: 140px;">
+                <div style="float: right; width:100%;"><p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p></div>
+                <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="margin-right: 20px; max-width: 120px; float: left;"></div>
+                <div style="clear:both"></div>
+            </div>
             <br>
             <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
             <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;">
-            <p>Incite is an open-source plugin to Omeka and allows users to interact with collections in the Omeka database. Users can help 
+            <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in For <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can: 
                 <ul style="margin-left: 140px;">
-                    <li> <b>transcribe</b> digitized documents to make them searchable, </li>
-                    <li> <b>tag</b> people, locations, organizations and events that are not recognized by state-of-the-art automated techniques,</li>
-                    <li> <b>connect</b> documents to high-level concepts of interest (e.g., topics and themes), and </li>
-                    <li> <b>discuss</b> their discoveries in the archives.</li>
+                    <li> <b>transcribe</b> digitized documents to make them searchable;</li>
+                    <li> <b>tag</b> people, locations, organizations and events with help from natural language processing tools;</li>
+                    <li> <b>connect</b> documents to high-level concepts of interest; and </li>
+                    <li> <b>discuss</b> their discoveries in context.</li>
                 </ul>
             </p>
         </div>   <!-- homepage-details -->
