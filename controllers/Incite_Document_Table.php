@@ -240,7 +240,8 @@ function location_to_city_state_str($location_str)
 
     $state = trim(str_replace('State', '', str_replace('state', '', $elements[0])));
     $city = strstr(trim($elements[count($elements)-1]), ' Indep.', true);
-    $city = trim($elements[count($elements)-1]);
+    if (strlen($city) == 0)
+        $city = trim($elements[count($elements)-1]);
 
     return $city.', '.$state;
 }

@@ -156,10 +156,9 @@ include(dirname(__FILE__).'/../common/header.php');
                 </div>
             </a>
             <div class="list-view-inline-doc-info" style="display: inline-block;">
-                <?php echo year_of_full_iso_date(metadata($document, array('Dublin Core', 'Date'))); ?>
-                ,
+                <?php echo year_of_full_iso_date(metadata($document, array('Dublin Core', 'Date'))); ?>,
                 <?php echo location_to_city_state_str(metadata($document, array('Item Type Metadata', 'Location'))); ?>
-                ,
+                &nbsp; 
             </div>
         </div>
 
