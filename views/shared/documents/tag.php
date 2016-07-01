@@ -198,7 +198,7 @@ function addTaskCompletionIconsToResultsRow(documentId) {
     }
     function displayDocumentsList(response) {
         var query = "<?php (isset($this->query_str) && $this->query_str !== "") ? $this->query_str : ""?>";
-        var address = "<?php echo getFullInciteUrl().'/documents/transcribe/'; ?>";
+        var address = "<?php echo getFullInciteUrl().'/documents/tag/'; ?>";
 
 
         $.each(response, function(){
