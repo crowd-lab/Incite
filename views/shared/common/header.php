@@ -162,6 +162,10 @@
             border-top-left-radius: 4px;
             border-bottom-left-radius: 4px;
         }
+
+        a.navbar-links:hover {
+            font-weight: bold;
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -467,10 +471,10 @@
                     </li>
 -->
                     <li class="">
-                      <a href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
                     </li>
                     <li class="">
-                      <a href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teachers</a>
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teachers</a>
                   </li>
                   <li class="">
                       <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>

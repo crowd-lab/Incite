@@ -34,8 +34,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 </h2>
             </div>   <!-- contribute-confirmation -->
             <div style="text-align: center;">
-
-                <button type="button" id="contribute_button" style="margin: 40px;" class="btn btn-danger">TRY IT NOW</button>
+                <button type="button" id="contribute_button" style="margin: 40px;" class="btn btn-danger">GET STARTED</button>
             </div>
         </form>
     </div> <!-- homepage-content -->
