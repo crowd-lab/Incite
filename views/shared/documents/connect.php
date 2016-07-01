@@ -223,7 +223,7 @@ tl = $('#timeline').jqtimeline({
 
 function x() {
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
-    map = L.map('map-div').setView([37.8, -65], 4);
+    map = L.map('map-div').setView([37.8, -95], 4);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
