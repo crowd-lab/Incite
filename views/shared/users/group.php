@@ -354,6 +354,7 @@
                 window.location.href = url;
             });
         };
+        
     </script>
 
     <style>

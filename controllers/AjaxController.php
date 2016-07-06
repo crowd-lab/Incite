@@ -522,9 +522,10 @@ public function getallavailabledocsAction(){
       if (setWorkingGroup($userId, $groupId)) {
         $_SESSION['Incite']['USER_DATA']['working_group'] = getGroupInfoByGroupId($groupId);
 
-        return json_encode(true);
+        echo 'true';
+
       } else {
-        return json_encode(false);
+        echo 'false';
       }
     }
   }
