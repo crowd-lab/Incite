@@ -54,6 +54,54 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
         }
     }
 
+    public function profileAction(){
+        if ($this->_hasParam('id')) {
+            $this->_helper->viewRenderer('profile');
+            $user_id = $this->_getParam('id');
+            $this->view->user = getUserDataByUserId($user_id);
+        } else {
+            $this->view->users = "";
+        }
+    }
+    public function activityAction(){
+        if ($this->_hasParam('id')) {
+            $this->_helper->viewRenderer('activity');
+            $user_id = $this->_getParam('id');
+            $this->view->transcribed_docs = getTranscribedDocumentsByUserId($user_id);
+            $this->view->tagged_docs = getTaggedDocumentsByUserId($user_id);
+            $this->view->connected_docs = getConnectedDocumentsByUserId($user_id);
+            $this->view->discussions = getDiscussionsByUserId($user_id);
+            $this->view->groups = getGroupsByUserId($user_id);
+            $this->view->user = getUserDataByUserId($user_id);
+
+            //Get all activities together, add activity_type and sort them based on time
+            $tran = getTranscribedDocumentsByUserId($user_id);
+            addKeyValueToArray($tran, 'activity_type', 'Transcribe');
+            $tag = getTaggedDocumentsByUserId($user_id);
+            addKeyValueToArray($tag, 'activity_type', 'Tag');
+            $con = getConnectedDocumentsByUserId($user_id);
+            addKeyValueToArray($con, 'activity_type', 'Connect');
+            $dis = getDiscussionsByUserId($user_id);
+            addKeyValueToArray($dis, 'activity_type', 'Discuss');
+            $activities = array_merge($tran, $tag, $con, $dis);
+            usort($activities, "customizedTimeCmpFuncDESC");
+            $this->view->activities = $activities;
+        } else {
+            $this->view->users = "";
+        }
+    }
+    public function groupAction(){
+        if ($this->_hasParam('id')) {
+            $this->_helper->viewRenderer('group');
+            $user_id = $this->_getParam('id');
+            $this->view->groups = getGroupsByUserId($user_id);
+            $this->view->user = getUserDataByUserId($user_id);
+
+        } else {
+            $this->view->users = "";
+        }
+    }
+
 /**
 * Direct to Edit profile page.
 */

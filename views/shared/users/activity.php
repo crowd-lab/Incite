@@ -524,21 +524,67 @@
         <?php
 
         echo '<h1> Email: '. $this->user['email'] . '</h1>';
-        if ($this->user['id'] == $_SESSION['Incite']['USER_DATA']['id']) {
-            ?>
-            <div>
-                <input id="edit-profile-btn" class="btn btn-primary" type="submit" value="Edit Profile" >
-            </div>
-            <?php
-        }
+
         ?>
+	<div class="col-md-10 col-md-offset-1">
 
+        <div id="userprofile-activity-overview">
+            <h2 class="activity-title" id="userprofile-activity-overview-title">Activity Overview</h2>
+            <p class="activity-title">Select sections below to filter the activity feed</p>
 
-        <div>
-            <p id="groups-list">Belongs to group(s): </p>
+            <div class="overview-section transcribe-color" id="transcribe-overview-section">
+                <p class="task-description">
+                    Transcribed:
+                </p>
+                <p id="number-transcribed">0 documents<p>
+            </div><!--
+            --><div class="overview-section tag-color" id="tag-overview-section">
+                <p class="task-description">
+                    Tagged:
+                </p>
+                <p id="number-tagged">0 documents<p>
+            </div><!--
+            --><div class="overview-section connect-color" id="connect-overview-section">
+                <p class="task-description">
+                    Connected:
+                </p>
+                <p id="number-connected">0 documents<p>
+            </div><!--
+            --><div class="overview-section discuss-color" id="discuss-overview-section">
+                <p class="task-description">
+                    Discussed:
+                </p>
+                <p id="number-discussed">0 documents<p>
+            </div>
+        </div>
+
+        <br>
+        <hr size=2>
+
+        <div id="userprofile-activity-feed">
+            <h2 class="activity-title" id="activity-feed-title">Activity Feed for Work Done in </h2>
+            <select id="activity-feed-group-selector-filter" class="form-control" name="task">
+                <option id="default-group-selector-option" value="All groups" selected>All Groups</option>
+
+                <?php foreach ((array)$this->groups as $group): ?>
+                    <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 30) ? substr($group['name'],0,27).'...' : $group['name']; ?></option>
+                <?php endforeach; ?>
+            </select>
+            <table class="table" id="userprofile-activity-feed-table">
+                <tr class="activity-feed-table-header">
+                    <th>
+                        Task
+                    </th>
+                    <th>
+                        Document/Discussion
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                </tr>
+            </table>
+        </div>
         </div>
     </div>
-
-
 </body>
 </html>

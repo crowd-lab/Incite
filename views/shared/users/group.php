@@ -524,20 +524,55 @@
         <?php
 
         echo '<h1> Email: '. $this->user['email'] . '</h1>';
-        if ($this->user['id'] == $_SESSION['Incite']['USER_DATA']['id']) {
             ?>
-            <div>
-                <input id="edit-profile-btn" class="btn btn-primary" type="submit" value="Edit Profile" >
-            </div>
-            <?php
-        }
-        ?>
+
 
 
         <div>
             <p id="groups-list">Belongs to group(s): </p>
         </div>
     </div>
+
+    <div class="container-fluid horizontal-align" id="userprofile-activity-container">
+
+        <div id="group-creation-and-join-container">
+            <ul class="nav nav-tabs" id="group-create-or-join-tabs">
+                <li id="join-group-tab" class="active"><a>Join a group</a></li>
+                <li id="create-group-tab"><a>Create a group</a></li>
+            </ul>
+
+            <div id="join-or-create-info-container">
+
+                <div id="search-groups-section">
+                    <span>
+                        <label class="control-label" for="group-name-input">Search Groups By Keyword: </label>
+                        <input id="search-groups-input" class="form-control" type="text" name="field" placeholder="Keyword" />
+                        <button id="group-search-btn" class="btn btn-primary">
+                            Find Groups to Join <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        <p id="no-groups-found-paragraph">No results found</p>
+                    </span>
+                    <table class="table" id="join-group-table">
+                        <tr>
+                            <th>
+                                Group Name
+                            </th>
+                            <th>
+                                Request to Join
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="create-group-div">
+                    <span>
+                        <label class="control-label" for="group-name-input">Group Name (can't be blank):</label>
+                        <input id="group-name-input" type="text" class="form-control" name="field" placeholder="Group Name" />
+                    </span>
+                    <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
+                </div>
+            </div>
+        </div>
 
 
 </body>

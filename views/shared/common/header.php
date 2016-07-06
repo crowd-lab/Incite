@@ -101,7 +101,7 @@
         }
 
         #user-dropdown-menu {
-            right: -15px;
+            right: -30px;
         }
 
         #working-group-interaction-area {
@@ -190,7 +190,8 @@
 
         .dropdown:hover .dropdown-menu {
             display: block;
-            margin-top: 0; // remove the gap so it doesn't close
+            margin-top: 0;
+            /*// remove the gap so it doesn't close*/
          }
 
         /* for list view in search result page */
@@ -538,8 +539,12 @@
                             <ul class="dropdown-menu" id="user-dropdown-menu">
                                 <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
                                     <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
+                                    <li><a href="<?php echo getFullInciteUrl() . '/users/group/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Group</a></li>
+                                    <li><a href="<?php echo getFullInciteUrl() . '/users/activity/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Activity</a></li>
                                 <?php else: ?>
                                     <li class="disabled"><a href="#">Profile</a></li>
+                                        <li class="disabled"><a href="#">Group</a></li>
+                                            <li class="disabled"><a href="#">Activity</a></li>
                                 <?php endif; ?>
                                 <li class="divider"></li>
                                 <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
