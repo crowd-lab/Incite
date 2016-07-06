@@ -83,111 +83,130 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 
     <!-- Custom CSS -->
     <style>
-    #user_profile {
-        background:none!important;
-        border:none;
-        padding:0!important;
-        font: inherit;
-        color: #9D9D9D;
-        height: 34px;
-    }
+        #user_profile {
+            background:none!important;
+            border:none;
+            padding:0!important;
+            font: inherit;
+            color: #9D9D9D;
+            height: 34px;
+        }
 
-    #navbar-account-interaction-area {
-        margin-left: 20px;
-    }
+        #navbar-account-interaction-area {
+            margin-left: 20px;
+        }
 
-    #user_profile:hover {
-        color: white;
-    }
+        #user_profile:hover {
+            color: white;
+        }
 
-    #navbar-account-interaction-area:hover .dropdown-menu {
-    display: block;
-    }
+        #user-dropdown-menu {
+            right: -15px;
+        }
 
-    #user-dropdown-menu {
-        right: -15px;
-    }
+        #working-group-interaction-area {
+            text-align: center;
+            padding-right: 20px;
+            border-right: 1px solid grey;
+            height: 50px;
+        }
 
-    #working-group-interaction-area {
-        text-align: center;
-        padding-right: 20px;
-        border-right: 1px solid grey;
-        height: 50px;
-    }
+        body {
+            padding-top: 70px;
+            /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+        }
 
-    body {
-        padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
+        .instructions-alert-icon-in-modal {
+            float: right;
+            position: relative;
+            bottom: 27px;
+            right: 80px;
+        }
 
-    .instructions-alert-icon-in-modal {
-        float: right;
-        position: relative;
-        bottom: 27px;
-        right: 80px;
-    }
+        .group-instructions-header {
+            margin-top: 5px;
+        }
 
-    .group-instructions-header {
-        margin-top: 5px;
-    }
+        #instructions-modal-current-group-info-header {
+            text-align: center;
+        }
 
-    #instructions-modal-current-group-info-header {
-        text-align: center;
-    }
+        .nav-dropdown-control {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
 
-    .nav-dropdown-control {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
+        .dropdown.dropdown-lg .dropdown-menu {
+            margin-top: -1px;
+            padding: 6px 20px;
+        }
+        .input-group-btn .btn-group {
+            display: flex !important;
+        }
+        .btn-group .btn {
+            border-radius: 0;
+            margin-left: -1px;
+        }
+        .btn-group .btn:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+        .btn-group .form-horizontal .btn[type="submit"] {
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+        .form-horizontal .form-group {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .form-group .form-control:last-child {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
 
-    .dropdown.dropdown-lg .dropdown-menu {
-        margin-top: -1px;
-        padding: 6px 20px;
-    }
-    .input-group-btn .btn-group {
-        display: flex !important;
-    }
-    .btn-group .btn {
-        border-radius: 0;
-        margin-left: -1px;
-    }
-    .btn-group .btn:last-child {
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
-    }
-    .btn-group .form-horizontal .btn[type="submit"] {
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-    }
-    .form-horizontal .form-group {
-        margin-left: 0;
-        margin-right: 0;
-    }
-    .form-group .form-control:last-child {
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-    }
+        .nav > li > a:hover {
+            text-decoration: underline;
+        }
 
-    a.navbar-links:hover {
-     text-decoration: underline !important;
-     /*text-decoration: underline !important;*/
+        .nav > li > a {
+            color: #8BB7C8;
+        }
 
-    }
+        .navbar-inverse .navbar-nav > li > a:hover {
+            color: #3B6778;
+        }
 
-    /* for list view in search result page */
-    .icon-container {
-        position: relative;
-        top: -20px;
-        display: inline-block;
-        margin-left: 25px;
-    }
+        .navbar-inverse .navbar-nav > li > a {
+            color: #8BB7C8;
+        }
 
-    .list-view-inline-doc-info {
-        position: relative;
-        top: -20px;
-        margin-left: 45px;
-        display: inline-block;
-    }
+        .navbar-links {
+            color: #8BB7C8;
+        }
+
+        .navbar-links:hover {
+            color: #3B6778;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0; // remove the gap so it doesn't close
+         }
+
+        /* for list view in search result page */
+        .icon-container {
+            position: relative;
+            top: -20px;
+            display: inline-block;
+            margin-left: 25px;
+        }
+
+        .list-view-inline-doc-info {
+            position: relative;
+            top: -20px;
+            margin-left: 45px;
+            display: inline-block;
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -303,9 +322,18 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 
         $('#login-button').on('click', attemptToLoginOrSignup);
 
-        $('#navbar-search-btn').on('click', function (e) {
-            $('#adv-search-btn').click();
-        });
+            $('#signup-tab a').on('click', function (e) {
+                $('#login-button').text('Sign Up');
+            });
+
+            $('#login-tab a').on('click', function (e) {
+                $('#login-button').text('Log In');
+            });
+
+            $('#navbar-login-button').on('click', function (e) {
+                $('#login-tab a').click();
+            });
+        
 
         $('#adv-search-btn').on('click', function (e) {
             $('#keywords').val($('#pre-keywords').val());
@@ -525,56 +553,132 @@ function redirectToContributeOrStay(){
                     <li class="dropdown" id="navbar-account-interaction-area">
                         <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                             <button id="user_profile" type="button"
-                            class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"
-                            style="height: 34px; color: #8BB7C8;">
-                            <?php echo $_SESSION['Incite']['USER_DATA']['first_name']; ?>
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                        </button>
-                        <ul class="dropdown-menu" id="user-dropdown-menu">
-                            <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
-                                <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
-                            <?php else: ?>
-                                <li class="disabled"><a href="#">Profile</a></li>
-                            <?php endif; ?>
-                            <li class="divider"></li>
-                            <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
-                        </ul>
-                    <?php else: ?>
-                        <a href="" style="color: #8BB7C8; font-size: 110%; margin-top: -8px; padding-left: 10px; padding-right: 10px; padding-top: 20px;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">
-                            <button id="navbar-login-button" class="btn btn-default" style="color: #8BB7C8; ">Login</button>
-                            <button id="navbar-signup-button" class="btn btn-default" style="color: #8BB7C8; ">Signup</button>
-                        </a>
-                    <?php endif; ?>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <!-- To be added -->
-                <!--
-                <li class="">
-                <a style="font-size: 125%; color: #8BB7C8;">Browse</a>
-            </li>
-        -->
-        <li class="">
-            <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
-        </li>
-        <li class="">
-            <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; color: #8BB7C8; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teachers</a>
-        </li>
-        <li class="">
-            <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>
-        </li>
-        <li>
-            <div class="input-group" id="adv-search" style="width: 261px; margin-top: 12px; margin-right: 0px; margin-left: 15px;">
-                <div class="input-group-btn">
-                    <div class="btn-group" role="group">
-                        <div class="dropdown dropdown-lg">
-                            <input style="width: 232px;" type="text" class="form-control" data-toggle="dropdown" placeholder="Search..." name="pre-keywords" id="pre-keywords" value="<?php if (isset($previous_search_results['keywords'])) echo $previous_search_results['keywords']; ?>" />
-                            <!--
-                            <button id="navbar-dropdown-button" style="width: 30px; height: 34px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
-                        -->
-                        <div style="width: 232px;" class="dropdown-menu dropdown-menu-right" role="menu">
-                            <form id="navbar-form" class="form-horizontal" role="form" action="<?php echo getFullInciteUrl(); ?>/discover" method="get">
+                                    class="btn btn-default navbar-btn dropdown-toggle navbar-links" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false"
+                                    style="height: 34px; color: #8BB7C8;">
+                                <?php echo $_SESSION['Incite']['USER_DATA']['first_name']; ?>
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="user-dropdown-menu">
+                                <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
+                                    <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
+                                <?php else: ?>
+                                    <li class="disabled"><a href="#">Profile</a></li>
+                                <?php endif; ?>
+                                <li class="divider"></li>
+                                <li><a href="#" onclick="logoutAjaxRequest()">Logout</a></li>
+                            </ul>
+                        <?php else: ?>
+                            <a href="" style="color: #8BB7C8; font-size: 110%; margin-top: -8px; padding-left: 10px; padding-right: 10px; padding-top: 20px;"; id="login_modal" class="" data-toggle="modal" data-target="#login-signup-dialog">
+                                <button id="navbar-login-button" class="btn btn-default">Login</button>
+                                <button id="navbar-signup-button" class="btn btn-default">Signup</button>
+                            </a>
+                        <?php endif; ?>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+<!-- To be added -->
+<!--
+                    <li class="">
+                        <a style="font-size: 125%; color: #8BB7C8;">Browse</a>
+                    </li>
+-->
+                    <li class="">
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
+                    </li>
+                    <li class="">
+                      <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teachers</a>
+                  </li>
+                  <li class="">
+                      <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>
+                    </li>
+                    <li>
+                        <div class="input-group" id="adv-search" style="width: 261px; margin-top: 12px; margin-right: 0px; margin-left: 15px;">
+                            <div class="input-group-btn">
+                                <div class="btn-group" role="group">
+                                    <div class="dropdown dropdown-lg">
+                                        <input style="width: 232px;" type="text" class="form-control" data-toggle="dropdown" placeholder="Search..." name="pre-keywords" id="pre-keywords" value="<?php if (isset($previous_search_results['keywords'])) echo $previous_search_results['keywords']; ?>" />
+<!--
+                                        <button id="navbar-dropdown-button" style="width: 30px; height: 34px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+-->
+                                        <div style="width: 232px;" class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <form id="navbar-form" class="form-horizontal" role="form" action="<?php echo getFullInciteUrl(); ?>/discover" method="get">
+                                              <div class="form-group">
+                                                <label>Filter by</label><br>
+                                                <label style="font-size: 80%;">Task type:</label>
+                                                <select class="form-control" name="task">
+                                                    <option value="all" selected>All</option>
+                                                    <option value="transcribe">Transcribe</option>
+                                                    <option value="tag">Tag</option>
+                                                    <option value="connect">Connect</option>
+                                                    <option value="discuss">Discuss</option>
+                                                </select>
+                                              </div>
+                                              <div class="form-group">
+                                                <label style="font-size: 80%;">Location:</label>
+                                                <input class="form-control" type="text" value="<?php if (isset($previous_search_results['location'])) echo $previous_search_results['location']; ?>" placeholder="anywhere" name="location" />
+                                              </div>
+                                              <div class="form-group">
+                                                <label style="font-size: 80%;">Dates:</label><br>
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1830-01-01" id="navbar-time-from" name="time_from" value="<?php if (isset($previous_search_results['time_from'])) echo $previous_search_results['time_from']; else echo '1830-01-01'; ?>" />
+                                                <div style="display: inline-block; float: left; font-size: 100%; margin-left: 5px; margin-right: 5px; margin-top: 5px;"><b> to </b></div>
+                                                <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1880-12-31" id="navbar-time-to" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1880-12-31'; ?>" />
+                                              </div>
+                                              <button id="adv-search-btn" type="button" class="btn btn-default">Search</button>
+                                              <input type="hidden" name="keywords" value="" id="keywords">
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <button id="navbar-search-btn" style="width: 30px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default"><span style="font-size: 80%;" class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+
+            <!-- /.navbar-collapse -->
+        </div>
+
+        <!-- /.container -->
+    </nav>
+
+    <div class="modal fade" id="login-signup-dialog" tabindex="-1" role="dialog" aria-labelledby="login-signup-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs nav-justified nav-pills">
+                        <li class="active" id="login-tab"><a href="#tab1" data-toggle="tab">Log In</a></li>
+                        <li id="signup-tab"><a href="#tab2" data-toggle="tab">Sign Up</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1">
+                            <form>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="control-label">Email:</label>
+                                    <input type="text" class="form-control" id="username" name="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="control-label">Password:</label>
+                                    <input type="password" class="form-control" id="password" name="password">
+                                </div>
+                                 <a href="<?php echo getFullInciteUrl() . '/users/forgot'?>" id="forgotpw">Forgot password?</a>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            <form>
+                                <div class="form-group">
+                                    <label class="control-label">Email:</label>
+                                    <input type="text" class="form-control" id="newUsername" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="control-label">Password:</label>
+                                    <input type="password" class="form-control" id="newPassword" name="password">
+                                </div>
                                 <div class="form-group">
                                     <label>Filter by</label><br>
                                     <label style="font-size: 80%;">Task type:</label>

@@ -149,8 +149,6 @@ var request = $.ajax({
             docs = jQuery.extend(true, [], data['records']);
             //display documents in the list
 
-
-
             displayDocumentsList(data['records']);
         } else {
             notif({
@@ -296,7 +294,6 @@ function x() {
                 markers_array.push({id: this.id, marker: marker});
                 marker_to_id[marker._leaflet_id] = this.id;
                 id_to_marker[this.id] = marker;
-
             }else{
                 nomarkers_array.push({id:this.id, marker:marker});
             }
