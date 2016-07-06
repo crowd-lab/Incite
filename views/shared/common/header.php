@@ -1,15 +1,15 @@
 <?php
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Helpers.php');
-queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles', 'bootstrap-tour.min'));
-$db = get_db();
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Helpers.php');
+    queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles', 'bootstrap-tour.min'));
+    $db = get_db();
 
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Session.php');
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Search.php');
-setup_session();
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Session.php');
+    require_once(dirname(__FILE__) . '/../../../controllers/Incite_Search.php');
+    setup_session();
 
-$previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
+    $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 ?>
 
 <head>
@@ -41,44 +41,44 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     <?php echo js_tag('bootstrap-tour.min'); ?>
     <?php echo head_css(); ?>
 
-    <?php
-    function loadWorkingGroupInstructions() {
-        $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+     <?php
+        function loadWorkingGroupInstructions() {
+            $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
 
-        $workingGroupId = 0;
-        $workingGroupHasInstructions = false;
-        if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
-            $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
-        }
+            $workingGroupId = 0;
+            $workingGroupHasInstructions = false;
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
 
-        foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-            if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
-                $workingGroupHasInstructions = true;
+            foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
+                if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
+                    $workingGroupHasInstructions = true;
 
-                if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
-                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
-                } else {
-                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
-                    echo 'changeWorkingGroupInfoIcon(true);';
+                    if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
+                    } else {
+                        echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+                        echo 'changeWorkingGroupInfoIcon(true);';
+                    }
                 }
+            }
+
+            if (!$workingGroupHasInstructions) {
+                echo 'styleInstructionsModalToBeEmpty();';
             }
         }
 
-        if (!$workingGroupHasInstructions) {
-            echo 'styleInstructionsModalToBeEmpty();';
-        }
-    }
+        function markWorkingGroupInstructionsAsSeen() {
+            $workingGroupId = 0;
+            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            }
 
-    function markWorkingGroupInstructionsAsSeen() {
-        $workingGroupId = 0;
-        if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
-            $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            if ($workingGroupId > 0) {
+                echo "updateSeenInstructionsAjaxRequest(" . $workingGroupId . ");";
+            }
         }
-
-        if ($workingGroupId > 0) {
-            echo "updateSeenInstructionsAjaxRequest(" . $workingGroupId . ");";
-        }
-    }
     ?>
 
     <!-- Custom CSS -->
@@ -164,7 +164,7 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
             border-bottom-left-radius: 4px;
         }
 
-        .nav > li > a:hover {
+        .nav > li > a.navbar-links:hover {
             text-decoration: underline;
         }
 
@@ -212,115 +212,134 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script>
-    var msgbox;
-    var fullInciteUrl = "<?php echo getFullInciteUrl(); ?>";
+        var msgbox;
+        var fullInciteUrl = "<?php echo getFullInciteUrl(); ?>";
 
-    function closeMsgBox() {
-        msgbox.close();
-    }
-
-    function openMsgBox() {
-        msgbox.open();
-    }
-
-    function addGroupInstructionSection(groupName, groupInstructions, isNew) {
-        if (isNew) {
-            var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><p class="group-instructions-header"><strong>Working Group:</strong> ' + groupName + '</p>' +
-            '<p class="group-instructions-body"><strong>Instructions:</strong> ' + groupInstructions + '</p>');
-        } else {
-            var section = $('<p class="group-instructions-header"><strong>Working Group:</strong> ' + groupName + '</p>' +
-            '<p class="group-instructions-body"><strong>Instructions:</strong> ' + groupInstructions + '</p>');
+        function closeMsgBox() {
+            msgbox.close();
         }
 
-        $('#instructions-modal-body').append(section);
-    }
-
-    function styleInstructionsModalToBeEmpty() {
-        var section = $('<p> Either your current working group has not yet added instructions or you have no working group! </p>');
-
-        $('#instructions-modal-body').append(section);
-    }
-
-    function changeWorkingGroupInfoIcon(isNew) {
-        if (isNew) {
-            $('#working-group-info-glyphicon').removeClass('glyphicon-info-sign')
-            .addClass('glyphicon-exclamation-sign')
-            .css('color', '#D9534F');
-        } else {
-            $('#working-group-info-glyphicon').removeClass('glyphicon-exclamation-sign')
-            .addClass('glyphicon-info-sign')
-            .css('color', '#9D9D9D');
+        function openMsgBox() {
+            msgbox.open();
         }
 
-    }
-
-    function updateSeenInstructionsAjaxRequest(groupId) {
-        var request = $.ajax({
-            type: "POST",
-            url: "<?php echo getFullInciteUrl().'/ajax/addseeninstructions'; ?>",
-            data: {"userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>, "groupId": groupId},
-            success: function (response) {
-                $(".instructions-alert-icon-in-modal").remove();
-                changeWorkingGroupInfoIcon(false);
+        function addGroupInstructionSection(groupName, groupInstructions, isNew) {
+            if (isNew) {
+                var section = $('<span class="label label-danger instructions-alert-icon-in-modal" aria-hidden="true">New</span><p class="group-instructions-header"><strong>Working Group:</strong> ' + groupName + '</p>' +
+                    '<p class="group-instructions-body"><strong>Instructions:</strong> ' + groupInstructions + '</p>');
+            } else {
+                var section = $('<p class="group-instructions-header"><strong>Working Group:</strong> ' + groupName + '</p>' +
+                    '<p class="group-instructions-body"><strong>Instructions:</strong> ' + groupInstructions + '</p>');
             }
-        });
-    }
 
-    <?php
-    if (isset($_GET['time'])) {
-        $time_segs = explode(' - ', $_GET['time']);
-        $start_time = $time_segs[0];
-        $end_time   = $time_segs[1];
-    }
-    ?>
+            $('#instructions-modal-body').append(section);
+        }
 
-    $(document).ready(function () {
+        function styleInstructionsModalToBeEmpty() {
+            var section = $('<p> Either your current working group has not yet added instructions or you have no working group! </p>');
 
-        $("a#forgotpw").bind("click", function() {
+            $('#instructions-modal-body').append(section);
+        }
+
+        function changeWorkingGroupInfoIcon(isNew) {
+            if (isNew) {
+                $('#working-group-info-glyphicon').removeClass('glyphicon-info-sign')
+                    .addClass('glyphicon-exclamation-sign')
+                    .css('color', '#D9534F');
+            } else {
+                $('#working-group-info-glyphicon').removeClass('glyphicon-exclamation-sign')
+                    .addClass('glyphicon-info-sign')
+                    .css('color', '#9D9D9D');
+            }
+
+        }
+
+        function updateSeenInstructionsAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/addseeninstructions'; ?>",
+                data: {"userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>, "groupId": groupId},
+                success: function (response) {
+                    $(".instructions-alert-icon-in-modal").remove();
+                    changeWorkingGroupInfoIcon(false);
+                }
+            });
+        }
+
+        <?php
+            if (isset($_GET['time'])) {
+                $time_segs = explode(' - ', $_GET['time']);
+                $start_time = $time_segs[0];
+                $end_time   = $time_segs[1];
+            }
+        ?>
+
+        $(document).ready(function () {
+
+          $("a#forgotpw").bind("click", function() {
             Cookies.set('name', $('#username').val());
-        });
+          });
 
-        <?php loadWorkingGroupInstructions(); ?>
+           <?php loadWorkingGroupInstructions(); ?>
 
-        $('#time_picker').daterangepicker({
-            locale     : { format: 'YYYY-MM-DD'},
-            "startDate": "<?php echo (isset($start_time) ? $start_time : "1830-01-01"); ?>",   //could be dynamic or user's choice
-            "endDate"  : "<?php echo (isset($end_time) ? $end_time : "1870-12-31"); ?>",   //could be dynamic or user's choice
-            "minDate"  : "1830-01-01",
-            "maxDate"  : "1870-12-31",
-            "opens"    : "center"
-        }, function (start, end, label) {
-        });
+            $('#time_picker').daterangepicker({
+                locale     : { format: 'YYYY-MM-DD'},
+                "startDate": "<?php echo (isset($start_time) ? $start_time : "1830-01-01"); ?>",   //could be dynamic or user's choice
+                "endDate"  : "<?php echo (isset($end_time) ? $end_time : "1870-12-31"); ?>",   //could be dynamic or user's choice
+                "minDate"  : "1830-01-01",
+                "maxDate"  : "1870-12-31",
+                "opens"    : "center"
+            }, function (start, end, label) {
+            });
 
-        $("#signup-tab").on('click', deleteAlertFromLoginModal);
-        $("#login-tab").on('click', deleteAlertFromLoginModal);
-        $("#login_modal").on('click', deleteAlertFromLoginModal);
-        var btn = document.getElementById("login-button");
-        $("#signup-tab").on('click', function(){
+            $("#signup-tab").on('click', deleteAlertFromLoginModal);
+            $("#login-tab").on('click', deleteAlertFromLoginModal);
+            $("#login_modal").on('click', deleteAlertFromLoginModal);
 
-            $( "#login-button" ).empty();
-            btn.appendChild(document.createTextNode("Sign Up"));
-        });
+            $("#instructions-dialog").on('hide.bs.modal', function() {
+                <?php
+                    markWorkingGroupInstructionsAsSeen();
+                ?>
+            });
 
-        $("#login-tab").on('click', function(){
-            $( "#login-button" ).empty();
-            btn.appendChild(document.createTextNode("Log In"));
-        });
+            $('#location').val(<?php echo (isset($_GET['location']) ? sanitizeStringInput($_GET['location']) : sanitizeStringInput("")); ?>.value);
+            $('#keywords').val(<?php echo (isset($_GET['keywords']) ? sanitizeStringInput($_GET['keywords']) : sanitizeStringInput("")); ?>.value);
 
-        $("#instructions-dialog").on('hide.bs.modal', function() {
-            <?php
-            markWorkingGroupInstructionsAsSeen();
-            ?>
-        });
+            $('#login-button').on('click', attemptToLoginOrSignup);
 
-        $('#location').val(<?php echo (isset($_GET['location']) ? sanitizeStringInput($_GET['location']) : sanitizeStringInput("")); ?>.value);
-        $('#keywords').val(<?php echo (isset($_GET['keywords']) ? sanitizeStringInput($_GET['keywords']) : sanitizeStringInput("")); ?>.value);
+            $('#navbar-search-btn').on('click', function (e) {
+                $('#adv-search-btn').click();
+            });
 
-        $('#login-button').on('click', attemptToLoginOrSignup);
+            $('#adv-search-btn').on('click', function (e) {
+                $('#keywords').val($('#pre-keywords').val());
+
+                //check dates
+                if (new Date($('#navbar-time-from').val()) > new Date ($('#navbar-time-to').val())) {
+                    notif({
+                        type: "warning",
+                        msg: "<b>Warning:</b> \"from\" time cannot be later than \"to\" time!",
+                        width: 550,
+                        position: "right"
+                    });
+                    return;
+                }
+                $('#navbar-form').submit();
+            });
+
+            $('#pre-keywords').on('keyup', function(e) {
+                if (e.which == 13) { //enter key
+                    $('#adv-search-btn').click();
+                }
+            });
+
+            $('#navbar-signup-button').on('click', function (e) {
+                $('#signup-tab a').click();
+            });
 
             $('#signup-tab a').on('click', function (e) {
                 $('#login-button').text('Sign Up');
@@ -333,200 +352,157 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
             $('#navbar-login-button').on('click', function (e) {
                 $('#login-tab a').click();
             });
-        
-
-        $('#adv-search-btn').on('click', function (e) {
-            $('#keywords').val($('#pre-keywords').val());
-
-            //check dates
-            if (new Date($('#navbar-time-from').val()) > new Date ($('#navbar-time-to').val())) {
-                notif({
-                    type: "warning",
-                    msg: "<b>Warning:</b> \"from\" time cannot be later than \"to\" time!",
-                    width: 550,
-                    position: "right"
-                });
-                return;
-            }
-            $('#navbar-form').submit();
         });
 
-        $('#pre-keywords').on('keyup', function(e) {
-            if (e.which == 13) { //enter key
-                $('#adv-search-btn').click();
+        function deleteAlertFromLoginModal() {
+            if (document.getElementById("errorMessage") !== null) {
+                var x = document.getElementById("errorMessage");
+                var usernameDiv = document.getElementById("modal-footer");
+                usernameDiv.removeChild(x);
             }
-        });
+        };
 
-        $('#navbar-signup-button').on('click', function (e) {
-            $('#signup-tab a').click();
-        });
-
-        $('#navbar-login-button').on('click', function (e) {
-            $('#login-tab a').click();
-        });
-    });
-
-    function deleteAlertFromLoginModal() {
-        if (document.getElementById("errorMessage") !== null) {
-            var x = document.getElementById("errorMessage");
-            var usernameDiv = document.getElementById("modal-footer");
-            usernameDiv.removeChild(x);
-        }
-    };
-
-    function createAlertInLoginModal(displayMessage, isError) {
-        var loginDiv = document.getElementById("modal-footer");
-        if (document.getElementById("errorMessage") !== null)
-        {
-            var x = document.getElementById("errorMessage");
-            loginDiv.removeChild(x);
-        }
-        var usernameError = document.createElement('div');
-        var textNode = document.createTextNode(displayMessage);
-        usernameError.style.textAlign = "center";
-        usernameError.appendChild(textNode);
-
-        usernameError.id = "errorMessage";
-
-        if (isError) {
-            usernameError.className = "alert alert-block alert-danger messages error";
-        } else {
-            usernameError.className = "alert alert-block alert-success messages status";
-        }
-
-        var submitButton = document.getElementById("login-button");
-        loginDiv.insertBefore(usernameError, submitButton);
-    };
-
-    function attemptToLoginOrSignup() {
-        if ($('#login-tab').hasClass('active')) {
-            if ($('#username').val() !== "" && $('#password').val() !== "") {
-                loginAjaxRequest();
-            } else {
-                createAlertInLoginModal("Username and Password are both required", true);
-            }
-        } else { //then #signup-tab is active
-            if ($('#newUsername').val() !== "" && $('#newPassword').val() !== "" && $('#confirmPassword').val() !== "" && $('#firstName').val !== "" && $('#lastName').val() !== "") {
-                //do signup
-                if ($('#newPassword').val() !== $('#confirmPassword').val()) {
-                    createAlertInLoginModal('"Password" and "Confirm Password" fields do not match', true);
-                    return;
-                }
-                signupAjaxRequest();
-            } else {
-                createAlertInLoginModal('All fields are required', true);
-            }
-        }
-    };
-
-    function loginAjaxRequest() {
-        var request = $.ajax({
-            type: "POST",
-            url: "<?php echo getFullInciteUrl().'/ajax/login'; ?>",
-            data: {"username": $('#username').val(), "password": $('#password').val()},
-            success: function (response) {
-                data = response.trim();
-
-                if (data == "true") {
-                    createAlertInLoginModal("Login successful!", false);
-
-                    setTimeout(function () {
-                        redirectToContributeOrStay();
-                    }, 1000);
-                } else {
-                    createAlertInLoginModal("Wrong username or password", true);
-                }
-            },
-            error: function (e) {
-                console.log(e.message);
-            }
-        });
-    };
-function isUserAtDocumentsURL(){
-    return (window.location.href.indexOf("documents/transcribe") > -1 ||window.location.href.indexOf("documents/tag") > -1||window.location.href.indexOf("documents/connect") > -1||window.location.href.indexOf("documents/view") > -1);
-}
-
-function redirectToContributeOrStay(){
-    if(isUserAtDocumentsURL()) {
-        location.reload();
-    }
-    else{
-        window.location.replace("<?php echo getFullInciteUrl().'/documents/contribute'; ?>");
-    }
-}
-    function signupAjaxRequest() {
-        var request = $.ajax({
-            type: "POST",
-            url: "<?php echo getFullInciteUrl().'/ajax/createaccount'; ?>",
-            data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
-            success: function (response) {
-                data = response.trim();
-
-                if (data === "true") {
-                    createAlertInLoginModal("Successful signup and login!", false);
-
-                    setTimeout(function () {
-                        redirectToContributeOrStay();
-
-                    }, 1000);
-                } else if (data === "exists") {
-                    createAlertInLoginModal("Username already exists", true);
-                } else {
-                    createAlertInLoginModal("Unable to sign up!", true);
-                }
-            },
-            error: function (e) {
-                console.log(e.message);
-            }
-        });
-    };
-
-    //onclick set in html
-    function logoutAjaxRequest() {
-        var request = $.ajax({
-            type: "POST",
-            url: "<?php echo getFullInciteUrl().'/ajax/logout'; ?>",
-            success: function ()
+        function createAlertInLoginModal(displayMessage, isError) {
+            var loginDiv = document.getElementById("modal-footer");
+            if (document.getElementById("errorMessage") !== null)
             {
-                notifyOfSuccessfulActionWithTimeout("You've logged out!");
-
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
-            },
-            error: function (e) {
-                console.log(e.message);
+                var x = document.getElementById("errorMessage");
+                loginDiv.removeChild(x);
             }
-        });
-    };
+            var usernameError = document.createElement('div');
+            var textNode = document.createTextNode(displayMessage);
+            usernameError.style.textAlign = "center";
+            usernameError.appendChild(textNode);
 
-    function location_to_city_state_str(loc_str) {
-        if (loc_str == null)
-        return '';
-        var elements = loc_str.split("-");
-        if (elements.length < 2)
-        elements = loc_str.split(",");
+            usernameError.id = "errorMessage";
 
-        if (elements.length < 2)
-        return loc_str;
+            if (isError) {
+                usernameError.className = "alert alert-block alert-danger messages error";
+            } else {
+                usernameError.className = "alert alert-block alert-success messages status";
+            }
 
-        var state = elements[0].replace('State', '').replace('state', '').trim();
-        var city = elements[elements.length-1].trim();
-        if (elements[elements.length-1].indexOf(' Indep.') != -1) {
-            city = elements[elements.length-1].trim().substring(0, elements[elements.length-1].indexOf(' Indep.'));
+            var submitButton = document.getElementById("login-button");
+            loginDiv.insertBefore(usernameError, submitButton);
+        };
+
+        function attemptToLoginOrSignup() {
+            if ($('#login-tab').hasClass('active')) {
+                if ($('#username').val() !== "" && $('#password').val() !== "") {
+                    loginAjaxRequest();
+                } else {
+                    createAlertInLoginModal("Username and Password are both required", true);
+                }
+            } else { //then #signup-tab is active
+                if ($('#newUsername').val() !== "" && $('#newPassword').val() !== "" && $('#confirmPassword').val() !== "" && $('#firstName').val !== "" && $('#lastName').val() !== "") {
+                    //do signup
+                    if ($('#newPassword').val() !== $('#confirmPassword').val()) {
+                        createAlertInLoginModal('"Password" and "Confirm Password" fields do not match', true);
+                        return;
+                    }
+                    signupAjaxRequest();
+                } else {
+                    createAlertInLoginModal('All fields are required', true);
+                }
+            }
+        };
+
+        function loginAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/login'; ?>",
+                data: {"username": $('#username').val(), "password": $('#password').val()},
+                success: function (response) {
+                    data = response.trim();
+
+                    if (data == "true") {
+                        createAlertInLoginModal("Login successful!", false);
+
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        createAlertInLoginModal("Wrong username or password", true);
+                    }
+                },
+                error: function (e) {
+                    console.log(e.message);
+                }
+            });
+        };
+
+        function signupAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/createaccount'; ?>",
+                data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
+                success: function (response) {
+                    data = response.trim();
+
+                    if (data === "true") {
+                        createAlertInLoginModal("Successful signup and login!", false);
+
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else if (data === "exists") {
+                        createAlertInLoginModal("Username already exists", true);
+                    } else {
+                        createAlertInLoginModal("Unable to sign up!", true);
+                    }
+                },
+                error: function (e) {
+                    console.log(e.message);
+                }
+            });
+        };
+
+        //onclick set in html
+        function logoutAjaxRequest() {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/logout'; ?>",
+                success: function ()
+                {
+                    notifyOfSuccessfulActionWithTimeout("You've logged out!");
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                },
+                error: function (e) {
+                    console.log(e.message);
+                }
+            });
+        };
+
+        function location_to_city_state_str(loc_str) {
+            if (loc_str == null)
+                return '';
+            var elements = loc_str.split("-");
+            if (elements.length < 2)
+                elements = loc_str.split(",");
+
+            if (elements.length < 2)
+                return loc_str;
+
+            var state = elements[0].replace('State', '').replace('state', '').trim();
+            var city = elements[elements.length-1].trim();
+            if (elements[elements.length-1].indexOf(' Indep.') != -1) {
+                city = elements[elements.length-1].trim().substring(0, elements[elements.length-1].indexOf(' Indep.'));
+            }
+
+            return city+', '+state;
         }
 
-        return city+', '+state;
-    }
+        function year_of_full_iso_date(date) {
 
-    function year_of_full_iso_date(date) {
+            var elements = date.split('-');
+            if (elements.length != 3)
+                return '???';
 
-        var elements = date.split('-');
-        if (elements.length != 3)
-        return '???';
-
-        return elements[0];
-    }
+            return elements[0];
+        }
     </script>
 </head>
 
@@ -545,7 +521,7 @@ function redirectToContributeOrStay(){
                     <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true): ?>
                         <li id="working-group-interaction-area">
                             <?php
-                            include(dirname(__FILE__) . '/working_group_selector.php');
+                                include(dirname(__FILE__) . '/working_group_selector.php');
                             ?>
                         </li>
                     <?php endif; ?>
@@ -680,135 +656,58 @@ function redirectToContributeOrStay(){
                                     <input type="password" class="form-control" id="newPassword" name="password">
                                 </div>
                                 <div class="form-group">
-                                    <label>Filter by</label><br>
-                                    <label style="font-size: 80%;">Task type:</label>
-                                    <select class="form-control" name="task">
-                                        <option value="all" selected>All</option>
-                                        <option value="transcribe">Transcribe</option>
-                                        <option value="tag">Tag</option>
-                                        <option value="connect">Connect</option>
-                                        <option value="discuss">Discuss</option>
-                                    </select>
+                                    <label for="message-text" class="control-label">Confirm Password:</label>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
                                 </div>
                                 <div class="form-group">
-                                    <label style="font-size: 80%;">Location:</label>
-                                    <input class="form-control" type="text" value="<?php if (isset($previous_search_results['location'])) echo $previous_search_results['location']; ?>" placeholder="anywhere" name="location" />
+                                    <label for="message-text" class="control-label">First Name:</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName">
                                 </div>
                                 <div class="form-group">
-                                    <label style="font-size: 80%;">Dates:</label><br>
-                                    <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1830-01-01" id="navbar-time-from" name="time_from" value="<?php if (isset($previous_search_results['time_from'])) echo $previous_search_results['time_from']; else echo '1830-01-01'; ?>" />
-                                    <div style="display: inline-block; float: left; font-size: 100%; margin-left: 5px; margin-right: 5px; margin-top: 5px;"><b> to </b></div>
-                                    <input style="font-size: 80%; width: 83px;" class="form-control" type="text" placeholder="1880-12-31" id="navbar-time-to" name="time_to" value="<?php if (isset($previous_search_results['time_to'])) echo $previous_search_results['time_to']; else echo '1880-12-31'; ?>" />
+                                    <label for="message-text" class="control-label">Last Name:</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName">
                                 </div>
-                                <button id="adv-search-btn" type="button" class="btn btn-default">Search</button>
-                                <input type="hidden" name="keywords" value="" id="keywords">
                             </form>
                         </div>
                     </div>
-                    <button id="navbar-search-btn" style="width: 30px; padding-left: 8px; padding-right: 8px;" type="button" class="btn btn-default"><span style="font-size: 80%;" class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </div>
+                <div class="modal-footer" id="modal-footer">
+                    <button type="button" class="btn btn-primary" id="login-button">Submit</button>
                 </div>
             </div>
         </div>
-    </li>
-</ul>
+    </div>
 
-</div>
-
-<!-- /.navbar-collapse -->
-</div>
-
-<!-- /.container -->
-</nav>
-
-<div class="modal fade" id="login-signup-dialog" tabindex="-1" role="dialog" aria-labelledby="login-signup-dialog-label">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style ="padding-bottom:30px;">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="login-signup-dialog-label"></h4>
-            </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs nav-justified nav-pills">
-                    <li class="active" id="login-tab"><a href="#tab1" data-toggle="tab">Log In</a></li>
-                    <li id="signup-tab"><a href="#tab2" data-toggle="tab">Sign Up</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="tab1">
-                        <form>
-                            <div class="form-group">
-                                <label for="recipient-name" class="control-label">Email:</label>
-                                <input type="text" class="form-control" id="username" name="username">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="control-label">Password:</label>
-                                <input type="password" class="form-control" id="password" name="password">
-                            </div>
-                            <a href="<?php echo getFullInciteUrl() . '/users/forgot'?>" id="forgotpw">Forgot password?</a>
-                        </form>
-                    </div>
-                    <div class="tab-pane" id="tab2">
-                        <form>
-                            <div class="form-group">
-                                <label class="control-label">Email:</label>
-                                <input type="text" class="form-control" id="newUsername" name="email">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="control-label">Password:</label>
-                                <input type="password" class="form-control" id="newPassword" name="password">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="control-label">Confirm Password:</label>
-                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="control-label">First Name:</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="control-label">Last Name:</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName">
-                            </div>
-                        </form>
-                    </div>
+    <div class="modal fade" id="instructions-dialog" tabindex="-1" role="dialog" aria-labelledby="instructions-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="login-signup-dialog-label">Working Group Information</h4>
+                </div>
+                <div class="modal-body" id="instructions-modal-body">
+                    <p><strong>What is a working group? </strong>All task work (transcribing, tagging, connected and discussing) is logged as being done for a specific group. This specific group is called your "working group" and is picked by you via the dropdown in the header. If no working group is selected your task work will not be logged for a specific group, but will still be viewable via your profile page's activity feed.</p>
+                    <hr style="margin-top:20px;margin-bottom:20px;"></hr>
+                    <h4 id="instructions-modal-current-group-info-header"><u>Your Current Working Group's Instructions</u></h4>
                 </div>
             </div>
-            <div class="modal-footer" id="modal-footer">
-                <button type="button" class="btn btn-primary" id="login-button"></button>
-            </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="instructions-dialog" tabindex="-1" role="dialog" aria-labelledby="instructions-dialog-label">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="login-signup-dialog-label">Working Group Information</h4>
-            </div>
-            <div class="modal-body" id="instructions-modal-body">
-                <p><strong>What is a working group? </strong>All task work (transcribing, tagging, connected and discussing) is logged as being done for a specific group. This specific group is called your "working group" and is picked by you via the dropdown in the header. If no working group is selected your task work will not be logged for a specific group, but will still be viewable via your profile page's activity feed.</p>
-                <hr style="margin-top:20px;margin-bottom:20px;"></hr>
-                <h4 id="instructions-modal-current-group-info-header"><u>Your Current Working Group's Instructions</u></h4>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="working-group-dialog" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="working-group-dialog-label">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" id="working-group-modal-cancel-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="working-group-dialog-label">Are you sure you want to change your working group?</h4>
-            </div>
-            <div class="modal-body" id="working-group-modal-body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="working-group-modal-no-btn" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="working-group-modal-yes-btn" class="btn btn-primary"  data-dismiss="modal">Yes, change group</button>
+    <div class="modal" id="working-group-dialog" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="working-group-dialog-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="working-group-modal-cancel-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="working-group-dialog-label">Are you sure you want to change your working group?</h4>
+                </div>
+                <div class="modal-body" id="working-group-modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="working-group-modal-no-btn" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="working-group-modal-yes-btn" class="btn btn-primary"  data-dismiss="modal">Yes, change group</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
