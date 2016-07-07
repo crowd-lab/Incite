@@ -92,7 +92,7 @@
                     //reloading is easiest way to get new instructions for group
                     setTimeout(function () {
                         location.reload();
-                    }, 1000);
+                    }, 500);
                 } else {
                     resetOptionSelection();
                     notifyOfErrorInForm("Something went wrong, try again.");
