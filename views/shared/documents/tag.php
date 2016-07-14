@@ -96,7 +96,6 @@ $(document).ready( function (e) {
 
 
 function addTaskCompletionIconsToResultsRow(documentId) {
-    console.log('hi');
     var row = $('#list_id' + documentId);
     var iconContainer = $('<div class="icon-container"></div>');
 
@@ -291,6 +290,8 @@ function addTaskCompletionIconsToResultsRow(documentId) {
 
         function buildMap(){
 
+    var query = "<?php (isset($this->query_str) && $this->query_str !== "") ? $this->query_str : ""?>";
+
             x();
 
             if(nomarkers_array){
@@ -310,7 +311,8 @@ function addTaskCompletionIconsToResultsRow(documentId) {
                     });
                     this['marker'].on('click', function (e) {
                         this.openPopup();
-                        window.location.href="/m4j/incite/documents/transcribe/"+marker_to_id[this._leaflet_id];
+                        window.location.href="/m4j/incite/documents/tag/"+marker_to_id[this._leaflet_id]+
+                        (query_str != "" ? "?" + query_str : "");
                     });
                 });
             }

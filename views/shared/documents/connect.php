@@ -259,6 +259,7 @@ function x() {
 
 
 function buildMap(){
+    var query = "<?php (isset($this->query_str) && $this->query_str !== "") ? $this->query_str : ""?>";
 
     x();
 
@@ -279,7 +280,8 @@ function buildMap(){
             });
             this['marker'].on('click', function (e) {
                 this.openPopup();
-                window.location.href="/m4j/incite/documents/transcribe/"+marker_to_id[this._leaflet_id];
+                window.location.href="/m4j/incite/documents/connect/"+marker_to_id[this._leaflet_id]+
+                (query_str != "" ? "?" + query_str : "");
             });
         });
     }
