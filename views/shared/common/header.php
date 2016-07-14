@@ -84,22 +84,50 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     <!-- Custom CSS -->
     <style>
 
+    @media (min-width: 767px) {
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+    }
+
     @media (max-width: 767px) {
+
         .navbar-inverse .navbar-nav{
             right:0px!important;
             margin-top:0px!important;
             background-color: #ffffff!important;
 
         }
-        .navbar-inverse .navbar-nav > li {
+        .navbar-inverse .navbar-nav > li,
+        .navbar-inverse .navbar-nav > li > ul > li {
             text-align: center;
         }
         #adv-search{
             display: inline-block;
             margin-left:0px!important;
             margin-top:7px!important;
+        }
+        #navbar-account-interaction-area.dropdown.open> ul> li >a:hover{
+            color: black!important;
 
         }
+
+        #adv-search.btn-group, #adv-search{
+            width:80%!important;
+        }
+        #pre-keywords, #adv-search .btn-group .dropdown {
+            width:100% !important;
+        }
+        #navbar-form{
+            padding-top: 40px !important;
+            width: inherit !important;
+        }
+        div.dropdown-menu.dropdown-menu-right{
+            width: inherit !important;
+        }
+
+
         #navbar-account-interaction-area{
             margin-left: 0px !important;
         }
@@ -108,7 +136,8 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
             /*width: 500px!important;*/
         }
         #user_profile{
-            margin-top: 0px !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px;
         }
         .navbar-inverse .navbar-nav > li > a{
             padding-left: 0px !important;
@@ -116,21 +145,20 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
             padding-top: 10px !important;
         }
 
-        .navbar-inverse .navbar-nav > li:hover{
+        #navbar-search-btn{
+            height:34px !important;
+        }
+
+        .currentHover {
             background-color: #ebeff1;
-
         }
 
-        .dropdown:active .dropdown-menu {
-            display:block !important;
+        li.dropdown.open.currentHover ul {
+            background-color: white !important;
         }
 
     }
 
-    .navbar-collapse.collapse.in {
-
-
-    }
 
     .navbar-toggle{
         top: 9px;
@@ -163,6 +191,7 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     #user-dropdown-menu {
         right: -30px;
     }
+
 
     #working-group-interaction-area {
         text-align: center;
@@ -248,11 +277,6 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
         color: #3B6778;
     }
 
-    .dropdown:hover .dropdown-menu {
-        display: block;
-        margin-top: 0;
-        /*// remove the gap so it doesn't close*/
-    }
 
     /* for list view in search result page */
     .icon-container {
@@ -344,6 +368,19 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
         $("a#forgotpw").bind("click", function() {
             Cookies.set('name', $('#username').val());
         });
+
+        $('li').mouseover(function(e)
+        {
+            e.stopPropagation();
+            $(this).addClass('currentHover');
+        });
+
+        $('li').mouseout(function()
+        {
+            $(this).removeClass('currentHover');
+        });
+
+
 
         <?php loadWorkingGroupInstructions(); ?>
 
@@ -613,7 +650,7 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
                                 <div style="width: 232px;" class="dropdown-menu dropdown-menu-right" role="menu">
                                     <form id="navbar-form" class="form-horizontal" role="form" action="<?php echo getFullInciteUrl(); ?>/discover" method="get">
                                         <div class="form-group">
-                                            <label>Filter by</label><br>
+                                            <label style="font-size: 80%;">Filter by</label><br>
                                             <label style="font-size: 80%;">Task type:</label>
                                             <select class="form-control" name="task">
                                                 <option value="all" selected>All</option>
