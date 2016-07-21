@@ -84,6 +84,20 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     <!-- Custom CSS -->
     <style>
 
+    /*shrinking the width of logo so that the nav-bar is all in one line*/
+    @media (max-width: 1284px) and (min-width: 1193px){
+        .navbar-header{
+            width:370px;
+            line-height: 65px;
+        }
+    }
+    @media (max-width: 1193px) and (min-width: 767px){
+        .navbar-header{
+            width:300px;
+            line-height: 65px;
+        }
+    }
+
     @media (min-width: 767px) {
         .dropdown:hover .dropdown-menu {
             display: block;
@@ -91,7 +105,7 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
         }
     }
 
-    @media (max-width: 767px) {
+    @media only screen(device-max-width: 767px) {
 
         .navbar-inverse .navbar-nav{
             right:0px!important;
@@ -160,6 +174,9 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     }
 
 
+    a.navbar-left > img {
+        max-width: 100%;
+    }
     .navbar-toggle{
         top: 9px;
         border: none;
@@ -280,10 +297,11 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 
     /* for list view in search result page */
     .icon-container {
-        position: relative;
-        top: -20px;
+        /*position: relative;*/
+        /*top: -20px;*/
         display: inline-block;
-        margin-left: 25px;
+        /*margin-left: 25px;*/
+        /*float:right;*/
     }
 
     .list-view-inline-doc-info {
@@ -609,7 +627,7 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1; min-height: 68px!important;" role="navigation" >
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
+            <!-- <div class="navbar-header">
                 <button type = "button" class = "navbar-toggle"
                 data-toggle = "collapse" data-target = "#bs-example-navbar-collapse-1">
                 <span class = "sr-only">Toggle navigation</span>
@@ -619,8 +637,11 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 
             </button>
             <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
-        </div>
+        </div> -->
 
+        <div class="navbar-header">
+                      <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
+                  </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 

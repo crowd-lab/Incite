@@ -4,35 +4,33 @@
 * Then, it will call getTranscribableDocumentsRequest to get documents.
 */
 function getItemsPerPage(width, height){
-    var items_per_page = 8;
+    var items_per_page = 6;
 
-    if(height <= 540){
+    if(height <= 600){
         items_per_page = 4;
     }
-    if (height > 540 && height <= 630){
+    if(height > 600 && height <= 630){
         items_per_page = 5;
     }
-    if(height > 630 && height <= 680){
+    if(height > 630 && height <= 700){
         items_per_page = 6;
     }
-    if(height > 680 && height <= 730){
+    if(height >700 && height <= 780){
         items_per_page = 7;
     }
-    if(height >730 && height <= 780){
+    if(height > 780 && height <= 830){
         items_per_page = 8;
     }
-    if(height > 780 && height <= 840){
+    if(height >830 && height <= 880){
         items_per_page = 9;
     }
-    if(height >840 && height <= 880){
+    if(height >880 && height <= 935){
         items_per_page = 10;
     }
-    if(height >880 && height <= 950){
-        items_per_page = 11;
+    if(height > 935){
+        items_per_page= 11;
     }
-    if(height > 950){
-        items_per_page= 12;
-    }
+
 
     return items_per_page;
 

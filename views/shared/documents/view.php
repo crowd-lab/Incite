@@ -24,8 +24,21 @@ include(dirname(__FILE__).'/../common/header.php');
         color: black;
     }
 
-    #list-view p {
-        /* color: #B2B1B1; */
+
+    .container-fluid{
+        padding-right: 0px;
+        padding-left: 0px;
+        margin: 0px;
+    }
+    .row{
+        margin-left: 0px;
+        margin-right: 0px;
+        position: relative;
+        top:-20px;
+        right:-30px;
+    }
+    #list-view-top{
+        margin-bottom: 10px;
     }
 </style>
 
@@ -188,7 +201,7 @@ include(dirname(__FILE__).'/../common/header.php');
     function displayDocumentsList(response) {
 
     var address;
-
+var iconContainer;
 
     $.each(response, function(){
 
@@ -207,13 +220,18 @@ include(dirname(__FILE__).'/../common/header.php');
 
         var name = (this.name).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
-        $('#list-view').append("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id +
-        (query_str != "" ? "?" + query_str : "") +  "\"> <div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+'</p></div></a><div class="list-view-inline-doc-info" style="display: in-block;">'+year_of_full_iso_date(this.date)+', '+location_to_city_state_str(this.loc)+'</div>');
 
 
-        addTaskCompletionIconsToResultsRow(this.taskinfo["isTranscribed"], this.taskinfo["isTagged"], this.taskinfo["isConnected"], this.id);
+        $('#list-view').append("<div class=\"container-fluid\"><div id=\"list_id"+this.id+"\" style=\"margin-left: 10px; height: 60px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id +
+        (query_str != "" ? "?" + query_str : "") +  "\"> <div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></a>"
+        +"<div class=\"row\""+ "id=\"doc-info-fluid"+this.id+"\"><div class = \"col-lg-8 col-md-7\" id=\"list-view-inline-doc-info\" style=\"height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+year_of_full_iso_date(this.date)+', '+location_to_city_state_str(this.loc));
+
+        iconContainer =     addTaskCompletionIconsToResultsRow(this.taskinfo["isTranscribed"], this.taskinfo["isTagged"], this.taskinfo["isConnected"], this.id);
+
+        $('#doc-info-fluid'+this.id).append(iconContainer);
+
     });
-    $('#list-view').prepend("<span style=\"width: 20px; background: #EEEEEE; margin-right: 5px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span><br>");
+    $('#list-view').prepend("<div id=\"list-view-top\"><span style=\"width: 20px; background: #EEEEEE; margin-right: 5px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span><br></div>");
 
 
     };
@@ -363,7 +381,7 @@ include(dirname(__FILE__).'/../common/header.php');
             var transcribedIcon = null;
             var taggedIcon = null;
             var connectedIcon = null;
-            var iconContainer = $('<div class="icon-container"></div>');
+            var iconContainer = $('<div class="col-lg-4 col-md-5 icon-container">');
 
             if (isTranscribed) {
                 transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + (query_str != "" ? "?" + query_str : "") +'">' +
@@ -409,8 +427,8 @@ include(dirname(__FILE__).'/../common/header.php');
             if (connectedIcon !== null) {
                 iconContainer.append(connectedIcon);
             }
-
-            row.append(iconContainer);
+            iconContainer.append('</div></div>');
+            return iconContainer;
         }
 
         function buildPopoverContent() {

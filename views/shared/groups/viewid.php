@@ -259,11 +259,13 @@
         row.append(glyphicon);
 
         row.data("ID", id);
+        row.data("Username", username);
 
         $('#manage-users-table').append(row);
     };
 
     function colorEveryOtherManagementRowGrey() {
+        $("#manage-users-table").find(".management-row").css("background-color", "#ffffff");
         $("#manage-users-table").find(".management-row:even").css("background-color", "#eee");
     };
 
@@ -282,299 +284,305 @@
         }
         return {stat: statusName, gly: glyphicon};
 
-}
+    }
 
-function addManagementTableActionListeners() {
-    //off removes the eventHandler that existed before.
-    $('.remove-user').addClass('blue-color').off('click').on('click',removeUserFromGroup);
-    $('.approve-user').addClass('green-color').off('click').on('click',addUserToGroup);
-    $('.unban-user').addClass('blue-color').off('click').on('click',unbanUser);
-    $('.ban-user').addClass('red-color').off('click').on('click',banUser);
+    function addManagementTableActionListeners() {
+        //off removes the eventHandler that existed before.
+        $('.remove-user').addClass('blue-color').off('click').on('click',removeUserFromGroup);
+        $('.approve-user').addClass('green-color').off('click').on('click',addUserToGroup);
+        $('.unban-user').addClass('blue-color').off('click').on('click',unbanUser);
+        $('.ban-user').addClass('red-color').off('click').on('click',banUser);
 
-    function banUser() {
-        var row = $(this).parent().parent();
-        var userId = row.data("ID");
-        changePrivilegeOfUserAjaxRequest(userId, -2, row);
-    };
+        function banUser() {
+            var row = $(this).parent().parent();
+            var userId = row.data("ID");
+            changePrivilegeOfUserAjaxRequest(userId, -2, row);
+        };
 
-    function unbanUser() {
-        var row = $(this).parent().parent();
-        var userId = row.data("ID");
-        changePrivilegeOfUserAjaxRequest(userId, 0, row);
+        function unbanUser() {
+            var row = $(this).parent().parent();
+            var userId = row.data("ID");
+            changePrivilegeOfUserAjaxRequest(userId, 0, row);
 
-    };
+        };
 
-    function addUserToGroup() {
-        var row = $(this).parent().parent();
-        var userId = row.data("ID");
-        changePrivilegeOfUserAjaxRequest(userId, 0,row);
-    };
+        function addUserToGroup() {
+            var row = $(this).parent().parent();
+            var userId = row.data("ID");
+            changePrivilegeOfUserAjaxRequest(userId, 0,row);
+        };
 
-    function removeUserFromGroup() {
-        var row = $(this).parent().parent();
-        var userId = row.data("ID");
-        removeUserFromGroupAjaxRequest(userId);
-    };
-};
-
-function reGenerateManagementTableThirdColumn(status, row){
-    var glyphicon;
-    var statusName;
-    var info = generateManagementTableThirdColumn(status, 30, 40);
-    statusName = info.stat;
-    glyphicon = info.gly;
-    row.unbind("click");
-    row.append(glyphicon);
-    row.children().eq(2).remove();
-    row.children().eq(1).find("span").html(statusName);
-    addManagementTableActionListeners();
-
-}
-
-function saveGroupInstructionsAjaxRequest() {
-    var instructions = $('#group-instructions-textarea').val();
-
-    var request = $.ajax({
-        type: "POST",
-        url: "<?php echo getFullInciteUrl().'/ajax/setgroupinstructions'; ?>",
-        data: {"groupId": <?php echo $this->group['id'] ?>, "instructions": instructions},
-        success: function (response) {
-            location.reload();
-        }
-    });
-};
-
-function changePrivilegeOfUserAjaxRequest(userId, privilege, row) {
-    var request = $.ajax({
-        type: "POST",
-        url: "<?php echo getFullInciteUrl().'/ajax/changegroupmemberprivilege'; ?>",
-        data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": privilege, "userId": userId},
-        success: function (response) {
-            console.log(response);
-            var msgshow = "";
-            if(privilege == 0){
-                msgshow = "Successfully added to the group.";
-
+        function removeUserFromGroup() {
+            var row = $(this).parent().parent();
+            var userId = row.data("ID");
+            var username = row.data("Username");
+            if (confirm('Are you sure you want to remove '+username+'?')) {
+                removeUserFromGroupAjaxRequest(userId, row);
             }
-            if(privilege == -2){
-                msgshow = "Banned from the group.";
+
+        };
+    };
+
+    function reGenerateManagementTableThirdColumn(status, row){
+        var glyphicon;
+        var statusName;
+        var info = generateManagementTableThirdColumn(status, 30, 40);
+        statusName = info.stat;
+        glyphicon = info.gly;
+        row.unbind("click");
+        row.append(glyphicon);
+        row.children().eq(2).remove();
+        row.children().eq(1).find("span").html(statusName);
+        addManagementTableActionListeners();
+
+    }
+
+    function saveGroupInstructionsAjaxRequest() {
+        var instructions = $('#group-instructions-textarea').val();
+
+        var request = $.ajax({
+            type: "POST",
+            url: "<?php echo getFullInciteUrl().'/ajax/setgroupinstructions'; ?>",
+            data: {"groupId": <?php echo $this->group['id'] ?>, "instructions": instructions},
+            success: function (response) {
+                location.reload();
             }
-            notif({
-                type: "info",
-                msg: msgshow,
-                position: 'right',
-                width: 550,
-                multiline: true,
-                autohide: true,
-                clickable: true
-            });
-            reGenerateManagementTableThirdColumn(privilege, row);
-        }
-    });
-};
+        });
+    };
 
-function removeUserFromGroupAjaxRequest(userId) {
-    var request = $.ajax({
-        type: "POST",
-        url: "<?php echo getFullInciteUrl().'/ajax/removememberfromgroup'; ?>",
-        data: {"groupId": <?php echo $this->group['id'] ?>, "userId": userId},
-        success: function (response) {
-            console.log(response);
-            location.reload();
-        }
-    });
-};
+    function changePrivilegeOfUserAjaxRequest(userId, privilege, row) {
+        var request = $.ajax({
+            type: "POST",
+            url: "<?php echo getFullInciteUrl().'/ajax/changegroupmemberprivilege'; ?>",
+            data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": privilege, "userId": userId},
+            success: function (response) {
+                console.log(response);
+                var msgshow = "";
+                if(privilege == 0){
+                    msgshow = "Successfully added to the group.";
 
-function stylePageForNonMember() {
-    $('#groupprofile-activity-feed').remove();
+                }
+                if(privilege == -2){
+                    msgshow = "Banned from the group.";
+                }
+                notif({
+                    type: "info",
+                    msg: msgshow,
+                    position: 'right',
+                    width: 550,
+                    multiline: true,
+                    autohide: true,
+                    clickable: true
+                });
+                reGenerateManagementTableThirdColumn(privilege, row);
+            }
+        });
+    };
 
-    generateAndAppendRequestToJoinButton();
-};
+    function removeUserFromGroupAjaxRequest(userId, row) {
+        var request = $.ajax({
+            type: "POST",
+            url: "<?php echo getFullInciteUrl().'/ajax/removememberfromgroup'; ?>",
+            data: {"groupId": <?php echo $this->group['id'] ?>, "userId": userId},
+            success: function (response) {
+                console.log(response);
+                //removing the row
+                row.remove();
+                colorEveryOtherManagementRowGrey();
+            }
+        });
+    };
 
-function generateAndAppendRequestToJoinButton() {
-    var button = $('<button class="btn btn-primary horizontal-align" id="request-button">Request to Join Group</button>');
+    function stylePageForNonMember() {
+        $('#groupprofile-activity-feed').remove();
 
-    $(button).click(function() {
-        requestToJoinGroupAjaxRequest();
-        disableRequestButton();
-    });
+        generateAndAppendRequestToJoinButton();
+    };
 
-    $('#groupprofile-activity-container').append(button);
-};
+    function generateAndAppendRequestToJoinButton() {
+        var button = $('<button class="btn btn-primary horizontal-align" id="request-button">Request to Join Group</button>');
 
-function requestToJoinGroupAjaxRequest(groupId) {
-    var request = $.ajax({
-        type: "POST",
-        url: "<?php echo getFullInciteUrl().'/ajax/addgroupmember'; ?>",
-        data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": -1},
-        success: function (response) {
-            console.log(response);
-        }
-    });
-};
+        $(button).click(function() {
+            requestToJoinGroupAjaxRequest();
+            disableRequestButton();
+        });
 
-function disableRequestButton() {
-    $('#request-button').addClass("disabled");
-    $('#request-button').html("Request Pending..");
-    $('#request-button').click(function(){
-        //so it isn't possible to manually remove disabled class and then resend request
-    });
-};
+        $('#groupprofile-activity-container').append(button);
+    };
 
-function styleForBannedUser() {
-    $('#groupprofile-activity-container').hide();
+    function requestToJoinGroupAjaxRequest(groupId) {
+        var request = $.ajax({
+            type: "POST",
+            url: "<?php echo getFullInciteUrl().'/ajax/addgroupmember'; ?>",
+            data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": -1},
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    };
 
-    var bannedText = $('<p style="color: red; text-align: center;">You have been banned from this group, sorry!</p>');
-    $('body').append(bannedText);
-};
+    function disableRequestButton() {
+        $('#request-button').addClass("disabled");
+        $('#request-button').html("Request Pending..");
+        $('#request-button').click(function(){
+            //so it isn't possible to manually remove disabled class and then resend request
+        });
+    };
 
-function styleForGuest() {
-    $('#groupprofile-activity-container').hide();
+    function styleForBannedUser() {
+        $('#groupprofile-activity-container').hide();
 
-    var pleaseLogInText = $('<p style="color: red; text-align: center;">Please log in to be able to view groups!</p>');
-    $('body').append(pleaseLogInText);
-};
-</script>
+        var bannedText = $('<p style="color: red; text-align: center;">You have been banned from this group, sorry!</p>');
+        $('body').append(bannedText);
+    };
 
-<style>
-.glyphicon {
-    cursor: pointer;
-    margin-right: 5px;
-}
+    function styleForGuest() {
+        $('#groupprofile-activity-container').hide();
 
-#groupprofile-header {
-    text-align: center;
-}
+        var pleaseLogInText = $('<p style="color: red; text-align: center;">Please log in to be able to view groups!</p>');
+        $('body').append(pleaseLogInText);
+    };
+    </script>
 
-#groupprofile-activity-container {
-    width: 80%;
-}
+    <style>
+    .glyphicon {
+        cursor: pointer;
+        margin-right: 5px;
+    }
 
-.horizontal-align {
-    margin: 0 auto;
-}
+    #groupprofile-header {
+        text-align: center;
+    }
 
-.header-seperation-line {
-    margin-top: 0px;
-    margin-bottom: 10px;
-}
+    #groupprofile-activity-container {
+        width: 80%;
+    }
 
-hr {
-    margin-top: 10px;
-    margin-bottom: 30px
-}
+    .horizontal-align {
+        margin: 0 auto;
+    }
 
-.overview-section {
-    width: 25%;
-    border: 1px solid black;
-    display: inline-block;
-    height: 100%;
-    text-align: center;
-    cursor: help;
-}
+    .header-seperation-line {
+        margin-top: 0px;
+        margin-bottom: 10px;
+    }
 
-.activity-title {
-    text-align: center;
-}
+    hr {
+        margin-top: 10px;
+        margin-bottom: 30px
+    }
 
-#groupprofile-overview {
-    text-align: center;
-}
+    .overview-section {
+        width: 25%;
+        border: 1px solid black;
+        display: inline-block;
+        height: 100%;
+        text-align: center;
+        cursor: help;
+    }
 
-#groupprofile-overview-details {
-    text-align: left;
-    position: relative;
-    left: 15%;
-}
+    .activity-title {
+        text-align: center;
+    }
 
-.transcribe-color {
-    background-color: #F7F2C5;
-}
+    #groupprofile-overview {
+        text-align: center;
+    }
 
-.tag-color {
-    background-color: #F7D1C5;
-}
+    #groupprofile-overview-details {
+        text-align: left;
+        position: relative;
+        left: 15%;
+    }
 
-.connect-color {
-    background-color: #C9D1F8;
-}
+    .transcribe-color {
+        background-color: #F7F2C5;
+    }
 
-.discuss-color {
-    background-color: #C5F7EB;
-}
+    .tag-color {
+        background-color: #F7D1C5;
+    }
 
-#groupprofile-activity-feed-table > tbody > tr > th {
-    width: 50%;
-    text-align: center;
-}
+    .connect-color {
+        background-color: #C9D1F8;
+    }
 
-#manage-users-table > tbody > tr > th {
-    width: 33%;
-    text-align: center;
-}
+    .discuss-color {
+        background-color: #C5F7EB;
+    }
 
-tr {
-    text-align: center;
-}
+    #groupprofile-activity-feed-table > tbody > tr > th {
+        width: 50%;
+        text-align: center;
+    }
 
-.user-table-data {
-    font-size: 30px !important;
-    vertical-align: middle !important;
-}
+    #manage-users-table > tbody > tr > th {
+        width: 33%;
+        text-align: center;
+    }
 
-.user-table {
-    width: 100%;
-}
+    tr {
+        text-align: center;
+    }
 
-.embedded-user-table-cell {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
-}
+    .user-table-data {
+        font-size: 30px !important;
+        vertical-align: middle !important;
+    }
 
-#group-or-management-tabs {
-    text-align: center;
-    border-bottom: none;
-}
+    .user-table {
+        width: 100%;
+    }
 
-.nav-tabs > li {
-    width: 50%;
-}
+    .embedded-user-table-cell {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
 
-#owner-glyph {
-    position: relative;
-    top: 3px;
-    margin-left: 5px;
-}
+    #group-or-management-tabs {
+        text-align: center;
+        border-bottom: none;
+    }
 
-#invite-new-members-link {
-    font-size: 18px;
-}
+    .nav-tabs > li {
+        width: 50%;
+    }
 
-#request-button {
-    display: block;
-    width: 70%;
-    height: 50px;
-    font-size: 18px;
-}
+    #owner-glyph {
+        position: relative;
+        top: 3px;
+        margin-left: 5px;
+    }
 
-#group-instructions-textarea {
-    position: relative;
-    top: 6px;
-    height: 200px;
-    width: 70%;
-    margin-right: 3px;
-}
+    #invite-new-members-link {
+        font-size: 18px;
+    }
 
-#save-instructions-glyphicon {
-    margin-right: 0px;
-    margin-left: 3px;
-}
+    #request-button {
+        display: block;
+        width: 70%;
+        height: 50px;
+        font-size: 18px;
+    }
 
-#save-group-instructions-btn {
-    position: relative;
-    bottom: 4px;
-}
-</style>
+    #group-instructions-textarea {
+        position: relative;
+        top: 6px;
+        height: 200px;
+        width: 70%;
+        margin-right: 3px;
+    }
+
+    #save-instructions-glyphicon {
+        margin-right: 0px;
+        margin-left: 3px;
+    }
+
+    #save-group-instructions-btn {
+        position: relative;
+        bottom: 4px;
+    }
+    </style>
 </head>
 
 <body>

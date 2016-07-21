@@ -10,11 +10,6 @@ include(dirname(__FILE__).'/../common/header.php');
     background-color: #EEEEEE;
 }
 
-.icon-container {
-    position: relative;
-    top: -20px;
-    margin-left: 45px;
-}
 
 .task-icon {
     margin-right: 7px;
@@ -27,6 +22,22 @@ include(dirname(__FILE__).'/../common/header.php');
 
 .black-color {
     color: black;
+}
+
+.container-fluid{
+    padding-right: 0px;
+    padding-left: 0px;
+    margin: 0px;
+}
+.row{
+    margin-left: 0px;
+    margin-right: 0px;
+    position: relative;
+    top:-20px;
+    right:-30px;
+}
+#list-view-top{
+    margin-bottom: 10px;
 }
 </style>
 
@@ -97,7 +108,7 @@ $(document).ready( function (e) {
 
 function addTaskCompletionIconsToResultsRow(documentId) {
     var row = $('#list_id' + documentId);
-    var iconContainer = $('<div class="icon-container"></div>');
+    var iconContainer = $('<div class="col-lg-4 col-md-4 icon-container">');
 
     var transcribedIcon = $('<a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/' + documentId + '">' +
     '<span title="Document has been transcribed - Click to edit" class="glyphicon glyphicon-pencil task-icon black-color"></span></a>');
@@ -107,7 +118,9 @@ function addTaskCompletionIconsToResultsRow(documentId) {
 
     iconContainer.append(transcribedIcon);
     iconContainer.append(taggedIcon);
-    row.append(iconContainer);
+    iconContainer.append('</div></div>');
+    return iconContainer;
+
 }
     function setUpForDocumentsList(){
 
@@ -119,8 +132,6 @@ function addTaskCompletionIconsToResultsRow(documentId) {
         getTaggableDocumentsRequest();
 
     }
-
-
 
     function getTaggableDocumentsRequest() {
         current_page = <?php echo (isset($_GET['page']) ? $_GET['page'] : 1); ?>;
@@ -214,12 +225,14 @@ function addTaskCompletionIconsToResultsRow(documentId) {
         $.each(response, function(){
             var name = (this.name).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
-            $('#list-view').append("<div id=\"list_id"+this.id+"\" style=\"margin: 10px; height: 45px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id +
-            (query_str != "" ? "?" + query_str : "") +  "\"> <div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+'</p></div></a><div class="list-view-inline-doc-info" style="display: in-block;">'+year_of_full_iso_date(this.date)+', '+location_to_city_state_str(this.loc)+'</div>');
+            $('#list-view').append("<div class=\"container-fluid\"><div id=\"list_id"+this.id+"\" style=\"margin-left: 10px; height: 60px;\"  data-toggle=\"popover\" data-trigger=\"hover\" data-html=\"true\"  data-content=\"<strong>Date:</strong> "+this.date+ "<br><br> <strong>Description:</strong> "+this.desc+"\" data-title=\"<strong>" + name + "</strong>\" data-placement=\"left\" data-id=\"" +this.id+ "\"> <a href =\"" + address + this.id +
+            (query_str != "" ? "?" + query_str : "") +  "\"> <div style=\"height: 40px; width:40px; float: left;\"><img src=\""+this.url+"\" class=\"thumbnail img-responsive\" style=\"width: 40px; height: 40px;\"></div><div style=\"height: 40px; margin-left: 45px;\"><p style=\"height: 20px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+ this.name+"</p></div></a>"
+            +"<div class=\"row\""+ "id=\"doc-info-fluid"+this.id+"\"><div class = \"col-lg-8 col-md-8\" id=\"list-view-inline-doc-info\" style=\"height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\">"+year_of_full_iso_date(this.date)+', '+location_to_city_state_str(this.loc));
 
-            addTaskCompletionIconsToResultsRow(this.id);
+            iconContainer = addTaskCompletionIconsToResultsRow(this.id);
+            $('#doc-info-fluid'+this.id).append(iconContainer);
         });
-        $('#list-view').prepend("<span style=\"width: 20px; background: #EEEEEE; margin-right: 5px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span><br>");
+        $('#list-view').prepend("<div id=\"list-view-top\"><span style=\"width: 20px; background: #EEEEEE; margin-right: 5px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>: Location on map unknown.</span><br></div>");
 
 
     };
