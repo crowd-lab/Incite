@@ -146,15 +146,9 @@
 
 <body>
   <div id="userprofile-header">
-        <?php
 
-        echo '<h1> Email: '. $this->user['email'] . '</h1>';
-        ?>
-
-
-        <div>
-            <p id="groups-list">Belongs to group(s): </p>
-        </div>
+      <h1> Edit your profile</h1>
+  </br>  </br>
     </div>
     <?php if($this->user['id'] == $_SESSION['Incite']['USER_DATA']['id']){?>
 
@@ -169,6 +163,10 @@
 
 
 				<form>
+                    <div class="form-group">
+						<label class="control-label">Username (email):</label>
+						<input type="text" class="form-control" id="editNewUsername" name="email" value="<?php echo $email ?>" disabled>
+					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">First Name:</label>
 						<input type="text" class="form-control" id="editNewFirstName" name="firstName" value="<?php echo $first ?>">

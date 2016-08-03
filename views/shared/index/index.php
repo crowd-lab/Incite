@@ -46,7 +46,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div class="item">
                     <div style="display:inline-block; width: 33%; float: left;"><img style="max-height: 120px; margin: auto; display: block;" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/transcribe.png"></div>
                     <div style="display:inline-block; width: 60%; position: relative;">
-                        <div style="font-size: 180%;">Make historical documents more accessible and searchable. 
+                        <div style="font-size: 180%;">Make historical documents more accessible and searchable.
                         </div>
                         <div style="position: absolute; top: 100px; width: 100%; margin-left: 40%;">
                             <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute?task=transcribe"><button style="margin: 0 auto;" class="btn btn-danger">TRY IT NOW</button></a>
@@ -94,7 +94,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
             <div style="margin-left: 140px;">
                 <div style="float: right; width:100%;">
-                    <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in for <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can: 
+                    <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in for <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can:
                         <ul style="margin-left: -10px;">
                             <li> <b>transcribe</b> digitized documents to make them searchable;</li>
                             <li> <b>tag</b> people, locations, organizations and events with help from natural language processing tools;</li>
@@ -133,10 +133,10 @@ $(document).ready(function(){
         "minDate"  : "1830-01-01",
         "maxDate"  : "1870-12-31",
         "opens"    : "center"
-        }, 
+        },
         function (start, end, label) {
         });
-	
+
 
 	var hoverEvent = false;
 
@@ -179,7 +179,7 @@ $(document).ready(function(){
 			current.removeClass('active').next().addClass('active');
 			var id = parseInt(current.data('slide-to'));
 			if(count == id) {
-				$('#myCarousel > .nav li').first().addClass('active');	
+				$('#myCarousel > .nav li').first().addClass('active');
 			}
 		}
 		hoverEvent = false;
@@ -187,7 +187,7 @@ $(document).ready(function(){
 });
 </script>
 
-<?php   
+<?php
 include(dirname(__FILE__).'/../common/footer.php');
 ?>
 

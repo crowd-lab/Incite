@@ -354,7 +354,7 @@
                 window.location.href = url;
             });
         };
-        
+
     </script>
 
     <style>
@@ -522,11 +522,12 @@
 
 <body>
   <div id="userprofile-header">
-        <?php
+        <!-- <?php
 
         echo '<h1> Email: '. $this->user['email'] . '</h1>';
             ?>
-
+ -->
+    <h1>Group</h1>
 
 
         <div>

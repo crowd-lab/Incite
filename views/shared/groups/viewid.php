@@ -316,7 +316,7 @@
             var row = $(this).parent().parent();
             var userId = row.data("ID");
             var username = row.data("Username");
-            if (confirm('Are you sure you want to remove '+username+'?')) {
+            if (confirm('Are you sure you want to remove '+username+' from the group?')) {
                 removeUserFromGroupAjaxRequest(userId, row);
             }
 

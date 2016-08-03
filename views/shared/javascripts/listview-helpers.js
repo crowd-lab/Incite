@@ -51,8 +51,6 @@ function getStartNumForPagination(total_pages, current_page){
             startNum = current_page -3;
         }
     }
-
-
     return startNum;
 }
 

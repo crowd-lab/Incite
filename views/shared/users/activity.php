@@ -521,11 +521,12 @@
 
 <body>
   <div id="userprofile-header">
-        <?php
+        <!-- <?php
 
         echo '<h1> Email: '. $this->user['email'] . '</h1>';
 
-        ?>
+        ?> -->
+        <h1>Activity</h1>
 	<div class="col-md-10 col-md-offset-1">
 
         <div id="userprofile-activity-overview">

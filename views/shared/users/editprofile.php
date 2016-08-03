@@ -119,8 +119,7 @@
 				<form>
 					<div class="form-group">
 						<label class="control-label">Username (email):</label>
-						<!-- <input type="text" class="form-control" id="editNewUsername" name="email" value="<?php echo $email ?>"> -->
-						<p><?php echo $email ?></p>
+						<input type="text" class="form-control" id="editNewUsername" name="email" value="<?php echo $email ?>" disabled>
 					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">Password:</label>

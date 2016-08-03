@@ -12,7 +12,7 @@ include(dirname(__FILE__).'/../common/header.php');
 background-color: #EEEEEE;
 }
 
-.container-fluid{
+#list-view .container-fluid{
     padding-right: 0px;
     padding-left: 0px;
     margin: 0px;
@@ -101,6 +101,7 @@ $(window).on('resize', function(e) {
     document.getElementById('list-view').style.left = $('#map-div').width()+10+'px';
     document.getElementById('list-view').style.height = ($('#map-div').height())+'px';
     //$('#list-view').width($(window).width()*0.15);
+    resizePaginationBar();
 });
 $('#list-view-switch').one('click', showListView);
 
@@ -189,16 +190,26 @@ var request = $.ajax({
 });
 };
 
+
+function resizePaginationBar(){
+    if($(window).width() < 1060){
+        $('#pagination-list').addClass('pagination-sm');
+    }
+    else{
+        $('#pagination-list').removeClass('pagination-sm');
+    }
+}
+
     function generatePaginationBar(){
         var disableFirst = (current_page == 1 || total_pages == 0? "disabled" : "");
         var disableLast = (current_page == total_pages || total_pages == 0? "disabled" : "");
         var query = ((query_str == "")? "":"&"+query_str);
-
+        var isSmall = ($(window).width() < 1060 ? " pagination-sm" :"");
 
         var startNum = getStartNumForPagination(total_pages, current_page);
         var endNum= getEndNumForPagination(total_pages, startNum);
 
-        $('#list-view').append("<div id=\"pagination-bar\" class=\"text-center\"><nav><ul class=\"pagination\"></ul></nav></div>");
+        $('#list-view').append("<div id=\"pagination-bar\" class=\"text-center\"><nav><ul id=\"pagination-list\" class=\"pagination"+isSmall+"\"></ul></nav></div>");
         if (total_pages != 0){
             // first page
             $(".pagination").append("<li class=\"page-item "+ disableFirst +"\" value=\"1\"> <a class=\"page-link\" href=\"?page=1"+ query +"\" "+ "onclick=\"return " +(disableFirst != "" ? "false" : "")+ "\" > 1<span class=\"sr-only\">First</span></a></li>");

@@ -3,7 +3,7 @@
 require_once("DB_Connect.php");
 require_once("Incite_Users_Table.php");
 
-function getMembersByGroupId($groupid) 
+function getMembersByGroupId($groupid)
 {
     $users = array();
     $db = DB_Connect::connectDB();
@@ -17,7 +17,7 @@ function getMembersByGroupId($groupid)
     $db->close();
     return $users;
 }
-function getMembersWithActivityOverviewByGroupId($groupid) 
+function getMembersWithActivityOverviewByGroupId($groupid)
 {
     $users = array();
     $db = DB_Connect::connectDB();
@@ -33,7 +33,7 @@ function getMembersWithActivityOverviewByGroupId($groupid)
     return $users;
 }
 
-function getMembersAcceptedIntoGroup($groupid) 
+function getMembersAcceptedIntoGroup($groupid)
 {
     $users = array();
     $db = DB_Connect::connectDB();
@@ -100,10 +100,18 @@ function createGroup($groupName, $userIdOfCreator, $groupType)
 function addGroupMember($memberId, $groupId, $privilege)
 {
     $db = DB_Connect::connectDB();
+
+    // $dupl=$db->prepare("SELECT COUNT(*) FROM omeka_incite_group_members WHERE user_id = ? AND group_id = ? HAVING COUNT(*) > 1");
+    // $exe = $dupl->bind_param("ii", $memberId, $groupId);
+    // $result = $exe->execute();
+    //
+    // if(!$result){
     $stmt = $db->prepare("INSERT INTO omeka_incite_group_members VALUES (NULL, ?, ?, ?)");
     $stmt->bind_param("iii", $memberId, $groupId, $privilege);
     $stmt->execute();
     $stmt->close();
+    // }
+    // $result->close();
 
     return "true";
 }
@@ -157,7 +165,7 @@ function changeGroupMemberPrivilege($memberId, $groupId, $privilege)
  *
  * @param int $memberId
  * @param int $groupId
- * @return int privilege level 
+ * @return int privilege level
  */
 function getGroupMemberPrivilege($memberId, $groupId)
 {
@@ -202,7 +210,7 @@ function searchGroupsByName($groupName)
 }
 
 /**
- * Sets new instructions for the group 
+ * Sets new instructions for the group
  *
  * @param int groupId
  * @param String instructions
