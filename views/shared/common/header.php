@@ -355,7 +355,7 @@ body {
     text-decoration: underline;
 }
 
-.nav > li > a {
+.navbar .nav > li > a {
     color: #8BB7C8;
     background-color: #fff !important;
 
