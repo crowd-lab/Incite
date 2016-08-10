@@ -244,7 +244,7 @@
         if (id === <?php echo $this->group['creator']['id'] ?>) {
             return;
         }
-        var font_size = 30; //px
+        var font_size = 13; //px
         var spacing = 40; //%
 
         var info = generateManagementTableThirdColumn(status, font_size, spacing);
@@ -271,27 +271,27 @@
 
     function generateManagementTableThirdColumn(status, font_size, spacing){
         var statusName;
-        var glyphicon;
+        var buttons;
         if (status > -1) {
             statusName = "Group Member";
-            glyphicon = $('<td><span style="font-size: '+font_size+'px;" title="Remove user from group" class="remove-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span><span style="width: '+spacing+'%; display:inline-block;"></span><span style="font-size: '+font_size+'px;" title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td></td>');
+            buttons = $('<td><span style="font-size: '+font_size+'px;" title="Remove user from group" class="remove-user btn btn-danger btn-sm" aria-hidden="true">Remove</span><span style="width: '+spacing+'%; display:inline-block;"></span><span style=" font-size: '+font_size+'px;" title="Ban user from group" class="ban-user btn btn-warning btn-sm" >Ban</span></td></td>');
         } else if (status === -1) {
             statusName = "Requested to join";
-            glyphicon = $('<td><span style="font-size: '+font_size+'px;" title="Add user to group" class="approve-user glyphicon glyphicon-ok-circle" aria-hidden="true"></span><span style="width: '+spacing+'%; display:inline-block;"></span><span style="font-size: '+font_size+'px;" title="Ban user from group" class="ban-user glyphicon glyphicon-ban-circle" aria-hidden="true"></span></td>');
+            buttons = $('<td><span style="font-size: '+font_size+'px;" title="Add user to group" class="approve-user btn btn-success btn-sm" aria-hidden="true">Approve</span><span style="width: '+(spacing)+'%; display:inline-block;"></span><span style="font-size: '+font_size+'px;" title="Ban user from group" class="ban-user btn btn-warning btn-sm" aria-hidden="true"> Ban</span></td>');
         } else if (status === -2) {
             statusName = "Banned";
-            glyphicon = $('<td><span style="font-size: '+font_size+'px;" title="Unban user from group" class="unban-user glyphicon glyphicon-remove-circle" aria-hidden="true"></span></td>');
+            buttons = $('<td><span style="font-size: '+font_size+'px;" title="Unban user from group" class="unban-user btn btn-info btn-sm" aria-hidden="true">Unban</span></td>');
         }
-        return {stat: statusName, gly: glyphicon};
+        return {stat: statusName, gly: buttons};
 
     }
 
     function addManagementTableActionListeners() {
         //off removes the eventHandler that existed before.
-        $('.remove-user').addClass('blue-color').off('click').on('click',removeUserFromGroup);
-        $('.approve-user').addClass('green-color').off('click').on('click',addUserToGroup);
-        $('.unban-user').addClass('blue-color').off('click').on('click',unbanUser);
-        $('.ban-user').addClass('red-color').off('click').on('click',banUser);
+        $('.remove-user').off('click').on('click',removeUserFromGroup);
+        $('.approve-user').off('click').on('click',addUserToGroup);
+        $('.unban-user').off('click').on('click',unbanUser);
+        $('.ban-user').off('click').on('click',banUser);
 
         function banUser() {
             var row = $(this).parent().parent();
@@ -326,7 +326,7 @@
     function reGenerateManagementTableThirdColumn(status, row){
         var glyphicon;
         var statusName;
-        var info = generateManagementTableThirdColumn(status, 30, 40);
+        var info = generateManagementTableThirdColumn(status, 13, 40);
         statusName = info.stat;
         glyphicon = info.gly;
         row.unbind("click");
