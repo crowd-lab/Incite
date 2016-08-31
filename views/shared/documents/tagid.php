@@ -6,7 +6,7 @@
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
 
             $category_object = getAllCategories();
-            $subcategory_id_name_table = getSubcategoryIdAndNames();
+            $category_id_name_table = getSubcategoryIdAndNames();
         ?>
 
         <script type="text/javascript">
@@ -177,7 +177,7 @@
     //Global variable to store categories/counters
     var categories = <?php echo json_encode($category_object).";\n"; ?>
     // alert(categories[2]['subcategory'].length);
-    var subcategory_id_to_name_table = <?php echo json_encode($subcategory_id_name_table).";\n"; ?>
+    var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
     function set_tag_id_counter() {
@@ -205,8 +205,8 @@
         });
         new_entity.find('.category-select').append('<option value="0">&nbsp;</option>');
 
-        <?php for ($i = 0; $i < sizeof($category_object); $i++) {
-            echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
+        <?php foreach ($category_object as $id => $content) {
+            echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
         }?>
 
         new_entity.find('.category-select').multiselect({
@@ -231,8 +231,9 @@
                 numberDisplayed: 1
             });
 
-            <?php for ($i = 0; $i < sizeof($category_object); $i++){
-                echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
+            <?php foreach ($category_object as $id => $content) {
+                echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
+                //echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
             }
             ?>
             new_entity.find('.category-select').multiselect({
@@ -242,37 +243,23 @@
 
             $('#entity-table').append(new_entity);
             new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
-            new_entity.find('.category-select')
-                //Location: 1, Event: 2, Person: 3, Organization 4
-                var cat = 1;
-                if (new_entity.find('.category-select').hasClass('location')) {
-                    new_entity.find('.category-select option[value=1]').attr('selected', 'selected');
-                } else if (new_entity.find('.category-select').hasClass('person')) {
-                    cat = 3;
-                    new_entity.find('.category-select option[value=3]').attr('selected', 'selected');
-                } else if (new_entity.find('.category-select').hasClass('organization')) {
-                    cat = 4;
-                    new_entity.find('.category-select option[value=4]').attr('selected', 'selected');
-                } else if (new_entity.find('.category-select').hasClass('event')) {
-                    cat = 2;
-                    new_entity.find('.category-select option[value=2]').attr('selected', 'selected');
-                } else if (new_entity.find('.category-select').hasClass('other')) {
-                    cat = 5;
-                    new_entity.find('.category-select option[value=5]').attr('selected', 'selected');
-                } else {  //Unknown category!
-                    cat = 0;
-                    new_entity.find('.category-select option[value=0]').attr('selected', 'selected');
+            //Select previsouly selected category
+            $.each(categories, function (idx) {
+                if (new_entity.find('.category-select').hasClass(this['name'].toLowerCase())) {
+                    new_entity.find('.category-select option[value='+idx+']').attr('selected', 'selected');
                 }
-                new_entity.find('.category-select').multiselect('rebuild');
-                var subcategory_menu = new_entity.find('.subcategory-select');
-                $(subcategory_menu).empty();
-                if (new_entity.find('.category-select').val() != 0) {
-                    $.each(categories[new_entity.find('.category-select').val()-1]['subcategory'], function (idx) {
-                        subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
-                    });
-                } else {
-                    subcategory_menu.multiselect('rebuild');
-                }
+            });
+            new_entity.find('.category-select').multiselect('rebuild');
+            var subcategory_menu = new_entity.find('.subcategory-select');
+            $(subcategory_menu).empty();
+            if (new_entity.find('.category-select').val() != 0) {
+                $.each(categories[new_entity.find('.category-select').val()]['subcategory'], function (idx) {
+                    subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
+                });
+            } else {
+                subcategory_menu.multiselect('rebuild');
+            }
+
             if (typeof this.dataset.subs !== typeof undefined && this.dataset.subs !== false && this.dataset.subs !== "") {
                 var selected_subs = this.dataset.subs.split(',');
                 for (i = 0; i < selected_subs.length; i++) {
@@ -304,8 +291,8 @@
         $('#user-entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            if ($(this).val() != 0) {
-                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
+            if ($(this).val() != 0 && categories[$(this).val()]['subcategory'].length > 0) {
+                $.each(categories[$(this).val()]['subcategory'], function (idx) {
                     subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                 });
             } else {
@@ -328,8 +315,8 @@
         $('#entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
-            if ($(this).find('option:selected').text() !== "") {
-                $.each(categories[$(this).val()-1]['subcategory'], function (idx) {
+            if ($(this).find('option:selected').text() !== "" && categories[$(this).val()]['subcategory'].length > 0) {
+                $.each(categories[$(this).val()]['subcategory'], function (idx) {
                     subcategory_menu.append('<option value="'+this['subcategory_id']+'">'+this["subcategory"]+'</option>').multiselect('rebuild');
                 });
             } else {

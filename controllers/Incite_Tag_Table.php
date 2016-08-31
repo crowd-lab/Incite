@@ -170,7 +170,8 @@ function getAllCategories() {
     $stmt->bind_result($id, $name);
     $stmt->execute();
     while ($stmt->fetch()) {
-        $results[] = Array("id" => $id, "name" => $name, "subcategory" => array());
+        //$results[] = Array("id" => $id, "name" => $name, "subcategory" => array());
+        $results[$id] = Array("name" => $name, "subcategory" => array());
 
         $newDB = DB_Connect::connectDB();
         $subcategoryStmt = $newDB->prepare("SELECT id, name, created_by, timestamp FROM omeka_incite_tags_subcategory WHERE category_id = ?");
@@ -178,7 +179,8 @@ function getAllCategories() {
         $subcategoryStmt->bind_result($subID, $subName, $subCreatedBy, $subTimestamp);
         $subcategoryStmt->execute();
         while ($subcategoryStmt->fetch()) {
-            $results[$count]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
+            //$results[$count]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
+            $results[$id]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
         }
         $subcategoryStmt->close();
         $newDB->close();
@@ -369,7 +371,7 @@ function removeAllTagsFromDocument($itemID) {
  * @return array of all tags in specified format:
  * [0]["tag_id", "user_id", "document_id", "tag_text", "timestamp", "category_name", "subcategories", "description"]
  */
-function getAllTagInformation($item_id) 
+function getAllTagInformation($item_id)
 {
     $db5 = DB_Connect::connectDB();
     $getDocumentId = $db5->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
@@ -379,7 +381,7 @@ function getAllTagInformation($item_id)
     $getDocumentId->fetch();
     $getDocumentId->close();
     $db5->close();
-    
+
     $dataArray = array();
     $db4 = DB_Connect::connectDB();
     $getTagID = $db4->prepare("SELECT DISTINCT tag_id FROM omeka_incite_documents_tags_conjunction WHERE document_id = ?");
@@ -396,11 +398,11 @@ function getAllTagInformation($item_id)
         $stmt->fetch();
         $db->close();
         $stmt->close();
-        
+
         $db1 = DB_Connect::connectDB();
         $db2 = DB_Connect::connectDB();
-        
-        
+
+
         $category_name = "";
         $getCategoryName = $db1->prepare("SELECT name FROM omeka_incite_tags_category WHERE id = ?");
         $getCategoryName->bind_param("i", $category_id);
@@ -476,7 +478,7 @@ function findDocumentsWithAtLeastNofGivenTagNames($tag_name_array, $N)
         }
     }
     asort($allDocumentIDs);
-    
+
     $frequencyChart = array_count_values($allDocumentIDs);
     $idAboveMinimum = array();
     foreach($frequencyChart as $doc_id => $num_of_tags)
@@ -487,7 +489,7 @@ function findDocumentsWithAtLeastNofGivenTagNames($tag_name_array, $N)
         }
     }
 
-    
+
     return $idAboveMinimum;
 }
 function findRelatedDocumentsViaAtLeastNCommonTags($self_id, $minimum_common_tags = MINIMUM_COMMON_TAGS_FOR_RELATED_DOCUMENTS) {
@@ -529,7 +531,7 @@ function findCommonTagNames($item_ids)
         return $tags_for_items[0];
     else
         return array_values(call_user_func_array('array_intersect', $tags_for_items));
-    
+
 }
 /**
  * Return an array of candidate subjects and frequencies of subjects
@@ -564,7 +566,7 @@ function getBestSubjectCandidateList($item_ids)
         $stmt->close();
         $db->close();
     }
-    
+
     if (count($subjects_counts) == 0)
         return array();
 
@@ -576,6 +578,7 @@ function getBestSubjectCandidateList($item_ids)
 }
 
 function createTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
+
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
     $stmt->bind_param("iiiis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription);

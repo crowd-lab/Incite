@@ -27,7 +27,20 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <body>
 
-    <div style="margin-top: 40px;" class="col-md-6 col-md-offset-3">
+    <div style="margin-top: 20px;" class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">For Teachers</h3>
+            </div>
+            <div style="padding: 15px;">
+                <p>Mapping the Fourth is an innovative, primary source-based teaching tool that brings the experiences of Civil War Americans alive for your students.</p>
+                <p>Whether you teach at the college or high school level, your students will jump at the chance to learn about how a previous generation of Americans celebrated the Fourth. (Yes, there were fireworks!) These are engaging first-hand documents that open up big themes: North-South differences; the causes and consequences of the Civil War; African American experiences of emancipation.</p>
+                <p>Our easy-to-use Groups feature allows teachers and professors to provide customized instructions and keep track of the work their students have done.</p>
+                <p>If you are planning to use the site with your students, please contact us at <a href="mailto:july4.civilwar-g@vt.edu">july4.civilwar-g@vt.edu</a>. We can provide personalized guidance on how to make the most of Mapping the Fourth, and may even be able to upload new primary sources to suit your students' specific needs.</p>
+                <p>We've prepared a selection of lesson plans and assignment guidelines that make it easy to integrate the site into your courses in the following two sections.</p>
+                <p>Questions? Suggestions? Please contact us: <a href="mailto:july4.civilwar-g@vt.edu">july4.civilwar-g@vt.edu</a></p>
+            </div>
+        </div> 
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">High School Assignment Guidelines</h3>

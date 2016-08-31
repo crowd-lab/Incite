@@ -167,30 +167,29 @@
                 </div>
 
                 <div id="document-progress-section">
-                    <div class="task-section progress-shadow" title="Document not yet been transcribed, click to transcribe it now!" id="transcribe-progress-section">
-                        <a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/<?php echo $this->documentId; ?>">
-                            <p class="task-description vertical-align">
-                                Transcribe
+                    <a href="<?php echo getFullInciteUrl(); ?>/documents/transcribe/<?php echo $this->documentId; ?>">
+                        <div class="task-section progress-shadow" title="Document not yet been transcribed, click to transcribe it now!" id="transcribe-progress-section">
+                            <p class="vertical-align">Transcribe
                                 <span class="glyphicon glyphicon-unchecked" id="transcribe-progress-glyph-span" aria-hidden="true"></span>
                             </p>
-                        </a>
-                    </div><!--
-                    --><div class="task-section progress-shadow" title="Document not yet been tagged, click to tag it now!" id="tag-progress-section">
-                        <a href="<?php echo getFullInciteUrl(); ?>/documents/tag/<?php echo $this->documentId; ?>">
+                        </div>
+                    </a>
+                    <a href="<?php echo getFullInciteUrl(); ?>/documents/tag/<?php echo $this->documentId; ?>">
+                        <div class="task-section progress-shadow" title="Document not yet been tagged, click to tag it now!" id="tag-progress-section">
                             <p class="task-description vertical-align">
                                 Tag
                                 <span class="glyphicon glyphicon-unchecked" id="tag-progress-glyph-span" aria-hidden="true"></span>
                             </p>
-                        </a>
-                    </div><!--
-                    --><div class="task-section progress-shadow" title="Document not yet been connected, click to connect it now!" id="connect-progress-section">
-                        <a href="<?php echo getFullInciteUrl(); ?>/documents/connect/<?php echo $this->documentId; ?>">
+                        </div>
+                    </a>
+                    <a href="<?php echo getFullInciteUrl(); ?>/documents/connect/<?php echo $this->documentId; ?>">
+                        <div class="task-section progress-shadow" title="Document not yet been connected, click to connect it now!" id="connect-progress-section">
                             <p class="task-description vertical-align">
                                 Connect
                                 <span class="glyphicon glyphicon-unchecked" id="connect-progress-glyph-span" aria-hidden="true"></span>
                             </p>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
 
                 <hr size=2 id="discussion-seperation-line">
