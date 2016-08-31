@@ -170,7 +170,8 @@ function getAllCategories() {
     $stmt->bind_result($id, $name);
     $stmt->execute();
     while ($stmt->fetch()) {
-        $results[] = Array("id" => $id, "name" => $name, "subcategory" => array());
+        //$results[] = Array("id" => $id, "name" => $name, "subcategory" => array());
+        $results[$id] = Array("name" => $name, "subcategory" => array());
 
         $newDB = DB_Connect::connectDB();
         $subcategoryStmt = $newDB->prepare("SELECT id, name, created_by, timestamp FROM omeka_incite_tags_subcategory WHERE category_id = ?");
@@ -178,7 +179,8 @@ function getAllCategories() {
         $subcategoryStmt->bind_result($subID, $subName, $subCreatedBy, $subTimestamp);
         $subcategoryStmt->execute();
         while ($subcategoryStmt->fetch()) {
-            $results[$count]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
+            //$results[$count]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
+            $results[$id]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
         }
         $subcategoryStmt->close();
         $newDB->close();

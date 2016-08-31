@@ -742,7 +742,7 @@ function year_of_full_iso_date(date) {
                 <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
             </li>
             <li >
-                <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Classroom Use</a>
+                <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teaching</a>
             </li>
             <li>
                 <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>
