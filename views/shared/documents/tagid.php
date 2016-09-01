@@ -299,7 +299,12 @@
                 subcategory_menu.multiselect('rebuild');
             }
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
-            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase() + " tagged-text");
+            var selected_category = $(this).find('option[value='+$(this).val()+']').text().toLowerCase();
+            if (selected_category !== '\xa0') {
+                $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass( selected_category + " tagged-text");
+            } else {
+                $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass("unknown tagged-text");
+            }
         });
 
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
@@ -323,7 +328,8 @@
                 subcategory_menu.multiselect('rebuild');
             }
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).removeClass();
-            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass($(this).find('option[value='+$(this).val()+']').text().toLowerCase() + " tagged-text");
+            var selected_category = $(this).find('option[value='+$(this).val()+']').text().toLowerCase();
+            $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass( selected_category + " tagged-text");
         });
 
         $('#confirm-button').on('click', function (e) {
@@ -414,7 +420,7 @@
                     var tag_range = tag_selection.getRangeAt(0);
                     var tag_em = document.createElement('em');
                     tag_em.id = 'tag_id_'+tagid_id_counter;
-                    tag_em.className = 'other tagged-text';
+                    tag_em.className = 'unknown tagged-text';
                     tag_em.appendChild(document.createTextNode(tag_text));
                     tag_range.deleteContents();
 

@@ -121,8 +121,9 @@
 
             <div id="legend-container">
                 <span><b>Legend: </b></span>
-                <?php foreach ((array)$this->category_colors as $category => $color): ?>
-                    <em class="<?php echo strtolower($category); ?> legend-item"><?php echo ucfirst(strtolower($category)); ?></em>
+                <?php $all_categories = getAllCategories(); ?>
+                <?php foreach ((array)$all_categories as $category): ?>
+                    <em class="<?php echo strtolower($category['name']); ?> legend-item"><?php echo ucfirst(strtolower($category['name'])); ?></em>
                 <?php endforeach; ?>
             </div>
         </div>

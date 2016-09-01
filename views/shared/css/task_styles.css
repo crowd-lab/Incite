@@ -14,8 +14,12 @@
     background-color: #A8E6CF;
 }
 
-.unknown {
+.other {
     background-color: #FF8B94;
+}
+
+.unknown {
+    background-color: #CCCCCC;
 }
 
 .tagged-text {
