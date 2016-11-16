@@ -109,12 +109,12 @@ function getNextTrial($assignment_id, $worker_id)
     }
 }
 
-function completeTask($id, $task_seq, $worker_id, $submission_id)
+function completeTask($id, $task_seq, $worker_id, $submission_id, $user_id)
 {
     $db = DB_Connect::connectDB();
     $is_completed = 2;
-    $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, time".$task_seq."_end = NOW(), submission".$task_seq." = ? WHERE id = ?");
-    $stmt->bind_param("issi", $is_completed, $worker_id, $submission_id, $id);
+    $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, incite_user_id = ?, time".$task_seq."_end = NOW(), submission".$task_seq." = ? WHERE id = ?");
+    $stmt->bind_param("issi", $is_completed, $worker_id, $user_id, $submission_id, $id);
     $stmt->execute();
     $stmt->close();
     $db->close();
@@ -283,7 +283,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $trans_id = createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
 
     //Update the status of the task 
-    completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id);
+    completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
 
     //All set. Move to next task!
     $_SESSION['study2']['task_seq']++;
