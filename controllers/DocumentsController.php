@@ -53,6 +53,93 @@ function migrateTaggedDocumentFromV1toV2($text) {
   return $result;
 }
 
+function isAnyTrialAvailable()
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `id` FROM `study2` WHERE `is_completed` = 0");
+    $stmt->bind_result($trial_id);
+    $stmt->execute();
+    $result = $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($result != null) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hasParticipated($worker_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM `study2` WHERE `worker_id` = ?");
+    $stmt->bind_param('s', $worker_id);
+    $stmt->bind_result($count);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($count > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getNextTrial($assignment_id, $worker_id)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `id`, `workflow`, `doc1`, `task1`, `doc2`, `task2`, `doc3`, `task3` FROM `study2` WHERE `is_completed` = 0");
+    $stmt->bind_result($trial_id, $workflow, $doc1, $task1, $doc2, $task2, $doc3, $task3);
+    $stmt->execute();
+    $result = $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($result != null) {
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("UPDATE `study2` SET is_completed = ?, assignment_id = ?, worker_id = ?, time1_start = NULL, attempts = attempts + 1 WHERE `id` = ?");
+        $is_completed = 1; //job taken=>working
+        $stmt->bind_param("issi", $is_completed, $assignment_id, $worker_id, $trial_id);
+        $stmt->execute();
+        $stmt->close();
+        $db->close();
+        return array('trial_id' => $trial_id, 'workflow' => $workflow, 'doc1' => $doc1, 'task1' => $task1, 'doc2' => $doc2, 'task2' => $task2, 'doc3' => $doc3, 'task3' => $task3);
+    } else {
+        return null;
+    }
+}
+
+function completeTask($id, $task_seq, $worker_id, $submission_id)
+{
+    $db = DB_Connect::connectDB();
+    $is_completed = 2;
+    $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, time".$task_seq."_end = NOW(), submission".$task_seq." = ? WHERE id = ?");
+    $stmt->bind_param("issi", $is_completed, $worker_id, $submission_id, $id);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+}
+
+function urlGenerator($doc_id, $task_type)
+{
+    $action = '';
+    switch($task_type) {
+        case 1:
+            $action = 'transcribe'; break;
+        case 2:
+            $action = 'tag'; break;
+        case 3:
+            $action = 'connect'; break;
+        case 4:
+            $action = 'survey'; break;
+        case 5:
+            $action = 'complete'; break;
+        default:
+            $action = 'error'; break;
+    }
+    return getFullInciteUrl().'/documents/'.$action.'/'.$doc_id;
+}
+
 
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController {
 
@@ -118,21 +205,63 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
   public function indexAction() {
     //Since we don't have document lists, redirect to the transcribe task page.
-    $this->redirect('incite/documents/transcribe');
+    //$this->redirect('incite/documents/transcribe');
   }
 
   public function showAction() {
-    $this->_helper->db->setDefaultModelName('Item');
+        //Session initialization
+        $is_session_on = FALSE;
+        if (!isset($_SESSION))
+            $is_session_on = session_start();
+        if ($is_session_on === FALSE) {
+            echo 'Something went wrong. Our system does not seem to work correctly on your device. Please return the HIT. Sorry for any inconvenience!';
+            die();
+        }
 
-    if ($this->_hasParam('id')) {
-      $record = $this->_helper->db->find($this->_getParam('id'));
-      if ($record != null) {
-        $this->view->assign(array('Item' => $record));
-      } else {
-        $this->_forward('index');
-      }
-    }
+        //Check if there is task available. If not, redirect to a page to notify the user.
+        if (!isAnyTrialAvailable())  {
+            $this->_helper->viewRenderer('taskless');
+            return;
+        }
+
+        //Get an available task. Default: AMT
+        $is_hit_accepted = !(!isset($_GET['assignmentId']) || (isset($_GET['assignmentId']) && $_GET['assignmentId'] == "ASSIGNMENT_ID_NOT_AVAILABLE"));
+
+        //Classroom use so we can assume hit is accepted
+        $is_hit_accepted = true;
+        if ($is_hit_accepted) {
+            $this->_helper->viewRenderer('taskless');
+            $worker_id = '';
+            $assignment_id = '';
+            if (isset($_GET['workerId'])) {
+                $worker_id = $_GET['workerId']; 
+            }
+            if (isset($_GET['assignmentId'])) {
+                $assignment_id = $_GET['assignmentId'];
+            }
+            if ($worker_id != '' and hasParticipated($_GET['workerId']))  {
+                $this->_helper->viewRenderer('participated');
+                return;
+            }
+            $trial = getNextTrial($assignment_id, $worker_id);
+            if ($trial != null) {
+                //Initialization
+                $_SESSION['study2']['id'] = $trial['trial_id'];
+                $_SESSION['study2']['task_seq'] = 1;
+                $_SESSION['study2']['urls'] = array(urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']));
+
+                //All set. Redirec the user to the first task!
+                $this->redirect($_SESSION['study2']['urls'][0]);
+            } else {
+                //No valid trial so we assume it's because there is no task available.
+                $this->_helper->viewRenderer('taskless');
+            }
+        } else { //if ($is_hit_accepted) {
+            //This should happen for classroom use!
+            $this->_helper->viewRenderer('example2');
+        }
   }
+
   public function transcribeAction() {
     $this->_helper->db->setDefaultModelName('Item');
 
@@ -150,16 +279,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function saveTranscription() {
     $workingGroupId = $this->getWorkingGroupID();
 
-    createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
-    $_SESSION['Incite']['previous_task'] = 'transcribe';
+    //Save results of current task
+    $trans_id = createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
 
-    if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
-      $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe?'.$_POST['query_str'].'">here</a>.';
-      $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
-    } else {
-      $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe">here</a>.';
-      $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
-    }
+    //Update the status of the task 
+    completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id);
+
+    //All set. Move to next task!
+    $_SESSION['study2']['task_seq']++;
+    $urls = $_SESSION['study2']['urls'];
+    $task_seq = $_SESSION['study2']['task_seq'];
+    $this->redirect($urls[$task_seq]);
   }
 
   public function populateDataForTranscribeTask() {
@@ -595,5 +725,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
     }
     $this->view->task_type = $task;
+  }
+  public function surveyAction() {
+        echo 'this is a survey!';
+        die();
+  }
+  public function completeAction() {
+        echo 'Task completed!';
+        die();
+  }
+  public function errorAction() {
+        echo 'Something went wrong!';
+        die();
   }
 }
