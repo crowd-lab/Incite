@@ -248,7 +248,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 //Initialization
                 $_SESSION['study2']['id'] = $trial['trial_id'];
                 $_SESSION['study2']['task_seq'] = 1;
-                $_SESSION['study2']['urls'] = array(urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']));
+                $_SESSION['study2']['urls'] = array(urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']), urlGenerator('', 4), urlGenerator('', 5));
 
                 //All set. Redirec the user to the first task!
                 $this->redirect($_SESSION['study2']['urls'][0]);
@@ -258,6 +258,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         } else { //if ($is_hit_accepted) {
             //This should happen for classroom use!
+            echo 'Something went wrong (1).'; 
+            die();
             $this->_helper->viewRenderer('example2');
         }
   }
@@ -362,17 +364,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
     }
 
-    createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
-    $_SESSION['Incite']['previous_task'] = 'tag';
+    $trans_id = createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
 
 
-    if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
-      $_SESSION['incite']['message'] = 'Tagging completed! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag?'.$_POST['query_str'].'">here</a>.';
-      $this->redirect('/incite/documents/connect/'.$this->_getParam('id').'?'.$_POST['query_str']);
-    } else {
-      $_SESSION['incite']['message'] = 'Tagging completed! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
-      $this->redirect('/incite/documents/connect/'.$this->_getParam('id'));
-    }
+    //Update the status of the task 
+    completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
+
+    //All set. Move to next task!
+    $_SESSION['study2']['task_seq']++;
+    $urls = $_SESSION['study2']['urls'];
+    $task_seq = $_SESSION['study2']['task_seq'];
+    $this->redirect($urls[$task_seq]);
   }
 
   public function populateDataForTagTask() {
@@ -516,15 +518,16 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       else if (isset($_POST['subject']) && $_POST['connection'] == 'false')
       addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 0);
     }
-    $_SESSION['Incite']['previous_task'] = 'connect';
 
-    if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
-      $_SESSION['incite']['message'] = 'Connecting successful! You can now select a document to transcribe from the list below or find a document to <a href="'.getFullInciteUrl().'/documents/tag?'.$_POST['query_str'].'">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect?'.$_POST['query_str'].'">connect</a>.';
-      $this->redirect('/incite/documents/transcribe?'.$_POST['query_str']);
-    } else {
-      $_SESSION['incite']['message'] = 'Connecting successful! You can now select a document to transcribe from the list below or find a document to <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>.';
-      $this->redirect('/incite/documents/transcribe');
-    }
+    //Update the status of the task 
+    completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], 0, $_SESSION['Incite']['USER_DATA']['id']);
+
+    //All set. Move to next task!
+    $_SESSION['study2']['task_seq']++;
+    $urls = $_SESSION['study2']['urls'];
+    $task_seq = $_SESSION['study2']['task_seq'];
+    $this->redirect($urls[$task_seq]);
+
   }
 
   public function populateDataForConnectTask() {
