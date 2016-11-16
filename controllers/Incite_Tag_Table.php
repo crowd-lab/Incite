@@ -583,7 +583,9 @@ function createTaggedTranscription($item_id, $transcription_id, $userID, $workin
     $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
     $stmt->bind_param("iiiis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription);
     $stmt->execute();
+    $id = $stmt->insert_id;
     $stmt->close();
     $db->close();
+    return $id;
 }
 ?>
