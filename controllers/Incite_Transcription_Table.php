@@ -134,8 +134,10 @@ function createTranscription($documentID, $userID, $workingGroupID, $transcribed
     $stmt = $db->prepare("INSERT INTO omeka_incite_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
     $stmt->bind_param("iiisss", $documentID, $userID, $workingGroupID, $transcribedText, $summarizedText, $tone);
     $stmt->execute();
+    $trans_id = $stmt->insert_id;
     $stmt->close();
     $db->close();
+    return $trans_id;
 }
 /**
  * Change the trasncription string a specific transcription id
