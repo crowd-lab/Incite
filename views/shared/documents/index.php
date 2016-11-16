@@ -32,7 +32,7 @@ include(dirname(__FILE__).'/../common/header.php');
             <h4>Subject's Consent</h4>
             <p style="color: red;">If you are 18 years of age or older, understand the statements above, and freely consent to participate in the study, please click on the "Accept" button below to begin your participation.</p>
             <br>
-            <div style="text-align: center;"><button id="accept_btn" style="width: 150px; font-size:200%;">Accept</button></div>
+            <div style="text-align: center; margin-bottom: 30px;"><button id="accept_btn" style="width: 150px; font-size:200%;">Accept</button></div>
 
         </div>
     <!-- /.container -->
