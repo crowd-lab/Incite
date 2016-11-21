@@ -123,16 +123,16 @@ function getTranscriptionCreationTimestamp($transcriptionID) {
 }
 /**
  * Create a transcription and summary of the document
- * @param type $documentID
- * @param type $userID
+ * @param int $itemID
+ * @param int $userID
  * @param int $workingGroupID
- * @param type $transcribedText
- * @param type $summarizedText
+ * @param string $transcribedText
+ * @param string $summarizedText
  */
-function createTranscription($documentID, $userID, $workingGroupID, $transcribedText, $summarizedText, $tone) {
+function createTranscription($itemID, $userID, $workingGroupID, $transcribedText, $summarizedText, $tone) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
-    $stmt->bind_param("iiisss", $documentID, $userID, $workingGroupID, $transcribedText, $summarizedText, $tone);
+    $stmt->bind_param("iiisss", $itemID, $userID, $workingGroupID, $transcribedText, $summarizedText, $tone);
     $stmt->execute();
     $trans_id = $stmt->insert_id;
     $stmt->close();
@@ -325,6 +325,50 @@ function getDocumentsWithApprovedTranscription()
     $db->close();
 
     return $documents_with_transcription;
+}
+
+/**
+ * Get the latest transcription, summary, tone and id for a specific document from a specific user(approved or not)
+ *
+ * @param int $itemID, $userID
+ * @return array with the info request, or empty if no transcriptions for document
+ */
+function getNewestTranscriptionFromUserId($itemID, $userID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT transcribed_text, summarized_text, tone, id FROM omeka_incite_transcriptions WHERE document_id = ? AND user_id = ? ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt->bind_param("ii", $itemID, $userID);
+    $stmt->bind_result($transcription, $summary, $tone, $transcriptionID);
+    $stmt->execute();
+    $newest_transcription = array();
+    while ($stmt->fetch())
+    {
+        $newest_transcription = array('transcription' => $transcription, 'summary' => $summary, 'tone' => $tone, 'id' => $transcriptionID);
+    }
+    $stmt->close();
+    $db->close();
+    return $newest_transcription;
+}
+
+/**
+ * Get the first transcription, summary, tone and id for a specific document from a specific user(approved or not)
+ *
+ * @param int $itemID, $userID
+ * @return array with the info request, or empty if no transcriptions for document
+ */
+function getFirstTranscription($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT transcribed_text, summarized_text, tone, id FROM omeka_incite_transcriptions WHERE document_id = ? ORDER BY timestamp_creation ASC LIMIT 1");
+    $stmt->bind_param("i", $itemID );
+    $stmt->bind_result($transcription, $summary, $tone, $transcriptionID);
+    $stmt->execute();
+    $transcription = array();
+    while ($stmt->fetch())
+    {
+        $transcription = array('transcription' => $transcription, 'summary' => $summary, 'tone' => $tone, 'id' => $transcriptionID);
+    }
+    $stmt->close();
+    $db->close();
+    return $transcription;
 }
 
 ?>

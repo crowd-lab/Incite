@@ -114,7 +114,7 @@ function completeTask($id, $task_seq, $worker_id, $submission_id, $user_id)
     $db = DB_Connect::connectDB();
     $is_completed = 2;
     $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, incite_user_id = ?, time".$task_seq."_end = NOW(), submission".$task_seq." = ? WHERE id = ?");
-    $stmt->bind_param("issi", $is_completed, $worker_id, $user_id, $submission_id, $id);
+    $stmt->bind_param("isiii", $is_completed, $worker_id, $user_id, $submission_id, $id);
     $stmt->execute();
     $stmt->close();
     $db->close();
@@ -213,6 +213,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $is_session_on = FALSE;
         if (!isset($_SESSION))
             $is_session_on = session_start();
+        else
+            $is_session_on = TRUE;
+
         if ($is_session_on === FALSE) {
             echo 'Something went wrong. Our system does not seem to work correctly on your device. Please return the HIT. Sorry for any inconvenience!';
             die();
@@ -246,7 +249,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $trial = getNextTrial($assignment_id, $worker_id);
             if ($trial != null) {
                 //Initialization
+                $_SESSION['study2']['worker_id'] = $worker_id;
                 $_SESSION['study2']['id'] = $trial['trial_id'];
+                $_SESSION['study2']['workflow'] = $trial['workflow'];
                 $_SESSION['study2']['task_seq'] = 1;
                 $_SESSION['study2']['urls'] = array(urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']), urlGenerator('', 4), urlGenerator('', 5));
 
@@ -288,9 +293,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
 
     //All set. Move to next task!
+    $task_seq = $_SESSION['study2']['task_seq'];
     $_SESSION['study2']['task_seq']++;
     $urls = $_SESSION['study2']['urls'];
-    $task_seq = $_SESSION['study2']['task_seq'];
     $this->redirect($urls[$task_seq]);
   }
 
@@ -303,12 +308,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
 
       $this->_helper->viewRenderer('transcribeid');
+        /*
       $this->view->latest_transcription = getNewestTranscription($this->_getParam('id'));
       $this->view->is_being_edited = !empty($this->view->latest_transcription);
 
       if ($this->view->is_being_edited) {
         $this->view->revision_history = getTranscriptionRevisionHistory($this->_getParam('id'));
       }
+        */
 
       $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
@@ -371,9 +378,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
 
     //All set. Move to next task!
+    $task_seq = $_SESSION['study2']['task_seq'];
     $_SESSION['study2']['task_seq']++;
     $urls = $_SESSION['study2']['urls'];
-    $task_seq = $_SESSION['study2']['task_seq'];
     $this->redirect($urls[$task_seq]);
   }
 
@@ -387,7 +394,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
 
       //Get the transcription for the document
-      $newestTranscription = getNewestTranscription($this->_getParam('id'));
+      //1. If workflow = 0 (artisan), find newest transcription from self
+      if ($_SESSION['study2']['workflow'] == 0) {
+        $newestTranscription = getNewestTranscriptionFromUserId($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id']);
+      } else { //workflow = 1 (assembly): find first transcription => pre-set transcription
+        $newestTranscription = getFirstTranscription($this->_getParam('id'));
+      }
+      //$newestTranscription = getNewestTranscription($this->_getParam('id'));
       if (!empty($newestTranscription)) {
         $this->view->transcription_id = $newestTranscription['id'];
         $this->view->transcription = $newestTranscription['transcription'];
@@ -406,12 +419,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
 
       //Do we already have tags or do we need to generate them via NER
+        /*
       if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
         $this->view->is_being_edited = true;
         $this->view->revision_history = getTaggedTranscriptionRevisionHistory($this->_getParam('id'));
         $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
         $this->view->transcription = migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
-      } else {
+      } else 
+        */
+        {
         $this->view->is_being_edited = false;
 
         $ner_entity_table = array();
@@ -523,9 +539,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], 0, $_SESSION['Incite']['USER_DATA']['id']);
 
     //All set. Move to next task!
+    $task_seq = $_SESSION['study2']['task_seq'];
     $_SESSION['study2']['task_seq']++;
     $urls = $_SESSION['study2']['urls'];
-    $task_seq = $_SESSION['study2']['task_seq'];
     $this->redirect($urls[$task_seq]);
 
   }
