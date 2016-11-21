@@ -153,8 +153,7 @@ function getInciteUrl()
 
 function getFullOmekaUrl()
 {
-    $host = $_SERVER['HTTP_HOST'];
-    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $host . '/' . getOmekaFolderName();
+    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . getOmekaUrl() . '/';
 }
 
 function getFullInciteUrl()
