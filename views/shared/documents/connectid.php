@@ -143,6 +143,12 @@ $(document).ready(function(){
             {
                 overflow: hidden;
             }
+    .btn-end {
+            display: none;
+        }
+        #step-0 .btn-end { display: block; }
+        
+        #step-7 .btn-end { display: block; }
         </style>
 
 </body>

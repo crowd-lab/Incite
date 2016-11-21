@@ -193,7 +193,7 @@
     }
 
     function addUserTag(text, span_id) {
-        var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+        var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align" id="trashButton"><span class="glyphicon glyphicon-trash" aria-hidden="true" id="trashButton"></span></button></td></tr>');
 
         new_entity.find('.subcategory-select').multiselect({
             enableFiltering: true,
@@ -221,7 +221,7 @@
     function addExistingTags() {
         $('#transcribe_copy em').each(function (idx) {
             tagid_id_counter++;
-            var new_entity = $('<tr id="'+this.id+'_table" data-tagid="'+(""+this.id).replace("tag_id_", "")+'"><td><span class="entity-name">'+$(this).text()+'</span></td><td><select class="category-select '+this.className+'"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>');
+            var new_entity = $('<tr id="'+this.id+'_table" data-tagid="'+(""+this.id).replace("tag_id_", "")+'"><td><span class="entity-name">'+$(this).text()+'</span></td><td><select class="category-select '+this.className+'"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align" id="trashButton"><span class="glyphicon glyphicon-trash" aria-hidden="true" id="trashButton"></span></button></td></tr>');
             new_entity.find('.subcategory-select').multiselect({
                 enableFiltering: true,
                 filterBehavior: 'text',
@@ -487,31 +487,90 @@
         });
     }
     var tour = new Tour({
-    steps: [
-        {
-            element: "#work-view",
-            title: "Document Viewer",
-            content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. The tab "Transcription" below title shows the current transcription of the document.<br>3. The tab "Document" below title is an image viewer that shows the original image of the document.<br>4. The legend at the top right corner shows different types of tags.',
-            placement: "right"
-        },
-        {
-            element: "#tagging-container",
-            title: "Tag Task",
-            content: '1. Please follow the two steps to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of each step provides detailed instructions.<br>3. If you are editing existing tags, you can view revision history by clicking the link at the top right corner of Step 1.',
-            placement: "left"
-        },
-        {
-            element: "#comment-container",
-            title: "Comment",
-            content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-            placement: "left"
-        },
-        {
-            element: "#navbar-bottom",
-            title: "Status of The Document",
-            content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
-            placement: "top"
-        }
+        template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
+        steps: [
+            {
+                element: '#work-view',
+                title: "Welcome!",
+                content: "It looks like you haven’t tagged a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
+                placement: "right",
+            },
+            {
+                element: '#tagging-container',
+                title: "Try deleting an incorrect tag",
+                content: 'This is a document that has been transcribed. Incite has auto-suggested some tags. Read through the suggested tags and use the right hand panel to delete any tags that are incorrect. In this case, try deleting the first tag.',
+                placement: 'left',
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#trashButton').one("mouseenter", function() {
+                        tour.next();
+                    });
+                }
+            },
+            {
+                element: '#tagging-container',
+                title: "",
+                content: "Good job!  Now let's move onto adding your own tags.",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#work-view',
+                title: "Adding your own Tags",
+                content: "Now, highlight words in the transcription on the left to add any missing tags. You can highlight a word by clicking and dragging.",
+                placement: "right",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    var isDragging = false;
+                    $("#work-view").mousedown(function() {
+                        isDragging = false;
+                    }).mousemove(function() {
+                        isDragging = true;
+                    }).mouseup(function() {
+                        var wasDragging = isDragging;
+                        isDragging = false;
+                        if (wasDragging) {
+                            tour.next();
+                        }
+                    });
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#work-view',
+                title: "",
+                content: "Great Work! Click next to continue.",
+                placement: "right",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            
+            
+            {
+                element: '#comment-container',
+                title: "Comments",
+                content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            
+            {
+                element: '#work-view',
+                title: "Congratulations!",
+                content: "You've finished the tutorial for the tagging process! Press End Tour to close this tutorial.",
+                placement: "right",
+                
+            }
     ],
     backdrop: true,
     storage: false});
@@ -536,6 +595,12 @@
     .comments-section-container {
         padding-left: 15px;
     }
+    .btn-end {
+            display: none;
+        }
+        #step-0 .btn-end { display: block; }
+        
+        #step-6 .btn-end { display: block; }
 
     #revision-history-container {
         padding-left: 1.5%;

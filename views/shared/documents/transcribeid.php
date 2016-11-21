@@ -9,6 +9,15 @@
         var msgbox;
         var comment_type = 0;
     </script>
+    
+    <script type="text/javascript">
+        var textArea;
+        var textToCheck;
+        textToCheck = "Hello World";
+        textArea = document.getElementById("transcription-textarea");
+        
+        
+    </script>
 
     <!-- Page Content -->
     <?php
@@ -40,6 +49,7 @@
                 </p>
 
                 <textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
+                
                 <p class="step">
                     <i>Step 2 of 3: Summarize</i>
                     <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
@@ -52,7 +62,7 @@
                     </span>
                 </p>
                 <textarea id="summary-textarea" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
-                <div class="form-group">
+                <div class="form-group" id="tone-selection">
                     <p class="step">
                         <i>Step 3 of 3: Select the tone of the document</i>
                         <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
@@ -122,6 +132,7 @@
                 styleForEditing();
             <?php endif; ?>
         });
+        
 
         function styleForEditing() {
             populateWithLatestTranscriptionData();
@@ -147,35 +158,196 @@
                 $('#transcribe-form').show();
             });
         }
+        
+        
         var tour = new Tour({
+            
+            //onShown: function (tour) {
+              //  $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+            //}
+        //})
+            template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
         steps: [
             {
-                element: "#work-view",
-                title: "Original Document",
-                content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. Below the title is an image viewer with zooming controls at the bottom left corner. Mouse over each control to see its tooltip',
-                placement: "right"
+                element: '#work-view',
+                title: "Welcome!",
+                content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
+                placement: "right",
             },
             {
-                element: "#transcribing-work-area",
-                title: "Transcribe Task",
-                content: '1. Please follow the three steps to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of each step provides detailed instructions.<br>3. If you are editing an existing transcription, you can view revision history by clicking the link at the top right corner of Step 1.',
-                placement: "left"
+                element: '#work-view',
+                title: "",
+                content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this text searchable by transcribing it.',
+                placement: "right",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
             },
             {
-                element: "#comment-container",
-                title: "Comment",
-                content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-                placement: "left"
+                element: '#document-header',
+                title: "More Information",
+                content: 'Hovering over the i Icon at the top provides more in-depth information on the document. Try hovering now to see for yourself.',
+                placement: "right",
+                onShown: function(){
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#document-info-glyphicon').one("mouseenter", function() { 
+                        tour.next();
+                    });
+                }
             },
             {
-                element: "#navbar-bottom",
-                title: "Status of The Document",
-                content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
-                placement: "top"
+                element: "#document-header",
+                title: "Good job!",
+                content: 'Good job! Press next to continue.',
+                placement: "right",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#viewer2',
+                title: "Scrolling",
+                content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. Try using the zoom tool on this document now. ',
+                placement: "right",
+                onShown: function(){
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#zoomer').click(function() { 
+                        tour.goTo(5);
+                    });
+                }
+            },
+            {
+                element: "#viewer2",
+                title: "Great!",
+                content: 'Great! Lets continue. Please press next to continue.',
+                placement: "right",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+            },
+            {
+                element: "#submit-zone",
+                title: "Transcribing Process",
+                content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word <br> 2. Summarize: Provide a brief summary of the document <br> 3. Tone: Out of the options available, select the most relevant tone of the document',
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+            },
+            {
+                element: "#transcription-textarea",
+                title: "Transcription",
+                content: 'When transcribing, try your best to be as accurate as possible. If you run into a word or sentence that’s too difficult to read, make an educated guess and move on. Try it for yourself now! Type the word "hello"',
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#transcription-textarea').on("input", function() {
+                        
+                        if (this.value == 'hello') {
+                            tour.next();
+                        }
+                    });
+                }
+            },
+            {
+                element: '#transcription-textarea',
+                title: "Nice!",
+                content: "You've finished the transcription process! Press next to continue.",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#summary-textarea',
+                title: "Summarize",
+                content: "Now try summarizing the document in 1-2 sentences.  Remember, be brief and try to bring out the most important aspects of the document!",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    var counter = 0;
+                    $('#summary-textarea').on("keydown", function(event) {
+                        
+                        if (event.keyCode == 190) {
+                            counter = counter + 1;
+                            if (counter == 2) {
+                                tour.next();
+                                
+                            }
+                            
+                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        }
+                        
+                    });
+                }
+                
+            },
+            
+            {
+                element: '#summary-textarea',
+                title: "Almost there!",
+                content: "You've finished the part for the summary process! Press next to proceed to the final step of this tutorial.",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#tone-selection',
+                title: "Selecting the Tone",
+                content: "Now lets try selecting a tone from the dropdown box. Please select Sarcasm.",
+                placement: "left",
+                
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#tone-selector').change(function() {
+                        if (this.value == 'sarcasm') {
+                            tour.next();
+                        }
+                    });
+                }
+            },
+            {
+                element: '#tone-selection',
+                title: "Great job! You're almost done!",
+                content: "You've finished the tutorial for the entire transcription process. Here are some extra tidbits of information.",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#comment-container',
+                title: "Comments",
+                content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            
+            {
+                element: '#work-view',
+                title: "Congratulations!",
+                content: "You've finished the tutorial for the transcription process! Press End Tour to close this tutorial.",
+                placement: "right",
+                
             }
         ],
+            
         backdrop: true,
         storage: false});
+        
 
         // Initialize the tour
         tour.init();
@@ -188,6 +360,12 @@
         #submit-zone {
             margin-top: -32px;
         }
+        .btn-end {
+            display: none;
+        }
+        #step-0 .btn-end { display: block; }
+        
+        #step-14 .btn-end { display: block; }
 
         #submit_transcription {
             float: right;
@@ -216,6 +394,11 @@
             right: 0;
             cursor: pointer;
         }
+        .tour-backdrop,
+    .tour-step-background {
+        z-index: 3;
+    }
+        
     </style>
 </body>
 
