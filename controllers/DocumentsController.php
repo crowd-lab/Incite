@@ -510,8 +510,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->saveConnections();
 
       }
-
-
       $this->populateDataForConnectTask();
     }
   }
@@ -563,7 +561,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $this->view->subjects = getAllSubjectConcepts();
 
       //Filter out untranscribed documents
-      $newestTranscription = getNewestTranscription($this->_getParam('id'));
+      //$newestTranscription = getNewestTranscription($this->_getParam('id'));
+      //1. If workflow = 0 (artisan), find newest transcription from self
+      if ($_SESSION['study2']['workflow'] == 0) {
+        $newestTranscription = getNewestTranscriptionFromUserId($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id']);
+      } else { //workflow = 1 (assembly): find first transcription => pre-set transcription
+        $newestTranscription = getFirstTranscription($this->_getParam('id'));
+      }
       if (empty($newestTranscription)) {
         if (isset($this->view->query_str) && $this->view->query_str !== "") {
           $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
@@ -575,16 +579,25 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
 
       //Gets the latest tagged transcription and the most recently marked subjects, if they exist
-      if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
-        $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
-        $this->view->transcription =  migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
+      //1. If workflow = 0 (artisan), find newest transcription from self
+      if ($_SESSION['study2']['workflow'] == 0) {
+        $taggedTranscription = getNewestTaggedTranscriptionFromUserId($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id']);
+      } else { //workflow = 1 (assembly): find first transcription => pre-set transcription
+        $taggedTranscription = getFirstTaggedTranscription($this->_getParam('id'));
+      }
+      //if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
+      if (!empty($taggedTranscription)) {
+        //$transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
+        $this->view->transcription =  migrateTaggedDocumentFromV1toV2($taggedTranscription['transcription']);
 
-        $this->view->newest_n_subjects = getNewestSubjectsForNewestTaggedTranscription($this->_getParam('id'));
+        //$this->view->newest_n_subjects = getNewestSubjectsForNewestTaggedTranscription($this->_getParam('id'));
+        /*
         $this->view->is_being_edited = !empty($this->view->newest_n_subjects);
 
         if ($this->view->is_being_edited) {
           $this->view->revision_history = getConnectionRevisionHistory($this->_getParam('id'));
         }
+        */
 
         $this->_helper->viewRenderer('connectbymultiselection');
       } else {
@@ -600,9 +613,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select another document from the connectable document list below.';
 
       if (isset($this->view->query_str) && $this->view->query_str !== "")
-      $this->redirect('/incite/documents/connect?'.$this->view->query_str);
+        $this->redirect('/incite/documents/connect?'.$this->view->query_str);
       else
-      $this->redirect('/incite/documents/connect');
+        $this->redirect('/incite/documents/connect');
     }
   }
 

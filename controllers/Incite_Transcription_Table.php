@@ -371,4 +371,50 @@ function getFirstTranscription($itemID) {
     return $transcription;
 }
 
+/**
+ * Get the latest tagged transcription, summary, tone and id for a specific document from a specific user(approved or not)
+ *
+ * @param int $itemID, $userID
+ * @return array with the info request, or empty if no transcriptions for document
+ */
+function getNewestTaggedTranscriptionFromUserId($itemID, $userID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tagged_transcription, id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND user_id = ? ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt->bind_param("ii", $itemID, $userID);
+    $stmt->bind_result($transcription, $transcriptionID);
+    $stmt->execute();
+    $newest_transcription = array();
+    while ($stmt->fetch())
+    {
+        $newest_transcription = array('transcription' => $transcription, 'id' => $transcriptionID);
+    }
+    $stmt->close();
+    $db->close();
+    return $newest_transcription;
+}
+
+/**
+ * Get the first tagged transcription, summary, tone and id for a specific document from a specific user(approved or not)
+ *
+ * @param int $itemID, $userID
+ * @return array with the info request, or empty if no transcriptions for document
+ */
+function getFirstTaggedTranscription($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tagged_transcription, id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? ORDER BY timestamp_creation ASC LIMIT 1");
+    $stmt->bind_param("i", $itemID );
+    $stmt->bind_result($transcription, $transcriptionID);
+    $stmt->execute();
+    $transcription = array();
+    while ($stmt->fetch())
+    {
+        $transcription = array('transcription' => $transcription, 'id' => $transcriptionID);
+    }
+    $stmt->close();
+    $db->close();
+    return $transcription;
+}
+
+
+
 ?>
