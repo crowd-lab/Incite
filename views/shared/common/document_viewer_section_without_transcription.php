@@ -64,7 +64,7 @@
 <body>
 	<div class="col-md-6" id="work-zone">
         <div id="work-view">
-            <div class="document-header">
+            <div class="document-header" id="document-header">
                 <span class="document-title" title="<?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>" ><b>Title:</b> <?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?></span>
                 <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
                 	aria-hidden="true" data-trigger="hover"
@@ -83,7 +83,7 @@
 
 <style>
 	#work-view {
-        position: fixed;
+        position: relative;
         width: 35%;
         margin-top: -39px;
     }
