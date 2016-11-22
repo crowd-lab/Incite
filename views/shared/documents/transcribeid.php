@@ -240,14 +240,14 @@
             {
                 element: "#transcription-textarea",
                 title: "Transcription",
-                content: 'When transcribing, try your best to be as accurate as possible. If you run into a word or sentence that’s too difficult to read, make an educated guess and move on. Try it for yourself now! Type the word "hello"',
+                content: 'When transcribing, try your best to be as accurate as possible. If you run into a word or sentence that’s too difficult to read, make an educated guess and move on. <br>Try it for yourself now! Type the sentence "This is my first transcription sentence."',
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $('#transcription-textarea').on("input", function() {
                         
-                        if (this.value == 'hello') {
+                        if (this.value == 'This is my first transcription sentence.') {
                             tour.next();
                         }
                     });
