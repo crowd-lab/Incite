@@ -43,7 +43,7 @@
 
                     <form id="subject-form" method="post">
                         <?php foreach ((array)$this->subjects as $subject): ?>
-                                            <input type="checkbox" class="subject-checkbox" name="subjects[]" value="<?php echo $subject['id']; ?>">
+                                            <input type="checkbox" class="subject-checkbox" name="subjects[]" value="<?php echo $subject['id']; ?>" id="checkBoxAnswer">
                                             <label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label>
                                             <br>
                         <?php endforeach; ?>
@@ -151,30 +151,60 @@
             });
         }
         var tour = new Tour({
+            
+            template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
         steps: [
             {
-                element: "#work-view",
-                title: "Document Viewer",
-                content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. The tab "Transcription" below title shows the current transcription of the document along with tags.<br>3. The tab "Document" below title is an image viewer that shows the original image of the document.<br>4. The legend at the top right corner shows different types of tags.',
-                placement: "right"
+                element: '#work-view',
+                title: "Welcome!",
+                content: "It looks like you haven’t connected a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
+                placement: "right",
+            },
+            {
+                element: '#work-view',
+                title: "",
+                content: "This is a document that has already been transcribed and tagged. Go ahead and read through it now.",
+                placement: "right",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
             },
             {
                 element: "#connecting-container",
                 title: "Connect Task",
-                content: '1. Please follow the one step to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of the step provides detailed instructions.',
-                placement: "left"
+                content: 'Now that you’ve read the transcription, check each category that relates to the provided document. <br> Lets assume this piece was about the influence of churches during the Civil War. Check which category would most suit this piece.',
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#checkBoxAnswer').one("click", function() {
+                        tour.next();
+                    });
+                }
+            },
+            {
+                element: '#connecting-container',
+                title: "Great!",
+                content: "Good job! Click next to continue",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
             },
             {
                 element: "#comment-container",
                 title: "Comment",
                 content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-                placement: "left"
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
             },
             {
-                element: "#navbar-bottom",
-                title: "Status of The Document",
-                content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
-                placement: "top"
+                element: "#work-view",
+                title: "Congratulations! You've finished the Connect Tutorial.",
+                content: 'You’re all done! If you’d like to return to these tutorials in the future, you can access it through the (?) page. <br>Press End Tour to exit this tutorial.',
+                placement: "right"
             }
         ],
         backdrop: true,
@@ -200,6 +230,18 @@
 
         #connecting-work-area {
             margin-top: -32px;
+        }
+        
+        #step-0 .btn-end { display: block; }
+        
+        #step-5 .btn-end { display: block; }
+        
+        .tooltip {
+            position: fixed;
+        }
+        
+        .btn-end {
+            display: none;
         }
     </style>
 </body>
