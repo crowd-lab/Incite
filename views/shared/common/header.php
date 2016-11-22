@@ -734,7 +734,7 @@ function year_of_full_iso_date(date) {
 }
 </script>
 </head>
-
+<?php if (FALSE): ?>
 <body>
 
     <!-- Navigation -->
@@ -954,3 +954,5 @@ function year_of_full_iso_date(date) {
 </div>
 
 </body>
+
+<?php endif; ?>

@@ -2,6 +2,8 @@
 	queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
 ?>
 
+<?php if (FALSE): ?>
+
 <head>
 	<script type="text/javascript">
 		$(document).ready(function () {
@@ -301,3 +303,5 @@
    		box-shadow:         inset 0 0 15px #5CB85C;
 	}
 </style>
+
+<?php endif; ?>

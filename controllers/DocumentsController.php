@@ -124,6 +124,8 @@ function urlGenerator($doc_id, $task_type)
 {
     $action = '';
     switch($task_type) {
+        case 0:
+            $action = 'presurvey'; break;
         case 1:
             $action = 'transcribe'; break;
         case 2:
@@ -131,7 +133,7 @@ function urlGenerator($doc_id, $task_type)
         case 3:
             $action = 'connect'; break;
         case 4:
-            $action = 'survey'; break;
+            $action = 'postsurvey'; break;
         case 5:
             $action = 'complete'; break;
         default:
@@ -253,7 +255,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['study2']['id'] = $trial['trial_id'];
                 $_SESSION['study2']['workflow'] = $trial['workflow'];
                 $_SESSION['study2']['task_seq'] = 1;
-                $_SESSION['study2']['urls'] = array(urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']), urlGenerator('', 4), urlGenerator('', 5));
+                //0: presurvey, 4: postsurvey, 5: complete
+                $_SESSION['study2']['urls'] = array(urlGenerator('', 0), urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']), urlGenerator('', 4), urlGenerator('', 5));
 
                 //All set. Redirec the user to the first task!
                 $this->redirect($_SESSION['study2']['urls'][0]);
@@ -758,13 +761,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
     $this->view->task_type = $task;
   }
-  public function surveyAction() {
-        echo 'this is a survey!';
-        die();
+  public function presurveyAction() {
   }
+
+  public function postsurveyAction() {
+  }
+
   public function completeAction() {
-        echo 'Task completed!';
-        die();
   }
   public function errorAction() {
         echo 'Something went wrong!';
