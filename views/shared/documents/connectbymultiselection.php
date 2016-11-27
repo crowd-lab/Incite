@@ -96,7 +96,7 @@
                 }
 
                 //from progress_indicator.php
-                styleProgressIndicatorForCompletion();
+                //styleProgressIndicatorForCompletion();
 
                 $("#subject-form").submit();
             });
