@@ -402,6 +402,14 @@ body {
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 <script>
+
+//window.onbeforeunload = function() { return "You work will be lost and progress may not be recorded correctly!"; };
+history.pushState(null, null, document.URL);
+window.addEventListener('popstate', function () {
+    alert('Please do not use back button because your work may be lost!');
+    history.pushState(null, null, document.URL);
+});
+
 var msgbox;
 var fullInciteUrl = "<?php echo getFullInciteUrl(); ?>";
 
