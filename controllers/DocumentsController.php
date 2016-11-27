@@ -97,7 +97,7 @@ function getNextTrial($assignment_id, $worker_id)
     $db->close();
     if ($result != null) {
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("UPDATE `study2` SET is_completed = ?, assignment_id = ?, worker_id = ?, time1_start = NULL, attempts = attempts + 1 WHERE `id` = ?");
+        $stmt = $db->prepare("UPDATE `study2` SET is_completed = ?, assignment_id = ?, worker_id = ?, time0_start = NOW(), attempts = attempts + 1 WHERE `id` = ?");
         $is_completed = 1; //job taken=>working
         $stmt->bind_param("issi", $is_completed, $assignment_id, $worker_id, $trial_id);
         $stmt->execute();
@@ -112,9 +112,14 @@ function getNextTrial($assignment_id, $worker_id)
 function completeTask($id, $task_seq, $worker_id, $submission_id, $user_id)
 {
     $db = DB_Connect::connectDB();
-    $is_completed = 2;
-    $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, incite_user_id = ?, time".$task_seq."_end = NOW(), submission".$task_seq." = ? WHERE id = ?");
-    $stmt->bind_param("isiii", $is_completed, $worker_id, $user_id, $submission_id, $id);
+
+    if ($task_seq < 3) {
+        $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, incite_user_id = ?, time".$task_seq."_end = NOW(), time".($task_seq+1)."_start = NOW(), submission".$task_seq." = ? WHERE id = ?");
+    } else {
+        $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, incite_user_id = ?, time".$task_seq."_end = NOW(), submission".$task_seq." = ? WHERE id = ?");
+    }
+
+    $stmt->bind_param("isiii", $task_seq, $worker_id, $user_id, $submission_id, $id);
     $stmt->execute();
     $stmt->close();
     $db->close();
@@ -254,7 +259,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['study2']['worker_id'] = $worker_id;
                 $_SESSION['study2']['id'] = $trial['trial_id'];
                 $_SESSION['study2']['workflow'] = $trial['workflow'];
-                $_SESSION['study2']['task_seq'] = 1;
+                $_SESSION['study2']['task_seq'] = 0;
                 //0: presurvey, 4: postsurvey, 5: complete
                 $_SESSION['study2']['urls'] = array(urlGenerator('', 0), urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']), urlGenerator('', 4), urlGenerator('', 5));
 
@@ -296,8 +301,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
 
     //All set. Move to next task!
-    $task_seq = $_SESSION['study2']['task_seq'];
     $_SESSION['study2']['task_seq']++;
+    $task_seq = $_SESSION['study2']['task_seq'];
     $urls = $_SESSION['study2']['urls'];
     $this->redirect($urls[$task_seq]);
   }
@@ -381,8 +386,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
 
     //All set. Move to next task!
-    $task_seq = $_SESSION['study2']['task_seq'];
     $_SESSION['study2']['task_seq']++;
+    $task_seq = $_SESSION['study2']['task_seq'];
     $urls = $_SESSION['study2']['urls'];
     $this->redirect($urls[$task_seq]);
   }
@@ -540,8 +545,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], 0, $_SESSION['Incite']['USER_DATA']['id']);
 
     //All set. Move to next task!
-    $task_seq = $_SESSION['study2']['task_seq'];
     $_SESSION['study2']['task_seq']++;
+    $task_seq = $_SESSION['study2']['task_seq'];
     $urls = $_SESSION['study2']['urls'];
     $this->redirect($urls[$task_seq]);
 
@@ -762,6 +767,26 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->view->task_type = $task;
   }
   public function presurveyAction() {
+        if ($this->getRequest()->isPost()) {
+            $name   = $_POST['name'];
+            $age    = $_POST['age'];
+            $gender = $_POST['gender'];
+            $majors = $_POST['majors'];
+
+            //Save demographics
+            $db = DB_Connect::connectDB();
+            $stmt = $db->prepare("UPDATE study2 SET name = ?, age = ?, gender = ?, majors = ?, time1_start = NOW() WHERE id = ?");
+            $stmt->bind_param("sissi", $name, $age, $gender, $majors, $_SESSION['study2']['id']);
+            $stmt->execute();
+            $stmt->close();
+            $db->close();
+
+            //All set. Move to next task!
+            $_SESSION['study2']['task_seq']++;
+            $task_seq = $_SESSION['study2']['task_seq'];
+            $urls = $_SESSION['study2']['urls'];
+            $this->redirect($urls[$task_seq]);
+        }
   }
 
   public function postsurveyAction() {
