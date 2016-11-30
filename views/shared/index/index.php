@@ -146,14 +146,18 @@ include(dirname(__FILE__).'/../common/header.php');
     </div> <!-- homepage-carousel -->
     <br>
     <div id="homepage-details" style="margin-top: 30px;">
-        <div id="twitter-tweets" style="float: right; width:22%; margin-bottom: -250px;">
+        <div id="twitter-tweets" style="float: right; width:25%; margin-bottom: -250px;">
+            <h3 style="color: #8BB7C8; margin-top: 0px;">CONNECT WITH US</h3>
             <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @J    uly4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-            <a class="twitter-timeline" data-width="100%" data-height="300" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
-            <div style="border: 1px solid #dddddd; margin-bottom: 5px;"></div>
-            <div class="fb-like" data-href="https://www.facebook.com/VCCWS/" data-width="275" data-layout="standard" da    ta-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+            <a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
+            <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
+            <div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/July4CivilWar/">Mapping the Fourth of July: Exploring Independence in the Civil War Era</a></blockquote></div>
+<!--
+            <div class="fb-like" data-href="https://www.facebook.com/July4CivilWar/" data-width="275" data-layout="standard" da    ta-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+-->
         </div>
 
-        <div id="homepage-introduction" style="width: 75%;">
+        <div id="homepage-introduction" style="width: 73%;">
             <h3 style="color: #8BB7C8;">WE ARE UNCOVERING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
             <div style="margin-left: 140px;">
                 <div style="float: right; width:100%;"><p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p></div>
