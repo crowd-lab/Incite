@@ -790,6 +790,22 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   }
 
   public function postsurveyAction() {
+        if ($this->getRequest()->isPost()) {
+            
+            //Save 
+            $db = DB_Connect::connectDB();
+            $stmt = $db->prepare("UPDATE study2 SET q1 = ?, q2 = ?, q3 = ?, q4 = ?, q5 = ?, q6 = ?, q71 = ?, q72 = ?, q73 = ?, q74 = ?, q81 = ?, q82 = ?, q83 = ?, q84 = ?, tlx_men = ?, tlx_phy = ?, tlx_tem = ?, tlx_per = ?, tlx_eff = ?, tlx_fru = ? WHERE id = ?");
+            $stmt->bind_param("iiiiiiiiiiiiiiiiiiiii", $_POST['q1'], $_POST['q2'], $_POST['q3'], $_POST['q4'], $_POST['q5'], $_POST['q6'], $_POST['q71'], $_POST['q72'], $_POST['q73'], $_POST['q74'], $_POST['q81'], $_POST['q82'], $_POST['q83'], $_POST['q84'], $_POST['tlx_men'], $_POST['tlx_phy'], $_POST['tlx_tem'], $_POST['tlx_per'], $_POST['tlx_eff'], $_POST['tlx_fru'], $_SESSION['study2']['id']);
+            $stmt->execute();
+            $stmt->close();
+            $db->close();
+
+            //All set. Move to next task!
+            $_SESSION['study2']['task_seq']++;
+            $task_seq = $_SESSION['study2']['task_seq'];
+            $urls = $_SESSION['study2']['urls'];
+            $this->redirect($urls[$task_seq]);
+        }
   }
 
   public function completeAction() {
