@@ -172,13 +172,15 @@
             {
                 element: "#connecting-container",
                 title: "Connect Task",
-                content: 'Now that you’ve read the transcription, check each category that relates to the provided document. <br> Lets assume this piece was about the influence of churches during the Civil War. Check which category would most suit this piece.',
+                content: 'Now that you’ve read the transcription, check each category that relates to the provided document.',
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('#checkBoxAnswer').one("click", function() {
-                        tour.next();
+                    $('input[type="checkbox"]').one("mouseup", function() {
+                        if (this.value == 100) {
+                            tour.next();
+                        }
                     });
                 }
             },
@@ -203,7 +205,7 @@
             {
                 element: "#work-view",
                 title: "Congratulations! You've finished the Connect Tutorial.",
-                content: 'You’re all done! If you’d like to return to these tutorials in the future, you can access it through the (?) page. <br>Press End Tour to exit this tutorial.',
+                content: 'You’re all done!  <br>Press End Tour to exit this tutorial.',
                 placement: "right"
             }
         ],

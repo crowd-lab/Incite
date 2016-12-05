@@ -193,7 +193,7 @@
     }
 
     function addUserTag(text, span_id) {
-        var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align" id="trashButton"><span class="glyphicon glyphicon-trash" aria-hidden="true" id="trashButton"></span></button></td></tr>');
+        var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select" id="categorySelect"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" id="detail" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align" id="addTrashButton"><span class="glyphicon glyphicon-trash" aria-hidden="true" id="addTrashButton"></span></button></td></tr>');
 
         new_entity.find('.subcategory-select').multiselect({
             enableFiltering: true,
@@ -496,22 +496,18 @@
                 placement: "right",
             },
             {
-                element: '#tagging-container',
-                title: "Try deleting an incorrect tag",
-                content: 'This is a document that has been transcribed. Incite has auto-suggested some tags. Read through the suggested tags and use the right hand panel to delete any tags that are incorrect. In this case, try deleting the first tag.',
+                element: '#entity-table',
+                title: "Auto-suggested and Previous Tags",
+                content: 'This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag.',
                 placement: 'left',
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('#trashButton').one("mouseenter", function() {
-                        tour.next();
-                    });
                 }
             },
             {
-                element: '#tagging-container',
-                title: "",
-                content: "Good job!  Now let's move onto adding your own tags.",
+                element: '#entity-table',
+                title: "Parts of a tag",
+                content: "A tag consists of four components. <br>1. The name <br>2. The category <br>3. The sub-category <br>4. The details",
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
@@ -521,7 +517,7 @@
             {
                 element: '#work-view',
                 title: "Adding your own Tags",
-                content: "Now, highlight words in the transcription on the left to add any missing tags. You can highlight a word by clicking and dragging.",
+                content: "Now, highlight words in the transcription on the left to add any missing tags. You can highlight a word by clicking and dragging.<br>Try highlighting the author's name.",
                 placement: "right",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
@@ -552,6 +548,84 @@
                 
             },
             
+            {
+                element: '#user-entity-table',
+                title: "Adding the components to your tag",
+                content: "Now let's try setting the components to the tag you just made. <br>If a tag doesn't fit under any given category, select Other for the category or None for the subcategory. <br>Try setting the most appropriate category/subcategory.",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $('#categorySelect').change(function() {
+                        if (this.value == 3) {
+                            tour.next();
+                        }
+                        
+                    });
+                    
+                }
+                
+            },
+            {
+                element: '#user-entity-table',
+                title: "",
+                content: "Great Work! Click next to continue.",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#user-entity-table',
+                title: "Adding the components to your tag",
+                content: "Now add a small detail about the tag. For example, try typing 'author'.",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#detail').on("input", function() {
+                        
+                        if (this.value == 'author') {
+                            tour.next();
+                        }
+                    });
+                }
+                
+            },
+            {
+                element: '#user-entity-table',
+                title: "",
+                content: "Great Work! You've created your first tag! Press next to continue",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            {
+                element: '#user-entity-table',
+                title: "Deletion",
+                content: 'Now try deleting the tag we just finalized. You can do this by clicking the trash button.',
+                placement: 'left',
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $('#addTrashButton').one("mouseup", function() {
+                        tour.next();
+                    });
+                }
+            },
+            {
+                element: '#user-entity-table',
+                title: "",
+                content: "Great Work! Press next to continue",
+                placement: "left",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                }
+                
+            },
+            
             
             {
                 element: '#comment-container',
@@ -569,6 +643,9 @@
                 title: "Congratulations!",
                 content: "You've finished the tutorial for the tagging process! Press End Tour to close this tutorial.",
                 placement: "right",
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", false);
+                }
                 
             }
     ],
@@ -600,7 +677,7 @@
         }
         #step-0 .btn-end { display: block; }
         
-        #step-6 .btn-end { display: block; }
+        #step-12 .btn-end { display: block; }
 
     #revision-history-container {
         padding-left: 1.5%;

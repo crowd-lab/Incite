@@ -75,9 +75,9 @@
                         </span>
                     </p>
                     <select id="tone-selector" class="form-control" name="tone">
-                        <option value="informational" default selected>Informational</option>
+                        <option value="informational">Informational</option>
                         <option value="anxiety">Anxiety</option>
-                        <option value="optimism">Optimism</option>
+                        <option value="optimism" default selected>Optimism</option>
                         <option value="sarcasm">Sarcasm</option>
                         <option value="pride">Pride</option>
                         <option value="aggression">Aggression</option>
@@ -240,14 +240,14 @@
             {
                 element: "#transcription-textarea",
                 title: "Transcription",
-                content: 'When transcribing, try your best to be as accurate as possible. If you run into a word or sentence that’s too difficult to read, make an educated guess and move on. <br>Try it for yourself now! Type the sentence "This is my first transcription sentence."',
+                content: 'When transcribing, try your best to be as accurate as possible. If you run into a word or sentence that’s too difficult to read, make an educated guess and move on. <br>Try it for yourself now! Type out every word in the document the best you can. (Welcome to the Incite Tutorial. This tutorial is meant to help you get acquainted <br>with the three main tasks of our website. These tasks include transcribing, tagging, and connecting.)',
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $('#transcription-textarea').on("input", function() {
                         
-                        if (this.value == 'This is my first transcription sentence.') {
+                        if (this.value == 'Welcome to the Incite Tutorial. This tutorial is meant to help you get acquainted with the three main tasks of our website. These tasks include transcribing, tagging, and connecting.') {
                             tour.next();
                         }
                     });
@@ -302,14 +302,14 @@
             {
                 element: '#tone-selection',
                 title: "Selecting the Tone",
-                content: "Now lets try selecting a tone from the dropdown box. Please select Sarcasm.",
+                content: "Now lets try selecting a tone from the dropdown box.",
                 placement: "left",
                 
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $('#tone-selector').change(function() {
-                        if (this.value == 'sarcasm') {
+                        if (this.value == 'informational') {
                             tour.next();
                         }
                     });
