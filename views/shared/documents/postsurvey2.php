@@ -83,40 +83,6 @@ $questions[] = array(
                     array('val' => 3, 'label' => 'The document clearly indicates Tallmadge\'s specific assignment including the horse fatigue and the Beford location.'),
                     array('val' => 4, 'label' => 'The fact that Washington is writing this type of letter and concerned about Tallmadge\'s location the the fatigue of his horse, suggests how intimately involved Washington was in the military process.')));
 
-function question_generator($question) {
-    if ($question['type'] == 'r') {
-        radio_question_generator($question);
-    } else { // true or false
-        tf_question_generator($question);
-    }
-}
-
-function tf_question_generator($question) {
-        $options = $question['options'];
-        shuffle($options);
-
-        echo '<div class="form-group">';
-        echo '    <label for="exampleSelect1">'.$question['q'].'</label>';
-        foreach($options as $option) {
-            echo ' <div><div class="radio" style="display: inline;"><label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="1">Yes</label>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="0">No</label></div><span style="margin-left: 5px;"><b>:</b></span><span style="margin-left: 15px;">'.$option['label'].'</span></div>';
-        }
-        echo '</div>';
-
-}
-
-function radio_question_generator($question) {
-
-        $options = $question['options'];
-        shuffle($options);
-
-        echo '<div class="form-group">';
-        echo '    <label for="exampleSelect1">'.$question['q'].'</label>';
-        foreach($options as $option) {
-            echo '    <div class="radio"><label><input type="radio" name="q'.$question['num'].'" value="'.$option['val'].'">'.$option['label'].'</label></div>';
-        }
-        echo '</div>';
-    
-}
 
 ?>
         <div style="margin-top: 20px;" class="col-md-6 col-md-offset-3">

@@ -81,42 +81,7 @@ $questions[] = array(
                     array('val' => 1, 'label' => 'The author is aware of the battles and duels, and provides that these battles and duels are par of a larger picture.'),
                     array('val' => 2, 'label' => 'The author focuses on battery accuracy but gives no indication that they are shotting guns to kill people, nor a sense that the enemy is trying to kill them.'),
                     array('val' => 3, 'label' => 'There does not seem to be a sense that the author is aware of the overall strategy of the battle or the war itself.'),
-                    array('val' => 4, 'label' => 'From the document, it seems the author\'s army has been making progress, showing that the war is likely to come to an end..')));
-
-function question_generator($question) {
-    if ($question['type'] == 'r') {
-        radio_question_generator($question);
-    } else { // true or false
-        tf_question_generator($question);
-    }
-}
-
-function tf_question_generator($question) {
-        $options = $question['options'];
-        shuffle($options);
-
-        echo '<div class="form-group">';
-        echo '    <label for="exampleSelect1">'.$question['q'].'</label>';
-        foreach($options as $option) {
-            echo ' <div><div class="radio" style="display: inline;"><label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="1">Yes</label>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="0">No</label></div><span style="margin-left: 5px;"><b>:</b></span><span style="margin-left: 15px;">'.$option['label'].'</span></div>';
-        }
-        echo '</div>';
-
-}
-
-function radio_question_generator($question) {
-
-        $options = $question['options'];
-        shuffle($options);
-
-        echo '<div class="form-group">';
-        echo '    <label for="exampleSelect1">'.$question['q'].'</label>';
-        foreach($options as $option) {
-            echo '    <div class="radio"><label><input type="radio" name="q'.$question['num'].'" value="'.$option['val'].'">'.$option['label'].'</label></div>';
-        }
-        echo '</div>';
-    
-}
+                    array('val' => 4, 'label' => 'From the document, it seems the author\'s army has been making progress, showing that the war is likely to come to an end.')));
 
 ?>
         <div style="margin-top: 20px;" class="col-md-6 col-md-offset-3">
