@@ -526,7 +526,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $all_subject_ids = getAllSubjectConceptIds();
     $workingGroupId = $this->getWorkingGroupID();
 
-    //connect by multiselection
+    //connect by multiscale
     if (isset($_POST['subjects']) || isset($_POST['no_subjects'])) {
       foreach ((array) $all_subject_ids as $subject_id) {
         if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array())))
@@ -607,7 +607,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
         */
 
-        $this->_helper->viewRenderer('connectbymultiselection');
+        $this->_helper->viewRenderer('connectbymultiscale');
       } else {
         if (isset($this->view->query_str) && $this->view->query_str !== "") {
           $_SESSION['incite']['message'] = 'Unfortunately, the document has not been tagged yet. Please help tag the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';

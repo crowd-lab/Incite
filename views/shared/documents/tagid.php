@@ -279,6 +279,7 @@
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
+        setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time--)); timeIsUpCheck();}, 1000);
 
         <?php if ($this->is_being_edited): ?>
             styleForEditing();

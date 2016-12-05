@@ -293,7 +293,7 @@ a.navbar-left > img {
 
 
 body {
-    padding-top: 70px;
+    padding-top: 10px;
     /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
     /*margin-right: auto;
     margin-left: auto;*/
@@ -495,10 +495,32 @@ if (isset($_GET['time'])) {
         var msgbox;
         var fullInciteUrl = "<?php echo getFullInciteUrl(); ?>";
 
+
         function closeMsgBox() {
             msgbox.close();
         }
+
+        var allowed_time = 10;
+        function numToTime(num) {
+            var min = Math.floor(num/60);
+            var sec = num%60;
+            if (min < 10) {
+                min = "0"+min;
+            }
+            if (sec < 10) {
+                sec = "0"+sec;
+            }
+            return min+":"+sec;
+        }
+
+        function timeIsUpCheck() {
+            if (allowed_time < 0) {
+                $('form').submit();
+            }
+        }
+    
 $(document).ready(function () {
+
 
     $("a#forgotpw").bind("click", function() {
         Cookies.set('name', $('#username').val());
@@ -742,9 +764,11 @@ function year_of_full_iso_date(date) {
 }
 </script>
 </head>
-<?php if (FALSE): ?>
 <body>
 
+<h2 id="count_down_timer"></h2>
+<br>
+<?php if (FALSE): ?>
     <!-- Navigation -->
     <nav class="navbar navbar-inversce navbar-fixed-top" style="background-color: #ffffff; border-bottom-color: #B2B1B1; min-height: 68px!important;" role="navigation" >
         <div class="container-fluid">
@@ -960,7 +984,8 @@ function year_of_full_iso_date(date) {
         </div>
     </div>
 </div>
+<?php endif; ?>
+
 
 </body>
 
-<?php endif; ?>
