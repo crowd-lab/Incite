@@ -500,7 +500,7 @@ if (isset($_GET['time'])) {
             msgbox.close();
         }
 
-        var allowed_time = 10;
+        var allowed_time = 1200;
         function numToTime(num) {
             var min = Math.floor(num/60);
             var sec = num%60;

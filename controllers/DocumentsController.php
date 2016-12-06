@@ -527,12 +527,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $workingGroupId = $this->getWorkingGroupID();
 
     //connect by multiscale
-    if (isset($_POST['subjects']) || isset($_POST['no_subjects'])) {
+    if (isset($_POST['connection_type'])) {
       foreach ((array) $all_subject_ids as $subject_id) {
-        if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array())))
-        addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 1);
-        else
-        addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 0);
+        //if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array()))) {
+        if (isset($_POST['subject'.$subject_id])) {
+            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id]);
+        } else {
+            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id]);
+        }
       }
     } else { //connect by tags
       if (isset($_POST['subject']) && $_POST['connection'] == 'true')

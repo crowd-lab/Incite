@@ -29,7 +29,7 @@
             <div class="col-md-6" id="connecting-work-area">
                 <div id="connecting-container">
                     <p class="header-step">
-                        <i>Step 1 of 1: Mark all categories that apply to this document</i>
+                        <i>Step 1 of 1: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                         <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
                             aria-hidden="true" data-trigger="hover"
@@ -42,14 +42,27 @@
                     </p>
 
                     <form id="subject-form" method="post">
+                        <table class="table">
+                            <thead>
+                                <td>Themes</td>
+                                <td>Not useful</td>
+                                <td>Somewhat useful</td>
+                                <td>Useful</td>
+                                <td>Very useful</td>
+                                <td>Extremely useful</td>
+                            </thead>
                         <?php foreach ((array)$this->subjects as $subject): ?>
-                                            <input type="checkbox" class="subject-checkbox" name="subjects[]" value="<?php echo $subject['id']; ?>">
-                                            <label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label>
-                                            <br>
+                            <tr>
+                                <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="0"></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="1"></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="2"></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="3"></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="4"></td>
+                            </tr>
                         <?php endforeach; ?>
-                        <input type="checkbox" class="none-checkbox" name="no_subjects" value="100">
-                        <label>None of the above topics applied</label>
-                        <br>
+                        </table>
+                        <input type="hidden" name="connection_type" value="multiscale">
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                         <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
                     </form>
@@ -91,10 +104,12 @@
 
         function addButtonAndCheckboxListeners() {
             $("#submit-selection-btn").click(function() {
+/*
                 if ($('input[type="checkbox"]:checked').length === 0) {
                     notifyOfErrorInForm("At least one category must be selected")
                     return;
                 }
+*/
 
                 //from progress_indicator.php
                 //styleProgressIndicatorForCompletion();
