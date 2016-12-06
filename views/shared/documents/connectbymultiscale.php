@@ -102,8 +102,22 @@
             <?php endif; ?>
         });
 
+        $('form input:radio').on('change', function (e) {
+            $(this).parent().parent().removeClass('unrated-theme');
+        });
+
         function addButtonAndCheckboxListeners() {
             $("#submit-selection-btn").click(function() {
+                var themes = {};
+                $('form input:radio').each( function(e) { themes[this.name]=true; });
+                themes = Object.keys(themes);
+                for (var i = 0; i < themes.length; i++) {
+                    if ($('input:radio[name='+themes[i]+']:checked').length === 0) {
+                        $($('input:radio[name='+themes[i]+']')[0]).parent().parent().addClass('unrated-theme');
+                        notifyOfErrorInForm("Please rate ALL the themes.")
+                        return;
+                    }
+                }
 /*
                 if ($('input[type="checkbox"]:checked').length === 0) {
                     notifyOfErrorInForm("At least one category must be selected")
@@ -216,6 +230,10 @@
 
         #connecting-work-area {
             margin-top: -32px;
+        }
+
+        .unrated-theme {
+            border: 2px solid red;
         }
     </style>
 </body>
