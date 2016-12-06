@@ -335,11 +335,7 @@
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass( selected_category + " tagged-text");
         });
 
-        $('#confirm-button').on('click', function (e) {
-            if ($('.category-select option:selected[value=0]').length > 0) {
-                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
-                return;
-            }
+        $('#entity-form').submit(function (e) {
             var entities = [];
             var rows = $('#entity-table tr').has("td");
             rows.each(function (idx) {
@@ -371,11 +367,16 @@
                 $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
                 $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
             });
-            //alert is for testing
+            //data, that is, JSON.stringify(entities) are ready to be submitted for processing
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
+        });
+        $('#confirm-button').on('click', function (e) {
+            if ($('.category-select option:selected[value=0]').length > 0) {
+                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
+                return;
+            }
             $('#entity-form').submit();
-            //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
 
         $('.subcategory-select').each(function (idx) {
