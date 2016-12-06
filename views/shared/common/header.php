@@ -500,7 +500,7 @@ if (isset($_GET['time'])) {
             msgbox.close();
         }
 
-        var allowed_time = 600;
+        var allowed_time = 10;
         var time_up_submitted = false;
         function numToTime(num) {
             var min = Math.floor(num/60);
@@ -752,7 +752,7 @@ function year_of_full_iso_date(date) {
 </head>
 <body>
 
-<h2 id="count_down_timer"></h2>
+<h2 id="count_down_timer">&nbsp;</h2>
 <br>
 <?php if (FALSE): ?>
     <!-- Navigation -->

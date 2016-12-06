@@ -109,6 +109,7 @@
                     notifyOfErrorInForm('Please select the tone of the document');
                     return;
                 }
+                time_up_submitted = true;
                 $('#transcribe-form').submit();
             });
 
