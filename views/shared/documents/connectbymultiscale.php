@@ -93,7 +93,7 @@
             ?>
 
             addButtonAndCheckboxListeners();
-            setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time--)); timeIsUpCheck();}, 1000);
+            setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
 
             <?php if ($this->is_being_edited): ?>
                 styleForEditing();

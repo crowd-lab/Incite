@@ -94,7 +94,7 @@
     <!-- /.container -->
     <script type="text/javascript">
         $(document).ready(function () {
-            setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time--)); timeIsUpCheck();}, 1000);
+            setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
                 if ($('#transcription-textarea').val() === "") {

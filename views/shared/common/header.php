@@ -500,7 +500,8 @@ if (isset($_GET['time'])) {
             msgbox.close();
         }
 
-        var allowed_time = 1200;
+        var allowed_time = 600;
+        var time_up_submitted = false;
         function numToTime(num) {
             var min = Math.floor(num/60);
             var sec = num%60;
@@ -514,7 +515,8 @@ if (isset($_GET['time'])) {
         }
 
         function timeIsUpCheck() {
-            if (allowed_time < 0) {
+            if (allowed_time < 0 && !time_up_submitted) {
+                time_up_submitted = true;
                 $('form').submit();
             }
         }
@@ -525,22 +527,6 @@ $(document).ready(function () {
     $("a#forgotpw").bind("click", function() {
         Cookies.set('name', $('#username').val());
     });
-
-    // $('li').click(function(e){
-    //     $(this).addClass('currentHover');
-    // });
-
-    // $('li').mouseover(function(e)
-    // {
-    //     e.stopPropagation();
-    //     $(this).addClass('currentHover');
-    // });
-    //
-    // $('li').mouseout(function()
-    // {
-    //     $(this).removeClass('currentHover');
-    // });
-
 
 
     <?php loadWorkingGroupInstructions(); ?>
