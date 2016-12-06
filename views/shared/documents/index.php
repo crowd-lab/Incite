@@ -12,17 +12,17 @@ include(dirname(__FILE__).'/../common/header.php');
             <h4>Purpose of this Research Project</h4>
             <p>You are being asked to participate in a research study. We are studying the effects of different work conditions on historical learning/thinking. We will use these results to inform and improve the design of an online text analysis system. In addition, the results may have implications for designing future digital archival systems as well as online educational systems. The results of this study may be published in academic conferences or journals or included in student theses and dissertations.</p>
             <h4>Procedures</h4>
-            <p>If you agree to participate, you will be asked to 1) do three tasks each of which may take maximum 10 minutes and 2) complete a survey about your experience of the tasks.</p>
+            <p>If you agree to participate, you will be asked to 1) take a pre-task survey about demographic information (&lt; 1 minute) , 2) do three tasks each of which may take maximum 10 minutes and 3) complete a survey about your experience of the tasks (&lt; 10 minutes).</p>
             <h4>Risks</h4>
             <p>The risks of the study are minimal and are similar to what you would encounter doing everyday computer tasks like browsing the Internet, writing a document, or checking email.</p>
             <h4>Benefits</h4>
             <p>You will not receive any benefits by participating in this study. However, the study will help us develop software and techniques for analyzing textual documents. This could benefit society by avoiding inefficient utilization of workforce and by informing better design of future digital archival systems as well as online educational systems. No promise or guarantee of benefits has been made to encourage you to participate.</p>
             <h4>Extent of Anonymity and Confidentiality</h4>
-            <p>We will collect your ID information, but it will be stored separately from the rest of your study data, and only the Principal Investigator and Co-Principal Investigator will have the ability to link them. We will use a numeric code instead of your worker ID to refer to your study data.</p>
-            <p>We may share your anonymized study data in publications or in data sets on our project website. If we use your data for these purposes, we will use the numeric code instead of your ID to refer to you. We may also aggregate your data with other participants when reporting our results to minimize the possibility of identifying you. Your information will never be shared outside the research team.</p>
+            <p>We will collect your ID information (e.g. your name for extra credit in class), but it will be stored separately from the rest of your study data, and only the Principal Investigator and Co-Principal Investigator will have the ability to link them. We will use a numeric code instead of your ID information to refer to your study data.</p>
+            <p>We may share your anonymized study data in publications or in data sets on our project website. If we use your data for these purposes, we will use the numeric code instead of your ID information to refer to you. We may also aggregate your data with other participants when reporting our results to minimize the possibility of identifying you. Your information will never be shared outside the research team.</p>
             <p>The Virginia Tech (VT) Institutional Review Board (IRB) may view the study's data for auditing purposes. The IRB is responsible for the oversight of the protection of human subjects involved in research.</p>
             <h4>Compensation</h4>
-            <p>You will not receive monetary compensation.</p>
+            <p>You will not receive monetary compensation but you will get extra credit for the class participating in this study.</p>
             <h4>Freedom to Withdraw</h4>
             <p>It is important for you to know that you are free to withdraw from this study at any time without penalty. You are free not to answer any questions that you choose or respond to what is being asked of you without penalty.</p>
             <p>Please note that there may be circumstances under which the investigator may determine that a subject should not continue as a subject.</p>
@@ -47,7 +47,7 @@ $(document).ready(function(){
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
 
     $('#accept_btn').on('click', function(e) {
-        window.location = 'show';
+        window.location = '<?php echo getFullInciteUrl(); ?>/documents/show';
     });
 });
 </script>
