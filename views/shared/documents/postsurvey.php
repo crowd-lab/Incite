@@ -17,7 +17,7 @@ function tf_question_generator($question) {
         echo '<table class="table">';
         foreach($options as $option) {
             //echo ' <div><div class="radio" style="display: inline;"><label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="1">Yes</label>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="0">No</label></div><span style="margin-left: 5px;"><b>:</b></span><span style="margin-left: 15px; width: 100px;">'.$option['label'].'</span></div>';
-            echo ' <tr><td><span><input type="radio" name="q'.$question['num']."".$option['val'].'" value="1">Yes</span></td><td><span><input type="radio" name="q'.$question['num']."".$option['val'].'" value="0">No</span></td><td style="width: 80%;">'.$option['label'].'</td></tr>';
+            echo ' <tr><td><span><input type="radio" name="q'.$question['num']."".$option['val'].'" value="1">Yes</span></td><td><span><input type="radio" name="q'.$question['num']."".$option['val'].'" value="-1">No</span></td><td style="width: 80%;">'.$option['label'].'</td></tr>';
         }
         echo '</table>';
         echo '</div>';
@@ -103,6 +103,7 @@ function check_input () {
 }
 
 $( function () {
+    setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time--)); timeIsUpCheck();}, 1000);
     $('#submit-demo').on('click', function (e) {
         if (check_input())
             $('#demo-form').submit();
@@ -117,7 +118,6 @@ $( function () {
 
 </head>
 
-<?php $_SESSION['study2']['qa-set'] = 3; ?>
 
 <body>
     <form action="" method="post" id="demo-form">
