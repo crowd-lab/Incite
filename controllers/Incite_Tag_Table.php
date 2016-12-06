@@ -580,8 +580,9 @@ function getBestSubjectCandidateList($item_ids)
 function createTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
 
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
-    $stmt->bind_param("iiiis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription);
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP, ?)");
+    $empty_string = "";
+    $stmt->bind_param("iiiiss", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription, $empty_string);
     $stmt->execute();
     $id = $stmt->insert_id;
     $stmt->close();

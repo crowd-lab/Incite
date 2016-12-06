@@ -29,7 +29,9 @@
 
             <div class="col-md-7">
                 <div id="tagging-container">
-                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
+                    <br>
+                    <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag should be at its maximum length (e.g. <u>Jan. 1st, 1880</u> should be just one tag instead of multiple tags such as <u>Jan. 1st</u> and <u>1880</u>.) If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
+                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
