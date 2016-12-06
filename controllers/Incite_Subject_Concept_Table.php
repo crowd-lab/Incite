@@ -237,7 +237,7 @@ function countSubjects() {
  * @param int $taggedTranscriptionID
  * @param bool $positive
  */
-function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTranscriptionID, $positive)
+function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTranscriptionID, $positive, $reasoning)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
@@ -248,7 +248,6 @@ function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTra
     $stmt->fetch();
     if($stmt->num_rows > 0) 
     {
-        
         //store concept in conjunction table
         $db->close();
         $db = DB_Connect::connectDB();
@@ -256,7 +255,7 @@ function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTra
         $newStmt->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $positive, $userID, $groupID);
         $newStmt->execute();
         $newStmt->close();
-        
+        $db->close();
     }
     else
     {
@@ -274,7 +273,16 @@ function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTra
         $newStmt1->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $positive, $userID, $groupID);
         $newStmt1->execute();
         $newStmt1->close();
+        $db->close();
     }
+
+    //Update reason in the tagged transcription table
+    $db = DB_Connect::connectDB();
+    $newStmt = $db->prepare("UPDATE omeka_incite_tagged_transcriptions SET connection_reasoning = ? WHERE id = ?");
+    $newStmt->bind_param("si", $reasoning, $taggedTranscriptionID);
+    $newStmt->execute();
+    $newStmt->close();
+    $db->close();
 }
 
 /**

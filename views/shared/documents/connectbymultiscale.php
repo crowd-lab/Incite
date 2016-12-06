@@ -29,16 +29,8 @@
             <div class="col-md-6" id="connecting-work-area">
                 <div id="connecting-container">
                     <p class="header-step">
-                        <i>Step 1 of 1: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
+                        <i>Step 1 of 2: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
-                        <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
-                            aria-hidden="true" data-trigger="hover"
-                            data-toggle="popover" data-html="true"
-                            data-viewport="#subject-form";
-                            data-title="<strong>Marking Categories</strong>"
-                            data-content="<?php echo "Simply choose all of the categories you think apply to this document. If none apply, select 'None of the above topics applied'." ?>"
-                            data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
-                        </span>
                     </p>
 
                     <form id="subject-form" method="post">
@@ -62,6 +54,12 @@
                             </tr>
                         <?php endforeach; ?>
                         </table>
+                        <p class="header-step">
+                            <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
+                        </p>
+                        <textarea style="width:100%;" name="reasoning" rows="5"></textarea>
+                        <br>
+                        <br>
                         <input type="hidden" name="connection_type" value="multiscale">
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                         <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
@@ -117,6 +115,11 @@
                         notifyOfErrorInForm("Please rate ALL the themes.")
                         return;
                     }
+                }
+
+                if ($('textarea[name=reasoning]').val() === "") {
+                    notifyOfErrorInForm("Please provide your reasoning for your choices.")
+                    return;
                 }
 /*
                 if ($('input[type="checkbox"]:checked').length === 0) {

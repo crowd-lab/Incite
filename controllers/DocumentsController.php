@@ -424,7 +424,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $this->_helper->viewRenderer('tagid');
       $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
       $categories = getAllCategories();
-      $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+      $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red', 'TIME' => 'purple');
 
       //Do we already have tags or do we need to generate them via NER
         /*
@@ -531,9 +531,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       foreach ((array) $all_subject_ids as $subject_id) {
         //if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array()))) {
         if (isset($_POST['subject'.$subject_id])) {
-            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id]);
+            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id], $_POST['reasoning']);
         } else {
-            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id]);
+            addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id], $_POST['reasoning']);
         }
       }
     } else { //connect by tags
