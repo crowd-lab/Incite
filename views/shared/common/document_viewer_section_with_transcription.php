@@ -129,7 +129,7 @@
         </div>
 
         <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;">
-            <?php print_r($this->transcription); ?>
+            <?php print_r(nl2br($this->transcription)); ?>
         </div>
 
         <div class="wrapper">
