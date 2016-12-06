@@ -255,11 +255,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
             $trial = getNextTrial($assignment_id, $worker_id);
             if ($trial != null) {
+                //Mapping between testing materials and qa-set
+                $doc_qa_mapping = array('1125' => 1, '1126' => 2, '1127' => 3);
                 //Initialization
                 $_SESSION['study2']['worker_id'] = $worker_id;
                 $_SESSION['study2']['id'] = $trial['trial_id'];
                 $_SESSION['study2']['workflow'] = $trial['workflow'];
                 $_SESSION['study2']['task_seq'] = 0;
+                $_SESSION['study2']['qa-set'] = $doc_qa_mapping[$trial['doc3']];
                 //0: presurvey, 4: postsurvey, 5: complete
                 $_SESSION['study2']['urls'] = array(urlGenerator('', 0), urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']), urlGenerator('', 4), urlGenerator('', 5));
 
