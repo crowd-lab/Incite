@@ -130,6 +130,7 @@
 
                 //from progress_indicator.php
                 //styleProgressIndicatorForCompletion();
+                window.onbeforeunload = "";
 
                 $("#subject-form").submit();
             });

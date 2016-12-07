@@ -411,6 +411,7 @@
                 notifyOfErrorInForm('You have not answered Q4 yet!');
                 return;
             }
+            window.onbeforeunload = "";
             $('#entity-form').submit();
         });
 

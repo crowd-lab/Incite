@@ -110,6 +110,7 @@
                     return;
                 }
                 time_up_submitted = true;
+                window.onbeforeunload = "";
                 $('#transcribe-form').submit();
             });
 

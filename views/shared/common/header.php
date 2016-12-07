@@ -523,6 +523,10 @@ if (isset($_GET['time'])) {
     
 $(document).ready(function () {
 
+    window.onbeforeunload = function() {
+        return "If you leave the page now, your work may be lost!";
+    }
+
 
     $("a#forgotpw").bind("click", function() {
         Cookies.set('name', $('#username').val());

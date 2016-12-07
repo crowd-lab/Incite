@@ -47,6 +47,7 @@ $(document).ready(function(){
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
 
     $('#accept_btn').on('click', function(e) {
+        window.onbeforeunload = "";
         window.location = '<?php echo getFullInciteUrl(); ?>/documents/show';
     });
 });

@@ -39,8 +39,10 @@ function check_input () {
 
 $( function () {
     $('#submit-demo').on('click', function (e) {
-        if (check_input())
+        if (check_input()) {
+            window.onbeforeunload = "";
             $('#demo-form').submit();
+        }
     });
 });
 

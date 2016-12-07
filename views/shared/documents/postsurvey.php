@@ -105,8 +105,10 @@ function check_input () {
 $( function () {
     setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time--)); timeIsUpCheck();}, 1000);
     $('#submit-demo').on('click', function (e) {
-        if (check_input())
+        if (check_input()) {
+            window.onbeforeunload = "";
             $('#demo-form').submit();
+        }
     });
 
     $('#demo-form input:radio').on('change', function (e) {
