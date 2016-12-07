@@ -149,41 +149,6 @@
                 $('#transcribe-form').show();
             });
         }
-        var tour = new Tour({
-        steps: [
-            {
-                element: "#work-view",
-                title: "Original Document",
-                content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. Below the title is an image viewer with zooming controls at the bottom left corner. Mouse over each control to see its tooltip',
-                placement: "right"
-            },
-            {
-                element: "#transcribing-work-area",
-                title: "Transcribe Task",
-                content: '1. Please follow the three steps to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of each step provides detailed instructions.<br>3. If you are editing an existing transcription, you can view revision history by clicking the link at the top right corner of Step 1.',
-                placement: "left"
-            },
-            {
-                element: "#comment-container",
-                title: "Comment",
-                content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-                placement: "left"
-            },
-            {
-                element: "#navbar-bottom",
-                title: "Status of The Document",
-                content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
-                placement: "top"
-            }
-        ],
-        backdrop: true,
-        storage: false});
-
-        // Initialize the tour
-        tour.init();
-
-        // Start the tour
-        tour.start(true);
     </script>
 
     <style>

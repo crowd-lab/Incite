@@ -153,8 +153,27 @@
                             <th>Not a tag?</th></tr>
                         <tr>
                     </table>
-                    <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
                     <form id="entity-form" method="post">
+                    <table class="table" id="cont_q">
+                        <tr><th>Questions</th><th>Answers</th></tr>
+                        <tr><td>Q1: When was the document produced?</td><td><input type="text" placeholder="YYYY-MM-DD" class="form-control" value="" name="time_prod"></td></tr>
+                        <tr><td>Q2: Based on your reading of the document, what time period does this document tell you most about?</td>
+                            <td>
+                                <select name="time_cont">
+                                    <option value="">Time Periods</option>
+                                    <option value="1">American Revolution</option>
+                                    <option value="2">American Civil War</option>
+                                    <option value="3">World War One</option>
+                                    <option value="4">Depression</option>
+                                    <option value="5">World War Two</option>
+                                    <option value="6">Cold War</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr><td>Q3: Where was the document produced?</td><td><input value="" name="loc_prod" type="text" placeholder="State - County - City/Town" class="form-control"></td></tr>
+                        <tr><td>Q4: Based on your reading of the document, what location does this document tell you most about?</td><td><input value="" name="loc_cont" type="text" placeholder="location" class="form-control"></td></tr>
+                    </table>
+                    <button type="button" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
                         <input id="entity-info" type="hidden" name="entities" />
                         <input id="tagged-doc" type="hidden" name="tagged_doc" />
                         <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
@@ -376,6 +395,22 @@
                 notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
             }
+            if ($('input[name=time_prod]').val() == "") {
+                notifyOfErrorInForm('You have not answered Q1 yet!');
+                return;
+            }
+            if ($('select[name=time_cont]').val() == "") {
+                notifyOfErrorInForm('You have not answered Q2 yet!');
+                return;
+            }
+            if ($('input[name=loc_prod]').val() == "") {
+                notifyOfErrorInForm('You have not answered Q3 yet!');
+                return;
+            }
+            if ($('input[name=loc_cont]').val() == "") {
+                notifyOfErrorInForm('You have not answered Q4 yet!');
+                return;
+            }
             $('#entity-form').submit();
         });
 
@@ -490,41 +525,6 @@
             $('#tagging-container').show();
         });
     }
-    var tour = new Tour({
-    steps: [
-        {
-            element: "#work-view",
-            title: "Document Viewer",
-            content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. The tab "Transcription" below title shows the current transcription of the document.<br>3. The tab "Document" below title is an image viewer that shows the original image of the document.<br>4. The legend at the top right corner shows different types of tags.',
-            placement: "right"
-        },
-        {
-            element: "#tagging-container",
-            title: "Tag Task",
-            content: '1. Please follow the two steps to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of each step provides detailed instructions.<br>3. If you are editing existing tags, you can view revision history by clicking the link at the top right corner of Step 1.',
-            placement: "left"
-        },
-        {
-            element: "#comment-container",
-            title: "Comment",
-            content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-            placement: "left"
-        },
-        {
-            element: "#navbar-bottom",
-            title: "Status of The Document",
-            content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
-            placement: "top"
-        }
-    ],
-    backdrop: true,
-    storage: false});
-
-    // Initialize the tour
-    tour.init();
-
-    // Start the tour
-    tour.start(true);
 </script>
 
 <style>

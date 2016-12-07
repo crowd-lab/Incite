@@ -577,12 +577,12 @@ function getBestSubjectCandidateList($item_ids)
     return $results;
 }
 
-function createTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
+function createTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription, $time_metadata, $location_metadata, $time_content, $location_content) {
 
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP, ?)");
-    $empty_string = "";
-    $stmt->bind_param("iiiiss", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription, $empty_string);
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)");
+    $connect_reasoning = "";
+    $stmt->bind_param("iiiissssis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription, $connect_reasoning, $time_metadata, $location_metadata, $time_content, $location_content);
     $stmt->execute();
     $id = $stmt->insert_id;
     $stmt->close();

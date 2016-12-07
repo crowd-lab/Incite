@@ -183,41 +183,6 @@
                 $('#connecting-container').show();
             });
         }
-        var tour = new Tour({
-        steps: [
-            {
-                element: "#work-view",
-                title: "Document Viewer",
-                content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. The tab "Transcription" below title shows the current transcription of the document along with tags.<br>3. The tab "Document" below title is an image viewer that shows the original image of the document.<br>4. The legend at the top right corner shows different types of tags.',
-                placement: "right"
-            },
-            {
-                element: "#connecting-container",
-                title: "Connect Task",
-                content: '1. Please follow the one step to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of the step provides detailed instructions.',
-                placement: "left"
-            },
-            {
-                element: "#comment-container",
-                title: "Comment",
-                content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-                placement: "left"
-            },
-            {
-                element: "#navbar-bottom",
-                title: "Status of The Document",
-                content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
-                placement: "top"
-            }
-        ],
-        backdrop: true,
-        storage: false});
-
-        // Initialize the tour
-        tour.init();
-
-        // Start the tour
-        tour.start(true);
     </script>
 
     <style>
