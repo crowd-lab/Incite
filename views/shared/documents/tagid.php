@@ -29,7 +29,7 @@
 
             <div class="col-md-7">
                 <div id="tagging-container">
-                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
+                    <p class="header-step"><i>Step 1 of 3: Verify and expand existing tags</i></p>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
@@ -100,7 +100,7 @@
                             <th>Not a tag?</th></tr>
                     </table>
                     <br>
-                    <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                    <p class="step"><i>Step 2 of 3: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
                     <table class="table" id="user-entity-table">
                         <tr>
                             <th>
@@ -150,6 +150,36 @@
                             </th>
                             <th>Not a tag?</th></tr>
                         <tr>
+                    </table>
+                    <p class="step"><i>Step 3 of 3: Based on the document on the left and its metadata, please answer the following questions.</i></p>
+                    <table class="table">
+                        <tr><th>Questions</th><th>Answers</th></tr>
+                        <tr><td>When was this document produced?</td><td><input type="text" placeholder="YYYY-MM-DD"></td></tr>
+                        <tr><td>Where was this document produced?</td><td><input type="text" placeholder="location"></td></tr>
+                        <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
+                            <td>
+                                <select class="form-control">
+                                    <option>What race?</option>
+                                    <option>White</option>
+                                    <option>African American</option>
+                                    <option>Foreigner</option>
+                                    <option>Not specified</option>
+                                </select>
+                                <select class="form-control">
+                                    <option>What gender?</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Not specified</option>
+                                </select>
+                                <select class="form-control">
+                                    <option>What occupation?</option>
+                                    <option>Abolitionist</option>
+                                    <option>Soldier</option>
+                                    <option>Civilian</option>
+                                    <option>Not specified</option>
+                                </select>
+                            </td>
+                        </tr>
                     </table>
                     <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
                     <form id="entity-form" method="post">
