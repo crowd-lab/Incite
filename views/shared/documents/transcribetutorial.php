@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <?php
+        $_SESSION['Incite']['tutorial_trans'] = true;
         include(dirname(__FILE__) . '/../common/header.php');
         include(dirname(__FILE__) . '/../common/progress_indicator.php');
     ?>
@@ -23,10 +24,133 @@
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
     ?>
-        <?php
-            include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
-        ?>
     <div class="container-fluid">
+<head>
+	<script type="text/javascript">
+        $('#work-zone').ready(function () {
+            $('#work-view').width($('#work-zone').width());
+        });
+
+        $(document).ready(function () {
+        	 $('[data-toggle="popover"]').popover({trigger: "hover"});
+
+			$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
+
+            $("#viewer2").iviewer({
+                src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial.jpg",
+                zoom_min: 1,
+                zoom: "fit"
+            });
+
+            buildPopoverContent();
+        });
+
+        function buildPopoverContent() {
+            var content = '';
+            var date = "2016-12-06";
+            var location = "Virginia - Montgomery County - Blacksburg";
+            var source = "";
+            var contributor = "";
+            var rights = "Public Domain";
+
+            if (date) {
+                content += '<strong>Date: </strong>' + date + '<br><br>';
+            }
+
+            if (location) {
+                content += '<strong>Location: </strong>' + location + '<br><br>';
+            }
+
+            if (source) {
+                content += '<strong>Source: </strong>' + source + '<br><br>';
+            }
+
+            if (contributor) {
+                content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
+            }
+
+            if (rights) {
+                content += '<strong>Rights: </strong>' + rights + '<br><br>';
+            } else {
+                content += '<strong>Rights: </strong>Public Domain<br><br>';
+            }
+
+
+            if (content) {
+                //cut off the last <br><br>
+                content = content.slice(0, -8);
+
+                $('#document-info-glyphicon').attr('data-content', content);
+            } else {
+                $('#document-info-glyphicon').attr('data-content', "No available document information, sorry!");
+            }
+        }
+    </script>
+</head>
+
+<body>
+	<div class="col-md-6" id="work-zone">
+        <div id="work-view">
+            <div class="document-header" id="document-header">
+                <span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> Incite Tutorial - Transcribe</span>
+                <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
+                	aria-hidden="true" data-trigger="hover"
+                    data-toggle="popover" data-html="true"
+                    data-viewport=".document-header"
+                    data-title="<strong>Document Information</strong>"
+                    data-placement="bottom" data-id="">
+                </span>
+            </div>
+            <div class="wrapper">
+                <div id="viewer2" class="viewer"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+	#work-view {
+        position: relative;
+        width: 35%;
+        margin-top: -39px;
+    }
+
+    .viewer {
+        width: 100%;
+        border: 1px solid black;
+        position: relative;
+    }
+
+    .wrapper {
+        overflow: hidden;
+        margin-top: 7px
+    }
+
+    .document-header {
+    }
+
+    .document-title {
+        font-size: 25px;
+        position: relative;
+        top: -5px;
+        display: inline-block;
+        overflow: hidden;
+        max-width: 90%;
+        height: 32px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    #document-info-glyphicon {
+        color: #337AB7;
+        font-size: 20px;
+        top: -8px;
+    }
+
+    .popover {
+    	max-width: 100%;
+    }
+</style>
 
         <div class="col-md-6" id="submit-zone">
             <div id="transcribing-work-area">
@@ -96,9 +220,27 @@
             <br>
             <hr size=2 class="discussion-seperation-line">
 
-            <?php
-                include(dirname(__FILE__) . '/../common/task_comments_section.php');
-            ?>
+            <body>
+                <div id="comment-container" class="comments-section-container">
+                    <h3> Comment </h3>
+                    <div id="onLogin">
+                        <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>	
+                            <form id="discuss-form" method="POST">
+                                <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
+                                <button type="button" class="btn btn-default submit-comment-btn" 
+                                    onclick="submitComment(<?php echo $currentTaskID; ?>)">
+                                    Post Comment
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            Please login or signup to join the discussion!
+                        <?php endif; ?>
+                    </div>
+                    <br>
+                    <br>
+                    <ul id="comments" class="comments-list"></ul>
+                </div>
+            </body>
         </div>
     </div>
     <!-- /.container -->
@@ -118,7 +260,8 @@
                     notifyOfErrorInForm('Please select the tone of the document');
                     return;
                 }
-                $('#transcribe-form').submit();
+                //$('#transcribe-form').submit();
+                alert('This will redirect you to assessment document');
             });
 
             <?php
