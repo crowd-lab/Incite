@@ -406,18 +406,24 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   }
 
   public function connectAction() {
-    $this->_helper->db->setDefaultModelName('Item');
-    $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+      $this->_helper->db->setDefaultModelName('Item');
+      $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
 
-    if ($this->_hasParam('id')) {
-      if ($this->getRequest()->isPost()) {
-        $this->saveConnections();
+      if ($this->_hasParam('id')) {
+          if (!isset($_SESSION['Incite']['tutorial_conn'])) {
+              $this->view->subjects = getAllSubjectConcepts();
+              $this->view->transcription = 'Welcome to Incite developed by <em id="tag_id_8" class="organization tagged-text">Mapping the Fourth</em> team led by Dr. <em id="tag_id_3" class="person tagged-text">Paul Quigley</em>, Dr. <em id="tag_id_4" class="person tagged-text">David Hicks</em> and Dr. <em id="tag_id_5" class="person tagged-text">Kurt Luther</em> from <em id="tag_id_0" class="organization tagged-text">Virginia Tech</em> in <em id="tag_id_9" class="location tagged-text">Blacksburg, Virginia</em>! This tutorial is to help you get familiar with the three tasks: transcribe, tag and connect!';
+              $this->_helper->viewRenderer('connecttutorial');
+              return;
+          }
+          if ($this->getRequest()->isPost()) {
+              $this->saveConnections();
 
+          }
+
+
+          $this->populateDataForConnectTask();
       }
-
-
-      $this->populateDataForConnectTask();
-    }
   }
 
   public function saveConnections() {
@@ -489,7 +495,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           $this->view->revision_history = getConnectionRevisionHistory($this->_getParam('id'));
         }
 
-        $this->_helper->viewRenderer('connectbymultiselection');
+        //$this->_helper->viewRenderer('connectbymultiselection');
+        $this->_helper->viewRenderer('connectbymultiscale');
       } else {
         if (isset($this->view->query_str) && $this->view->query_str !== "") {
           $_SESSION['incite']['message'] = 'Unfortunately, the document has not been tagged yet. Please help tag the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
