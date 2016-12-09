@@ -75,6 +75,24 @@
                             <label class="radio-inline"><input type="radio" name="tlx_fru" value="7">7 (very high)</label>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div>
+                            <div><label>How interesting do you think about the tasks?</label></div>
+                            <label class="radio-inline"><input type="radio" name="tlx_int" value="1">1 (not interesting)</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_int" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_int" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_int" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_int" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_int" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_int" value="7">7 (very interesting)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <div><label>We would like to know what you think about this study. Please provide your feedback and comments below.</label></div>
+                            <textarea style="width: 100%;" rows="5" name="user_feedback"></textarea>
+                        </div>
+                    </div>
                 </div>
                 <div style="clearfix"></div>
             </div> 

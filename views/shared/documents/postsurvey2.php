@@ -68,7 +68,7 @@ $questions[] = array(
                 'type'    => 'tf',
                 'q'       => 'Please select "Yes" for follwing statements that are appropriate about the immediate and broader context at the time the source was produced and otherwise "No".',
                 'options' => array(
-                    array('val' => 1, 'label' => 'The author was initiating a communication concerning Tallmadge\'s position at Bedford and the condition of his horse.'),
+                    array('val' => 1, 'label' => 'The author was initiating a communication concerning the reader\'s position at Bedford and the condition of his horse.'),
                     array('val' => 2, 'label' => 'They were still in War.'),
                     array('val' => 3, 'label' => 'There is nothing confidential in the document.'),
                     array('val' => 4, 'label' => 'The time of the document reveals that it might be part of the American Revolutionary War.')));
@@ -80,8 +80,8 @@ $questions[] = array(
                 'options' => array(
                     array('val' => 1, 'label' => 'There is clearly a sense that protecting these inhabitants is important.'),
                     array('val' => 2, 'label' => 'The specificity mentioned in the letter, such as Bedford and a central place between the two rivers, indicates that if the enemy intercepts the letter, it will give much information.'),
-                    array('val' => 3, 'label' => 'The document clearly indicates Tallmadge\'s specific assignment including the horse fatigue and the Beford location.'),
-                    array('val' => 4, 'label' => 'The fact that the author is writing this type of letter and concerned about Tallmadge\'s location the the fatigue of his horse, suggests how intimately involved Washington was in the military process.')));
+                    array('val' => 3, 'label' => 'The document clearly indicates some specific assignment to be executed such as fatigue of horse.'),
+                    array('val' => 4, 'label' => 'The fact that the author is writing this type of document and concerned about location and the fatigue of the horse, suggests how intimately involved the author was in the military process.')));
 
 
 ?>
