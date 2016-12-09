@@ -517,6 +517,7 @@ if (isset($_GET['time'])) {
         function timeIsUpCheck() {
             if (allowed_time < 0 && !time_up_submitted) {
                 time_up_submitted = true;
+                window.onbeforeunload = "";
                 $('form').submit();
             }
         }
