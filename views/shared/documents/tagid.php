@@ -31,7 +31,7 @@
                 <div id="tagging-container">
                     <br>
                     <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag should be at its maximum length (e.g. <u>Jan. 1st, 1880</u> should be just one tag instead of multiple tags such as <u>Jan. 1st</u> and <u>1880</u>.) If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
-                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
+                    <p class="header-step"><i>Step 1 of 3: Verify and expand existing tags with details</i></p>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
@@ -102,7 +102,7 @@
                             <th>Not a tag?</th></tr>
                     </table>
                     <br>
-                    <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                    <p class="step"><i>Step 2 of 3: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
                     <table class="table" id="user-entity-table">
                         <tr>
                             <th>
@@ -153,6 +153,8 @@
                             <th>Not a tag?</th></tr>
                         <tr>
                     </table>
+                    <br>
+                    <p class="step"><i>Step 3 of 3: Based on the document on the left and its metadata, please answer the following questions.</i></p>
                     <form id="entity-form" method="post">
                     <table class="table" id="cont_q">
                         <tr><th>Questions</th><th>Answers</th></tr>
