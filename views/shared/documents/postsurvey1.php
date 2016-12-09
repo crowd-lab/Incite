@@ -76,7 +76,7 @@ $questions[] = array(
                 'type'    => 'tf',
                 'q'       => 'Please select "Yes" for all statements that are appropriately inferred from the document and otherwise select "No".',
                 'options' => array(
-                    array('val' => 1, 'label' => 'The author appears to be mature for 15 years of age, as he seems to understand the family.s dynamics.'),
+                    array('val' => 1, 'label' => 'The author appears to be mature for 15 years of age, as he seems to understand the family\'s dynamics.'),
                     array('val' => 2, 'label' => 'Since the author is referencing the Superintendent, it is likely the author already asked the Superintendent for assistance.'),
                     array('val' => 3, 'label' => 'The author is concerned with furthering his education, but not so much about the family finances.'),
                     array('val' => 4, 'label' => 'Since the author does not indicate much about his family - who was his father, how did his sister die, who was the father of his sister.s child - it can be concluded that the author was uncomfortable with his family.')));

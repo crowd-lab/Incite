@@ -50,6 +50,8 @@ $(document).ready(function(){
         window.onbeforeunload = "";
         window.location = '<?php echo getFullInciteUrl(); ?>/documents/show';
     });
+
+    window.onbeforeunload = "";
 });
 </script>
 
