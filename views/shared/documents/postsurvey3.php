@@ -87,7 +87,7 @@ $questions[] = array(
         <div style="margin-top: 20px;" class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Section 1 <?php if ($_SESSION['study2']['workflow'] == 1) {echo '(Please answer the following questions with respect to the <b>3rd</b> document, that is, <b>the last</b> document you worked on.)';} ?></h3>
+                    <h3 class="panel-title">Section 1 <?php if ($_SESSION['study2']['workflow'] == 1) {echo '(Please answer the following questions with respect to the <u>3rd</u> document, that is, <u>the last</u> document you worked on.)';} ?></h3>
                 </div>
                     <div style="padding: 15px;">
                         <?php 
