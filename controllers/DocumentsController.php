@@ -14,6 +14,23 @@
 */
 
 /**
+* Tag String Extraction
+**/
+
+function tag_extraction($str) {
+    preg_match_all('/<em([^>]*)>([^<]*)<\/em>/', $str, $matches);
+    $attributes = $matches[1];
+    $tag_names = $matches[2];
+    preg_match_all('/class="([^\s]*)[^"]*"/', implode('?', $attributes), $matches);
+    $categories = $matches[1];
+    $tags = array();
+    for ($i = 0; $i < count($categories); $i++) {
+        $tags[] = array('category' => $categories[$i], 'tag_name' => $tag_names[$i]);
+    }
+    return array('categories' => $categories, 'tag_names' => $tag_names);
+}
+
+/**
 * Word Edit Distance Calculation
 */
 function word_edit_distance($str1_arr, $str2_arr) {
@@ -860,7 +877,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function wfdatadumpingtothisAction() {
 
         echo '<pre>';
-        print_r(check_task_performance(1, 1125, 54));
+        //print_r(check_task_performance(1, 1125, 54));
+        print_r(check_task_performance(2, 1125, 54));
         echo '</pre>';
         die();
         $db = DB_Connect::connectDB();
@@ -912,6 +930,46 @@ function check_transcription_performance($doc, $user_id)
     return array('gold' => preg_split('/\s+/', $gold_transcription), 'user' => preg_split('/\s+/', $user_transcription), 'diff' => $diff, 'word_edit_distance' => word_edit_distance($u_word_array, $g_word_array));
 }
 
+function check_tag_performance($doc, $user_id)
+{
+    //Get user's answer
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare('SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND user_id = ?');
+    $stmt->bind_param('ii', $doc, $user_id);
+    $stmt->bind_result($user_transcription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+
+    //Get gold standard
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare('SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE id = 31');
+    $stmt->bind_result($gold_transcription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+
+    //Calculate performance
+    $user_tags = tag_extraction($user_transcription);
+    $gold_tags = tag_extraction($gold_transcription);
+    $missing_tags = array_diff($gold_tags['tag_names'], $user_tags['tag_names']);
+    $extra_tags = array_diff($user_tags['tag_names'], $gold_tags['tag_names']);
+
+    $num_correct_tags = 0;
+    $num_correct_names = 0;
+    for ($i = 0; $i < count($user_tags['tag_names']); $i++) {
+        if (($idx = array_search($user_tags['tag_names'][$i], $gold_tags['tag_names'])) != FALSE) {
+            if ($gold_tags['categories'][$idx] == $user_tags['categories'][$i]) {
+                $num_correct_tags++;
+            }
+            $num_correct_names++;
+        }
+    }
+    $num_error_tags = count($user_tags['tag_names'])-$num_correct_tags+count($missing_tags);
+    return array('gold' => $gold_tags, 'user' => $user_tags, 'mistakes' => $num_error_tags, 'cat_mistakes' => $num_correct_names-$num_correct_tags);
+}
 
 function check_task_performance($task, $doc, $user_id)
 {
