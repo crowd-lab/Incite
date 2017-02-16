@@ -12,6 +12,44 @@
 *
 * @package Incite
 */
+
+/**
+* Word Edit Distance Calculation
+*/
+function word_edit_distance($str1_arr, $str2_arr) {
+    $len1 = count($str1_arr);
+    $len2 = count($str2_arr);
+
+    if ($len1 == 0)
+        return $len2;
+    else if ($len2 == 0)
+        return $len1;
+
+    $dis = array();
+    $dis[0] = array_fill(0, $len2+1, 0);
+    for ($i = 1; $i <= $len1; $i++) {
+        $dis[$i] = array_fill(0, $len2+1, 0);
+    }
+    $dis[0][0] =  0;
+
+    for ($i = 1; $i < $len2; $i++)
+        $dis[0][$i] = $i;
+
+    for ($i = 1; $i < $len1; $i++)
+        $dis[$i][0] = $i;
+
+    for ($i = 0; $i < $len1; $i++) {
+        for ($j = 0; $j < $len2; $j++) {
+            if ($str1_arr[$i] == $str2_arr[$j])
+                $dis[$i+1][$j+1] = $dis[$i][$j];
+            else
+                $dis[$i+1][$j+1] = min($dis[$i][$j], $dis[$i][$j+1], $dis[$i+1][$j])+1;
+        }
+    }
+    return $dis[$len1][$len2];
+}
+
+
 function getTextBetweenTags($string, $tagname) {
   $pattern = "/<$tagname>(.*?)<\/$tagname>/";
   preg_match_all($pattern, $string, $matches);
@@ -819,4 +857,68 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         echo 'Something went wrong!';
         die();
   }
+    public function wfdatadumpingtothisAction() {
+
+        echo '<pre>';
+        print_r(check_task_performance(1, 1125, 54));
+        echo '</pre>';
+        die();
+        $db = DB_Connect::connectDB();
+        $stmt = $db->prepare("SELECT `id`, `workflow`, doc1, doc2, doc3, task1, task2, task3, TIME_TO_SEC(TIMEDIFF(time1_end, time1_start)), TIME_TO_SEC(TIMEDIFF(time2_end, time2_start)), TIME_TO_SEC(TIMEDIFF(time3_end, time3_start)), attempts, age, q1, q2, q3, q4, q5, q6, q71, q72, q73, q74, q81, q82, q83, q84, tlx_men, tlx_phy, tlx_tem, tlx_per, tlx_eff, tlx_fru, tlx_int, user_feedback FROM `study2` WHERE id > 1 AND id <= 16");
+        $stmt->bind_result($trial_id, $workflow, $doc1, $doc2, $doc3, $task1, $task2, $task3, $timediff1, $timediff2, $timediff3, $ttempts, $age, $q1, $q2, $q3, $q4, $q5, $q6, $q71, $q72, $q73, $q74, $q81, $q82, $q83, $q84, $tlx_men, $tlx_phy, $tlx_tem, $tlx_per, $tlx_eff, $tlx_fru, $tlx_int, $user_feedback);
+        
+        $stmt->execute();
+        echo 'trial_id,workflow,doc1,doc2,doc3,task1,task2,task3,timediff1,timediff2,timediff3,atempts,age,q1,q2,q3,q4,q5,q6,q71,q72,q73,q74,q81,q82,q83,q84,tlx_men,tlx_phy,tlx_tem,tlx_per,tlx_eff,tlx_fru,tlx_int,user_feedback'."\n";
+        while (($result = $stmt->fetch()) != null) {
+            echo $trial_id.",".$workflow.",".$doc1.",".$doc2.",".$doc3.",".$task1.",".$task2.",".$task3.",".$timediff1.",".$timediff2.",".$timediff3.",".$ttempts.",".$age.",".$q1.",".$q2.",".$q3.",".$q4.",".$q5.",".$q6.",".$q71.",".$q72.",".$q73.",".$q74.",".$q81.",".$q82.",".$q83.",".$q84.",".$tlx_men.",".$tlx_phy.",".$tlx_tem.",".$tlx_per.",".$tlx_eff.",".$tlx_fru.",".$tlx_int.",\"".str_replace('"', '""', $user_feedback)."\"\n";
+        }
+        $stmt->close();
+        $db->close();
+        die();
+    }
+}
+
+function check_transcription_performance($doc, $user_id)
+{
+    //Get user's answer
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare('SELECT transcribed_text FROM omeka_incite_transcriptions WHERE document_id = ? AND user_id = ?');
+    $stmt->bind_param('ii', $doc, $user_id);
+    $stmt->bind_result($user_transcription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+
+    //Get gold standard
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare('SELECT transcribed_text FROM omeka_incite_transcriptions WHERE id = 49');
+    $stmt->bind_result($gold_transcription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+
+    //Calculate performance
+    $u_word_array = preg_split('/\s+/', $user_transcription);
+    $g_word_array = preg_split('/\s+/', $gold_transcription);
+
+    $diff = array();
+    for ($i = 0; $i < count($g_word_array); $i++) {
+        if ($g_word_array[$i]  != (isset($u_word_array[$i]) ? $u_word_array[$i] : "")) {
+            $diff[] = $i;
+        }
+    }
+    return array('gold' => preg_split('/\s+/', $gold_transcription), 'user' => preg_split('/\s+/', $user_transcription), 'diff' => $diff, 'word_edit_distance' => word_edit_distance($u_word_array, $g_word_array));
+}
+
+
+function check_task_performance($task, $doc, $user_id)
+{
+    switch($task) {
+        case 1: return check_transcription_performance($doc, $user_id);
+        case 2: return check_tag_performance($doc, $user_id);
+        case 3: return check_connect_performance($doc, $user_id);
+        default: return "n/a";
+    }
 }
