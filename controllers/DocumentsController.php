@@ -878,7 +878,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         echo '<pre>';
         //print_r(check_task_performance(1, 1125, 54));
-        print_r(check_task_performance(2, 1125, 54));
+        //print_r(check_task_performance(2, 1125, 54));
+        //1125 -> 4; 1126 -> 5; 1127 -> 15 (item_id -> document_id)
+        print_r(check_task_performance(3, 1125, 54));
         echo '</pre>';
         die();
         $db = DB_Connect::connectDB();
@@ -910,7 +912,8 @@ function check_transcription_performance($doc, $user_id)
 
     //Get gold standard
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare('SELECT transcribed_text FROM omeka_incite_transcriptions WHERE id = 49');
+    $stmt = $db->prepare('SELECT transcribed_text FROM omeka_incite_transcriptions WHERE document_id = ? AND user_id = 26');
+    $stmt->bind_param('i', $doc);
     $stmt->bind_result($gold_transcription);
     $stmt->execute();
     $stmt->fetch();
@@ -944,7 +947,8 @@ function check_tag_performance($doc, $user_id)
 
     //Get gold standard
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare('SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE id = 31');
+    $stmt = $db->prepare('SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND user_id = 26');
+    $stmt->bind_param('i', $doc);
     $stmt->bind_result($gold_transcription);
     $stmt->execute();
     $stmt->fetch();
@@ -969,6 +973,48 @@ function check_tag_performance($doc, $user_id)
     }
     $num_error_tags = count($user_tags['tag_names'])-$num_correct_tags+count($missing_tags);
     return array('gold' => $gold_tags, 'user' => $user_tags, 'mistakes' => $num_error_tags, 'cat_mistakes' => $num_correct_names-$num_correct_tags);
+}
+
+function check_connect_performance($doc, $user_id)
+{
+    $doc_mapping = array(1125 => 4, 1126 => 5, 1127 => 29);
+    $doc_id = $doc_mapping[$doc];
+    //Get user's answer
+    $user_subjects_relevance = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare('SELECT subject_concept_id, is_positive FROM omeka_incite_documents_subject_conjunction WHERE document_id = ? AND user_id = ?');
+    $stmt->bind_param('ii', $doc_id, $user_id);
+    $stmt->bind_result($subject, $relevance);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $user_subjects_relevance[$subject] = $relevance;
+    }
+    $stmt->close();
+    $db->close();
+
+    //Get gold standard
+    $gold_subjects_relevance = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare('SELECT subject_concept_id, is_positive FROM omeka_incite_documents_subject_conjunction WHERE document_id = ? AND user_id = 26');
+    $stmt->bind_param('i', $doc_id);
+    $stmt->bind_result($subject, $relevance);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $gold_subjects_relevance[$subject] = $relevance;
+    }
+    $stmt->close();
+    $db->close();
+
+    //Calculate performance
+    $relevance_diff = array();
+    $revelance_total_diff = 0;
+    $revelance_diff_threshold = 2;
+    foreach (array_keys($user_subjects_relevance) as $subject) {
+        $relevance_diff[$subject] = abs($gold_subjects_relevance[$subject] - $user_subjects_relevance[$subject]);
+        $relevance_total_diff += ($relevance_diff[$subject] > $relevance_diff_threshold ? abs($relevance_diff[$subject]-$relevance_diff_threshold) : 0);
+    }
+
+    return array('relevance_diff' => $relevance_diff, 'relevance_total_diff' => $relevance_total_diff);
 }
 
 function check_task_performance($task, $doc, $user_id)
