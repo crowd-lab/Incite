@@ -275,23 +275,23 @@
         steps: [
             {
                 //element: '#viewer2',
-								element: '#work-view',
+								element: '#viewer2',
                 title: "Welcome!",
                 content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now.",
                 placement: "right",
 								onShown: function() {
-									$("#work-view").css("z-index", "1101");
+									$("#viewer2").css("z-index", "1101");
 								}
             },
             {
-							  element: '#work-view',
+							  element: '#viewer2',
                 title: "Welcome! (continued)",
                 content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this text searchable by transcribing it. This means you will type what the image says.',
                 placement: "right",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
 
-										$("#work-view").css("z-index", "1101");
+										$("#viewer2").css("z-index", "1101");
 										//$("#wrapper").css("z-index", "1101");
                 }
             },
@@ -305,8 +305,8 @@
                 onShown: function(){
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
 										$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-										
-										$("#work-view").css("z-index", "-1");
+
+										$("#viewer2").css("z-index", "-1");
 										$("#document-info-glyphicon").hover(
 											function() {
 												$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
@@ -315,7 +315,7 @@
                 }
             },
             {
-                element: '#work-view',
+                element: '#viewer2',
                 title: "Zoom",
                 content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. <br><br> Press Next when you are ready.',
                 placement: "right",
@@ -323,7 +323,7 @@
                 onShown: function(){
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
 										$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-										$("#work-view").css("z-index", "1101");
+										$("#viewer2").css("z-index", "1101");
 										$("#zoomer").click(
 											function() {
 												$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
@@ -339,7 +339,7 @@
 
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-										$("#work-view").css("z-index", "-1");
+										$("#viewer2").css("z-index", "-1");
                 }
             },
 
@@ -353,7 +353,7 @@
 							 onShown: function() {
 								 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
 								 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-								 $("#work-view").css("z-index", "6");
+								 $("#viewer2").css("z-index", "6");
 								 $('#transcription-textarea').on("input", function()
 									{
 										 if (this.value == 'Sunday school CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in Berlin, by a German Methodist Sunday school. Two or three hundred children marched from the the Methodist Chapel to the house of our Minister, Mr. Wright, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.')
