@@ -41,14 +41,24 @@
 				$(".document-display-type-tabs").width()
 				-
 				7 //so it doesn't overflow
-			); 
+			);
 		};
-
+/*
 		$('#work-zone').ready(function() {
 		    $('#work-view').width($('#work-zone').width());
 		});
-
+*/
 		$(document).ready(function () {
+
+
+
+      $('#reasoning').keyup(function() {
+        var text_length = $('#reasoning').val().length;
+
+        $('#word-counting').text(text_length);
+
+      });
+
             migrateTaggedDocumentsFromV1toV2();
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
 		    $("#document_img").hide();
@@ -72,7 +82,7 @@
 	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
 
 	        $("#document_img").iviewer({
-	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial.jpg",
+	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
 	            zoom_min: 1,
 	            zoom: "fit"
         	});
@@ -124,19 +134,19 @@
 </head>
 
 <body>
-	<div style="position: fixed;" id="work-view">
+	<div id="work-view">
         <div class="document-header">
             <span class="document-title" title="Incite Tutorial - Connect">
-                <b>Title:</b> Incite Tutorial - Connect 
+                <b>Title:</b> Incite Tutorial - Connect
             </span>
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
                 data-toggle="popover" data-html="true" data-trigger="hover"
                 data-viewport=".document-header" aria-hidden="true"
-                data-title="<strong>Document Information</strong>" 
+                data-title="<strong>Document Information</strong>"
                 data-placement="bottom" data-id="">
             </span>
-        </div> 
-        
+        </div>
+
         <div id="tabs-and-legend-container">
             <ul class="nav nav-tabs document-display-type-tabs">
                 <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
@@ -164,16 +174,17 @@
 
 <style>
 	#work-view {
-        position: fixed; 
+        /*position: fixed;*/
         margin-top: -30px;
+        width: 100%;
     }
 
 	.document-header {
     }
 
 	.document-title {
-        font-size: 25px; 
-        position: relative; 
+        font-size: 25px;
+        position: relative;
         top: -5px;
         overflow: hidden;
         display: inline-block;
@@ -184,7 +195,7 @@
     }
 
      #document-info-glphicon {
-        color: #337AB7; 
+        color: #337AB7;
         font-size: 20px;
         top: -8px;
     }
@@ -194,8 +205,8 @@
     }
 
     #legend-container {
-        display: inline-block; 
-        position: relative; 
+        display: inline-block;
+        position: relative;
         top: 10px;
         text-align: right;
     }
@@ -224,7 +235,7 @@
     }
 
     .document-display-type-tabs {
-        display: inline-block; 
+        display: inline-block;
         vertical-align: top;
         font-size: 12px;
         position: relative;
@@ -249,7 +260,7 @@
                     </p>
 
                     <form id="subject-form" method="post">
-                        <table class="table">
+                        <table class="table" id="en-table">
                             <thead>
                                 <td>Themes</td>
                                 <td>Not useful</td>
@@ -272,7 +283,8 @@
                         <p class="header-step">
                             <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
                         </p>
-                        <textarea style="width:100%;" name="reasoning" rows="5"></textarea>
+                        <textarea style="width:100%;" name="reasoning" rows="5" id = "reasoning"></textarea>
+                        <p>Character Counts: <span id = "word-counting">0</span></p>
                         <br>
                         <br>
                         <input type="hidden" name="connection_type" value="multiscale">
@@ -291,10 +303,10 @@
 	<div id="comment-container" class="comments-section-container">
         <h3> Comment </h3>
         <div id="onLogin">
-			<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>	
+			<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
                 <form id="discuss-form" method="POST">
                     <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default submit-comment-btn" 
+                    <button type="button" class="btn btn-default submit-comment-btn"
                     	onclick="submitComment(<?php echo $currentTaskID; ?>)">
                     	Post Comment
                     </button>
@@ -326,8 +338,8 @@
     }
 
     .comment-textarea {
-        width: 100%; 
-        height: 80px; 
+        width: 100%;
+        height: 80px;
         margin-bottom: 10px;
     }
 
@@ -366,6 +378,8 @@
             <?php if ($this->is_being_edited): ?>
                 styleForEditing();
             <?php endif; ?>
+
+
         });
 
         function addButtonAndCheckboxListeners() {
@@ -373,8 +387,23 @@
 
                 //from progress_indicator.php
                 //styleProgressIndicatorForCompletion();
+                var completed = true;
+                for (var i = 1; i < 10; i++) {
+                  var first = "[name=subject";
+                  var second = first.concat(i);
+                  var final = second.concat("]:checked");
+                  if ($($(final)).length == 0) {
+                    completed = false;
+                  }
+                }
 
-                alert('Redirecting to assessment document!');
+                if(completed == false) {
+                  alert("There is at least one theme which has not been rated!");
+                }
+
+                if (completed == true) {
+                 alert('Redirecting to assessment document!');
+               }
                 //$("#subject-form").submit();
             });
 
@@ -428,7 +457,7 @@
             });
         }
         var tour = new Tour({
-            
+
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
         steps: [
             {
@@ -449,27 +478,29 @@
             {
                 element: "#connecting-container",
                 title: "Connect Task",
-                content: 'Now that you’ve read the transcription, check each category that relates to the provided document.',
+                content: 'Now that you’ve read the transcription, check each category that relates to the provided document.<br>If possible, please fill out the reasonning area',
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('input[type="checkbox"]').one("mouseup", function() {
-                        if (this.value == 100) {
-                            tour.next();
+                    $("#en-table").click(function() {
+                      var completed = true;
+                      for (var i = 1; i < 10; i++) {
+                        var first = "[name=subject";
+                        var second = first.concat(i);
+                        var final = second.concat("]:checked");
+                        if ($($(final)).length == 0) {
+                          completed = false;
                         }
+                      }
+
+                      if(completed == true) {
+                        $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                      }
                     });
                 }
             },
-            {
-                element: '#connecting-container',
-                title: "Great!",
-                content: "Good job! Click next to continue",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-            },
+
             {
                 element: "#comment-container",
                 title: "Comment",
@@ -480,7 +511,8 @@
                 }
             },
             {
-                element: "#work-view",
+                //element: "#work-view",
+                orphan: true,
                 title: "Congratulations! You've finished the Connect Tutorial.",
                 content: 'You’re all done!  <br>Press End Tour to exit this tutorial.',
                 placement: "right"
@@ -510,15 +542,15 @@
         #connecting-work-area {
             margin-top: -32px;
         }
-        
+
         #step-0 .btn-end { display: block; }
-        
+
         #step-5 .btn-end { display: block; }
-        
+
         .tooltip {
             position: fixed;
         }
-        
+
         .btn-end {
             display: none;
         }

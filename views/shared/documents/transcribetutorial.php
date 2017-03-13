@@ -6,7 +6,7 @@
 		include(dirname(__FILE__) . '/../common/header.php');
 		include(dirname(__FILE__) . '/../common/progress_indicator.php');
 	?>
-    
+
 	<script type="text/javascript">
 		var msgbox;
 		var comment_type = 0;
@@ -20,28 +20,32 @@
 	<?php
 		include(dirname(__FILE__) . '/../common/task_header.php');
 	?>
-	
+
 	<div class="container-fluid">
 		<head>
 			<script type="text/javascript">
-
+/*
 				$('#work-zone').ready(function () {
 					$('#work-view').width($('#work-zone').width());
 				});
-
+*/
 				$(document).ready(function () {
+
 					$('[data-toggle="popover"]').popover({trigger: "hover"});
 
 					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
 
 					$("#viewer2").iviewer({
-						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial.jpg",
+						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
 						zoom_min: 1,
 						zoom: "fit"
 					});
 
 					buildPopoverContent();
 				});
+
+
+
 
 				function buildPopoverContent() {
 					var content = '';
@@ -108,7 +112,10 @@
 							<a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
 						</p>
 
+						<div id = "tran-div">
 						<textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
+						<p>Character Counts: <span id = "counting">0</span></p>
+						</div>
 
 						<p class="step">
 							<i>Step 2 of 3: Summarize</i>
@@ -121,7 +128,12 @@
 								data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
 							</span>
 						</p>
+
+						<div id = "sum-div">
 						<textarea id="summary-textarea" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
+						<p>Character Counts: <span id = "s-counting">0</span></p>
+						</div>
+
 						<div class="form-group" id="tone-selection">
 							<p class="step">
 								<i>Step 3 of 3: Select the tone of the document</i>
@@ -200,6 +212,20 @@
                 alert('This will redirect you to assessment document');
             });
 
+						$('#summary-textarea').keyup(function() {
+							var text_length = $('#summary-textarea').val().length;
+
+							$('#s-counting').text(text_length);
+
+						});
+
+						$('#transcription-textarea').keyup(function() {
+							var text_length = $('#transcription-textarea').val().length;
+
+							$('#counting').text(text_length);
+
+						});
+
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -211,7 +237,7 @@
                 styleForEditing();
             <?php endif; ?>
         });
-        
+
 
         function styleForEditing() {
             populateWithLatestTranscriptionData();
@@ -237,10 +263,10 @@
                 $('#transcribe-form').show();
             });
         }
-        
-        
+
+
         var tour = new Tour({
-            
+
             //onShown: function (tour) {
               //  $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
             //}
@@ -248,36 +274,61 @@
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End Tour</button></nav></div>",
         steps: [
             {
-                element: '#work-view',
+                //element: '#viewer2',
+								element: '#work-view',
                 title: "Welcome!",
                 content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now.",
                 placement: "right",
+								onShown: function() {
+									$("#work-view").css("z-index", "1101");
+								}
             },
             {
-                element: '#work-view',
+							  element: '#work-view',
                 title: "Welcome! (continued)",
                 content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this text searchable by transcribing it. This means you will type what the image says.',
                 placement: "right",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+
+										$("#work-view").css("z-index", "1101");
+										//$("#wrapper").css("z-index", "1101");
                 }
             },
+
             {
                 element: '#document-header',
                 title: "More Information",
-                content: 'By hovering over the "i" icon at the top of a document, we will provide you with more in-depth information on the document. <br><br> Press Next when you are ready.',
+                content: 'By hovering over the <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon" style="top: 5px;;"></span> at the top of a document, we will provide you with more in-depth information on the document. <br><br> Press Next when you are ready.',
                 placement: "right",
+
                 onShown: function(){
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+										$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+										
+										$("#work-view").css("z-index", "-1");
+										$("#document-info-glyphicon").hover(
+											function() {
+												$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+											}
+										);
                 }
             },
             {
-                element: '#viewer2',
+                element: '#work-view',
                 title: "Zoom",
                 content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. <br><br> Press Next when you are ready.',
                 placement: "right",
+
                 onShown: function(){
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+										$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+										$("#work-view").css("z-index", "1101");
+										$("#zoomer").click(
+											function() {
+												$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+											}
+										);
                 }
             },
             {
@@ -285,135 +336,121 @@
                 title: "Transcribing Process",
                 content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word. <br> 2. Summarize: Provide a brief summary of the document. <br> 3. Tone: Out of the options available, select the most relevant tone of the document.',
                 placement: "left",
+
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+										$("#work-view").css("z-index", "-1");
                 }
             },
+
             {
                 orphan: true,
+								//element: "#transcription-textarea",
+								element: "#tran-div",
                 title: "Transcription",
-                content: 'When transcribing, try your best to be as accurate as possible. If you run into a word or sentence that is too difficult to read, make an educated guess and move on. <br><br> Try it for yourself now! Type out every word in the document the best you can. <br><br> The next step in the tutorial will begin once you correctly type the transcription!',
-               placement: "auto",
-               /* onShown: function() {
-                    $('#transcription-textarea').on("input", function() {
-                        if (this.value == 'Welcome to the Incite Tutorial. This tutorial is meant to help you get acquainted with the three main tasks of our website. These tasks include transcribing, tagging, and connecting.') {
-                           	alert('hurray');
-                        }
+                content: 'When transcribing, try your best to be as accurate as possible. <br> If you run into a word or sentence that is too difficult to read, make an educated guess and move on. <br> Try it for yourself now! Type out every word in the document the best you can. <br><br> The next step in the tutorial will begin once you correctly type the transcription!<br>Hint: There are 384 characters including space in total!',
+                placement: "bottom",
+							 onShown: function() {
+								 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+								 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+								 $("#work-view").css("z-index", "6");
+								 $('#transcription-textarea').on("input", function()
+									{
+										 if (this.value == 'Sunday school CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in Berlin, by a German Methodist Sunday school. Two or three hundred children marched from the the Methodist Chapel to the house of our Minister, Mr. Wright, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.')
+										 {
+												 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop('disabled',false);
+										 }
+									 }
+								 );
+/*
+								 $('#transcription-textarea').keyup(function() {
+
+								 var text_length = $('#transcription-textarea').val().length;
+
+								 $('transcription-textarea').html(text_length);
+
+								 });
+								 */
+								 }
+
+            },
+						//Summary part
+						{
+                //element: "#summary-textarea",
+								element: "#sum-div",
+                title: "Transcribing Process",
+                content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word. <br> 2. Summarize: Provide a brief summary of the document. <br> 3. Tone: Out of the options available, select the most relevant tone of the document.',
+                placement: "bottom",
+                onShown: function() {
+									  $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+										$('#summary-textarea').on("input", function() {
+											if (this.value !== '') {
+												 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop('disabled',false);
+										 }
+ 									 });
+									 /*
+									 $('#summary-textarea').keyup(function() {
+									   var text_length = $('#summary-textarea').val().length;
+
+									   $('#s-counting').text(text_length);
+
+									 });
+									 */
+                }
+            },
+
+						//tone part
+						{
+                element: "#tone-selector",
+                title: "Transcribing Process",
+                content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word. <br> 2. Summarize: Provide a brief summary of the document. <br> 3. Tone: Out of the options available, select the most relevant tone of the document.',
+                placement: "bottom",
+
+                onShown: function() {
+									$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+									$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+										$('#tone-selector').change(function() {
+										if ($('#tone-selector').val() == 'informational') {
+												$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop('disabled',false);
+										}
                     });
-                }*/
+                }
+            },
+
+						//Congratulations
+						{
+							  orphan: true,
+                title: "Congratulations",
+                content: 'Congratulations! You have completed your tutorial!',
+                placement: "auto",
+								onShow: function(){
+									$("#work-view").css("z-index", "3");
+								}
+
             },
 
            ], backdrop: true,
         storage: false});
-/*
-            {
-                element: '#transcription-textarea',
-                title: "Nice!",
-                content: "You've finished the transcription process! Press next to continue.",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-                
-            },
-            {
-                element: '#summary-textarea',
-                title: "Summarize",
-                content: "Now try summarizing the document in 1-2 sentences.  Remember, be brief and try to bring out the most important aspects of the document!",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    var counter = 0;
-                    $('#summary-textarea').on("keydown", function(event) {
-                        
-                        if (event.keyCode == 190) {
-                            counter = counter + 1;
-                            if (counter == 2) {
-                                tour.next();
-                                
-                            }
-                            
-                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
-                        }
-                        
-                    });
-                }
-                
-            },
-            
-            {
-                element: '#summary-textarea',
-                title: "Almost there!",
-                content: "You've finished the part for the summary process! Press next to proceed to the final step of this tutorial.",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-                
-            },
-            {
-                element: '#tone-selection',
-                title: "Selecting the Tone",
-                content: "Now lets try selecting a tone from the dropdown box.",
-                placement: "left",
-                
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('#tone-selector').change(function() {
-                        if (this.value == 'informational') {
-                            tour.next();
-                        }
-                    });
-                }
-            },
-            {
-                element: '#tone-selection',
-                title: "Great job! You're almost done!",
-                content: "You've finished the tutorial for the entire transcription process. Here are some extra tidbits of information.",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-                
-            },
-            {
-                element: '#comment-container',
-                title: "Comments",
-                content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-                
-            },
-            
-            {
-                element: '#work-view',
-                title: "Congratulations!",
-                content: "You've finished the tutorial for the transcription process! Press End Tour to close this tutorial.",
-                placement: "right",
-                
-            }
-        ],
-            
-        backdrop: true,
-        storage: false});
-        
-*/
+
         // Initialize the tour
         tour.init();
 
         // Start the tour
         tour.start(true);
+
+
+
+
     </script>
+
 
     <style>
     #work-view {
-				position: relative;
-				width: 35%;
-				margin-top: -39px;
+				/*position: relative;
+
+				margin-top: -39px;*/
+				margin-top: -30px;
 			}
 
 			.viewer {
@@ -424,8 +461,11 @@
 
 			.wrapper {
 				overflow: hidden;
-				margin-top: 7px
+				margin-top: 7px;
+				/*width: 70%;*/
 			}
+
+
 
 			.document-title {
 				font-size: 25px;
@@ -455,7 +495,7 @@
             display: none;
         }
         #step-0 .btn-end { display: block; }
-        
+
         #step-14 .btn-end { display: block; }
 
         #submit_transcription {
@@ -485,11 +525,23 @@
             right: 0;
             cursor: pointer;
         }
+				#viewer2 {
+					background: white;
+					margin-left: 10px;
+					width: 90%;
+				}
+
+				#document-header {
+					margin-left: 10px;
+				}
+
         .tour-backdrop,
     .tour-step-background {
         z-index: 3;
+
     }
-        
+
+
     </style>
 </body>
 

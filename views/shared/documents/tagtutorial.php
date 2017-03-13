@@ -42,13 +42,13 @@
 				$(".document-display-type-tabs").width()
 				-
 				7 //so it doesn't overflow
-			); 
+			);
 		};
-
+/*
 		$('#work-zone').ready(function() {
 		    $('#work-view').width($('#work-zone').width());
 		});
-
+*/
 		$(document).ready(function () {
             migrateTaggedDocumentsFromV1toV2();
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
@@ -66,14 +66,14 @@
 		        selectTab($("#show"), $("#hide"));
 		    });
 
-		    setLegendWidth();
+		    //setLegendWidth();
 
 		    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
 
 	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
 
 	        $("#document_img").iviewer({
-	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial.jpg",
+	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
 	            zoom_min: 1,
 	            zoom: "fit"
         	});
@@ -125,26 +125,26 @@
 </head>
 
 <body>
-	<div style="position: fixed;" id="work-view">
+	<div id="work-view" >
         <div class="document-header">
             <span class="document-title" title="Incite Tutorial - Tag">
-                <b>Title:</b> Incite tutorial - Tag 
+                <b>Title:</b> Incite tutorial - Tag
             </span>
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
                 data-toggle="popover" data-html="true" data-trigger="hover"
                 data-viewport=".document-header" aria-hidden="true"
-                data-title="<strong>Document Information</strong>" 
+                data-title="<strong>Document Information</strong>"
                 data-placement="bottom" data-id="">
             </span>
-        </div> 
-        
-        <div id="tabs-and-legend-container">
+        </div>
+
+        <div id="tabs-and-legend-container" >
             <ul class="nav nav-tabs document-display-type-tabs">
                 <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
                 <li role="presentation" id="show"><a href="#">Document</a></li>
             </ul>
 
-            <div id="legend-container">
+            <div id="legend-container" >
                 <span><b>Legend: </b></span>
                 <?php $all_categories = getAllCategories(); ?>
                 <?php foreach ((array)$all_categories as $category): ?>
@@ -165,16 +165,18 @@
 
 <style>
 	#work-view {
-        position: fixed; 
+        /*position: fixed;*/
         margin-top: -30px;
+        width: 100%;
     }
 
 	.document-header {
+    width: 70%;
     }
 
 	.document-title {
-        font-size: 25px; 
-        position: relative; 
+        font-size: 25px;
+        position: relative;
         top: -5px;
         overflow: hidden;
         display: inline-block;
@@ -185,7 +187,7 @@
     }
 
      #document-info-glphicon {
-        color: #337AB7; 
+        color: #337AB7;
         font-size: 20px;
         top: -8px;
     }
@@ -195,10 +197,11 @@
     }
 
     #legend-container {
-        display: inline-block; 
-        position: relative; 
+        display: inline-block;
+        position: relative;
         top: 10px;
         text-align: right;
+        width: 60%;
     }
 
     .viewer {
@@ -225,12 +228,18 @@
     }
 
     .document-display-type-tabs {
-        display: inline-block; 
+        display: inline-block;
         vertical-align: top;
         font-size: 12px;
         position: relative;
         top: 5px;
     }
+
+    .tour-backdrop,
+.tour-step-background {
+    z-index: 3;
+
+}
 </style>
             </div>
 
@@ -408,10 +417,10 @@
 	<div id="comment-container" class="comments-section-container">
         <h3> Comment </h3>
         <div id="onLogin">
-			<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>	
+			<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted * */): ?>
                 <form id="discuss-form" method="POST">
                     <textarea name="transcribe_text" cols="60" rows="10" id="comment" class="comment-textarea" placeholder="Your comment"></textarea>
-                    <button type="button" class="btn btn-default submit-comment-btn" 
+                    <button type="button" class="btn btn-default submit-comment-btn"
                     	onclick="submitComment(<?php echo $currentTaskID; ?>)">
                     	Post Comment
                     </button>
@@ -443,8 +452,8 @@
     }
 
     .comment-textarea {
-        width: 100%; 
-        height: 80px; 
+        width: 100%;
+        height: 80px;
         margin-bottom: 10px;
     }
 
@@ -791,26 +800,59 @@
             {
                 element: '#entity-table',
                 title: "Auto-suggested and Previous Tags",
-                content: 'This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag.',
+                content: "This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag. <br>A tag consists of four components. <br>1. The name <br>2. The category <br>3. The sub-category <br>4. The details",
                 placement: 'left',
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".remove-entity-button").prop("disabled", true);
+
                 }
             },
+
             {
                 element: '#entity-table',
-                title: "Parts of a tag",
-                content: "A tag consists of four components. <br>1. The name <br>2. The category <br>3. The sub-category <br>4. The details",
-                placement: "left",
+                title: "Delete the exsiting Tags",
+                content: "The first one seems to be a wrong tag. <br> Can you help us delete it by clicking the trash button? <br>",
+                placement: 'left',
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $(".remove-entity-button").prop("disabled", true);
+                    $(".remove-entity-button").first().prop("disabled", false);
+                    $('#trashButton').click(function() {
+                        //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        tour.next();
+                    });
+
                 }
-                
+
             },
+
+            {
+                element: '#entity-table',
+                title: "Modify the exsiting Tags",
+                content: "Thanks! Can you also help us to complete the tag <br>'Berlin'by typing 'German Methodist Sunday school' to the detail area ? ",
+                placement: 'left',
+                onShown: function() {
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $(".remove-entity-button").prop("disabled", true);
+                    $($(".entity-details").first()).keyup(function() {
+                      if ($(this).val() == 'German Methodist Sunday school') {
+                        //tour.next();
+                        $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                      }
+                    });
+                    //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+
+                }
+
+            },
+
             {
                 element: '#work-view',
                 title: "Adding your own Tags",
-                content: "Now, highlight words in the transcription on the left to add any missing tags. You can highlight a word by clicking and dragging.<br>Try highlighting the author's name.",
+                content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you actually highlight the word 'public garden' by clicking and dragging.",
                 placement: "right",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
@@ -823,13 +865,15 @@
                         var wasDragging = isDragging;
                         isDragging = false;
                         if (wasDragging) {
-                            tour.next();
+                            //tour.next();
+                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
                         }
                     });
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
+            /*
             {
                 element: '#work-view',
                 title: "",
@@ -838,27 +882,29 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
-            
+            */
+
             {
                 element: '#user-entity-table',
                 title: "Adding the components to your tag",
-                content: "Now let's try setting the components to the tag you just made. <br>If a tag doesn't fit under any given category, select Other for the category or None for the subcategory. <br>Try setting the most appropriate category/subcategory.",
-                placement: "left",
+                content: "Now let's try setting the components to the tag you just made.<br>Try setting the most appropriate category/subcategory.<br>Hint: 'Berlin' is a location here. ",
+                placement: "top",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $('#categorySelect').change(function() {
-                        if (this.value == 3) {
+                        if (this.value == 1) {
                             tour.next();
                         }
-                        
+
                     });
-                    
+
                 }
-                
+
             },
+            /*
             {
                 element: '#user-entity-table',
                 title: "",
@@ -867,38 +913,43 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
+            */
+
             {
                 element: '#user-entity-table',
                 title: "Adding the components to your tag",
-                content: "Now add a small detail about the tag. For example, try typing 'author'.",
+                content: "Now add a small detail about the tag. For example, try typing 'scholars amuse here'.",
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $('#detail').on("input", function() {
-                        
-                        if (this.value == 'author') {
+
+                        if (this.value == 'scholars amuse here') {
                             tour.next();
                         }
                     });
                 }
-                
+
             },
+            /*
             {
                 element: '#user-entity-table',
-                title: "",
-                content: "Great Work! You've created your first tag! Press next to continue",
+                title: "hhh",
+                content: "Great Work! You've created your first tag!",
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
+            */
+            /*
             {
                 element: '#user-entity-table',
                 title: "Deletion",
-                content: 'Now try deleting the tag we just finalized. You can do this by clicking the trash button.',
+                content: "Now try deleting the tag we just finalized. You can do this by clicking the trash button.",
                 placement: 'left',
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
@@ -908,6 +959,8 @@
                     });
                 }
             },
+*/
+            /*
             {
                 element: '#user-entity-table',
                 title: "",
@@ -915,31 +968,29 @@
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    tour.next();
                 }
-                
+
             },
-            
-            
+            */
+
             {
                 element: '#comment-container',
                 title: "Comments",
                 content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
-                placement: "left",
+                placement: "top",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
-            
+
             {
-                element: '#work-view',
+                orphan: true,
                 title: "Congratulations!",
                 content: "You've finished the tutorial for the tagging process! Press End Tour to close this tutorial.",
-                placement: "right",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", false);
-                }
-                
+                placement: "auto"
+
             }
     ],
     backdrop: true,
@@ -969,7 +1020,7 @@
             display: none;
         }
         #step-0 .btn-end { display: block; }
-        
+
         #step-12 .btn-end { display: block; }
 
     #revision-history-container {

@@ -226,12 +226,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
               $oldwd = getcwd();
               chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-
+/*
               $this->view->file = 'not exist';
               system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/tutorial_trans > ../tmp/ner/tutorial_trans.ner');
-
+*/
               $nered_file = fopen('../tmp/ner/tutorial_trans.ner', "r");
               $nered_file_size = filesize('../tmp/ner/tutorial_trans.ner');
+              
               $parsed_text = "";
               if ($nered_file_size != 0)
                   $parsed_text = fread($nered_file, $nered_file_size);
@@ -240,6 +241,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
               //parsing results
               $transformed_transcription = $parsed_text;
+              
               foreach ($categories as $category) {
                   $entities = getTextBetweenTags($parsed_text, strtoupper($category['name']));
                   $repitition = substr_count($parsed_text, '<'.strtoupper($category['name']).'>');
@@ -247,17 +249,22 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                   for ($i = 0; $i < $repitition; $i++) {
                       $transformed_transcription = classifyTextWithinTagWithId($transformed_transcription, strtoupper($category['name']), $tag_id_counter++);
                   }
-                  $tag_id_counter -= $repitition;
+                 
+                  //$tag_id_counter -= $repitition;
                   if (isset($entities[1]) && count($entities[1]) > 0) {
                       //$uniq_entities = array_unique($entities[1]);
                       $uniq_entities = $entities[1];
                       foreach ($uniq_entities as $entity) {
-                          $ner_entity_table[] = array('entity' => $entity, 'category' => strtoupper($category['name']), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
+                          //$ner_entity_table[] = array('entity' => $entity, 'category' => strtoupper($category['name']), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
                       }
                   }
               }
+              //Wrong tags to be removed in tutorial
+              //$ner_entity_table[] = array('entity' => "Passenger", 'category' => strtoupper("location"), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
+
 
               chdir($oldwd);
+
 
               $this->view->entities = $ner_entity_table;
               $this->view->transcription = $transformed_transcription;
@@ -412,7 +419,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       if ($this->_hasParam('id')) {
           if (!isset($_SESSION['Incite']['tutorial_conn'])) {
               $this->view->subjects = getAllSubjectConcepts();
-              $this->view->transcription = 'Welcome to Incite developed by <em id="tag_id_8" class="organization tagged-text">Mapping the Fourth</em> team led by Dr. <em id="tag_id_3" class="person tagged-text">Paul Quigley</em>, Dr. <em id="tag_id_4" class="person tagged-text">David Hicks</em> and Dr. <em id="tag_id_5" class="person tagged-text">Kurt Luther</em> from <em id="tag_id_0" class="organization tagged-text">Virginia Tech</em> in <em id="tag_id_9" class="location tagged-text">Blacksburg, Virginia</em>! This tutorial is to help you get familiar with the three tasks: transcribe, tag and connect!';
+              $this->view->transcription = 'SUNDAY SCHOOL CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the <em id="tag_id_1" class="location tagged-text">public garden</em>, where the scholars amused themselves as our Sunday school do here on similar occasions.
+        </div>';
               $this->_helper->viewRenderer('connecttutorial');
               return;
           }
