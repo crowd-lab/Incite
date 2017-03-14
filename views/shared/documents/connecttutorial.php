@@ -75,7 +75,7 @@
 		        selectTab($("#show"), $("#hide"));
 		    });
 
-		    setLegendWidth();
+		    //setLegendWidth();
 
 		    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
 
@@ -91,12 +91,12 @@
 		});
 
         function buildPopoverContent() {
-            var content = '';
-            var date = "2016-12-06";
-            var location = "Virginia - Montgomery County - Blacksburg";
-            var source = "";
-            var contributor = "";
-            var rights = "Public Domain";
+          var content = '';
+          var date = "1860-08-06";
+          var location = "Germany-Berlin state-Berlin";
+          var source = "The Daily Dispatch (Richmond, VA)";
+          var contributor = "";
+          var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
 
             if (date) {
                 content += '<strong>Date: </strong>' + date + '<br><br>';
@@ -174,9 +174,9 @@
 
 <style>
 	#work-view {
-        /*position: fixed;*/
+        position: fixed;
         margin-top: -30px;
-        width: 100%;
+        width: 45%;
     }
 
 	.document-header {
@@ -208,6 +208,7 @@
         display: inline-block;
         position: relative;
         top: 10px;
+        width: 60%;
         text-align: right;
     }
 
@@ -244,7 +245,7 @@
 </style>
             </div>
 
-            <div class="col-md-6" id="connecting-work-area">
+            <div class="col-md-6" id="connecting-work-area" style = "clear: both;">
                 <div id="connecting-container">
                     <p class="header-step">
                         <i>Step 1 of 1: What themes in the following could this document help a historian research/inve    stigate? Please rate based on usefulness</i>
@@ -541,6 +542,8 @@
 
         #connecting-work-area {
             margin-top: -32px;
+            position: relative;
+            float: right;
         }
 
         #step-0 .btn-end { display: block; }

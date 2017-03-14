@@ -419,7 +419,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       if ($this->_hasParam('id')) {
           if (!isset($_SESSION['Incite']['tutorial_conn'])) {
               $this->view->subjects = getAllSubjectConcepts();
-              $this->view->transcription = 'SUNDAY SCHOOL CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the <em id="tag_id_1" class="location tagged-text">public garden</em>, where the scholars amused themselves as our Sunday school do here on similar occasions.
+              $this->view->transcription = 'SUNDAY SCHOOL CELEBRATION IN <em id="tag_id_1" class="location tagged-text">PRUSSIA</em>. The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.
         </div>';
               $this->_helper->viewRenderer('connecttutorial');
               return;

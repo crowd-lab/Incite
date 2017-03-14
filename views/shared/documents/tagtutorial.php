@@ -83,11 +83,11 @@
 
         function buildPopoverContent() {
             var content = '';
-            var date = "2016-12-06";
-            var location = "Virginia - Montgomery County - Blacksburg";
-            var source = "";
+            var date = "1860-08-06";
+            var location = "Germany-Berlin state-Berlin";
+            var source = "The Daily Dispatch (Richmond, VA)";
             var contributor = "";
-            var rights = "Public Domain";
+            var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
 
             if (date) {
                 content += '<strong>Date: </strong>' + date + '<br><br>';
@@ -125,8 +125,8 @@
 </head>
 
 <body>
-	<div id="work-view" >
-        <div class="document-header">
+<div id="work-view" >
+        <div class="document-header" id = "icon">
             <span class="document-title" title="Incite Tutorial - Tag">
                 <b>Title:</b> Incite tutorial - Tag
             </span>
@@ -165,13 +165,14 @@
 
 <style>
 	#work-view {
-        /*position: fixed;*/
+        position: fixed;
         margin-top: -30px;
-        width: 100%;
+        width: 40%;
     }
 
 	.document-header {
-    width: 70%;
+    width: 100%;
+    margin-left: 20px;
     }
 
 	.document-title {
@@ -368,26 +369,26 @@
                         <tr>
                     </table>
                     <p class="step"><i>Step 3 of 3: Based on the document on the left and its metadata, please answer the following questions.</i></p>
-                    <table class="table">
+                    <table class="table" id = "choice-table">
                         <tr><th>Questions</th><th>Answers</th></tr>
-                        <tr><td>When was this document produced?</td><td><input type="text" placeholder="YYYY-MM-DD"></td></tr>
-                        <tr><td>Where was this document produced?</td><td><input type="text" placeholder="location"></td></tr>
+                        <tr><td>When was this document produced?</td><td><input type="text" id = "date-detail" placeholder="YYYY-MM-DD"></td></tr>
+                        <tr><td>Where was this document produced?</td><td><input type="text" id = "place-detail" placeholder="location"></td></tr>
                         <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
                             <td>
-                                <select class="form-control">
+                                <select id = "race-selector" class="form-control">
                                     <option>What race?</option>
                                     <option>White</option>
                                     <option>African American</option>
                                     <option>Foreigner</option>
                                     <option>Not specified</option>
                                 </select>
-                                <select class="form-control">
+                                <select id = "gender-selector" class="form-control">
                                     <option>What gender?</option>
                                     <option>Male</option>
                                     <option>Female</option>
                                     <option>Not specified</option>
                                 </select>
-                                <select class="form-control">
+                                <select id = "occupation-selector" class="form-control">
                                     <option>What occupation?</option>
                                     <option>Abolitionist</option>
                                     <option>Soldier</option>
@@ -852,7 +853,7 @@
             {
                 element: '#work-view',
                 title: "Adding your own Tags",
-                content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you actually highlight the word 'public garden' by clicking and dragging.",
+                content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you actually highlight the word 'PRUSSIA' by clicking and dragging.",
                 placement: "right",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
@@ -896,7 +897,7 @@
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $('#categorySelect').change(function() {
                         if (this.value == 1) {
-                            tour.next();
+                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
                         }
 
                     });
@@ -920,14 +921,15 @@
             {
                 element: '#user-entity-table',
                 title: "Adding the components to your tag",
-                content: "Now add a small detail about the tag. For example, try typing 'scholars amuse here'.",
+                content: "Now add a small detail about the tag. For example, try typing 'celebration location'.",
                 placement: "left",
                 onShown: function() {
+                    $("#document-info-glphicon").popover('hide');
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $('#detail').on("input", function() {
 
-                        if (this.value == 'scholars amuse here') {
-                            tour.next();
+                        if (this.value == 'celebration location') {
+                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
                         }
                     });
                 }
@@ -960,19 +962,67 @@
                 }
             },
 */
-            /*
+
             {
-                element: '#user-entity-table',
-                title: "",
-                content: "Great Work! Press next to continue",
+                element: '#choice-table',
+                title: "Fill out the basic information",
+                content: "This is choice table <br>You can fill out the date and location information by hovering the info icon<br>For this material, all three blanks should be Not specified.",
                 placement: "left",
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    tour.next();
+                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    //$("#work-view").css("z-index", "6");
+                    $("#document-info-glphicon").popover('show');
+                    var i = 0;
+                    $('#date-detail').on("input", function() {
+                        if (this.value == '1860-08-06') {
+                            i++;
+                        }
+                        if(i == 5) {
+                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        }
+                    });
+                    $('#place-detail').on("input", function() {
+                        if (this.value == 'Germany-Berlin state-Berlin') {
+                            i++;
+                        }
+                        if(i == 5) {
+                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        }
+                    });
+                    $('#race-selector').change(function() {
+										    if ($(this).val() == 'Not specified') {
+												    i++;
+										    }
+                        if(i == 5) {
+                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        }
+                    });
+                    $('#gender-selector').change(function() {
+										    if ($(this).val() == 'Not specified') {
+												    i++;
+										    }
+                        if(i == 5) {
+                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        }
+                    });
+                    $('#occupation-selector').change(function() {
+										    if ($(this).val() == 'Not specified') {
+												    i++;
+										    }
+                        if(i == 5) {
+                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        }
+                    });
+
+
+                    //if (var == 2) {
+                      //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    //}
+
                 }
 
             },
-            */
+
 
             {
                 element: '#comment-container',
@@ -980,6 +1030,7 @@
                 content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
                 placement: "top",
                 onShown: function() {
+                    $("#document-info-glphicon").popover('hide');
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
 

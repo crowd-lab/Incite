@@ -49,11 +49,11 @@
 
 				function buildPopoverContent() {
 					var content = '';
-					var date = "2016-12-06";
-					var location = "Virginia - Montgomery County - Blacksburg";
-					var source = "";
+					var date = "1860-08-06";
+					var location = "Germany-Berlin state-Berlin";
+					var source = "The Daily Dispatch (Richmond, VA)";
 					var contributor = "";
-					var rights = "Public Domain";
+					var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
 
 					if (date) content += '<strong>Date: </strong>' + date + '<br><br>';
 					if (location) content += '<strong>Location: </strong>' + location + '<br><br>';
@@ -280,7 +280,7 @@
                 content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now.",
                 placement: "right",
 								onShown: function() {
-									$("#viewer2").css("z-index", "1101");
+									$("#viewer2").css("z-index", "6");
 								}
             },
             {
@@ -291,7 +291,7 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
 
-										$("#viewer2").css("z-index", "1101");
+										$("#viewer2").css("z-index", "6");
 										//$("#wrapper").css("z-index", "1101");
                 }
             },
@@ -323,7 +323,7 @@
                 onShown: function(){
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
 										$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-										$("#viewer2").css("z-index", "1101");
+										$("#viewer2").css("z-index", "6");
 										$("#zoomer").click(
 											function() {
 												$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
@@ -447,11 +447,11 @@
 
     <style>
     #work-view {
-				/*position: relative;
-
-				margin-top: -39px;*/
+				/*position: fixed;*/
+				/*margin-top: -39px;*/
 				margin-top: -30px;
 			}
+
 
 			.viewer {
 				width: 100%;
