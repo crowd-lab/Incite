@@ -126,16 +126,18 @@
 
 <body>
 <div id="work-view" >
-        <div class="document-header" id = "icon">
+        <div class="document-header" id = "header" style = "position: relative">
             <span class="document-title" title="Incite Tutorial - Tag">
                 <b>Title:</b> Incite tutorial - Tag
             </span>
+
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
                 data-toggle="popover" data-html="true" data-trigger="hover"
                 data-viewport=".document-header" aria-hidden="true"
                 data-title="<strong>Document Information</strong>"
                 data-placement="bottom" data-id="">
             </span>
+
         </div>
 
         <div id="tabs-and-legend-container" >
@@ -470,6 +472,7 @@
     .reply-comment {
     	margin-bottom: 15px;
     }
+
 </style>
             </div>
         </div>
@@ -924,6 +927,7 @@
                 content: "Now add a small detail about the tag. For example, try typing 'celebration location'.",
                 placement: "left",
                 onShown: function() {
+                  $("#work-view").css("z-index", "0");
                     $("#document-info-glphicon").popover('hide');
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $('#detail').on("input", function() {
@@ -970,8 +974,9 @@
                 placement: "left",
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    //$("#work-view").css("z-index", "6");
-                    $("#document-info-glphicon").popover('show');
+                    $("#work-view").css("background", "white");
+                    $("#work-view").css("z-index", "1101");
+
                     var i = 0;
                     $('#date-detail').on("input", function() {
                         if (this.value == '1860-08-06') {
@@ -1030,6 +1035,7 @@
                 content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
                 placement: "top",
                 onShown: function() {
+                  $("#work-view").css("z-index", "0");
                     $("#document-info-glphicon").popover('hide');
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
@@ -1084,6 +1090,8 @@
         cursor: pointer;
         margin-top: -32px;
     }
+
+
 
 </style>
 

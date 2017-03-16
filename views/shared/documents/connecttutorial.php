@@ -14,7 +14,7 @@
         var comment_type = 2;
     </script>
 </head>
-<body>
+<body id = "main-body">
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
     ?>
@@ -389,7 +389,7 @@
                 //from progress_indicator.php
                 //styleProgressIndicatorForCompletion();
                 var completed = true;
-                for (var i = 1; i < 10; i++) {
+                for (var i = 1; i < $( "form input:radio" ).length/5 + 1; i++) {
                   var first = "[name=subject";
                   var second = first.concat(i);
                   var final = second.concat("]:checked");
@@ -484,20 +484,19 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    $("#work-view").css("background", "white");
+                    $("#work-view").css("z-index", "1101");
                     $("#en-table").click(function() {
-                      var completed = true;
-                      for (var i = 1; i < 10; i++) {
+                      for (var i = 1; i < $( "form input:radio" ).length/5 + 1; i++) {
                         var first = "[name=subject";
                         var second = first.concat(i);
                         var final = second.concat("]:checked");
-                        if ($($(final)).length == 0) {
-                          completed = false;
+                        if ($($(final)).length != 0) {
+                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
                         }
                       }
 
-                      if(completed == true) {
-                        $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
-                      }
+
                     });
                 }
             },
@@ -508,6 +507,7 @@
                 content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
                 placement: "left",
                 onShown: function() {
+                  $("#work-view").css("z-index", "0");
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
             },

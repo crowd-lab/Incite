@@ -348,7 +348,7 @@
 								//element: "#transcription-textarea",
 								element: "#tran-div",
                 title: "Transcription",
-                content: 'When transcribing, try your best to be as accurate as possible. <br> If you run into a word or sentence that is too difficult to read, make an educated guess and move on. <br> Try it for yourself now! Type out every word in the document the best you can. <br><br> The next step in the tutorial will begin once you correctly type the transcription!<br>Hint: There are 384 characters including space in total!',
+                content: 'When transcribing, try your best to be as accurate as possible. <br> Try it for yourself now! Type out every word in the document the best you can. <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total!',
                 placement: "bottom",
 							 onShown: function() {
 								 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
@@ -356,7 +356,7 @@
 								 $("#viewer2").css("z-index", "6");
 								 $('#transcription-textarea').on("input", function()
 									{
-										 if (this.value == 'Sunday school CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in Berlin, by a German Methodist Sunday school. Two or three hundred children marched from the the Methodist Chapel to the house of our Minister, Mr. Wright, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.')
+										 if (this.value == 'SUNDAY SCHOOL CELEBRATION IN PRUSSIA.')
 										 {
 												 $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop('disabled',false);
 										 }
@@ -379,7 +379,7 @@
                 //element: "#summary-textarea",
 								element: "#sum-div",
                 title: "Transcribing Process",
-                content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word. <br> 2. Summarize: Provide a brief summary of the document. <br> 3. Tone: Out of the options available, select the most relevant tone of the document.',
+                content: 'Summarize: Provide a brief summary of the document.',
                 placement: "bottom",
                 onShown: function() {
 									  $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
@@ -404,7 +404,7 @@
 						{
                 element: "#tone-selector",
                 title: "Transcribing Process",
-                content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word. <br> 2. Summarize: Provide a brief summary of the document. <br> 3. Tone: Out of the options available, select the most relevant tone of the document.',
+                content: 'Tone: Out of the options available, select the most relevant tone of the document. <br> hint: Informational could be a correct answer',
                 placement: "bottom",
 
                 onShown: function() {
