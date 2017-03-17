@@ -825,7 +825,7 @@
                     $(".remove-entity-button").first().prop("disabled", false);
                     $('#trashButton').click(function() {
                         //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
-                        tour.next();
+                        $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
                     });
 
                 }
