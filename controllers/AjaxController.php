@@ -33,7 +33,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Env_Setting.php");
     require_once("DB_Connect.php");
     require_once("Email.php");
-
+    require_once('finediff.php');
     require_once("Incite_Subject_Concept_Table.php");
 
   }
@@ -799,5 +799,18 @@ public function getallavailabledocsAction(){
       }
     }
     echo json_encode($urlData);
+  }
+  public function finddiffAction()
+  {
+    if ($this->getRequest()->isPost()) {
+      //$opcodes = FineDiff::getDiffOpcodes($from_text, $to_text , FineDiff::$wordGranularity );
+      $FROM = $_POST['userTranscription'];
+      $TO = "hard coded transcription for now";
+      //$TO = FineDiff::renderToTextFromOpcodes($FROM, $opcodes);
+      $diff = new FineDiff($FROM, $TO, FineDiff::$wordGranularity);
+      $htmlDiff = $diff->renderDiffToHTML();
+      $htmlDiff = html_entity_decode($htmlDiff, ENT_QUOTES, 'UTF-8');
+      echo $htmlDiff;
+    }
   }
 }

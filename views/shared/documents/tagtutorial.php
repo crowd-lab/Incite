@@ -804,29 +804,30 @@
             {
                 element: '#entity-table',
                 title: "Auto-suggested and Previous Tags",
-                content: "This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag. <br>A tag consists of four components. <br>1. The name <br>2. The category <br>3. The sub-category <br>4. The details",
+                content: "This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag. <br>A tag has four parts: <br>1. Name <br>2. Category <br>3. Sub-category <br>4. Details",
                 placement: 'left',
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".remove-entity-button").prop("disabled", true);
+
+                    //$(".remove-entity-button").prop("disabled", true);
 
                 }
             },
 
             {
                 element: '#entity-table',
-                title: "Delete the exsiting Tags",
+                title: "Delete the existing tags",
                 content: "The first one seems to be a wrong tag. <br> Can you help us delete it by clicking the trash button? <br>",
                 placement: 'left',
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $(".remove-entity-button").prop("disabled", true);
-                    $(".remove-entity-button").first().prop("disabled", false);
-                    $('#trashButton').click(function() {
-                        //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
-                        $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
-                    });
+                  var time = 0;
+                  $(".remove-entity-button").first().click(function() {
+                    time++;
+                    if(time == 1) {
+                      $('<img id = "pic1" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
+                      $("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+                    }
+                    setTimeout(function(){$( "#pic1" ).remove();}, 3000);
+                  });
 
                 }
 
@@ -835,16 +836,18 @@
             {
                 element: '#entity-table',
                 title: "Modify the exsiting Tags",
-                content: "Thanks! Can you also help us to complete the tag <br>'Berlin'by typing 'German Methodist Sunday school' to the detail area ? ",
+                content: "Thanks! Can you also help us to complete the tag <br>'Berlin' by typing 'German Methodist Sunday school' to the details area? <br>",
                 placement: 'left',
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $(".remove-entity-button").prop("disabled", true);
+                    var time = 0;
                     $($(".entity-details").first()).keyup(function() {
                       if ($(this).val() == 'German Methodist Sunday school') {
-                        //tour.next();
-                        $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                        time++;
+  											if(time == 1) {
+  												$('<img id = "pic2" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
+  												$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+  											}
+  											setTimeout(function(){$( "#pic2" ).remove();}, 3000);
                       }
                     });
                     //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
@@ -856,10 +859,10 @@
             {
                 element: '#work-view',
                 title: "Adding your own Tags",
-                content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you actually highlight the word 'PRUSSIA' by clicking and dragging.",
+                content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you highlight the word 'PRUSSIA' by selecting the text?<br>",
                 placement: "right",
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
+                    var time = 0;
                     var isDragging = false;
                     $("#work-view").mousedown(function() {
                         isDragging = false;
@@ -869,121 +872,86 @@
                         var wasDragging = isDragging;
                         isDragging = false;
                         if (wasDragging) {
-                            //tour.next();
-                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                          time++;
+    											if(time == 1) {
+    												$('<img id = "pic3" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-4 .popover-content"));
+    												$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    											}
+    											setTimeout(function(){$( "#pic3" ).remove();}, 3000);
                         }
                     });
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+
                 }
 
             },
-            /*
-            {
-                element: '#work-view',
-                title: "",
-                content: "Great Work! Click next to continue.",
-                placement: "right",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-            */
 
             {
                 element: '#user-entity-table',
                 title: "Adding the components to your tag",
-                content: "Now let's try setting the components to the tag you just made.<br>Try setting the most appropriate category/subcategory.<br>Hint: 'Berlin' is a location here. ",
-                placement: "top",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $('#categorySelect').change(function() {
-                        if (this.value == 1) {
-                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
-                        }
-
-                    });
-
-                }
-
-            },
-            /*
-            {
-                element: '#user-entity-table',
-                title: "",
-                content: "Great Work! Click next to continue.",
+                content: "Now let's try completing the parts to the tag you just made.<br>Try setting the most appropriate category and subcategory.<br>Hint: 'Berlin' is a location here.<br>",
                 placement: "left",
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                  var time = 0;
+                  $('#categorySelect').change(function() {
+                    if (this.value == 1) {
+                      time++;
+											if(time == 1) {
+												$('<img id = "pic4" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-5 .popover-content"));
+												$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+											}
+											setTimeout(function(){$( "#pic4" ).remove();}, 3000);
+                  }
+
+                });
+
                 }
 
             },
-            */
 
             {
                 element: '#user-entity-table',
                 title: "Adding the components to your tag",
-                content: "Now add a small detail about the tag. For example, try typing 'celebration location'.",
+                content: "Now add some details about the tag. <br>For example, ’Former country that now includes Germany and Poland’.<br>",
                 placement: "left",
                 onShown: function() {
                   $("#work-view").css("z-index", "0");
-                    $("#document-info-glphicon").popover('hide');
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('#detail').on("input", function() {
-
-                        if (this.value == 'celebration location') {
-                            $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
-                        }
-                    });
+                  $("#document-info-glphicon").popover('hide');
+                  $('#detail').on("input", function() {
+                  var time = 0;
+                  if (this.value == 'Former country that now includes Germany and Poland') {
+                    time++;
+                    if(time == 1) {
+                      $('<img id = "pic5" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
+                      $("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+                    }
+                    setTimeout(function(){$( "#pic5" ).remove();}, 3000);
+                  }
+                });
                 }
 
             },
-            /*
-            {
-                element: '#user-entity-table',
-                title: "hhh",
-                content: "Great Work! You've created your first tag!",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-            */
-            /*
-            {
-                element: '#user-entity-table',
-                title: "Deletion",
-                content: "Now try deleting the tag we just finalized. You can do this by clicking the trash button.",
-                placement: 'left',
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('#addTrashButton').one("mouseup", function() {
-                        tour.next();
-                    });
-                }
-            },
-*/
 
             {
                 element: '#choice-table',
-                title: "Fill out the basic information",
-                content: "This is choice table <br>You can fill out the date and location information by hovering the info icon<br>For this material, all three blanks should be Not specified.",
-                placement: "left",
+                title: "Fill in the document context",
+                content: "Fill in information about the document’s context and the author’s perspective. <br>You and other users can share ideas, questions, and opinions on this document by posting comments here. <br>Make sure to login or sign up to contribute to the discussion!",
+                placement: "top",
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $("#work-view").css("background", "white");
                     $("#work-view").css("z-index", "1101");
-
+                    var time = 0;
                     var i = 0;
                     $('#date-detail').on("input", function() {
                         if (this.value == '1860-08-06') {
                             i++;
                         }
                         if(i == 5) {
-                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                          time++;
+    											if(time == 1) {
+    												$('<img id = "pic6" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    											}
+    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
                     });
                     $('#place-detail').on("input", function() {
@@ -991,7 +959,12 @@
                             i++;
                         }
                         if(i == 5) {
-                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                          time++;
+    											if(time == 1) {
+    												$('<img id = "pic6" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    											}
+    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
                     });
                     $('#race-selector').change(function() {
@@ -999,7 +972,12 @@
 												    i++;
 										    }
                         if(i == 5) {
-                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                          time++;
+    											if(time == 1) {
+    												$('<img id = "pic6" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    											}
+    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
                     });
                     $('#gender-selector').change(function() {
@@ -1007,7 +985,12 @@
 												    i++;
 										    }
                         if(i == 5) {
-                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                          time++;
+    											if(time == 1) {
+    												$('<img id = "pic6" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    											}
+    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
                     });
                     $('#occupation-selector').change(function() {
@@ -1015,19 +998,17 @@
 												    i++;
 										    }
                         if(i == 5) {
-                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                          time++;
+    											if(time == 1) {
+    												$('<img id = "pic6" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    											}
+    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
                     });
-
-
-                    //if (var == 2) {
-                      //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    //}
-
                 }
 
             },
-
 
             {
                 element: '#comment-container',
@@ -1036,8 +1017,7 @@
                 placement: "top",
                 onShown: function() {
                   $("#work-view").css("z-index", "0");
-                    $("#document-info-glphicon").popover('hide');
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                    //$("#document-info-glphicon").popover('hide');
                 }
 
             },
@@ -1073,12 +1053,7 @@
     .comments-section-container {
         padding-left: 15px;
     }
-    .btn-end {
-            display: none;
-        }
-        #step-0 .btn-end { display: block; }
 
-        #step-12 .btn-end { display: block; }
 
     #revision-history-container {
         padding-left: 1.5%;

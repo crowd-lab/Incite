@@ -14,6 +14,18 @@
 		var textToCheck;
 		textToCheck = "Hello World";
 		textArea = document.getElementById("transcription-textarea");
+
+		function updateTransAjaxRequest() {
+    var request = $.ajax({
+        type: "POST",
+        url: "<?php echo getFullInciteUrl().'/ajax/finddiff'; ?>",
+        data: {"userTranscription": $('#transcription-textarea').val(), "docID": <?php echo $assDocID; ?>},
+        success: function (response) {
+					console.log(response);
+					$("#test").append(response);
+        }
+    });
+}
 	</script>
 
 	<!-- Page Content -->
@@ -44,10 +56,7 @@
 					buildPopoverContent();
 				});
 
-				function draw() {
-					$('<img id = "pic" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.png" height = "100" width = "100" >').appendTo($("#step .popover-content"));
-					setTimeout(function(){$( "#pic" ).remove();}, 3000);
-				}
+
 
 
 				function buildPopoverContent() {
@@ -168,6 +177,35 @@
 
 				</div>
 
+				<div class="container">
+				  <h2>Modal Example</h2>
+				  <!-- Trigger the modal with a button -->
+
+				  <!-- Modal -->
+				  <div class="modal fade" id="myModal" role="dialog">
+				    <div class="modal-dialog">
+
+				      <!-- Modal content-->
+				      <div class="modal-content">
+				        <div class="modal-header">
+				          <button type="button" class="close" data-dismiss="modal">&times;</button>
+				          <h4 class="modal-title">Modal Header</h4>
+				        </div>
+				        <div class="modal-body">
+									<div id = "test"></div>
+				        </div>
+				        <div class="modal-footer">
+				          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        </div>
+				      </div>
+
+				    </div>
+  				</div>
+
+					</div>
+
+
+
 				<br>
 				<hr size=2 class="discussion-seperation-line">
 
@@ -196,25 +234,12 @@
 
     <!-- /.container -->
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
-                if ($('#transcription-textarea').val() === "") {
-                    notifyOfErrorInForm('Please provide a transcription of the document');
-                    return;
-                }
-                if ($('#summary-textarea').val() === "") {
-                    notifyOfErrorInForm('Please provide a summary of the document');
-                    return;
-                }
-                if ($('#tone-selector').val() === "") {
-                    notifyOfErrorInForm('Please select the tone of the document');
-                    return;
-                }
-								location.reload();
-                //$('#transcribe-form').submit();
-                alert('This will redirect you to assessment document');
+							updateTransAjaxRequest()
+							$('#myModal').modal('toggle');
+
             });
 
 						$('#summary-textarea').keyup(function() {
@@ -268,183 +293,6 @@
                 $('#transcribe-form').show();
             });
         }
-
-
-        var tour = new Tour({
-
-
-            template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End Tour</button></nav></div>",
-        steps: [
-            {
-
-								element: '#viewer2',
-                title: "Welcome!",
-                content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now.",
-                placement: "right",
-								onShown: function() {
-									$("#viewer2").css("z-index", "6");
-								}
-            },
-            {
-							  element: '#viewer2',
-                title: "Welcome! (continued)",
-                content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this text searchable by transcribing it. This means you will type what the image says.',
-                placement: "right",
-                onShown: function() {
-
-
-										$("#viewer2").css("z-index", "6");
-
-                }
-            },
-
-            {
-                element: '#document-header',
-                title: "More Information",
-                content: 'By hovering over the <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon" style="top: 5px;;"></span> at the top of a document, we will provide you with more in-depth information on the document.<br> Press Next when you are ready.<br>',
-                placement: "right",
-
-                onShown: function(){
-										var time = 0;
-										$("#viewer2").css("z-index", "-1");
-										$("#document-info-glyphicon").hover(function() {
-											time++;
-										 if(time == 1) {
-												$('<img id = "pic1" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
-												$("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-											}
-											setTimeout(function(){$( "#pic1" ).remove();}, 3000);
-											}
-										);
-                }
-            },
-            {
-                element: '#viewer2',
-                title: "Zoom",
-                content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. <br><br> Press Next when you are ready.<br>',
-                placement: "right",
-
-                onShown: function(){
-									var time = 0;
-										$("#viewer2").css("z-index", "6");
-										$('.iviewer_common').click(function() {
-											time++;
-										 if(time == 1) {
-												$('<img id = "pic2" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
-												$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-											}
-											setTimeout(function(){$( "#pic2" ).remove();}, 3000);
-											}
-										);
-                }
-            },
-            {
-                element: "#submit-zone",
-                title: "Transcribing Process",
-                content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word. <br> 2. Summarize: Provide a brief summary of the document. <br> 3. Tone: Out of the options available, select the most relevant tone of the document.',
-                placement: "left",
-
-                onShown: function() {
-
-										$("#viewer2").css("z-index", "-1");
-                }
-            },
-
-            {
-                orphan: true,
-
-								element: "#tran-div",
-                title: "Transcription",
-                content: 'When transcribing, try your best to be as accurate as possible. <br> Try it for yourself now! Type out every word in the document the best you can. <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total!<br>',
-                placement: "bottom",
-							 onShown: function() {
-								 var time = 0;
-								 $("#viewer2").css("z-index", "6");
-								 $('#transcription-textarea').on("input", function()
-									{
-										 if (this.value == 'SUNDAY SCHOOL CELEBRATION IN PRUSSIA.')
-										 {
-											 time++;
- 											if(time == 1) {
- 												$('<img id = "pic3" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-5 .popover-content"));
- 												$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
- 											}
- 											setTimeout(function(){$( "#pic3" ).remove();}, 3000);
-										 }
-									 }
-								 );
-
-								 }
-
-            },
-						//Summary part
-						{
-                //element: "#summary-textarea",
-								element: "#sum-div",
-                title: "Transcribing Process",
-                content: 'Summarize: Provide a brief summary of the document.<br>',
-                placement: "bottom",
-                onShown: function() {
-									  var time = 0;
-										$('#summary-textarea').on("input", function() {
-											if (this.value !== '') {
-												time++;
-												if(time == 1) {
-													$('<img id = "pic4" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
-													$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-												}
-												setTimeout(function(){$( "#pic4" ).remove();}, 3000);
-										 }
- 									 });
-
-                }
-            },
-
-						//tone part
-						{
-                element: "#tone-selector",
-                title: "Transcribing Process",
-                content: 'Tone: Out of the options available, select the most relevant tone of the document. <br> Hint: “Informational” could be a correct answer.<br>',
-                placement: "bottom",
-
-                onShown: function() {
-										var time = 0;
-										$('#tone-selector').change(function() {
-										if ($('#tone-selector').val() == 'informational') {
-											time++;
-											if(time == 1) {
-												$('<img id = "pic5" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-												$("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-											}
-											setTimeout(function(){$( "#pic5" ).remove();}, 3000);
-										}
-                    });
-                }
-            },
-
-						//Congratulations
-						{
-							  orphan: true,
-                title: "Congratulations",
-                content: 'Complete Transcribe tutorial.',
-                placement: "auto",
-								onShow: function(){
-									$("#work-view").css("z-index", "3");
-								}
-
-            },
-
-           ], backdrop: true,
-        storage: false});
-
-        // Initialize the tour
-        tour.init();
-
-        // Start the tour
-        tour.start(true);
-
-
-
 
     </script>
 
@@ -538,7 +386,18 @@
     .tour-step-background {
         z-index: 3;
 
+
     }
+		ins {
+			color: green;
+			background: #dfd;
+			text-decoration: none;
+		}
+		del {
+			color: red;
+			background: #fdd;
+			text-decoration: none;
+		}
 
 
     </style>

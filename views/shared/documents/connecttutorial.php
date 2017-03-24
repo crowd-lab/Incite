@@ -285,7 +285,7 @@
                             <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
                         </p>
                         <textarea style="width:100%;" name="reasoning" rows="5" id = "reasoning"></textarea>
-                        <p>Character Counts: <span id = "word-counting">0</span></p>
+                        <p>Character Count: <span id = "word-counting">0</span></p>
                         <br>
                         <br>
                         <input type="hidden" name="connection_type" value="multiscale">
@@ -457,6 +457,7 @@
                 $('#connecting-container').show();
             });
         }
+
         var tour = new Tour({
 
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
@@ -469,30 +470,30 @@
             },
             {
                 element: '#work-view',
-                title: "",
+                title: "document",
                 content: "This is a document that has already been transcribed and tagged. Go ahead and read through it now.",
                 placement: "right",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
+
             },
             {
                 element: "#connecting-container",
                 title: "Connect Task",
-                content: 'Now that you’ve read the transcription, check each category that relates to the provided document.<br>If possible, please fill out the reasonning area',
+                content: 'Now that you’ve read the transcription<br>look through the themes rate how useful the document would be to a historian who is interested in that theme.<br>Once you’ve considered all the themes, provide an explanation for your ratings in the text box below.',
                 placement: "left",
                 onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $("#work-view").css("background", "white");
                     $("#work-view").css("z-index", "1101");
                     $("#en-table").click(function() {
                       for (var i = 1; i < $( "form input:radio" ).length/5 + 1; i++) {
+                        var time = 0;
                         var first = "[name=subject";
                         var second = first.concat(i);
                         var final = second.concat("]:checked");
                         if ($($(final)).length != 0) {
-                          $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", false);
+                          time++;
+    											if(time == 1)
+    											$('<img id = "pic" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
+    											setTimeout(function(){$( "#pic" ).remove();}, 3000);
                         }
                       }
 
@@ -508,7 +509,7 @@
                 placement: "left",
                 onShown: function() {
                   $("#work-view").css("z-index", "0");
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
+                  tour.next();
                 }
             },
             {
@@ -517,6 +518,7 @@
                 title: "Congratulations! You've finished the Connect Tutorial.",
                 content: 'You’re all done!  <br>Press End Tour to exit this tutorial.',
                 placement: "right"
+
             }
         ],
         backdrop: true,
@@ -546,17 +548,11 @@
             float: right;
         }
 
-        #step-0 .btn-end { display: block; }
-
-        #step-5 .btn-end { display: block; }
-
         .tooltip {
             position: fixed;
         }
 
-        .btn-end {
-            display: none;
-        }
+
     </style>
 </body>
 </html>

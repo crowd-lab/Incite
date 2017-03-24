@@ -143,6 +143,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               return;
           }
 
+          if (!isset($_SESSION['Incite']['assessment_trans'])) {
+              $this->_helper->viewRenderer('transcribeassessment');
+              unset($_SESSION['Incite']['assessment_trans']);
+              $this->view->assDocID = 3;
+              return;
+          }
+
           if ($this->getRequest()->isPost()) {
               $this->saveTranscription();
           }
