@@ -13,12 +13,6 @@
         <script type="text/javascript">
             var msgbox;
             var comment_type = 1;
-            var delete_times = 0;
-            var detail_times = 0;
-            var add_times = 0;
-            var change_times = 0;
-            var choice_times = 0;
-            var entity_times = 0;
         </script>
     </head>
 
@@ -442,6 +436,84 @@
         <br>
         <ul id="comments" class="comments-list"></ul>
     </div>
+
+    <div class="container">
+      <!-- Trigger the modal with a button -->
+
+      <!-- Modal -->
+      <div class="modal modal-wide fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Results</h4>
+            </div>
+            <div class="modal-body">
+              <ul class="nav nav-tabs nav-justified nav-pills">
+                  <li class="active" id="tag-tab"><a href="#tags" data-toggle="tab">Tags</a></li>
+                  <li id="question-tab"><a href="#questions" data-toggle="tab"> Questions</a></li>
+              </ul>
+              <div class="tab-content">
+                  <div class="tab-pane active" id="tags">
+                    <br>
+                    <div id = "rightTags">
+                      <p>Right Tags</p>
+                      <table class = "rightTable">
+                        <tr>
+                          <th>Tag</th>
+                          <th>Category</th>
+                          <th>subcategory</th>
+                          <th>Detail</th>
+                        </tr>
+                        <tr>
+                          <td>Berlin</td>
+                          <td>Location</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Mr. Wright</td>
+                          <td>Person</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div id = "userTags">
+                      <p>Your Tags</p>
+                      <table class = "rightTable" id = "urtable">
+                        <tr>
+                          <th>Tag</th>
+                          <th>Category</th>
+                          <th>subcategory</th>
+                          <th>Detail</th>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class = "clearfix"></div>
+                  </div>
+                  <div class="tab-pane" id="questions">
+                    <br>
+                      <div id = "date"></div>
+                      <div id = "location"></div>
+                      <div id = "race"></div>
+                      <div id = "gender"></div>
+                      <div id = "occupation"></div>
+                  </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      </div>
+
 </body>
 
 <style>
@@ -682,7 +754,9 @@
             //alert is for testing
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
-            alert('Redirecting to assessment document!');
+            //alert('Redirecting to assessment document!');
+            $('#myModal').modal('toggle');
+            fillQuestions();
             //$('#entity-form').submit();
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
@@ -785,6 +859,67 @@
         addRevisionHistoryListeners();
     }
 
+    function fillQuestions() {
+      var date = "Your answer to the date problem is: " + $('#date-detail').val() + " ";
+      var location = "Your answer to the location problem is: " + $('#place-detail').val() + " ";
+      var race = "Your answer to the race problem is: " + $('#race-selector').val() + " ";
+      var gender = "Your answer to the gender problem is: " + $('#gender-selector').val() + " ";
+      var occupation = "Your answer to the occupation problem is: " + $('#occupation-selector').val() + " ";
+      $("#date").append(date);
+      $("#location").append(location);
+      $("#race").append(race);
+      $("#gender").append(gender);
+      $("#occupation").append(occupation);
+      if ($('#date-detail').val() == '1860-08-06') {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#date"));
+      }
+      else {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#date"));
+        $("#date").append("  The correct answer is: 1860-08-06");
+      }
+      if ($('#place-detail').val() == 'Germany-Berlin state-Berlin') {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#location"));
+      }
+      else {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#location"));
+        $("#location").append("  The correct answer is: Germany-Berlin state-Berlin");
+      }
+      if ($('#race-selector').val() == 'Not specified') {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#race"));
+      }
+      else {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#race"));
+        $("#race").append("  The correct answer is: Not specified");
+      }
+      if ($('#gender-selector').val() == 'Not specified') {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#gender"));
+      }
+      else {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#gender"));
+        $("#gender").append("  The correct answer is: Not specified");
+      }
+      if ($('#occupation-selector').val() == 'Not specified') {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#occupation"));
+      }
+      else {
+        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#occupation"));
+        $("#occupation").append("  The correct answer is: Not specified");
+      }
+      for (var i = 0; i < $("#entity-table tr").length - 1; i++) {
+        var trName = "#tag_id_" + i + "_table";
+        var tag = trName + " .entity-name";
+        var selection = trName + ' .category-select';
+        var num = $(selection).val();
+        var category = '$(' + selection + ')[0]';
+        var subcat =  trName + ' td:nth-child(3)';
+        var button = $(subcat).find(".multiselect");
+
+        var sub = $(button).attr("title");
+        $("#urtable").append("<tr><td>"+ $(tag).html()+"</td><td>" + category_id_to_name_table[num] + "</td><td>"+ sub+"</td>" + "</td><td>Detail</td></tr>");
+      }
+
+    }
+
     function addRevisionHistoryListeners() {
         $('#view-revision-history-link').show();
 
@@ -798,253 +933,7 @@
             $('#tagging-container').show();
         });
     }
-    var tour = new Tour({
-        template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
-        steps: [
-            {
-                element: '#work-view',
-                title: "Welcome!",
-                content: "It looks like you haven’t tagged a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
-                placement: "right",
-                onShown: function() {
-                  $("#work-view").css("z-index", "1101");
-                }
-            },
-            {
-                element: '#entity-table',
-                title: "Auto-suggested and Previous Tags",
-                content: "This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag. <br>A tag has four parts: <br>1. Name <br>2. Category <br>3. Sub-category <br>4. Details",
-                placement: 'left',
-                onShown: function() {
-                    $("#work-view").css("z-index", "0");
-                    //$(".remove-entity-button").prop("disabled", true);
 
-                }
-            },
-
-            {
-                element: '#entity-table',
-                title: "Delete the existing tags",
-                content: "The first one seems to be a wrong tag. <br> Can you help us delete it by clicking the trash button? <br>",
-                placement: 'left',
-                onShown: function() {
-                  $(".remove-entity-button").first().click(function() {
-                    delete_times++;
-                    if(delete_times == 1) {
-                      $('<img id = "pic1"  height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
-                      $("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-                    }
-                    setTimeout(function(){$( "#pic1" ).remove();}, 3000);
-                  });
-
-                }
-
-            },
-
-            {
-                element: '#entity-table',
-                title: "Modify the exsiting Tags",
-                content: "Thanks! Can you also help us to complete the tag <br>'Berlin' by typing 'German Methodist Sunday school' to the details area? <br>",
-                placement: 'left',
-                onShown: function() {
-                  $("#work-view").css("z-index", "0");
-                    $($(".entity-details").first()).keyup(function() {
-                      if ($(this).val() == 'German Methodist Sunday school') {
-                        detail_times++;
-  											if(detail_times == 1) {
-  												$('<img id = "pic2" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
-  												$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-  											}
-  											setTimeout(function(){$( "#pic2" ).remove();}, 3000);
-                      }
-                    });
-                    //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-
-                }
-
-            },
-
-            {
-                element: '#work-view',
-                title: "Adding your own Tags",
-                content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you highlight the word 'PRUSSIA' by selecting the text?<br>",
-                placement: "right",
-                onShown: function() {
-                    $("#work-view").css("z-index", "1101");
-                    var isDragging = false;
-                    $("#work-view").mousedown(function() {
-                        isDragging = false;
-                    }).mousemove(function() {
-                        isDragging = true;
-                    }).mouseup(function() {
-                        var wasDragging = isDragging;
-                        isDragging = false;
-                        if (wasDragging) {
-                          add_times++;
-    											if(add_times == 1) {
-    												$('<img id = "pic3"  height = "100" width = "100" >').appendTo($("#step-4 .popover-content"));
-    												$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic3" ).remove();}, 3000);
-                        }
-                    });
-
-                }
-
-            },
-
-            {
-                element: '#user-entity-table',
-                title: "Adding the components to your tag",
-                content: "Now let's try completing the parts to the tag you just made.<br>Try setting the most appropriate category and subcategory.<br>Hint: 'PRUSSIA' is a location here.<br>",
-                placement: "left",
-                onShown: function() {
-                  $("#work-view").css("z-index", "0");
-                  $('#categorySelect').change(function() {
-                    if (this.value == 1) {
-                      change_times++;
-											if(change_times == 1) {
-												$('<img id = "pic4" height = "100" width = "100" >').appendTo($("#step-5 .popover-content"));
-												$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-											}
-											setTimeout(function(){$( "#pic4" ).remove();}, 3000);
-                  }
-
-                });
-
-                }
-
-            },
-
-            {
-                element: '#user-entity-table',
-                title: "Adding the components to your tag",
-                content: "Now add some details about the tag. <br>For example, ’Former country that now includes Germany and Poland’.<br>",
-                placement: "left",
-                onShown: function() {
-                  //$("#work-view").css("background", "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box");
-                  $("#work-view").css("z-index", "0");
-                  $("#document-info-glphicon").popover('hide');
-                  $('#detail').on("input", function() {
-                  if (this.value == 'Former country that now includes Germany and Poland') {
-                    entity_times++;
-                    if(entity_times == 1) {
-                      $('<img id = "pic5" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
-                      $("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-                    }
-                    setTimeout(function(){$( "#pic5" ).remove();}, 3000);
-                  }
-                });
-                }
-
-            },
-
-            {
-                element: '#choice-table',
-                title: "Fill in the document context",
-                content: "Fill in information about the document’s context and the author’s perspective. <br>You and other users can share ideas, questions, and opinions on this document by posting comments here. <br>Make sure to login or sign up to contribute to the discussion!",
-                placement: "top",
-                onShown: function() {
-                    $("#work-view").css("background", "white");
-                    $("#work-view").css("z-index", "1101");
-                    var i = 0;
-                    $('#date-detail').on("input", function() {
-                        if (this.value == '1860-08-06') {
-                            i++;
-                        }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                    $('#place-detail').on("input", function() {
-                        if (this.value == 'Germany-Berlin state-Berlin') {
-                            i++;
-                        }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                    $('#race-selector').change(function() {
-										    if ($(this).val() == 'Not specified') {
-												    i++;
-										    }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                    $('#gender-selector').change(function() {
-										    if ($(this).val() == 'Not specified') {
-												    i++;
-										    }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                    $('#occupation-selector').change(function() {
-										    if ($(this).val() == 'Not specified') {
-												    i++;
-										    }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                }
-
-            },
-
-            {
-                element: '#comment-container',
-                title: "Comments",
-                content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
-                placement: "top",
-                onShown: function() {
-                  $("#work-view").css("z-index", "0");
-                    //$("#document-info-glphicon").popover('hide');
-                }
-
-            },
-
-            {
-                orphan: true,
-                title: "Congratulations!",
-                content: "You've finished the tutorial for the tagging process! Press End Tour to close this tutorial.",
-                placement: "auto"
-
-            }
-    ],
-    backdrop: true,
-    storage: false});
-
-    // Initialize the tour
-    tour.init();
-
-    // Start the tour
-    tour.start(true);
 </script>
 
 <style>
@@ -1072,6 +961,39 @@
         cursor: pointer;
         margin-top: -32px;
     }
+    #rightTags {
+      width: 50%;
+      padding 0 10px;
+      float:left;
+      padding-right: 10px;
+    }
+    #userTags {
+      width: 50%;
+      border-left: 1px solid #ccc;
+      float:right;
+      padding 0 10px;
+      padding-left: 10px;
+    }
+
+    table .rightTable{
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    .rightTable td, .rightTable th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+
+    .rightTable tr:nth-child(odd) {
+    background-color: #dddddd;
+  }
+
+  .modal.modal-wide .modal-dialog {
+    width: 80%;
+  }
 
 
 

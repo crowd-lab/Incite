@@ -805,7 +805,7 @@ public function getallavailabledocsAction(){
     if ($this->getRequest()->isPost()) {
       //$opcodes = FineDiff::getDiffOpcodes($from_text, $to_text , FineDiff::$wordGranularity );
       $FROM = $_POST['userTranscription'];
-      $TO = "hard coded transcription for now";
+      $TO = "SUNDAY SCHOOL CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in Berlin, by a German Methodist Sunday school. Two or three hundred children marched from the the Methodist Chapel to the house of our Minister, Mr. Wright, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.";
       //$TO = FineDiff::renderToTextFromOpcodes($FROM, $opcodes);
       $diff = new FineDiff($FROM, $TO, FineDiff::$wordGranularity);
       $htmlDiff = $diff->renderDiffToHTML();

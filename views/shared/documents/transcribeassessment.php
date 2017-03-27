@@ -22,7 +22,7 @@
         data: {"userTranscription": $('#transcription-textarea').val(), "docID": <?php echo $assDocID; ?>},
         success: function (response) {
 					console.log(response);
-					$("#test").append(response);
+					$("#userText").append(response);
         }
     });
 }
@@ -178,21 +178,44 @@
 				</div>
 
 				<div class="container">
-				  <h2>Modal Example</h2>
 				  <!-- Trigger the modal with a button -->
 
 				  <!-- Modal -->
-				  <div class="modal fade" id="myModal" role="dialog">
+				  <div class="modal modal-wide fade" id="myModal" role="dialog">
 				    <div class="modal-dialog">
 
 				      <!-- Modal content-->
 				      <div class="modal-content">
 				        <div class="modal-header">
 				          <button type="button" class="close" data-dismiss="modal">&times;</button>
-				          <h4 class="modal-title">Modal Header</h4>
+				          <h4 class="modal-title">Results</h4>
 				        </div>
 				        <div class="modal-body">
-									<div id = "test"></div>
+									<ul class="nav nav-tabs nav-justified nav-pills">
+	                    <li class="active" id="transcribe-tab"><a href="#trans" data-toggle="tab">Transcription</a></li>
+	                    <li id="tone-tab"><a href="#tones" data-toggle="tab">Tone</a></li>
+	                </ul>
+	                <div class="tab-content">
+	                    <div class="tab-pane active" id="trans">
+												<br>
+												<div id = "rightText">
+													<h4>Correct Text</h4>
+												</div>
+	                      <div id = "userText">
+													<h4>Your Text</h4>
+												</div>
+
+												<div style = "clear: both">
+													<br>
+													<b>Color Meaning: <span class="del" style="display:inline-block;width:16px">&nbsp;</span>=delete, <span class="ins" style="display:inline-block;width:16px">&nbsp;</span>=insert, <span class="rep" style="display:inline-block;width:16px">&nbsp;</span>=replace</b>
+												</div>
+	                    </div>
+	                    <div class="tab-pane" id="tones">
+												<br>
+												<div id = "toneSelect"></div>
+												<p>The correct tone of this article is Informational</p>
+	                    </div>
+	                </div>
 				        </div>
 				        <div class="modal-footer">
 				          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -237,9 +260,10 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
+							UserTone ();
 							updateTransAjaxRequest()
 							$('#myModal').modal('toggle');
-
+							$("#rightText").append("SUNDAY SCHOOL CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in Berlin, by a German Methodist Sunday school. Two or three hundred children marched from the the Methodist Chapel to the house of our Minister, Mr. Wright, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.");
             });
 
 						$('#summary-textarea').keyup(function() {
@@ -268,7 +292,10 @@
             <?php endif; ?>
         });
 
-
+				function UserTone () {
+					var tone= "You selected " + $('#tone-selector').val() + ".";
+					$("#toneSelect").append(tone);
+				}
         function styleForEditing() {
             populateWithLatestTranscriptionData();
             addRevisionHistoryListeners();
@@ -399,6 +426,33 @@
 			text-decoration: none;
 		}
 
+		.ins {
+			background:#dfd;
+			}
+		.del {
+			background:#fdd;
+			}
+		.rep {
+			color: #008;
+			background: #eef;
+			}
+
+			#rightText {
+	      width: 50%;
+	      padding 0 10px;
+	      float:left;
+	    }
+	    #userText {
+	      width: 50%;
+	      border-left: 1px solid #ccc;
+	      float:right;
+	      padding 0 10px;
+				padding-left: 10px;
+	    }
+
+			.modal.modal-wide .modal-dialog {
+		    width: 80%;
+		  }
 
     </style>
 </body>

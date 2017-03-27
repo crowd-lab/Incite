@@ -8,6 +8,10 @@
 	?>
 
 	<script type="text/javascript">
+	  var info_times = 0;
+		var trans_times = 0;
+		var zoomer_times = 0;
+		var tone_times = 0;
 		var msgbox;
 		var comment_type = 0;
 		var textArea;
@@ -305,17 +309,17 @@
                 placement: "right",
 
                 onShown: function(){
-										var time = 0;
 										$("#viewer2").css("z-index", "-1");
 										$("#document-info-glyphicon").hover(function() {
-											time++;
-										 if(time == 1) {
-												$('<img id = "pic1" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
+											info_times++;
+										 if(info_times == 1) {
+												$('<img id = "pic1"  height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
 												$("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 											}
 											setTimeout(function(){$( "#pic1" ).remove();}, 3000);
 											}
 										);
+
                 }
             },
             {
@@ -325,12 +329,11 @@
                 placement: "right",
 
                 onShown: function(){
-									var time = 0;
 										$("#viewer2").css("z-index", "6");
 										$('.iviewer_common').click(function() {
-											time++;
-										 if(time == 1) {
-												$('<img id = "pic2" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
+											zoomer_times++;
+											if(zoomer_times == 1) {
+												$('<img id = "pic2" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
 												$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 											}
 											setTimeout(function(){$( "#pic2" ).remove();}, 3000);
@@ -358,17 +361,16 @@
                 content: 'When transcribing, try your best to be as accurate as possible. <br> Try it for yourself now! Type out every word in the document the best you can. <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total!<br>',
                 placement: "bottom",
 							 onShown: function() {
-								 var time = 0;
 								 $("#viewer2").css("z-index", "6");
 								 $('#transcription-textarea').on("input", function()
 									{
 										 if (this.value == 'SUNDAY SCHOOL CELEBRATION IN PRUSSIA.')
 										 {
-											 time++;
- 											if(time == 1) {
- 												$('<img id = "pic3" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-5 .popover-content"));
- 												$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
- 											}
+											 trans_times++;
+ 											 if(trans_times == 1) {
+ 													$('<img id = "pic3" height = "100" width = "100" >').appendTo($("#step-5 .popover-content"));
+ 													$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+ 												}
  											setTimeout(function(){$( "#pic3" ).remove();}, 3000);
 										 }
 									 }
@@ -385,12 +387,11 @@
                 content: 'Summarize: Provide a brief summary of the document.<br>',
                 placement: "bottom",
                 onShown: function() {
-									  var time = 0;
 										$('#summary-textarea').on("input", function() {
 											if (this.value !== '') {
 												time++;
 												if(time == 1) {
-													$('<img id = "pic4" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
+													$('<img id = "pic4" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
 													$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 												}
 												setTimeout(function(){$( "#pic4" ).remove();}, 3000);
@@ -408,12 +409,11 @@
                 placement: "bottom",
 
                 onShown: function() {
-										var time = 0;
 										$('#tone-selector').change(function() {
 										if ($('#tone-selector').val() == 'informational') {
-											time++;
-											if(time == 1) {
-												$('<img id = "pic5" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
+											tone_times++;
+											if(tone_times == 1) {
+												$('<img id = "pic5"  height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
 												$("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 											}
 											setTimeout(function(){$( "#pic5" ).remove();}, 3000);
