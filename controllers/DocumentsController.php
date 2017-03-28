@@ -133,6 +133,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
     }
   }
+
+  public function trans1Action() {
+    $this->_helper->viewRenderer('transcribeassessment');
+  }
+
   public function transcribeAction() {
       $this->_helper->db->setDefaultModelName('Item');
 
@@ -144,9 +149,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           }
 
           if (!isset($_SESSION['Incite']['assessment_trans'])) {
-              $this->_helper->viewRenderer('transcribeassessment');
-              unset($_SESSION['Incite']['assessment_trans']);
-              $this->view->assDocID = 3;
+              $this->redirect('incite/documents/trans1');
               return;
           }
 

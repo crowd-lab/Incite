@@ -12,6 +12,7 @@
     <!-- Page Content -->
     <script type="text/javascript">
         var comment_type = 2;
+        var theme_ratings = ["Not useful","Somewhat useful","Useful", "Very useful", "Extremely useful"];
     </script>
 </head>
 <body id = "main-body">
@@ -335,7 +336,67 @@
               <h4 class="modal-title">Results</h4>
             </div>
             <div class="modal-body">
-              <p>This is connect modal</p>
+              <ul class="nav nav-tabs nav-justified nav-pills">
+                  <li class="active"><a href="#themes" data-toggle="tab">Themes Rating</a></li>
+              </ul>
+              <div id = "themes">
+                <br>
+                <div id = "rightPart">
+                  <p>Right Ratings</p>
+                <table class = "theme">
+                  <tr>
+                    <th>Theme</th>
+                    <th>Rating</th>
+                  </tr>
+                  <tr>
+                    <td>Religion</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>White Supermacy</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>Racial Equality</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>Gender Equality/Inequality</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>Human Equality</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>Self Goverment</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>America as a Global Beacon</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>Celebration of Revolutionary Generation</td>
+                    <td>Useful</td>
+                  </tr>
+                  <tr>
+                    <td>White Southerners</td>
+                    <td>Useful</td>
+                  </tr>
+                </table>
+              </div>
+              <div id = "userPart">
+                <p>Your Ratings</p>
+                <table class = "theme" id = "userTheme">
+                  <tr>
+                    <th>Theme</th>
+                    <th>Rating</th>
+                  </tr>
+                </table>
+              </div>
+              <div class = "clearfix"></div>
+            </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -431,7 +492,8 @@
                 }
 
                 if (completed == true) {
-                 $('#myModal').modal('toggle');;
+                  retrieveRating();
+                  $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
                }
                 //$("#subject-form").submit();
             });
@@ -445,6 +507,16 @@
                     $(this).prop('checked', false);
                 });
             });
+        }
+
+        function retrieveRating() {
+          var num = $("#en-table tbody tr").length;
+          for (var i = 0; i < num; i++) {
+            var title = $($("#en-table tbody tr")[i]).find('a').html();
+            var sub = "[name=subject" + (i + 1) + "]:checked";
+            var value = $($("#en-table tbody tr")[i]).find(sub).val()
+            $("#userTheme").append("<tr><td>"+ title+"</td><td>" + theme_ratings[value] + "</td></tr>");
+          }
         }
 
         function styleForEditing() {
@@ -505,12 +577,45 @@
             float: right;
         }
 
+        #rightPart {
+          width: 50%;
+          padding 0 10px;
+          float:left;
+          padding-right: 10px;
+        }
+        #userPart {
+          width: 50%;
+          border-left: 1px solid #ccc;
+          float:right;
+          padding 0 10px;
+          padding-left: 10px;
+        }
+
+        table .theme{
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        }
+
+        .theme td, .theme th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        }
+
+        .theme tr:nth-child(odd) {
+        background-color: #dddddd;
+      }
+
         .tooltip {
             position: fixed;
         }
+
+
         .modal.modal-wide .modal-dialog {
           width: 80%;
         }
+
 
 
     </style>

@@ -393,6 +393,7 @@ body {
     margin-left: 45px;
     display: inline-block;
 }
+
 </style>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

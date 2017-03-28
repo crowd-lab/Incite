@@ -805,7 +805,9 @@ public function getallavailabledocsAction(){
     if ($this->getRequest()->isPost()) {
       //$opcodes = FineDiff::getDiffOpcodes($from_text, $to_text , FineDiff::$wordGranularity );
       $FROM = $_POST['userTranscription'];
-      $TO = "SUNDAY SCHOOL CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in Berlin, by a German Methodist Sunday school. Two or three hundred children marched from the the Methodist Chapel to the house of our Minister, Mr. Wright, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.";
+      $TO = "THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:
+The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.
+";
       //$TO = FineDiff::renderToTextFromOpcodes($FROM, $opcodes);
       $diff = new FineDiff($FROM, $TO, FineDiff::$wordGranularity);
       $htmlDiff = $diff->renderDiffToHTML();

@@ -478,7 +478,7 @@
             {
                 element: "#connecting-container",
                 title: "Connect Task",
-                content: 'Now that you’ve read the transcription<br>look through the themes rate how useful the document would be to a historian who is interested in that theme.<br>Once you’ve considered all the themes, provide an explanation for your ratings in the text box below.',
+                content: 'Now that you’ve read the transcription<br>look through the themes rate how useful the document would be to a historian who is interested in that theme.<br>Once you’ve considered all the themes, provide an explanation for your ratings in the text box below.<br>',
                 placement: "left",
                 onShown: function() {
                     $("#work-view").css("background", "white");

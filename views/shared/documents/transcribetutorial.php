@@ -12,6 +12,7 @@
 		var trans_times = 0;
 		var zoomer_times = 0;
 		var tone_times = 0;
+		var sum_times = 0;
 		var msgbox;
 		var comment_type = 0;
 		var textArea;
@@ -358,7 +359,7 @@
 
 								element: "#tran-div",
                 title: "Transcription",
-                content: 'When transcribing, try your best to be as accurate as possible. <br> Try it for yourself now! Type out every word in the document the best you can. <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total!<br>',
+                content: 'When transcribing, try your best to be as accurate as possible.  <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total for the first sentence!<br>',
                 placement: "bottom",
 							 onShown: function() {
 								 $("#viewer2").css("z-index", "6");
@@ -389,8 +390,8 @@
                 onShown: function() {
 										$('#summary-textarea').on("input", function() {
 											if (this.value !== '') {
-												time++;
-												if(time == 1) {
+												sum_times++;
+												if(sum_times == 1) {
 													$('<img id = "pic4" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
 													$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 												}

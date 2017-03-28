@@ -452,10 +452,8 @@
             </div>
             <div class="modal-body">
               <ul class="nav nav-tabs nav-justified nav-pills">
-                  <li class="active" id="tag-tab"><a href="#tags" data-toggle="tab">Tags</a></li>
-                  <li id="question-tab"><a href="#questions" data-toggle="tab"> Questions</a></li>
+                  <li class="active" ><a >Tags</a></li>
               </ul>
-              <div class="tab-content">
                   <div class="tab-pane active" id="tags">
                     <br>
                     <div id = "rightTags">
@@ -468,14 +466,50 @@
                           <th>Detail</th>
                         </tr>
                         <tr>
-                          <td>Berlin</td>
+                          <td>SHREVEPORT</td>
                           <td>Location</td>
                           <td></td>
                           <td></td>
                         </tr>
                         <tr>
-                          <td>Mr. Wright</td>
-                          <td>Person</td>
+                          <td>Southwestern</td>
+                          <td>Location</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>The Yankees</td>
+                          <td>Organization</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Fourth of July</td>
+                          <td>Organization</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Washington</td>
+                          <td>Location</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Shreveport </td>
+                          <td>Location</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Summer Grove</td>
+                          <td>Organization</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Confederacy</td>
+                          <td>Location</td>
                           <td></td>
                           <td></td>
                         </tr>
@@ -488,21 +522,71 @@
                           <th>Tag</th>
                           <th>Category</th>
                           <th>subcategory</th>
-                          <th>Detail</th>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class = "clearfix"></div>
+                    <br>
+                  </div>
+                  <ul class="nav nav-justified nav-pills">
+                      <li class="active"><a > Questions</a></li>
+                  </ul>
+                  <div class="tab-pane" id="questions">
+                    <br>
+                    <div id = "left_questions">
+                      <table class = "rightTable">
+                        <tr>
+                          <th>Tag</th>
+                          <th>Category</th>
+                        </tr>
+                        <tr>
+                          <td>Date</td>
+                          <td>1860-08-06</td>
+                        </tr>
+                        <tr>
+                          <td>Location</td>
+                          <td>Germany-Berlin state-Berlin</td>
+                        </tr>
+                        <tr>
+                          <td>Race</td>
+                          <td>Not specified</td>
+                        </tr>
+                        <tr>
+                          <td>Gender</td>
+                          <td>Not specified</td>
+                        </tr>
+                        <tr>
+                          <td>Occupation</td>
+                          <td>Not specified</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div = id = "right_questions">
+                      <table class = "rightTable" id = "urquestions">
+                        <tr>
+                          <th>Tag</th>
+                          <th>Category</th>
+                        </tr>
+                        <tr>
+                          <td>Date</td>
+                        </tr>
+                        <tr>
+                          <td>Location</td>
+                        </tr>
+                        <tr>
+                          <td>Race</td>
+                        </tr>
+                        <tr>
+                          <td>Gender</td>
+                        </tr>
+                        <tr>
+                          <td>Occupation</td>
                         </tr>
                       </table>
                     </div>
                     <div class = "clearfix"></div>
                   </div>
-                  <div class="tab-pane" id="questions">
-                    <br>
-                      <div id = "date"></div>
-                      <div id = "location"></div>
-                      <div id = "race"></div>
-                      <div id = "gender"></div>
-                      <div id = "occupation"></div>
-                  </div>
-              </div>
+                  <br>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -755,7 +839,7 @@
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
             //alert('Redirecting to assessment document!');
-            $('#myModal').modal('toggle');
+            $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
             fillQuestions();
             //$('#entity-form').submit();
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
@@ -860,16 +944,17 @@
     }
 
     function fillQuestions() {
-      var date = "Your answer to the date problem is: " + $('#date-detail').val() + " ";
-      var location = "Your answer to the location problem is: " + $('#place-detail').val() + " ";
-      var race = "Your answer to the race problem is: " + $('#race-selector').val() + " ";
-      var gender = "Your answer to the gender problem is: " + $('#gender-selector').val() + " ";
-      var occupation = "Your answer to the occupation problem is: " + $('#occupation-selector').val() + " ";
-      $("#date").append(date);
-      $("#location").append(location);
-      $("#race").append(race);
-      $("#gender").append(gender);
-      $("#occupation").append(occupation);
+      var date = '<td><insert>' + $('#date-detail').val() + '</insert></td>';
+      var location = "<td>" + $('#place-detail').val() + "</td>";
+      var race = "<td>" + $('#race-selector').val() + "</td>";
+      var gender = "<td>" + $('#gender-selector').val() + "</td>";
+      var occupation = "<td>" + $('#occupation-selector').val() + "</td>";
+      var selec = $("#urquestions tr");
+      $($(selec)[1]).append(date)
+      $($(selec)[2]).append(location)
+      $($(selec)[3]).append(race)
+      $($(selec)[4]).append(gender)
+      $($(selec)[5]).append(occupation)
       if ($('#date-detail').val() == '1860-08-06') {
         $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#date"));
       }
@@ -915,7 +1000,7 @@
         var button = $(subcat).find(".multiselect");
 
         var sub = $(button).attr("title");
-        $("#urtable").append("<tr><td>"+ $(tag).html()+"</td><td>" + category_id_to_name_table[num] + "</td><td>"+ sub+"</td>" + "</td><td>Detail</td></tr>");
+        $("#urtable").append("<tr><td>"+ $(tag).html()+"</td><td>" + category_id_to_name_table[num] + "</td><td>"+ sub+"</td>" + "</tr>");
       }
 
     }
@@ -968,6 +1053,21 @@
       padding-right: 10px;
     }
     #userTags {
+      width: 50%;
+      border-left: 1px solid #ccc;
+      float:right;
+      padding 0 10px;
+      padding-left: 10px;
+    }
+
+    #left_questions {
+      width: 50%;
+      padding 0 10px;
+      float:left;
+      padding-right: 10px;
+    }
+
+    #right_questions {
       width: 50%;
       border-left: 1px solid #ccc;
       float:right;

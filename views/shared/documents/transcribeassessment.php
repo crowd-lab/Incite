@@ -191,12 +191,12 @@
 				          <h4 class="modal-title">Results</h4>
 				        </div>
 				        <div class="modal-body">
-									<ul class="nav nav-tabs nav-justified nav-pills">
-	                    <li class="active" id="transcribe-tab"><a href="#trans" data-toggle="tab">Transcription</a></li>
-	                    <li id="tone-tab"><a href="#tones" data-toggle="tab">Tone</a></li>
-	                </ul>
-	                <div class="tab-content">
-	                    <div class="tab-pane active" id="trans">
+									<ul class="nav nav-justified nav-pills">
+
+										<li class="active"><a>Transcription</a></li>
+									</ul>
+
+	                    <div id="trans">
 												<br>
 												<div id = "rightText">
 													<h4>Correct Text</h4>
@@ -204,18 +204,24 @@
 	                      <div id = "userText">
 													<h4>Your Text</h4>
 												</div>
-
 												<div style = "clear: both">
 													<br>
 													<b>Color Meaning: <span class="del" style="display:inline-block;width:16px">&nbsp;</span>=delete, <span class="ins" style="display:inline-block;width:16px">&nbsp;</span>=insert, <span class="rep" style="display:inline-block;width:16px">&nbsp;</span>=replace</b>
 												</div>
 	                    </div>
+											<br>
+
+									<ul class="nav nav-justified nav-pills">
+										<li class="active"><a>Tone</a></li>
+
+									</ul>
+
 	                    <div class="tab-pane" id="tones">
 												<br>
-												<div id = "toneSelect"></div>
-												<p>The correct tone of this article is Informational</p>
+												<div id = "left_tone"><p>The correct tone of this article is Informational</p></div>
+												<div id = "right_tone"></div>
 	                    </div>
-	                </div>
+											<br>
 				        </div>
 				        <div class="modal-footer">
 				          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -262,8 +268,8 @@
             $('#submit_transcription').on('click', function(e) {
 							UserTone ();
 							updateTransAjaxRequest()
-							$('#myModal').modal('toggle');
-							$("#rightText").append("SUNDAY SCHOOL CELEBRATION IN PRUSSIA. The Fourth of July was celebrated in Berlin, by a German Methodist Sunday school. Two or three hundred children marched from the the Methodist Chapel to the house of our Minister, Mr. Wright, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.");
+							$('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
+							$("#rightText").append("THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.");
             });
 
 						$('#summary-textarea').keyup(function() {
@@ -294,7 +300,7 @@
 
 				function UserTone () {
 					var tone= "You selected " + $('#tone-selector').val() + ".";
-					$("#toneSelect").append(tone);
+					$("#right_tone").append(tone);
 				}
         function styleForEditing() {
             populateWithLatestTranscriptionData();
@@ -441,6 +447,8 @@
 	      width: 50%;
 	      padding 0 10px;
 	      float:left;
+				padding-left: 5px;
+				padding-right: 10px;
 	    }
 	    #userText {
 	      width: 50%;
@@ -448,11 +456,34 @@
 	      float:right;
 	      padding 0 10px;
 				padding-left: 10px;
+				padding-right: 5px;
 	    }
+
+			#left_tone {
+				width: 50%;
+	      padding 0 10px;
+	      float:left;
+			}
+
+			#right_tone {
+				width: 50%;
+	      border-left: 1px solid #ccc;
+	      float:right;
+	      padding 0 10px;
+				padding-left: 10px;
+			}
 
 			.modal.modal-wide .modal-dialog {
 		    width: 80%;
 		  }
+
+.nav nav-pills {
+	width: 100%;
+}
+			.result_title {
+/*<li  class = "active" id="transcribe-tab">Transcription</li>*/
+/*<li  id="tone-tab">Tone</li>*/
+			}
 
     </style>
 </body>
