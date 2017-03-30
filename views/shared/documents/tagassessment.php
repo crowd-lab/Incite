@@ -466,6 +466,8 @@
               </ul>
                   <div class="tab-pane active" id="tags">
                     <br>
+                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=wrong, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=inserted correct answers</b>
+                    <br>
                     <div id = "rightTags">
                       <p>Right Tags</p>
                       <table class = "rightTable">
@@ -543,6 +545,7 @@
                   </ul>
                   <div class="tab-pane" id="questions">
                     <br>
+
                     <div id = "left_questions">
                       <table class = "rightTable">
                         <tr>
@@ -851,6 +854,7 @@
             //alert('Redirecting to assessment document!');
             $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
             fillQuestions();
+            $('#confirm-button').prop("disabled", "true");
             //$('#entity-form').submit();
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
@@ -954,52 +958,33 @@
     }
 
     function fillQuestions() {
-      var date = '<td><insert>' + $('#date-detail').val() + '</insert></td>';
-      var location = "<td>" + $('#place-detail').val() + "</td>";
-      var race = "<td>" + $('#race-selector').val() + "</td>";
-      var gender = "<td>" + $('#gender-selector').val() + "</td>";
-      var occupation = "<td>" + $('#occupation-selector').val() + "</td>";
+      var date = $('#date-detail').val();
+      var location = $('#place-detail').val();
+      var race = $('#race-selector').val();
+      var gender = $('#gender-selector').val();
+      var occupation = $('#occupation-selector').val();
       var selec = $("#urquestions tr");
-      $($(selec)[1]).append(date)
-      $($(selec)[2]).append(location)
-      $($(selec)[3]).append(race)
-      $($(selec)[4]).append(gender)
-      $($(selec)[5]).append(occupation)
-      if ($('#date-detail').val() == '1860-08-06') {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#date"));
-      }
-      else {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#date"));
-        $("#date").append("  The correct answer is: 1860-08-06");
-      }
-      if ($('#place-detail').val() == 'Germany-Berlin state-Berlin') {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#location"));
-      }
-      else {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#location"));
-        $("#location").append("  The correct answer is: Germany-Berlin state-Berlin");
-      }
-      if ($('#race-selector').val() == 'Not specified') {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#race"));
-      }
-      else {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#race"));
-        $("#race").append("  The correct answer is: Not specified");
-      }
-      if ($('#gender-selector').val() == 'Not specified') {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#gender"));
-      }
-      else {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#gender"));
-        $("#gender").append("  The correct answer is: Not specified");
-      }
-      if ($('#occupation-selector').val() == 'Not specified') {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "10" width = "10" >').appendTo($("#occupation"));
-      }
-      else {
-        $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#occupation"));
-        $("#occupation").append("  The correct answer is: Not specified");
-      }
+      if (date == '1860-08-06')
+        $($(selec)[1]).append('<td>' + date + '</td>');
+      else
+        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + '<insert>1860-08-06</insert>' + '</td>');
+      if (location == 'Germany-Berlin state-Berlin')
+        $($(selec)[2]).append('<td>' + location + '</td>');
+      else
+        $($(selec)[2]).append('<td>' + '<wrong>' + location + ' </wrong>' + '<insert>Germany-Berlin state-Berlin</insert>' + '</td>');
+      if (race == 'Not specified')
+        $($(selec)[3]).append('<td>' + race + '</td>');
+      else
+        $($(selec)[3]).append('<td>' + '<wrong>' + race + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
+      if (gender == 'Not specified')
+        $($(selec)[4]).append('<td>' + gender + '</td>');
+      else
+        $($(selec)[4]).append('<td>' + '<wrong>' + gender + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
+      if (occupation == 'Not specified')
+        $($(selec)[5]).append('<td>' + occupation + '</td>')
+      else
+        $($(selec)[5]).append('<td>' + '<wrong>' + occupation + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
+
 
       $("#transcribe_copy .tagged-text").each(function(){
         var tagName = this.innerHTML;
@@ -1007,8 +992,11 @@
         var cat = class_name.split(" ")[0];
         var exist = processTag(tagName);
         if (exist){
-          var edited_category = tag_dic[tagName].charAt(0).toUpperCase() + tag_dic[tagName].slice(1);
-          $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>"+ "sub" +"</td>" + "</tr>");
+          var edited_category = cat.charAt(0).toUpperCase() + cat.slice(1);
+          if (edited_category == tag_dic[tagName])
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>"+ "sub" +"</td>" + "</tr>");
+          else
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + "<wrong>" + edited_category + "</wrong>" + " <insert>" + tag_dic[tagName] + "</insert>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
           delete copy_dic[tagName];
         }
         else
@@ -1020,20 +1008,6 @@
         }
       }
 
-      // for (var i = 0; i < $("#entity-table tr").length - 1; i++) {
-      //   var base = "#entity-table tr";
-      //   var trSelect = $(base)[i + 1];
-      //   var tdSelect = $(trSelect).find('td');
-      //   var tagSelect = $(tdSelect)[0];
-      //   var tagName = $(tagSelect).find('span').html();
-      //   var tag_catSelect = $(tdSelect)[1];
-      //   var tag_cat = $(tag_catSelect).find(".multiselect");
-      //   var tagCategory = $(tag_cat).attr("title");
-      //   var tag_subcatSelect = $(tdSelect)[2];
-      //   var tag_subcat = $(tag_subcatSelect).find(".multiselect");
-      //   var tagSubcategory = $(tag_subcat).attr("title");
-      //   $("#urtable").append("<tr><td>"+ tagName+"</td><td>" + tagCategory + "</td><td>"+ tagSubcategory +"</td>" + "</tr>");
-      // }
      }
 
      function processTag(tagName) {
@@ -1141,6 +1115,14 @@
 
   insert {
     color: green;
+  }
+
+  .wrong {
+    background: red;
+  }
+
+  .insert {
+    background: green;
   }
 
 
