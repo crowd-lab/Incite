@@ -223,6 +223,59 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       return $document_ids;
   }
 
+  public function tag1Action() {
+    $categories = getAllCategories();
+              $ner_entity_table = array();
+              $tag_id_counter = 0;
+
+              $oldwd = getcwd();
+              chdir('./plugins/Incite/stanford-ner-2015-04-20/');
+
+              $this->view->file = 'not exist';
+              system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/preassess_trans > ../tmp/ner/preassess_trans.ner');
+
+              $nered_file = fopen('../tmp/ner/preassess_trans.ner', "r");
+              $nered_file_size = filesize('../tmp/ner/preassess_trans.ner');
+              
+              $parsed_text = "";
+              if ($nered_file_size != 0)
+                  $parsed_text = fread($nered_file, $nered_file_size);
+
+              fclose($nered_file);
+
+              //parsing results
+              $transformed_transcription = $parsed_text;
+              
+              foreach ($categories as $category) {
+                  $entities = getTextBetweenTags($parsed_text, strtoupper($category['name']));
+                  $repitition = substr_count($parsed_text, '<'.strtoupper($category['name']).'>');
+
+                  for ($i = 0; $i < $repitition; $i++) {
+                      $transformed_transcription = classifyTextWithinTagWithId($transformed_transcription, strtoupper($category['name']), $tag_id_counter++);
+                  }
+                 
+                  //$tag_id_counter -= $repitition;
+                  if (isset($entities[1]) && count($entities[1]) > 0) {
+                      //$uniq_entities = array_unique($entities[1]);
+                      $uniq_entities = $entities[1];
+                      foreach ($uniq_entities as $entity) {
+                          //$ner_entity_table[] = array('entity' => $entity, 'category' => strtoupper($category['name']), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
+                      }
+                  }
+              }
+              //Wrong tags to be removed in tutorial
+              //$ner_entity_table[] = array('entity' => "Passenger", 'category' => strtoupper("location"), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
+
+
+              chdir($oldwd);
+
+
+              $this->view->entities = $ner_entity_table;
+              $this->view->transcription = $transformed_transcription;
+              $this->_helper->viewRenderer('tagassessment');
+              unset($_SESSION['Incite']['assessment_trans']);
+  }
+
   public function tagAction() {
       $this->_helper->db->setDefaultModelName('Item');
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
@@ -281,60 +334,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->_helper->viewRenderer('tagtutorial');
               return;
           }
+
           if (!isset($_SESSION['Incite']['assessment_trans'])) {
-              $categories = getAllCategories();
-              $ner_entity_table = array();
-              $tag_id_counter = 0;
-
-              $oldwd = getcwd();
-              chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-/*
-              $this->view->file = 'not exist';
-              system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/tutorial_trans > ../tmp/ner/tutorial_trans.ner');
-*/
-              $nered_file = fopen('../tmp/ner/tutorial_trans.ner', "r");
-              $nered_file_size = filesize('../tmp/ner/tutorial_trans.ner');
-              
-              $parsed_text = "";
-              if ($nered_file_size != 0)
-                  $parsed_text = fread($nered_file, $nered_file_size);
-
-              fclose($nered_file);
-
-              //parsing results
-              $transformed_transcription = $parsed_text;
-              
-              foreach ($categories as $category) {
-                  $entities = getTextBetweenTags($parsed_text, strtoupper($category['name']));
-                  $repitition = substr_count($parsed_text, '<'.strtoupper($category['name']).'>');
-
-                  for ($i = 0; $i < $repitition; $i++) {
-                      $transformed_transcription = classifyTextWithinTagWithId($transformed_transcription, strtoupper($category['name']), $tag_id_counter++);
-                  }
-                 
-                  //$tag_id_counter -= $repitition;
-                  if (isset($entities[1]) && count($entities[1]) > 0) {
-                      //$uniq_entities = array_unique($entities[1]);
-                      $uniq_entities = $entities[1];
-                      foreach ($uniq_entities as $entity) {
-                          //$ner_entity_table[] = array('entity' => $entity, 'category' => strtoupper($category['name']), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
-                      }
-                  }
-              }
-              //Wrong tags to be removed in tutorial
-              //$ner_entity_table[] = array('entity' => "Passenger", 'category' => strtoupper("location"), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
-
-
-              chdir($oldwd);
-
-
-              $this->view->entities = $ner_entity_table;
-              $this->view->transcription = $transformed_transcription;
-              $this->_helper->viewRenderer('tagassessment');
-              unset($_SESSION['Incite']['assessment_trans']);
-              $this->view->assDocID = 3;
+              $this->redirect('incite/documents/tag1');
               return;
           }
+
           if ($this->getRequest()->isPost()) {
               $this->saveTags();
           }

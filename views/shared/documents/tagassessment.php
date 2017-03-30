@@ -13,6 +13,16 @@
         <script type="text/javascript">
             var msgbox;
             var comment_type = 1;
+            var tag_dic = {"SHREVEPORT": "Location",
+                        "Southwestern": "Location",
+                        "The Yankees": "Organization",
+                        "Fourth of July": "Organization",
+                        "Washington": "Location",
+                        "Shreveport": "Location",
+                        "Summer Grove": "Organization",
+                        "Confederacy": "Location"
+                      };
+            var copy_dic = tag_dic;
         </script>
     </head>
 
@@ -73,7 +83,7 @@
 	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
 
 	        $("#document_img").iviewer({
-	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
+	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/assess1.png",
 	            zoom_min: 1,
 	            zoom: "fit"
         	});
@@ -990,20 +1000,50 @@
         $('<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "10" width = "10" >').appendTo($("#occupation"));
         $("#occupation").append("  The correct answer is: Not specified");
       }
-      for (var i = 0; i < $("#entity-table tr").length - 1; i++) {
-        var trName = "#tag_id_" + i + "_table";
-        var tag = trName + " .entity-name";
-        var selection = trName + ' .category-select';
-        var num = $(selection).val();
-        var category = '$(' + selection + ')[0]';
-        var subcat =  trName + ' td:nth-child(3)';
-        var button = $(subcat).find(".multiselect");
 
-        var sub = $(button).attr("title");
-        $("#urtable").append("<tr><td>"+ $(tag).html()+"</td><td>" + category_id_to_name_table[num] + "</td><td>"+ sub+"</td>" + "</tr>");
+      $("#transcribe_copy .tagged-text").each(function(){
+        var tagName = this.innerHTML;
+        var class_name = this.className;
+        var cat = class_name.split(" ")[0];
+        var exist = processTag(tagName);
+        if (exist){
+          var edited_category = tag_dic[tagName].charAt(0).toUpperCase() + tag_dic[tagName].slice(1);
+          $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>"+ "sub" +"</td>" + "</tr>");
+          delete copy_dic[tagName];
+        }
+        else
+          $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + cat + "</wrong>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
+      });
+      if (copy_dic.length != 0) {
+        for (var key in copy_dic) {
+          $("#urtable").append("<tr><td>"+ "<insert>" + key + "</wrong>" + "</td><td>" + "<insert>" + copy_dic[key] + "</insert>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
+        }
       }
 
-    }
+      // for (var i = 0; i < $("#entity-table tr").length - 1; i++) {
+      //   var base = "#entity-table tr";
+      //   var trSelect = $(base)[i + 1];
+      //   var tdSelect = $(trSelect).find('td');
+      //   var tagSelect = $(tdSelect)[0];
+      //   var tagName = $(tagSelect).find('span').html();
+      //   var tag_catSelect = $(tdSelect)[1];
+      //   var tag_cat = $(tag_catSelect).find(".multiselect");
+      //   var tagCategory = $(tag_cat).attr("title");
+      //   var tag_subcatSelect = $(tdSelect)[2];
+      //   var tag_subcat = $(tag_subcatSelect).find(".multiselect");
+      //   var tagSubcategory = $(tag_subcat).attr("title");
+      //   $("#urtable").append("<tr><td>"+ tagName+"</td><td>" + tagCategory + "</td><td>"+ tagSubcategory +"</td>" + "</tr>");
+      // }
+     }
+
+     function processTag(tagName) {
+       var tag = tag_dic[tagName];
+       if (tag == null)
+          return false;
+       else {
+          return true;
+        }
+     }
 
     function addRevisionHistoryListeners() {
         $('#view-revision-history-link').show();
@@ -1093,6 +1133,14 @@
 
   .modal.modal-wide .modal-dialog {
     width: 80%;
+  }
+
+  wrong {
+    color: red;
+  }
+
+  insert {
+    color: green;
   }
 
 

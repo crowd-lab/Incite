@@ -48,7 +48,7 @@
 					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
 
 					$("#viewer2").iviewer({
-						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
+						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/assess1.png",
 						zoom_min: 1,
 						zoom: "fit"
 					});
