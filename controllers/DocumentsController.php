@@ -480,6 +480,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     return $document_ids;
     // $this->createSearchResultPages($document_ids, 'Tags');
   }
+  
+  public function conn1Action() {
+    $this->_helper->db->setDefaultModelName('Item');
+      $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+    $this->view->subjects = getAllSubjectConcepts();
+    $this->view->transcription = 'THE FOURTH OF JULY AT <em id="tag_id_0" class="location tagged-text">SHREVEPORT</em> – We learn from the <em id="tag_id_1" class="location tagged-text">Southwestern</em> that it is the purpose of the military companies there to celebrate the <date>Fourth of July</date> by a general review, grand parade and dinner. It says:
+<em id="tag_id_5" class="organization tagged-text">The Yankees</em> have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The <em id="tag_id_6" class="organization tagged-text">Fourth of July</em> is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by <em id="tag_id_2" class="location tagged-text">Washington</em> and a host of other southern heroes. The <em id="tag_id_3" class="location tagged-text">Shreveport</em> Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the <em id="tag_id_7" class="organization tagged-text">Summer Grove</em> cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the <em id="tag_id_4" class="location tagged-text">Confederacy</em>, and huzza for the old Fourth of July.';
+    $this->_helper->viewRenderer('connectassessment');
+    unset($_SESSION['Incite']['assessment_trans']);
+    $this->view->assDocID = 3;
+    return;
+  }
 
   public function connectAction() {
       $this->_helper->db->setDefaultModelName('Item');
@@ -494,20 +506,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               return;
           }
           if (!isset($_SESSION['Incite']['assessment_trans'])) {
-            $this->view->subjects = getAllSubjectConcepts();
-              $this->view->transcription = 'The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.
-        </div>';
-              $this->_helper->viewRenderer('connectassessment');
-              unset($_SESSION['Incite']['assessment_trans']);
-              $this->view->assDocID = 3;
-              return;
+            $this->redirect('incite/documents/conn1');
           }
           if ($this->getRequest()->isPost()) {
               $this->saveConnections();
 
           }
-
-
           $this->populateDataForConnectTask();
       }
   }

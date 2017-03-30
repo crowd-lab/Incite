@@ -16,16 +16,16 @@
 		textArea = document.getElementById("transcription-textarea");
 
 		function updateTransAjaxRequest() {
-    var request = $.ajax({
+    	var request = $.ajax({
         type: "POST",
         url: "<?php echo getFullInciteUrl().'/ajax/finddiff'; ?>",
-        data: {"userTranscription": $('#transcription-textarea').val(), "docID": <?php echo $assDocID; ?>},
-        success: function (response) {
+        data: {'userTranscription': $('#transcription-textarea').val(), "docID": <?php echo $assDocID; ?>},
+				success: function (response) {
 					console.log(response);
 					$("#userText").append(response);
         }
     });
-}
+	}
 	</script>
 
 	<!-- Page Content -->
@@ -299,8 +299,11 @@
         });
 
 				function UserTone () {
-					var tone= "You selected " + $('#tone-selector').val() + ".";
-					$("#right_tone").append(tone);
+					if ($('#tone-selector').val() == "informational")
+						$("#right_tone").append("You selected " + $('#tone-selector').val() + ".");
+					else
+						$("#right_tone").append("You selected " + "<del>" + $('#tone-selector').val() +"</del>" + "<ins>informational</ins>"+ ".");
+
 				}
         function styleForEditing() {
             populateWithLatestTranscriptionData();
