@@ -385,6 +385,18 @@
                         <tr><th>Questions</th><th>Answers</th></tr>
                         <tr><td>When was this document produced?</td><td><input type="text" id = "date-detail" placeholder="YYYY-MM-DD"></td></tr>
                         <tr><td>Where was this document produced?</td><td><input type="text" id = "place-detail" placeholder="location"></td></tr>
+                        <tr><td>Based on your reading, what location does this document tell you most about?</td><td><input type="text" id = "location-detail" placeholder="State - County - City"></td></tr>
+                        <tr><td style="vertical-align: middle;">Based your reading of the document, what period does this document tell you most about? (contextualize)</td>
+                            <td>
+                                <select id = "period-selector" class="form-control">
+                                    <option>What period?</option>
+                                    <option>Pre Civil war (year range, - 1861)</option>
+                                    <option>Civil war (year range, 1861 - 1865)</option>
+                                    <option>Post Civil war (year range, 1865 - )</option>
+                                    <option>Unclear</option>
+                                </select>
+                            </td>
+                        </tr>
                         <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
                             <td>
                                 <select id = "race-selector" class="form-control">
@@ -461,13 +473,15 @@
               <h4 class="modal-title">Results</h4>
             </div>
             <div class="modal-body">
+              <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=wrong, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=inserted correct answers</b>
+              <br>
+              <br>
               <ul class="nav nav-tabs nav-justified nav-pills">
                   <li class="active" ><a >Tags</a></li>
               </ul>
                   <div class="tab-pane active" id="tags">
                     <br>
-                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=wrong, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=inserted correct answers</b>
-                    <br>
+
                     <div id = "rightTags">
                       <p>Right Tags</p>
                       <table class = "rightTable">
@@ -561,6 +575,14 @@
                           <td>Germany-Berlin state-Berlin</td>
                         </tr>
                         <tr>
+                          <td>point-out Location</td>
+                          <td>Not sure</td>
+                        </tr>
+                        <tr>
+                          <td>Period</td>
+                          <td>Not sure</td>
+                        </tr>
+                        <tr>
                           <td>Race</td>
                           <td>Not specified</td>
                         </tr>
@@ -585,6 +607,12 @@
                         </tr>
                         <tr>
                           <td>Location</td>
+                        </tr>
+                        <tr>
+                          <td>point-out Location</td>
+                        </tr>
+                        <tr>
+                          <td>Period</td>
                         </tr>
                         <tr>
                           <td>Race</td>
@@ -960,30 +988,44 @@
     function fillQuestions() {
       var date = $('#date-detail').val();
       var location = $('#place-detail').val();
+      var pointed_location = $('#location-detail').val();
+      var period = $('#period-selector').val();
       var race = $('#race-selector').val();
       var gender = $('#gender-selector').val();
       var occupation = $('#occupation-selector').val();
       var selec = $("#urquestions tr");
       if (date == '1860-08-06')
         $($(selec)[1]).append('<td>' + date + '</td>');
-      else
+      else if (date == '')
         $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + '<insert>1860-08-06</insert>' + '</td>');
+      else
+        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>1860-08-06</insert>' + '</td>');
       if (location == 'Germany-Berlin state-Berlin')
         $($(selec)[2]).append('<td>' + location + '</td>');
+      else if (location == '') $($(selec)[2]).append('<td>' + '<wrong>' + location + ' </wrong>' + '<insert>Germany-Berlin state-Berlin</insert>' + '</td>');
       else
-        $($(selec)[2]).append('<td>' + '<wrong>' + location + ' </wrong>' + '<insert>Germany-Berlin state-Berlin</insert>' + '</td>');
+        $($(selec)[2]).append('<td>' + '<wrong>' + location + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Germany-Berlin state-Berlin</insert>' + '</td>');
+      if (pointed_location == 'Not Sure')
+        $($(selec)[3]).append('<td>' + pointed_location + '</td>')
+      else if (pointed_location == '') $($(selec)[3]).append('<td>' + '<wrong>' + pointed_location + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
+      else
+        $($(selec)[3]).append('<td>' + '<wrong>' + pointed_location + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
+      if (period == 'Not specified')
+        $($(selec)[4]).append('<td>' + occupation + '</td>')
+      else
+        $($(selec)[4]).append('<td>' + '<wrong>' + period + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
       if (race == 'Not specified')
-        $($(selec)[3]).append('<td>' + race + '</td>');
+        $($(selec)[5]).append('<td>' + race + '</td>');
       else
-        $($(selec)[3]).append('<td>' + '<wrong>' + race + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
+        $($(selec)[5]).append('<td>' + '<wrong>' + race + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
       if (gender == 'Not specified')
-        $($(selec)[4]).append('<td>' + gender + '</td>');
+        $($(selec)[6]).append('<td>' + gender + '</td>');
       else
-        $($(selec)[4]).append('<td>' + '<wrong>' + gender + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
+        $($(selec)[6]).append('<td>' + '<wrong>' + gender + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
       if (occupation == 'Not specified')
-        $($(selec)[5]).append('<td>' + occupation + '</td>')
+        $($(selec)[7]).append('<td>' + occupation + '</td>')
       else
-        $($(selec)[5]).append('<td>' + '<wrong>' + occupation + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
+        $($(selec)[7]).append('<td>' + '<wrong>' + occupation + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
 
 
       $("#transcribe_copy .tagged-text").each(function(){
@@ -996,7 +1038,7 @@
           if (edited_category == tag_dic[tagName])
             $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>"+ "sub" +"</td>" + "</tr>");
           else
-            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + "<wrong>" + edited_category + "</wrong>" + " <insert>" + tag_dic[tagName] + "</insert>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + "<wrong>" + edited_category + "</wrong>" + "&nbsp&nbsp&nbsp" + "<insert>" + tag_dic[tagName] + "</insert>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
           delete copy_dic[tagName];
         }
         else
@@ -1111,18 +1153,26 @@
 
   wrong {
     color: red;
+    background: #fdd;
+    text-decoration: none;
   }
 
   insert {
     color: green;
+    background: #dfd;
+    text-decoration: none;
   }
 
   .wrong {
-    background: red;
+    color: red;
+    background: #fdd;
+    text-decoration: none;
   }
 
   .insert {
-    background: green;
+    color: green;
+    background: #dfd;
+    text-decoration: none;
   }
 
 

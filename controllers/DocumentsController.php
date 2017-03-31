@@ -136,6 +136,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
   public function trans1Action() {
     $this->_helper->viewRenderer('transcribeassessment');
+    $this->view->assDocID = 3;
   }
 
   public function transcribeAction() {

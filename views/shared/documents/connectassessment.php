@@ -13,6 +13,7 @@
     <script type="text/javascript">
         var comment_type = 2;
         var theme_ratings = ["Not useful","Somewhat useful","Useful", "Very useful", "Extremely useful"];
+        var answer_ratings = ["Very useful","Very useful","Very useful", "Very useful", "Very useful"];
     </script>
 </head>
 <body id = "main-body">
@@ -273,7 +274,7 @@
                             </thead>
                         <?php foreach ((array)$this->subjects as $subject): ?>
                             <tr>
-                                <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-c    ontent="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
+                                <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="0"></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="1"></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="2"></td>
@@ -340,6 +341,9 @@
                   <li class="active"><a href="#themes" data-toggle="tab">Themes Rating</a></li>
               </ul>
               <div id = "themes">
+                <br>
+                <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=wrong, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=inserted correct answers</b>
+                <br>
                 <br>
                 <div id = "rightPart">
                   <p>Right Ratings</p>
@@ -494,6 +498,7 @@
                 if (completed == true) {
                   retrieveRating();
                   $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
+                  $('#submit-selection-btn').prop("disabled", "true");
                }
                 //$("#subject-form").submit();
             });
@@ -515,7 +520,10 @@
             var title = $($("#en-table tbody tr")[i]).find('a').html();
             var sub = "[name=subject" + (i + 1) + "]:checked";
             var value = $($("#en-table tbody tr")[i]).find(sub).val()
-            $("#userTheme").append("<tr><td>"+ title+"</td><td>" + theme_ratings[value] + "</td></tr>");
+            if (theme_ratings[value] == answer_ratings[i])
+              $("#userTheme").append("<tr><td>"+ title+"</td><td>" + theme_ratings[value] + "</td></tr>");
+            else
+              $("#userTheme").append("<tr><td>"+ title+"</td><td>" + "<wrong>" + theme_ratings[value] + "</wrong>" + "&nbsp&nbsp&nbsp" + " <insert>" + answer_ratings[i] + "</insert>" + "</td></tr>");
           }
         }
 
@@ -616,6 +624,30 @@
           width: 80%;
         }
 
+        wrong {
+          color: red;
+    			background: #fdd;
+    			text-decoration: none;
+        }
+
+        insert {
+          color: green;
+          color: green;
+          background: #dfd;
+          text-decoration: none;
+        }
+
+        .wrong {
+          color: red;
+    			background: #fdd;
+    			text-decoration: none;
+        }
+
+        .insert {
+          color: green;
+          background: #dfd;
+          text-decoration: none;
+        }
 
 
     </style>

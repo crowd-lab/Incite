@@ -61,9 +61,9 @@
 
 				function buildPopoverContent() {
 					var content = '';
-					var date = "1860-08-06";
-					var location = "Germany-Berlin state-Berlin";
-					var source = "The Daily Dispatch (Richmond, VA)";
+					var date = "1861-06-29";
+					var location = "Louisiana - Orleans Parish - New Orleans";
+					var source = "Daily True Delta";
 					var contributor = "";
 					var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
 
@@ -192,7 +192,9 @@
 				        </div>
 				        <div class="modal-body">
 									<ul class="nav nav-justified nav-pills">
-
+										<b>Color Meaning: <span class="del" style="display:inline-block;width:16px">&nbsp;</span>=delete, <span class="ins" style="display:inline-block;width:16px">&nbsp;</span>=insert, <span class="rep" style="display:inline-block;width:16px">&nbsp;</span>=replace</b>
+									  <br>
+										<br>
 										<li class="active"><a>Transcription</a></li>
 									</ul>
 
@@ -206,8 +208,7 @@
 												</div>
 												<div style = "clear: both">
 													<br>
-													<b>Color Meaning: <span class="del" style="display:inline-block;width:16px">&nbsp;</span>=delete, <span class="ins" style="display:inline-block;width:16px">&nbsp;</span>=insert, <span class="rep" style="display:inline-block;width:16px">&nbsp;</span>=replace</b>
-												</div>
+													</div>
 	                    </div>
 											<br>
 
@@ -270,7 +271,8 @@
 							updateTransAjaxRequest()
 							$('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
 							$("#rightText").append("THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.");
-            });
+							$('#submit_transcription').prop("disabled", "true");
+						});
 
 						$('#summary-textarea').keyup(function() {
 							var text_length = $('#summary-textarea').val().length;
