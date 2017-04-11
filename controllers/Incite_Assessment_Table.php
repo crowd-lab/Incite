@@ -22,20 +22,6 @@ function getTransAnswers() {
     return $results;
 }
 
-function getTagsAnswers() {
-    $results = Array();
-    $db = DB_Connect::connectDB();
-    $sql = "SELECT location, date, inferred_location, period, race, gender, occupation, tagged_trans FROM omeka_incite_gold_standard WHERE assessID = '1' ";
-    $stmt = $db->prepare($sql);
-    $stmt->bind_result($location, $date, $inferred_location, $period, $race, $gender, $occupation, $tagged_trans);
-    $stmt->execute();
-    while ($stmt->fetch()) {
-        $results = Array("location" => $location, "date" => $date, "inferred_location" => $inferred_location, "period" => $period, "race" => $race, "gender" => $gender, "occupation" => $occupation, "tagged" => $tagged_trans);
-    }
-    $stmt->close();
-    $db->close();
-    return $results;
-}
 
 function createTrans($itemID, $userID, $workingGroupID, $transcribedText, $summarizedText, $tone) {
     $db = DB_Connect::connectDB();

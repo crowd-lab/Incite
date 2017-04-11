@@ -279,10 +279,6 @@
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
 							saveTransAjaxRequest()
-							<?php $transAnswer = getTransAnswers(); ?>
-							<?php $tagsAnswer = getTagsAnswers();?>
-							var tone = "<?php echo $transAnswer['tone']; ?>";
-							var trans = "<?php echo $transAnswer['trans']; ?>";
 							UserTone();
 							updateTransAjaxRequest()
 							$('#myModal').modal({backdrop: 'static', keyboard: false, show: true});

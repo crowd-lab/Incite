@@ -16,7 +16,6 @@
         <script type="text/javascript">
             var msgbox;
             var comment_type = 1;
-            var tag_dic = {};
             var tags_list = {};
             var copy_dic = tags_list;
             var entities_array = [];
@@ -810,13 +809,7 @@
             }
 
             $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
-            <?php $tagsAnswer = getTagsAnswers();?>
-            var race = "<?php echo $tagsAnswer['race']; ?>";
-            var tagged = '<?php echo $tagsAnswer['tagged']; ?>';
-            var trimed = tagged.split(";")
-            trimed.forEach(function(item) {
-              tag_dic[item.split(',')[0]]= item.split(',')[1];
-            });
+
             var len = Object.keys(correct_tag_list).length;
             for(var i = 0; i < len; i++) {
               var key = Object.keys(correct_tag_list)[i];
