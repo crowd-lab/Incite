@@ -7,6 +7,7 @@
 
             $category_object = getAllCategories();
             $category_id_name_table = getSubcategoryIdAndNames();
+            $category_name_id_table = getCategoryNameAndId();
         ?>
 
         <script type="text/javascript">
@@ -208,6 +209,7 @@
     var categories = <?php echo json_encode($category_object).";\n"; ?>
     // alert(categories[2]['subcategory'].length);
     var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
+    var category_name_to_id_table = <?php echo json_encode($category_name_id_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
     function set_tag_id_counter() {

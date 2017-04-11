@@ -129,7 +129,7 @@
                     <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ?
                         $activity['discussion_title'] : $activity['document_title']); ?>.value,
                     <?php echo (($activity['activity_type'] === 'Discuss') ?
-                        $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>"
+                        $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>"
                 );
             <?php endforeach; ?>
         };
@@ -321,7 +321,7 @@
             <?php foreach ((array)$this->activities as $activity): ?>
                 if (parseInt(groupId) === <?php echo $activity['working_group_id']; ?>) {
                     <?php echo $activity['activity_type']; ?>++;
-                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>");
                 }
             <?php endforeach; ?>
 

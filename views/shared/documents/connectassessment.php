@@ -7,6 +7,7 @@
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
         $category_object = getAllCategories();
+        $subject_from_gold_standard = findAllRatingsFromGoldStandard(findTaggedTransIDFromGoldStandard(731));
     ?>
 
     <!-- Page Content -->
@@ -14,6 +15,8 @@
         var comment_type = 2;
         var theme_ratings = ["Not useful","Somewhat useful","Useful", "Very useful", "Extremely useful"];
         var answer_ratings = ["Very useful","Very useful","Very useful", "Very useful", "Very useful"];
+        var concept_to_id = {"Religion":1, "White Supremacy":2, "Racial Equality":3, "Gender Equality/Inequality":4, "Human Equality":5, "Self Goverment":6, "America as a Global Beacon":7, "Celebration of Revolutionary Generation":8, "White Southerners":9};
+        var upload_rating = [];
     </script>
 </head>
 <body id = "main-body">
@@ -26,6 +29,17 @@
             <div class="col-md-6" id="work-zone">
 <head>
 	<script type="text/javascript">
+    function updateRatingsAjaxRequest() {
+      var request = $.ajax({
+        type: "POST",
+        url: "<?php echo getFullInciteUrl().'/ajax/uploadratings'; ?>",
+        data: {'ratings': upload_rating},
+        success: function (response) {
+          console.log(response);
+          //alert(response);
+        }
+      });
+    }
         function migrateTaggedDocumentsFromV1toV2() {
             $('#transcribe_copy em').each( function (idx) {
                 $(this).addClass('tagged-text');
@@ -347,47 +361,17 @@
                 <br>
                 <div id = "rightPart">
                   <p>Right Ratings</p>
-                <table class = "theme">
+                <table class = "theme" id = "goldTheme">
                   <tr>
                     <th>Theme</th>
                     <th>Rating</th>
                   </tr>
-                  <tr>
-                    <td>Religion</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>White Supermacy</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>Racial Equality</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>Gender Equality/Inequality</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>Human Equality</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>Self Goverment</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>America as a Global Beacon</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>Celebration of Revolutionary Generation</td>
-                    <td>Useful</td>
-                  </tr>
-                  <tr>
-                    <td>White Southerners</td>
-                    <td>Useful</td>
-                  </tr>
+                  <?php foreach ((array)$this->subjects as $subject): ?>
+                      <tr>
+                          <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
+                      </tr>
+                  <?php endforeach; ?>
+
                 </table>
               </div>
               <div id = "userPart">
@@ -397,6 +381,11 @@
                     <th>Theme</th>
                     <th>Rating</th>
                   </tr>
+                  <?php foreach ((array)$this->subjects as $subject): ?>
+                      <tr>
+                          <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
+                      </tr>
+                  <?php endforeach; ?>
                 </table>
               </div>
               <div class = "clearfix"></div>
@@ -459,6 +448,7 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script>
+      var rating_list = <?php echo json_encode($subject_from_gold_standard).";\n" ?>
         $(document).ready(function() {
             <?php
                 if (isset($_SESSION['incite']['message'])) {
@@ -496,7 +486,12 @@
                 }
 
                 if (completed == true) {
+                  var len = Object.keys(rating_list).length;
+                  for(var i = 1; i < len + 1; i++) {
+                    $($("#goldTheme tr")[i]).append("<td>" + theme_ratings[rating_list[i]-1] + "</td>");
+                  }
                   retrieveRating();
+                  updateRatingsAjaxRequest();
                   $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
                   $('#submit-selection-btn').prop("disabled", "true");
                }
@@ -515,16 +510,19 @@
         }
 
         function retrieveRating() {
-          var num = $("#en-table tbody tr").length;
-          for (var i = 0; i < num; i++) {
-            var title = $($("#en-table tbody tr")[i]).find('a').html();
-            var sub = "[name=subject" + (i + 1) + "]:checked";
-            var value = $($("#en-table tbody tr")[i]).find(sub).val()
-            if (theme_ratings[value] == answer_ratings[i])
-              $("#userTheme").append("<tr><td>"+ title+"</td><td>" + theme_ratings[value] + "</td></tr>");
+          var i = 0;
+          $("#en-table tbody tr").each(function() {
+            var title = $(this).find('a').html();
+            var value = $(this).find('[type=radio]:checked').val();
+            upload_rating.push({"concept_id": concept_to_id[title], "rank": value});
+            if (theme_ratings[value] == theme_ratings[rating_list[i + 1]-1])
+              $($("#userTheme tr")[i + 1]).append("<td>" + theme_ratings[value] + "</td>");
             else
-              $("#userTheme").append("<tr><td>"+ title+"</td><td>" + "<wrong>" + theme_ratings[value] + "</wrong>" + "&nbsp&nbsp&nbsp" + " <insert>" + answer_ratings[i] + "</insert>" + "</td></tr>");
-          }
+              $($("#userTheme tr")[i + 1]).append("<td>" + "<wrong>" + theme_ratings[value] + "</wrong>" + "&nbsp&nbsp&nbsp" + " <insert>" + theme_ratings[rating_list[i + 1]-1] + "</insert>" + "</td>");
+
+            i++;
+          });
+
         }
 
         function styleForEditing() {

@@ -67,6 +67,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     require_once("Incite_Session.php");
     require_once("Incite_Env_Setting.php");
     require_once('Incite_Helpers.php');
+    require_once('Incite_Assessment_Table.php');
+
     setup_session();
   }
 
@@ -78,8 +80,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
   }
 
-  public function createSearchResultPages($document_ids, $task_name) {
-    if (count($document_ids) <= 0) {
+  public function createSearchResultPages($item_ids, $task_name) {
+    if (count($item_ids) <= 0) {
       if (isSearchQuerySpecifiedViaGet()) {
         $_SESSION['incite']['message'] = 'Unfortunately, we found no documents related to your search criteria. Please change your search criteria and try again.';
       } else {
@@ -97,13 +99,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $max_records_to_show = SEARCH_RESULTS_PER_PAGE;
     $records_counter = 0;
     $records = array();
-    $total_pages = ceil(count($document_ids) / $max_records_to_show);
+    $total_pages = ceil(count($item_ids) / $max_records_to_show);
 
-    if (count($document_ids) > 0) {
-      for ($i = ($current_page - 1) * $max_records_to_show; $i < count($document_ids); $i++) {
+    if (count($item_ids) > 0) {
+      for ($i = ($current_page - 1) * $max_records_to_show; $i < count($item_ids); $i++) {
         if ($records_counter++ >= $max_records_to_show)
         break;
-        $records[] = $this->_helper->db->find($document_ids[$i]);
+        $records[] = $this->_helper->db->find($item_ids[$i]);
       }
     }
 
@@ -135,6 +137,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   }
 
   public function trans1Action() {
+    //add metadata
+    $this->_helper->db->setDefaultModelName('Item');
+    $assessment_doc_id = 731;
+    $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
+            
     $this->_helper->viewRenderer('transcribeassessment');
     $this->view->assDocID = 3;
   }
@@ -150,6 +157,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           }
 
           if (!isset($_SESSION['Incite']['assessment_trans'])) {
+            
               $this->redirect('incite/documents/trans1');
               return;
           }
@@ -210,21 +218,24 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function populateTranscribeSearchResults() {
     if (isSearchQuerySpecifiedViaGet()) {
       $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
     } else {
-      $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
       debug_to_console("no queries");
 
     }
 
 
-      return $document_ids;
+      return $item_ids;
   }
 
   public function tag1Action() {
+    $this->_helper->db->setDefaultModelName('Item');
+    $assessment_doc_id = 731;
+    $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
     $categories = getAllCategories();
               $ner_entity_table = array();
               $tag_id_counter = 0;
@@ -275,6 +286,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->view->transcription = $transformed_transcription;
               $this->_helper->viewRenderer('tagassessment');
               unset($_SESSION['Incite']['assessment_trans']);
+              
   }
 
   public function tagAction() {
@@ -328,8 +340,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
 
               chdir($oldwd);
-
-
               $this->view->entities = $ner_entity_table;
               $this->view->transcription = $transformed_transcription;
               $this->_helper->viewRenderer('tagtutorial');
@@ -351,6 +361,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
   }
 
+  
+
   public function saveTags() {
     $entities = json_decode($_POST["entities"], true);
     removeAllTagsFromDocument($this->_getParam('id'));
@@ -358,7 +370,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $workingGroupId = $this->getWorkingGroupID();
 
     for ($i = 0; $i < sizeof($entities); $i++) {
-      createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
+      createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), 1);
     }
 
     createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
@@ -472,19 +484,21 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function populateTagSearchResults() {
     if (isSearchQuerySpecifiedViaGet()) {
       $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTagsForLatestTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTagsForLatestTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
     } else {
-      $document_ids = array_slice(array_values(getDocumentsWithoutTagsForLatestTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_values(getDocumentsWithoutTagsForLatestTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
     }
-    return $document_ids;
-    // $this->createSearchResultPages($document_ids, 'Tags');
+    return $item_ids;
+    // $this->createSearchResultPages($item_ids, 'Tags');
   }
   
   public function conn1Action() {
     $this->_helper->db->setDefaultModelName('Item');
-      $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
+    $assessment_doc_id = 731;
+    $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
+    $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
     $this->view->subjects = getAllSubjectConcepts();
     $this->view->transcription = 'THE FOURTH OF JULY AT <em id="tag_id_0" class="location tagged-text">SHREVEPORT</em> – We learn from the <em id="tag_id_1" class="location tagged-text">Southwestern</em> that it is the purpose of the military companies there to celebrate the <date>Fourth of July</date> by a general review, grand parade and dinner. It says:
 <em id="tag_id_5" class="organization tagged-text">The Yankees</em> have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The <em id="tag_id_6" class="organization tagged-text">Fourth of July</em> is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by <em id="tag_id_2" class="location tagged-text">Washington</em> and a host of other southern heroes. The <em id="tag_id_3" class="location tagged-text">Shreveport</em> Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the <em id="tag_id_7" class="organization tagged-text">Summer Grove</em> cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the <em id="tag_id_4" class="location tagged-text">Confederacy</em>, and huzza for the old Fourth of July.';
@@ -502,7 +516,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           if (!isset($_SESSION['Incite']['tutorial_conn'])) {
               $this->view->subjects = getAllSubjectConcepts();
               $this->view->transcription = 'The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.
-        </div>';
+              </div>';
               $this->_helper->viewRenderer('connecttutorial');
               return;
           }
@@ -613,15 +627,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     if (isSearchQuerySpecifiedViaGet()) {
       $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
     } else {
-      $document_ids = array_slice(array_values($connectable_documents), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_values($connectable_documents), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
     }
 
-    // $this->createSearchResultPages($document_ids, 'Connections');
-    return $document_ids;
+    // $this->createSearchResultPages($item_ids, 'Connections');
+    return $item_ids;
   }
 
   public function discussAction() {
@@ -657,9 +671,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->_helper->viewRenderer('viewid');
 
     //make sure the document is valid
-    $document_id = $this->_getParam('id');
-    $this->view->documentId = $document_id;
-    $document = $this->_helper->db->find($document_id);
+    $item_id = $this->_getParam('id');
+    $this->view->documentId = $item_id;
+    $document = $this->_helper->db->find($item_id);
 
     if ($document != null) {
       $this->view->document = $document;
@@ -667,7 +681,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     //find the transcription for the document
-    $transcription = getNewestTranscription($document_id);
+    $transcription = getNewestTranscription($item_id);
     $this->view->hasTranscription = false;
 
     if (!empty($transcription)) {
@@ -679,15 +693,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     //find the tagged transcription of the document
     $this->view->hasTaggedTranscriptionForNewestTranscription = false;
 
-    if (hasTaggedTranscriptionForNewestTranscription($document_id)) {
-      $taggedTranscriptions = getAllTaggedTranscriptions($document_id);
+    if (hasTaggedTranscriptionForNewestTranscription($item_id)) {
+      $taggedTranscriptions = getAllTaggedTranscriptions($item_id);
       $this->view->taggedTranscription = $taggedTranscriptions[count($taggedTranscriptions)-1];
       $this->view->hasTaggedTranscriptionForNewestTranscription = true;
     }
 
     //find if a document has been connected
     $this->view->hasBeenConnected = false;
-    $subjectsForDocument = getAllSubjectsOnId($document_id);
+    $subjectsForDocument = getAllSubjectsOnId($item_id);
 
     $pos_subs = array();
     $neg_subs = array();
@@ -724,14 +738,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     if (isSearchQuerySpecifiedViaGet()) {
       $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values($all_doc_ids), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_intersect(array_values($all_doc_ids), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
     } else {
-      $document_ids = array_slice(array_values($all_doc_ids), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(array_values($all_doc_ids), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
     }
-    return $document_ids;
-    // $this->createSearchResultPages($document_ids, 'Documents');
+    return $item_ids;
+    // $this->createSearchResultPages($item_ids, 'Documents');
   }
 
 

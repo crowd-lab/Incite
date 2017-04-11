@@ -21,11 +21,22 @@
         url: "<?php echo getFullInciteUrl().'/ajax/finddiff'; ?>",
         data: {'userTranscription': $('#transcription-textarea').val(), "docID": <?php echo $assDocID; ?>},
 				success: function (response) {
-					console.log(response);
 					$("#userText").append(response);
         }
     });
 	}
+
+
+	function saveTransAjaxRequest() {
+		var request = $.ajax({
+			type: "POST",
+			url: "<?php echo getFullInciteUrl().'/ajax/savetrans'; ?>",
+			data: {'transcription': $('#transcription-textarea').val(), 'summary': $('#summary-textarea').val(), 'tone': $('#tone-selector').val()},
+			success: function (response) {
+				console.log(response);
+			}
+	});
+}
 	</script>
 
 	<!-- Page Content -->
@@ -267,7 +278,12 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
-							UserTone ();
+							saveTransAjaxRequest()
+							<?php $transAnswer = getTransAnswers(); ?>
+							<?php $tagsAnswer = getTagsAnswers();?>
+							var tone = "<?php echo $transAnswer['tone']; ?>";
+							var trans = "<?php echo $transAnswer['trans']; ?>";
+							UserTone();
 							updateTransAjaxRequest()
 							$('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
 							$("#rightText").append("THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.");

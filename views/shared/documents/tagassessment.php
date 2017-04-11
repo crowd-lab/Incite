@@ -8,21 +8,19 @@
 
             $category_object = getAllCategories();
             $category_id_name_table = getSubcategoryIdAndNames();
+            $category_name_id_table = getCategoryNameAndId();
+            $tag_list = findAllTagsFromGoldStandard(731);
+            $ans_list = findAllAnswersFromGoldStandard(findTaggedTransIDFromGoldStandard(731));
         ?>
 
         <script type="text/javascript">
             var msgbox;
             var comment_type = 1;
-            var tag_dic = {"SHREVEPORT": "Location",
-                        "Southwestern": "Location",
-                        "The Yankees": "Organization",
-                        "Fourth of July": "Organization",
-                        "Washington": "Location",
-                        "Shreveport": "Location",
-                        "Summer Grove": "Organization",
-                        "Confederacy": "Location"
-                      };
-            var copy_dic = tag_dic;
+            var tag_dic = {};
+            var tags_list = {};
+            var copy_dic = tags_list;
+            var entities_array = [];
+            var question_array;
         </script>
     </head>
 
@@ -35,6 +33,17 @@
             <div class="col-md-5" id="work-zone">
 <head>
 	<script type="text/javascript">
+
+  function updateTagsAjaxRequest() {
+    var request = $.ajax({
+      type: "POST",
+      url: "<?php echo getFullInciteUrl().'/ajax/uploadtags'; ?>",
+      data: {'entities': entities_array, 'tagged_doc': $('#transcribe_copy').html(), 'questions': question_array},
+      success: function (response) {
+        alert(response);
+      }
+    });
+  }
         function migrateTaggedDocumentsFromV1toV2() {
             $('#transcribe_copy em').each( function (idx) {
                 $(this).addClass('tagged-text');
@@ -491,54 +500,6 @@
                           <th>subcategory</th>
                           <th>Detail</th>
                         </tr>
-                        <tr>
-                          <td>SHREVEPORT</td>
-                          <td>Location</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>Southwestern</td>
-                          <td>Location</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>The Yankees</td>
-                          <td>Organization</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>Fourth of July</td>
-                          <td>Organization</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>Washington</td>
-                          <td>Location</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>Shreveport </td>
-                          <td>Location</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>Summer Grove</td>
-                          <td>Organization</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>Confederacy</td>
-                          <td>Location</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
                       </table>
                     </div>
                     <div id = "userTags">
@@ -547,7 +508,6 @@
                         <tr>
                           <th>Tag</th>
                           <th>Category</th>
-                          <th>subcategory</th>
                         </tr>
                       </table>
                     </div>
@@ -686,6 +646,9 @@
     var categories = <?php echo json_encode($category_object).";\n"; ?>
     // alert(categories[2]['subcategory'].length);
     var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
+    var category_name_to_id_table = <?php echo json_encode($category_name_id_table).";\n" ?>
+    var correct_tag_list = <?php echo json_encode($tag_list).";\n" ?>
+    var answer_list = <?php echo json_encode($ans_list).";\n" ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
     function set_tag_id_counter() {
@@ -845,46 +808,25 @@
                 notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
             }
-            var entities = [];
-            var rows = $('#entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
-                });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            rows = $('#user-entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
-                });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            //alert is for testing
-            $('#entity-info').val(JSON.stringify(entities));
-            $('#tagged-doc').val($('#transcribe_copy').html());
-            //alert('Redirecting to assessment document!');
+
             $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
+            <?php $tagsAnswer = getTagsAnswers();?>
+            var race = "<?php echo $tagsAnswer['race']; ?>";
+            var tagged = '<?php echo $tagsAnswer['tagged']; ?>';
+            var trimed = tagged.split(";")
+            trimed.forEach(function(item) {
+              tag_dic[item.split(',')[0]]= item.split(',')[1];
+            });
+            var len = Object.keys(correct_tag_list).length;
+            for(var i = 0; i < len; i++) {
+              var key = Object.keys(correct_tag_list)[i];
+              var index = correct_tag_list[key];
+              $("#rightTags tbody").append("<tr><td>"+ key +"</td><td>" + category_id_to_name_table[index] + "</td><td></td><td></td></tr>");
+              tags_list[key] = index;
+            }
             fillQuestions();
+            updateTagsAjaxRequest();
             $('#confirm-button').prop("disabled", "true");
-            //$('#entity-form').submit();
-            //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
 
         $('.subcategory-select').each(function (idx) {
@@ -994,12 +936,24 @@
       var gender = $('#gender-selector').val();
       var occupation = $('#occupation-selector').val();
       var selec = $("#urquestions tr");
-      if (date == '1860-08-06')
+      question_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':race, '6': gender, '7': occupation};
+      var question_len = Object.keys(question_array).length;
+      for (var i = 1; i < question_len + 1; i++) {
+        if (question_array[i] == answer_list[i])
+          $($(selec)[i]).append('<td>' + date + '</td>');
+        else if (question_array[i] == '')
+          $($(selec)[i]).append('<td>' + '<wrong>' + question_array[i] + ' </wrong>' + '<insert>' + answer_list[i] + '</insert>' + '</td>');
+        else
+          $($(selec)[i]).append('<td>' + '<wrong>' + question_array[i] + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>' + answer_list[i] + '</insert>' + '</td>');
+
+      }
+      /*
+      if (date == ans_list[1])
         $($(selec)[1]).append('<td>' + date + '</td>');
       else if (date == '')
-        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + '<insert>1860-08-06</insert>' + '</td>');
+        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + '<insert>' + ans_list[1] + '</insert>' + '</td>');
       else
-        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>1860-08-06</insert>' + '</td>');
+        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>' + ans_list[1] + '</insert>' + '</td>');
       if (location == 'Germany-Berlin state-Berlin')
         $($(selec)[2]).append('<td>' + location + '</td>');
       else if (location == '') $($(selec)[2]).append('<td>' + '<wrong>' + location + ' </wrong>' + '<insert>Germany-Berlin state-Berlin</insert>' + '</td>');
@@ -1026,34 +980,47 @@
         $($(selec)[7]).append('<td>' + occupation + '</td>')
       else
         $($(selec)[7]).append('<td>' + '<wrong>' + occupation + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
-
-
+*/
       $("#transcribe_copy .tagged-text").each(function(){
+        var subcategories_array = [];
         var tagName = this.innerHTML;
         var class_name = this.className;
+        var id_name = this.id;
+        var id_index = id_name.slice(7);
+        var table_id = "#" + id_name + "_table td";
+        var sub1 = $(table_id)[2];
+        var sub2 = $(sub1).find("li.active");
+        var sub3 = $(table_id)[3];
+        var detail = $($(sub3).find("input")).val();
+        sub2.each(function() {
+          subcategories_array.push($($(this).find("input")).val());
+        });
         var cat = class_name.split(" ")[0];
         var exist = processTag(tagName);
+        var edited_category = cat.charAt(0).toUpperCase() + cat.slice(1);
+        entities_array.push({"entity": tagName, "category": category_name_to_id_table[edited_category], "subcategory": subcategories_array, "details": detail});
+
         if (exist){
-          var edited_category = cat.charAt(0).toUpperCase() + cat.slice(1);
-          if (edited_category == tag_dic[tagName])
-            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>"+ "sub" +"</td>" + "</tr>");
+          if (edited_category == category_id_to_name_table[tags_list[tagName]])
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td></tr>");
           else
-            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + "<wrong>" + edited_category + "</wrong>" + "&nbsp&nbsp&nbsp" + "<insert>" + tag_dic[tagName] + "</insert>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + "<wrong>" + edited_category + "</wrong>" + "&nbsp&nbsp&nbsp" + "<insert>" + tag_dic[tagName] + "</insert>" + "</td></tr>");
           delete copy_dic[tagName];
         }
         else
-          $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + cat + "</wrong>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
+          $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td></tr>");
       });
+
       if (copy_dic.length != 0) {
         for (var key in copy_dic) {
-          $("#urtable").append("<tr><td>"+ "<insert>" + key + "</wrong>" + "</td><td>" + "<insert>" + copy_dic[key] + "</insert>" + "</td><td>"+ "sub" +"</td>" + "</tr>");
+          $("#urtable").append("<tr><td>"+ "<insert>" + key + "</wrong>" + "</td><td>" + "<insert>" + category_id_to_name_table[copy_dic[key]] + "</insert>" + "</td></tr>");
         }
       }
 
      }
 
      function processTag(tagName) {
-       var tag = tag_dic[tagName];
+       var tag = tags_list[tagName];
        if (tag == null)
           return false;
        else {

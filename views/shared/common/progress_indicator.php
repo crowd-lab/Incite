@@ -9,16 +9,16 @@
 	        var numberOfTasksCompleted = 0;
 
 	        <?php
-	        	$document_id = $this->document_metadata->id;
+	        	$item_id = $this->document_metadata->id;
 
-	        	$newestTranscription = getNewestTranscription($document_id);
-	        	$newestSubjects = getNewestSubjectsForNewestTaggedTranscription($document_id);
+	        	$newestTranscription = getNewestTranscription($item_id);
+	        	$newestSubjects = getNewestSubjectsForNewestTaggedTranscription($item_id);
 
 	        	if (!empty($newestTranscription)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (hasTaggedTranscriptionForNewestTranscription($document_id)) {
+	        	if (hasTaggedTranscriptionForNewestTranscription($item_id)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 

@@ -2,7 +2,7 @@
 
 require_once("DB_Connect.php");
 
-function replyToQuestion($reply, $user_id, $question_id, $document_id)
+function replyToQuestion($reply, $user_id, $question_id, $item_id)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_replies VALUES (DEFAULT, ?, ?, ?, 1, CURRENT_TIMESTAMP)");
@@ -13,9 +13,9 @@ function replyToQuestion($reply, $user_id, $question_id, $document_id)
     $db->close();
     
     $db = DB_Connect::connectDB();
-    for ($i = 0; $i < sizeof($document_id); $i++)
+    for ($i = 0; $i < sizeof($item_id); $i++)
     {
-        $documentID = intval($document_id[$i]);
+        $documentID = intval($item_id[$i]);
         $stmt = $db->prepare("INSERT INTO omeka_incite_documents_replies_conjunction VALUES (DEFAULT, ?, ?)");
         $stmt->bind_param("ii", $documentID, $insertedID);
         $stmt->execute();
@@ -84,13 +84,13 @@ function getAllReferencedDocumentIDsForReply($reply_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT document_id FROM omeka_incite_document_replies_conjunction WHERE reply_id = ?");
+    $stmt = $db->prepare("SELECT item_id FROM omeka_incite_document_replies_conjunction WHERE reply_id = ?");
     $stmt->bind_param("i", $reply_id);
-    $stmt->bind_result($document_id);
+    $stmt->bind_result($item_id);
     $stmt->execute();
     while ($stmt->fetch())
     {
-        $idArray[] = $document_id;
+        $idArray[] = $item_id;
     }
     $stmt->close();
     $db->close();
