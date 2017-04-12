@@ -313,7 +313,7 @@ function getDocumentsWithApprovedTranscription()
 {
     $db = DB_Connect::connectDB();
     $documents_with_transcription = array();
-    $stmt = $db->prepare("SELECT DISTINCT item_id FROM omeka_incite_transcriptions WHERE is_approved = 1");
+    $stmt = $db->prepare("SELECT DISTINCT item_id FROM omeka_incite_transcriptions WHERE type = 1");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {

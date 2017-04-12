@@ -168,6 +168,7 @@ SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `item_id`               int(11) NOT NULL,
+        `tagged_trans_id`       int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `working_group_id`      int(11) NOT NULL,
         `tag_text`              varchar(30) NOT NULL,

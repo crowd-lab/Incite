@@ -16,10 +16,10 @@ require_once("Incite_Env_Setting.php");
  * @param string $description
  * @param int $documentID
  */
-function createTag($userID, $groupID, $tag_text, $category, $subcategory, $description, $itemID, $type) {
+function createTag($userID, $groupID, $tag_text, $category, $subcategory, $description, $itemID, $taggedTransID, $type) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_tags () VALUES (NULL, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)");
-    $stmt->bind_param('iiisisi', $itemID, $userID, $groupID, $tag_text, $category, $description, $type);
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tags () VALUES (NULL, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)");
+    $stmt->bind_param('iiiisisi', $itemID, $taggedTransID, $userID, $groupID, $tag_text, $category, $description, $type);
     $stmt->execute();
     $tagID = $stmt->insert_id;
     $stmt->close();
@@ -251,7 +251,7 @@ function getLatestTaggedTranscriptionID($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
     $transcriptions = array();
-    $stmt = $db->prepare("SELECT id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND is_approved = 1 ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 1 ORDER BY timestamp_creation DESC LIMIT 1");
     $stmt->bind_param("i", $itemID);
     $stmt->bind_result($taggedTranscriptionID);
     $stmt->execute();
@@ -680,6 +680,30 @@ function findAllRatingsFromGoldStandard($taggedTranscriptionID) {
     $stmt->close();
     $db->close();
     return $subject_list;
+}
+
+function getLatestTaggedTransForUser($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 3 ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($taggedTranscription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $taggedTranscription;
+}
+
+function saveTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
+
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 3, NULL, CURRENT_TIMESTAMP)");
+    $stmt->bind_param("iiiis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription);
+    $stmt->execute();
+    $tagID = $stmt->insert_id;
+    $stmt->close();
+    $db->close();
+    return $tagID;
 }
 
 ?>

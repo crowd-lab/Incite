@@ -834,11 +834,12 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
       $question_arr = $_POST['questions'];
       //print_r($question_arr);
       $assessID = 731;
-      for ($i = 0; $i < sizeof($entities); $i++) {
-        createTag($_SESSION['Incite']['USER_DATA']['id'], 0, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $assessID, 3);
-      }
       $index = findTranscriptionId($assessID, $_SESSION['Incite']['USER_DATA']['id']);
-      $taggedID = createTaggedTranscription($assessID, $index, $_SESSION['Incite']['USER_DATA']['id'], 0, $_POST['tagged_doc']);
+      $taggedID = saveTaggedTranscription($assessID, $index, $_SESSION['Incite']['USER_DATA']['id'], 0, $_POST['tagged_doc']);
+      for ($i = 0; $i < sizeof($entities); $i++) {
+        createTag($_SESSION['Incite']['USER_DATA']['id'], 0, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $assessID, $taggedID, 3);
+      }
+      
       for ($i = 0; $i < sizeof($question_arr); $i++) {
         print_r($question_arr[$i + 1]);
         saveQuestions($taggedID, $i + 1, $question_arr[$i + 1], 3);

@@ -144,6 +144,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             
     $this->_helper->viewRenderer('transcribeassessment');
     $this->view->assDocID = 3;
+    $this->view->doc_id = $this->_getParam('id');
   }
 
   public function transcribeAction() {
@@ -158,7 +159,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
           if (!isset($_SESSION['Incite']['assessment_trans'])) {
             
-              $this->redirect('incite/documents/trans1');
+              $this->redirect('incite/documents/trans1/'.$this->_getParam('id'));
               return;
           }
 
@@ -235,6 +236,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function tag1Action() {
     $this->_helper->db->setDefaultModelName('Item');
     $assessment_doc_id = 731;
+    $this->view->doc_id = $this->_getParam('id');
     $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
     $categories = getAllCategories();
               $ner_entity_table = array();
@@ -346,8 +348,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               return;
           }
 
-          if (!isset($_SESSION['Incite']['assessment_trans'])) {
-              $this->redirect('incite/documents/tag1');
+          if (!isset($_SESSION['Incite']['assessment_tag'])) {
+              $this->redirect('incite/documents/tag1/'.$this->_getParam('id'));
               return;
           }
 
@@ -370,7 +372,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $workingGroupId = $this->getWorkingGroupID();
 
     for ($i = 0; $i < sizeof($entities); $i++) {
-      createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), 1);
+      createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), 0, 1);
     }
 
     createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
@@ -497,14 +499,16 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function conn1Action() {
     $this->_helper->db->setDefaultModelName('Item');
     $assessment_doc_id = 731;
+    $this->view->doc_id = $this->_getParam('id');
     $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
     $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
     $this->view->subjects = getAllSubjectConcepts();
-    $this->view->transcription = 'THE FOURTH OF JULY AT <em id="tag_id_0" class="location tagged-text">SHREVEPORT</em> – We learn from the <em id="tag_id_1" class="location tagged-text">Southwestern</em> that it is the purpose of the military companies there to celebrate the <date>Fourth of July</date> by a general review, grand parade and dinner. It says:
-<em id="tag_id_5" class="organization tagged-text">The Yankees</em> have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The <em id="tag_id_6" class="organization tagged-text">Fourth of July</em> is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by <em id="tag_id_2" class="location tagged-text">Washington</em> and a host of other southern heroes. The <em id="tag_id_3" class="location tagged-text">Shreveport</em> Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the <em id="tag_id_7" class="organization tagged-text">Summer Grove</em> cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the <em id="tag_id_4" class="location tagged-text">Confederacy</em>, and huzza for the old Fourth of July.';
+    $this->view->transcription = getLatestTaggedTransForUser($assessment_doc_id);
+    //$this->view->transcription = 'THE FOURTH OF JULY AT <em id="tag_id_0" class="location tagged-text">SHREVEPORT</em> – We learn from the <em id="tag_id_1" class="location tagged-text">Southwestern</em> that it is the purpose of the military companies there to celebrate the <date>Fourth of July</date> by a general review, grand parade and dinner. It says:
+//<em id="tag_id_5" class="organization tagged-text">The Yankees</em> have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The <em id="tag_id_6" class="organization tagged-text">Fourth of July</em> is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by <em id="tag_id_2" class="location tagged-text">Washington</em> and a host of other southern heroes. The <em id="tag_id_3" class="location tagged-text">Shreveport</em> Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the <em id="tag_id_7" class="organization tagged-text">Summer Grove</em> cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the <em id="tag_id_4" class="location tagged-text">Confederacy</em>, and huzza for the old Fourth of July.';
     $this->_helper->viewRenderer('connectassessment');
     unset($_SESSION['Incite']['assessment_trans']);
-    $this->view->assDocID = 3;
+    //$this->view->assDocID = 3;
     return;
   }
 
@@ -520,8 +524,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->_helper->viewRenderer('connecttutorial');
               return;
           }
-          if (!isset($_SESSION['Incite']['assessment_trans'])) {
-            $this->redirect('incite/documents/conn1');
+          if (!isset($_SESSION['Incite']['assessment_conn'])) {
+            $this->redirect('incite/documents/conn1/'.$this->_getParam('id'));
           }
           if ($this->getRequest()->isPost()) {
               $this->saveConnections();

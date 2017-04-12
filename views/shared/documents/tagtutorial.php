@@ -648,6 +648,8 @@
                 notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
             }
+            location.reload();
+            /*
             var entities = [];
             var rows = $('#entity-table tr').has("td");
             rows.each(function (idx) {
@@ -679,10 +681,11 @@
                 $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
                 $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
             });
+            */
             //alert is for testing
-            $('#entity-info').val(JSON.stringify(entities));
-            $('#tagged-doc').val($('#transcribe_copy').html());
-            alert('Redirecting to assessment document!');
+            //$('#entity-info').val(JSON.stringify(entities));
+            //$('#tagged-doc').val($('#transcribe_copy').html());
+            //alert('Redirecting to assessment document!');
             //$('#entity-form').submit();
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });

@@ -403,7 +403,8 @@
                 }
 
                 if (completed == true) {
-                 alert('Redirecting to assessment document!');
+                  location.reload();
+                 //alert('Redirecting to assessment document!');
                }
                 //$("#subject-form").submit();
             });

@@ -3,6 +3,7 @@
 
 	<?php
 		$_SESSION['Incite']['tutorial_trans'] = true;
+		$_SESSION['Incite']['assessment_trans'] = true;
 		include(dirname(__FILE__) . '/../common/header.php');
 		include(dirname(__FILE__) . '/../common/progress_indicator.php');
 	?>
@@ -236,7 +237,7 @@
 											<br>
 				        </div>
 				        <div class="modal-footer">
-				          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				          <button type="button" id = "closeButton" class="btn btn-default" data-dismiss="modal">Close</button>
 				        </div>
 				      </div>
 
@@ -276,6 +277,9 @@
     <!-- /.container -->
     <script type="text/javascript">
         $(document).ready(function () {
+					$("#closeButton").click(function(){
+						window.location = '<?php echo getFullInciteUrl().'/documents/transcribe/'.$this->doc_id; ?>';
+					});
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
 							saveTransAjaxRequest()

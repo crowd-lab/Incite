@@ -179,9 +179,9 @@ function getNewestSubjectsForNewestTaggedTranscription($itemID) {
 
     $db = DB_Connect::connectDB();
     $subjects = array();
-    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, is_positive, omeka_incite_documents_subject_conjunction.user_id, omeka_incite_subject_concepts.id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.item_id WHERE omeka_incite_documents.item_id = ? AND omeka_incite_documents_subject_conjunction.tagged_trans_id = ? ORDER BY created_time DESC LIMIT ?");
+    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, rank, omeka_incite_documents_subject_conjunction.user_id, omeka_incite_subject_concepts.id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id = omeka_incite_documents_subject_conjunction.item_id WHERE omeka_incite_documents.item_id = ? AND omeka_incite_documents_subject_conjunction.tagged_trans_id = ? ORDER BY created_time DESC LIMIT ?");
     $stmt->bind_param("iii", $documentID, $taggedTranscriptionID, countSubjects());
-    $stmt->bind_result($subject, $is_positive, $userID, $subjectID);
+    $stmt->bind_result($subject, $rank, $userID, $subjectID);
     $stmt->execute();
     while ($stmt->fetch()) {
         if ($is_positive == 1) 
@@ -334,4 +334,5 @@ function searchClosestMatchConcept($id_array, $minimum_match)
     }
     return $idAboveMinimum;
 }
+
 ?>

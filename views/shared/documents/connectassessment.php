@@ -3,6 +3,7 @@
 <head>
     <?php
         $_SESSION['Incite']['tutorial_conn'] = true;
+        $_SESSION['Incite']['assessment_conn'] = true;
         include(dirname(__FILE__).'/../common/header.php');
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
