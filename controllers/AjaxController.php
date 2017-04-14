@@ -817,9 +817,9 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
   public function savetransAction() {
     //$workingGroupId = $this->getWorkingGroupID();
     if ($this->getRequest()->isPost()) {
-        print_r($_POST['transcription']);
-        echo "\n";
-        print_r($_POST['tone']);
+        //print_r($_POST['transcription']);
+        //echo "\n";
+        //print_r($_POST['tone']);
       
       $assessID = 731;
       $userID = $_SESSION['Incite']['USER_DATA']['id'];
@@ -853,8 +853,9 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
     if ($this->getRequest()->isPost()) {
       $ratings = $_POST['ratings'];
       $assessID = 731;
+      $tagged_tran_id = findTaggedTransIDFromGoldStandard($assessID);
       for ($i = 0; $i < sizeof($ratings); $i++) {
-        addConnectRating($_SESSION['Incite']['USER_DATA']['id'], 0, $ratings[$i]['concept_id'], $ratings[$i]['rank'], $assessID, 3, 0);
+        addConnectRating($_SESSION['Incite']['USER_DATA']['id'], 0, $ratings[$i]['concept_id'], $ratings[$i]['rank'], $assessID, 3, $tagged_tran_id);
       }
 
       

@@ -77,7 +77,7 @@
 					var location = "Louisiana - Orleans Parish - New Orleans";
 					var source = "Daily True Delta";
 					var contributor = "";
-					var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
+					var rights = "American Antiquarian Society";
 
 					if (date) content += '<strong>Date: </strong>' + date + '<br><br>';
 					if (location) content += '<strong>Location: </strong>' + location + '<br><br>';
@@ -101,7 +101,7 @@
 			<div class="col-md-6" id="work-zone">
 				<div id="work-view">
 					<div class="document-header" id="document-header">
-						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> Incite Tutorial - Transcribe</span>
+						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> The Fourth of July at Shreveport - Transcribe</span>
 						<span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
 							aria-hidden="true" data-trigger="hover"
 							data-toggle="popover" data-html="true"
@@ -138,7 +138,7 @@
 
 						<div id = "tran-div">
 						<textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
-						<p>Character Count: <span id = "counting">0</span></p>
+						<p style = "float: right">Character Count: <span id = "counting">0</span></p>
 						</div>
 
 						<p class="step">

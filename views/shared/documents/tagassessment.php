@@ -102,11 +102,11 @@
 
         function buildPopoverContent() {
             var content = '';
-            var date = "1860-08-06";
-            var location = "Germany-Berlin state-Berlin";
-            var source = "The Daily Dispatch (Richmond, VA)";
-            var contributor = "";
-            var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
+            var date = "1861-06-29";
+  					var location = "Louisiana - Orleans Parish - New Orleans";
+  					var source = "Daily True Delta";
+  					var contributor = "";
+  					var rights = "American Antiquarian Society";
 
             if (date) {
                 content += '<strong>Date: </strong>' + date + '<br><br>';
@@ -147,7 +147,7 @@
 <div id="work-view" >
         <div class="document-header" id = "header" style = "position: relative">
             <span class="document-title" title="Incite Tutorial - Tag">
-                <b>Title:</b> Incite tutorial - Tag
+                <b>Title:</b> The Fourth of July at Shreveport - Tag
             </span>
 
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
@@ -590,7 +590,7 @@
                   <br>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" id = "tagClose"class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </div>
 
@@ -642,6 +642,10 @@
     <!-- End work container -->
 
 <script type="text/javascript">
+
+    $("#tagClose").click(function(){
+      window.location = '<?php echo getFullInciteUrl().'/documents/tag/'.$this->doc_id; ?>';
+    });
     //Global variable to store categories/counters
     var categories = <?php echo json_encode($category_object).";\n"; ?>
     // alert(categories[2]['subcategory'].length);

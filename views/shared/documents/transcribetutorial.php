@@ -122,7 +122,7 @@
 
 						<div id = "tran-div">
 						<textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
-						<p>Character Count: <span id = "counting">0</span></p>
+						<p style = "float: right">Character Count: <span id = "counting">0</span></p>
 						</div>
 
 						<p class="step">

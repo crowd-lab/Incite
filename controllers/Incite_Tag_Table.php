@@ -231,7 +231,7 @@ function getAllTaggedTranscriptions($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
     $transcriptions = array();
-    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND is_approved = 1");
+    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 1");
     $stmt->bind_param("i", $itemID);
     $stmt->bind_result($transcription);
     $stmt->execute();

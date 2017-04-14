@@ -285,7 +285,8 @@
                             <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
                         </p>
                         <textarea style="width:100%;" name="reasoning" rows="5" id = "reasoning"></textarea>
-                        <p>Character Count: <span id = "word-counting">0</span></p>
+                        <p style = "float: right">Character Count: <span id = "word-counting">0</span></p>
+                        <br>
                         <br>
                         <br>
                         <input type="hidden" name="connection_type" value="multiscale">

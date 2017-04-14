@@ -109,11 +109,11 @@
 
         function buildPopoverContent() {
           var content = '';
-          var date = "1860-08-06";
-          var location = "Germany-Berlin state-Berlin";
-          var source = "The Daily Dispatch (Richmond, VA)";
+          var date = "1861-06-29";
+          var location = "Louisiana - Orleans Parish - New Orleans";
+          var source = "Daily True Delta";
           var contributor = "";
-          var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
+          var rights = "American Antiquarian Society";
 
             if (date) {
                 content += '<strong>Date: </strong>' + date + '<br><br>';
@@ -154,7 +154,7 @@
 	<div id="work-view">
         <div class="document-header">
             <span class="document-title" title="Incite Tutorial - Connect">
-                <b>Title:</b> Incite Tutorial - Connect
+                <b>Title:</b> The Fourth of July at Shreveport - Connect
             </span>
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
                 data-toggle="popover" data-html="true" data-trigger="hover"
@@ -302,7 +302,7 @@
                             <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
                         </p>
                         <textarea style="width:100%;" name="reasoning" rows="5" id = "reasoning"></textarea>
-                        <p>Character Count: <span id = "word-counting">0</span></p>
+                        <p style = "float: right">Character Count: <span id = "word-counting">0</span></p>
                         <br>
                         <br>
                         <input type="hidden" name="connection_type" value="multiscale">
@@ -393,7 +393,7 @@
             </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" id = "connectClose" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </div>
 
@@ -449,6 +449,10 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script>
+
+    $("#connectClose").click(function(){
+      window.location = '<?php echo getFullInciteUrl().'/documents/connect/'.$this->doc_id; ?>';
+    });
       var rating_list = <?php echo json_encode($subject_from_gold_standard).";\n" ?>
         $(document).ready(function() {
             <?php
