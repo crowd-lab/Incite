@@ -85,7 +85,7 @@
 			<div class="col-md-6" id="work-zone">
 				<div id="work-view">
 					<div class="document-header" id="document-header">
-						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> Incite Tutorial - Transcribe</span>
+						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> Sunday School Celebration in Prussia</span>
 						<span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
 							aria-hidden="true" data-trigger="hover"
 							data-toggle="popover" data-html="true"
@@ -164,6 +164,7 @@
 							</select>
 						</div>
 						<button id="submit_transcription" type="button" class="btn btn-primary">Submit</button>
+
 						<input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
 					</form>
 
@@ -205,6 +206,7 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
+								/*
                 if ($('#transcription-textarea').val() === "") {
                     notifyOfErrorInForm('Please provide a transcription of the document');
                     return;
@@ -213,11 +215,9 @@
                     notifyOfErrorInForm('Please provide a summary of the document');
                     return;
                 }
-                if ($('#tone-selector').val() === "") {
-                    notifyOfErrorInForm('Please select the tone of the document');
-                    return;
-                }
-								location.reload();
+  							*/
+								window.location = '<?php echo getFullInciteUrl().'/documents/transcribe/'.$this->doc_id; ?>';
+								//location.reload();
                 //$('#transcribe-form').submit();
                 alert('This will redirect you to assessment document');
             });

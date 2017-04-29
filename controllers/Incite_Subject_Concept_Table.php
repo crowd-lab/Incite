@@ -250,7 +250,7 @@ function addConnectRating($userID, $groupID, $conceptID, $rank, $item_ID, $type,
  * @param int $taggedTranscriptionID
  * @param bool $positive
  */
-function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTranscriptionID, $positive)
+function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTranscriptionID)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
@@ -265,12 +265,13 @@ function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTra
         //store concept in conjunction table
         $db->close();
         $db = DB_Connect::connectDB();
-        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
-        $newStmt->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $positive, $userID, $groupID);
+        $newStmt = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, ?, ?,CURRENT_TIMESTAMP)");
+        $newStmt->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $rank, $userID, $groupID);
         $newStmt->execute();
         $newStmt->close();
         
     }
+    
     else
     {
         //create document then tag
@@ -284,10 +285,11 @@ function addConceptToDocument($conceptID, $itemID, $userID, $groupID, $taggedTra
         $db->close();
         $db = DB_Connect::connectDB();
         $newStmt1 = $db->prepare("INSERT INTO omeka_incite_documents_subject_conjunction VALUES (NULL, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
-        $newStmt1->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $positive, $userID, $groupID);
+        $newStmt1->bind_param("iiiiii", $documentID, $taggedTranscriptionID, $conceptID, $rank, $userID, $groupID);
         $newStmt1->execute();
         $newStmt1->close();
     }
+    
 }
 
 /**
@@ -334,5 +336,6 @@ function searchClosestMatchConcept($id_array, $minimum_match)
     }
     return $idAboveMinimum;
 }
+
 
 ?>

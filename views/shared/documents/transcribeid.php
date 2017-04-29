@@ -9,14 +9,14 @@
         var msgbox;
         var comment_type = 0;
     </script>
-    
+
     <script type="text/javascript">
         var textArea;
         var textToCheck;
         textToCheck = "Hello World";
         textArea = document.getElementById("transcription-textarea");
-        
-        
+
+
     </script>
 
     <!-- Page Content -->
@@ -49,7 +49,7 @@
                 </p>
 
                 <textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
-                
+
                 <p class="step">
                     <i>Step 2 of 3: Summarize</i>
                     <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
@@ -83,7 +83,9 @@
                         <option value="aggression">Aggression</option>
                     </select>
                 </div>
-                <button id="submit_transcription" type="button" class="btn btn-primary">Submit</button>
+                <button id="submit_and_repeat" type="button" class="btn btn-primary" >Submit & Continue Transcribe</button>
+                <button id="submit_to_tag" type="button" class="btn btn-primary" >Submit & Tag</button>
+                <input id="which_type" type="hidden" value="" name="link"> </input>
                 <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
             </form>
 
@@ -105,7 +107,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
-            $('#submit_transcription').on('click', function(e) {
+            $('#submit_to_tag').on('click', function(e) {
                 if ($('#transcription-textarea').val() === "") {
                     notifyOfErrorInForm('Please provide a transcription of the document');
                     return;
@@ -118,7 +120,14 @@
                     notifyOfErrorInForm('Please select the tone of the document');
                     return;
                 }
+                $('#which_type').val('1');
                 $('#transcribe-form').submit();
+
+            });
+            $('#submit_and_repeat').on('click', function(e) {
+              $('#which_type').val('2');
+              $('#transcribe-form').submit();
+
             });
 
             <?php
@@ -132,7 +141,7 @@
                 styleForEditing();
             <?php endif; ?>
         });
-        
+
 
         function styleForEditing() {
             populateWithLatestTranscriptionData();
@@ -158,7 +167,7 @@
                 $('#transcribe-form').show();
             });
         }
-        
+
     </script>
 
     <style>
@@ -169,10 +178,10 @@
             display: none;
         }
         #step-0 .btn-end { display: block; }
-        
+
         #step-14 .btn-end { display: block; }
 
-        #submit_transcription {
+        #submit_to_tag {
             float: right;
         }
 
@@ -203,7 +212,9 @@
     .tour-step-background {
         z-index: 3;
     }
-        
+
+    
+
     </style>
 </body>
 

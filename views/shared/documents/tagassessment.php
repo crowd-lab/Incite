@@ -431,6 +431,7 @@
                             </td>
                         </tr>
                     </table>
+                    <br>
                     <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
                     <form id="entity-form" method="post">
                         <input id="entity-info" type="hidden" name="entities" />
@@ -490,20 +491,8 @@
               </ul>
                   <div class="tab-pane active" id="tags">
                     <br>
-
-                    <div id = "rightTags">
-                      <p>Right Tags</p>
-                      <table class = "rightTable">
-                        <tr>
-                          <th>Tag</th>
-                          <th>Category</th>
-                          <th>subcategory</th>
-                          <th>Detail</th>
-                        </tr>
-                      </table>
-                    </div>
                     <div id = "userTags">
-                      <p>Your Tags</p>
+
                       <table class = "rightTable" id = "urtable">
                         <tr>
                           <th>Tag</th>
@@ -520,42 +509,6 @@
                   <div class="tab-pane" id="questions">
                     <br>
 
-                    <div id = "left_questions">
-                      <table class = "rightTable">
-                        <tr>
-                          <th>Tag</th>
-                          <th>Category</th>
-                        </tr>
-                        <tr>
-                          <td>Date</td>
-                          <td>1860-08-06</td>
-                        </tr>
-                        <tr>
-                          <td>Location</td>
-                          <td>Germany-Berlin state-Berlin</td>
-                        </tr>
-                        <tr>
-                          <td>point-out Location</td>
-                          <td>Not sure</td>
-                        </tr>
-                        <tr>
-                          <td>Period</td>
-                          <td>Not sure</td>
-                        </tr>
-                        <tr>
-                          <td>Race</td>
-                          <td>Not specified</td>
-                        </tr>
-                        <tr>
-                          <td>Gender</td>
-                          <td>Not specified</td>
-                        </tr>
-                        <tr>
-                          <td>Occupation</td>
-                          <td>Not specified</td>
-                        </tr>
-                      </table>
-                    </div>
                     <div = id = "right_questions">
                       <table class = "rightTable" id = "urquestions">
                         <tr>
@@ -1067,31 +1020,14 @@
         cursor: pointer;
         margin-top: -32px;
     }
-    #rightTags {
-      width: 50%;
-      padding 0 10px;
-      float:left;
-      padding-right: 10px;
-    }
     #userTags {
-      width: 50%;
-      border-left: 1px solid #ccc;
-      float:right;
+      /*width: 100%;*/
       padding 0 10px;
       padding-left: 10px;
     }
 
-    #left_questions {
-      width: 50%;
-      padding 0 10px;
-      float:left;
-      padding-right: 10px;
-    }
-
     #right_questions {
-      width: 50%;
-      border-left: 1px solid #ccc;
-      float:right;
+      /*width: 100%;*/
       padding 0 10px;
       padding-left: 10px;
     }
@@ -1099,7 +1035,7 @@
     table .rightTable{
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    /*width: 100%;*/
     }
 
     .rightTable td, .rightTable th {

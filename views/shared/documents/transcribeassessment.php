@@ -101,7 +101,7 @@
 			<div class="col-md-6" id="work-zone">
 				<div id="work-view">
 					<div class="document-header" id="document-header">
-						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> The Fourth of July at Shreveport - Transcribe</span>
+						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> The Fourth of July at Shreveport</span>
 						<span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
 							aria-hidden="true" data-trigger="hover"
 							data-toggle="popover" data-html="true"
@@ -212,12 +212,7 @@
 
 	                    <div id="trans">
 												<br>
-												<div id = "rightText">
-													<h4>Correct Text</h4>
-												</div>
-	                      <div id = "userText">
-													<h4>Your Text</h4>
-												</div>
+	                      <div id = "userText"></div>
 												<div style = "clear: both">
 													<br>
 													</div>
@@ -231,7 +226,6 @@
 
 	                    <div class="tab-pane" id="tones">
 												<br>
-												<div id = "left_tone"><p>The correct tone of this article is Informational</p></div>
 												<div id = "right_tone"></div>
 	                    </div>
 											<br>
@@ -286,7 +280,9 @@
 							UserTone();
 							updateTransAjaxRequest()
 							$('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
+							/*
 							$("#rightText").append("THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.");
+							*/
 							$('#submit_transcription').prop("disabled", "true");
 						});
 
@@ -463,7 +459,7 @@
 			color: #008;
 			background: #eef;
 			}
-
+/*
 			#rightText {
 	      width: 50%;
 	      padding 0 10px;
@@ -471,24 +467,25 @@
 				padding-left: 5px;
 				padding-right: 10px;
 	    }
+			*/
 	    #userText {
-	      width: 50%;
-	      border-left: 1px solid #ccc;
+	      width: 100%;
+	      /*border-left: 1px solid #ccc;*/
 	      float:right;
 	      padding 0 10px;
 				padding-left: 10px;
 				padding-right: 5px;
 	    }
-
+/*
 			#left_tone {
 				width: 50%;
 	      padding 0 10px;
 	      float:left;
 			}
-
+*/
 			#right_tone {
-				width: 50%;
-	      border-left: 1px solid #ccc;
+				width: 100%;
+	      /*border-left: 1px solid #ccc;*/
 	      float:right;
 	      padding 0 10px;
 				padding-left: 10px;

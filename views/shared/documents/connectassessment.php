@@ -307,8 +307,10 @@
                         <br>
                         <input type="hidden" name="connection_type" value="multiscale">
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
-                        <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
+
                     </form>
+                    <div class = "clearfix"></div>
+                      <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
                 </div>
 
                 <?php
@@ -360,23 +362,8 @@
                 <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=wrong, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=inserted correct answers</b>
                 <br>
                 <br>
-                <div id = "rightPart">
-                  <p>Right Ratings</p>
-                <table class = "theme" id = "goldTheme">
-                  <tr>
-                    <th>Theme</th>
-                    <th>Rating</th>
-                  </tr>
-                  <?php foreach ((array)$this->subjects as $subject): ?>
-                      <tr>
-                          <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
-                      </tr>
-                  <?php endforeach; ?>
-
-                </table>
-              </div>
               <div id = "userPart">
-                <p>Your Ratings</p>
+
                 <table class = "theme" id = "userTheme">
                   <tr>
                     <th>Theme</th>
@@ -587,15 +574,16 @@
             position: relative;
             float: right;
         }
-
+/*
         #rightPart {
           width: 50%;
           padding 0 10px;
           float:left;
           padding-right: 10px;
         }
+        */
         #userPart {
-          width: 50%;
+          width: 100%;
           border-left: 1px solid #ccc;
           float:right;
           padding 0 10px;

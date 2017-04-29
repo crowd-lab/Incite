@@ -404,7 +404,8 @@
                 }
 
                 if (completed == true) {
-                  location.reload();
+                  window.location = '<?php echo getFullInciteUrl().'/documents/connect/'.$this->doc_id; ?>';
+                  //location.reload();
                  //alert('Redirecting to assessment document!');
                }
                 //$("#subject-form").submit();

@@ -182,14 +182,17 @@
                             </td>
                         </tr>
                     </table>
-                    <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
+
                     <form id="entity-form" method="post">
                         <input id="entity-info" type="hidden" name="entities" />
                         <input id="tagged-doc" type="hidden" name="tagged_doc" />
                         <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
+                        <input id="what_type" type="hidden" value="" name="link"> </input>
+                        <hr size=1 class="discussion-seperation-line">
+                        <button type="submit" class="btn btn-primary" id="confirm-button-repeat">Submit & Continue Tag</button>
+                        <button type="submit" class="btn btn-primary" id="confirm-button">Submit & Connect</button>
                     </form>
-
                 </div>
                 <hr size=2 class="discussion-seperation-line">
 
@@ -384,9 +387,9 @@
                 entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
                 $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
                 $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            rows = $('#user-entity-table tr').has("td");
-            rows.each(function (idx) {
+                });
+                rows = $('#user-entity-table tr').has("td");
+                rows.each(function (idx) {
                 //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
                 var name = $(this).find('.entity-name');
                 var details = $(this).find('.entity-details');
@@ -403,7 +406,54 @@
             //alert is for testing
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
+            $('#what_type').val('1');
             $('#entity-form').submit();
+
+            //data, that is, JSON.stringify(entities) are ready to be submitted for processing
+        });
+
+        $('#confirm-button-repeat').on('click', function (e) {
+            if ($('.category-select option:selected[value=0]').length > 0) {
+                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
+                return;
+            }
+            var entities = [];
+            var rows = $('#entity-table tr').has("td");
+            rows.each(function (idx) {
+                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+                var name = $(this).find('.entity-name');
+                var details = $(this).find('.entity-details');
+                var category = $(this).find('.category-select option:selected');
+                var subcategories = $(this).find('.subcategory-select option:selected');
+                var subcategories_array = [];
+                subcategories.each( function (idx) {
+                    subcategories_array.push($(this).val());
+                });
+                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
+                });
+                rows = $('#user-entity-table tr').has("td");
+                rows.each(function (idx) {
+                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+                var name = $(this).find('.entity-name');
+                var details = $(this).find('.entity-details');
+                var category = $(this).find('.category-select option:selected');
+                var subcategories = $(this).find('.subcategory-select option:selected');
+                var subcategories_array = [];
+                subcategories.each( function (idx) {
+                    subcategories_array.push($(this).val());
+                });
+                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
+            });
+            //alert is for testing
+            $('#entity-info').val(JSON.stringify(entities));
+            $('#tagged-doc').val($('#transcribe_copy').html());
+            $('#what_type').val('2');
+            $('#entity-form').submit();
+
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
 
@@ -518,6 +568,7 @@
             $('#tagging-container').show();
         });
     }
+    /*
     var tour = new Tour({
         template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
         steps: [
@@ -544,7 +595,7 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
             {
                 element: '#work-view',
@@ -567,7 +618,7 @@
                     });
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
             {
                 element: '#work-view',
@@ -577,9 +628,9 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
-            
+
             {
                 element: '#user-entity-table',
                 title: "Adding the components to your tag",
@@ -592,11 +643,11 @@
                         if (this.value == 3) {
                             tour.next();
                         }
-                        
+
                     });
-                    
+
                 }
-                
+
             },
             {
                 element: '#user-entity-table',
@@ -606,7 +657,7 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
             {
                 element: '#user-entity-table',
@@ -616,13 +667,13 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
                     $('#detail').on("input", function() {
-                        
+
                         if (this.value == 'author') {
                             tour.next();
                         }
                     });
                 }
-                
+
             },
             {
                 element: '#user-entity-table',
@@ -632,7 +683,7 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
             {
                 element: '#user-entity-table',
@@ -655,10 +706,10 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
-            
-            
+
+
             {
                 element: '#comment-container',
                 title: "Comments",
@@ -667,9 +718,9 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
                 }
-                
+
             },
-            
+
             {
                 element: '#work-view',
                 title: "Congratulations!",
@@ -678,7 +729,7 @@
                 onShown: function() {
                     $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", false);
                 }
-                
+
             }
     ],
     backdrop: true,
@@ -689,6 +740,7 @@
 
     // Start the tour
     tour.start(true);
+    */
 </script>
 
 <style>
@@ -708,7 +760,7 @@
             display: none;
         }
         #step-0 .btn-end { display: block; }
-        
+
         #step-12 .btn-end { display: block; }
 
     #revision-history-container {
@@ -720,6 +772,10 @@
         right: 0;
         cursor: pointer;
         margin-top: -32px;
+    }
+
+    #confirm-button {
+      float: right;
     }
 
 </style>

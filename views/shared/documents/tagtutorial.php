@@ -412,7 +412,7 @@
                         <input id="tagged-doc" type="hidden" name="tagged_doc" />
                         <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
-                    </form>
+                        </form>
 
                 </div>
                 <hr size=2 class="discussion-seperation-line">
@@ -648,7 +648,8 @@
                 notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
             }
-            location.reload();
+            window.location = '<?php echo getFullInciteUrl().'/documents/tag/'.$this->doc_id; ?>';
+            //location.reload();
             /*
             var entities = [];
             var rows = $('#entity-table tr').has("td");

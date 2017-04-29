@@ -152,17 +152,19 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
 
       if ($this->_hasParam('id')) {
+        $this->view->doc_id = $this->_getParam('id');
           if (!isset($_SESSION['Incite']['tutorial_trans'])) {
               $this->_helper->viewRenderer('transcribetutorial');
+              $this->view->doc_id = $this->_getParam('id');
               return;
           }
-
+          /*
           if (!isset($_SESSION['Incite']['assessment_trans'])) {
             
               $this->redirect('incite/documents/trans1/'.$this->_getParam('id'));
               return;
           }
-
+          */
           if ($this->getRequest()->isPost()) {
               $this->saveTranscription();
           }
@@ -181,11 +183,55 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
       $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe?'.$_POST['query_str'].'">here</a>.';
-      $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
+      //$this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
     } else {
       $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe">here</a>.';
-      $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
+      //$this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
     }
+    $itemID = $this->_getParam('id');
+    $ready_tag = 1;
+    $ready_connect = 0;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `id` FROM `omeka_incite_available_list` WHERE `item_id` = ?");
+    $stmt->bind_param("i", $itemID );
+    $stmt->bind_result($id);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($id != null) //the transcription is updated
+    {
+      $db = DB_Connect::connectDB();
+      $stmt1 = $db->prepare("UPDATE `omeka_incite_available_list` SET `ready_tag`=?,`ready_connect`=? WHERE `item_id` = $itemID");
+      $stmt1->bind_param("ii", $ready_tag, $ready_connect);
+      $stmt1->execute();
+      $stmt1->close();
+      $db->close();
+    }
+    else // the transcription is newly added
+    {
+      $db = DB_Connect::connectDB();
+      $stmt2 = $db->prepare("INSERT INTO omeka_incite_available_list VALUES (NULL, ?, ?, ?)");
+      $stmt2->bind_param("iii", $itemID, $ready_tag, $ready_connect);
+      $stmt2->execute();
+      $stmt2->close();
+      $db->close();
+    }
+    
+    
+    
+
+    if ($_POST['link'] == 1) {
+      if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
+        $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);
+      }
+      else {
+        $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
+      }
+    }
+      else if ($_POST['link'] == 2) {
+        $this->redirect('/incite/documents/transcribe');
+      }
   }
 
   public function populateDataForTranscribeTask() {
@@ -225,7 +271,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     } else {
       $item_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
-      debug_to_console("no queries");
+      //debug_to_console("no queries");
 
     }
 
@@ -296,6 +342,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
       if ($this->_hasParam('id')) {
+          $this->view->doc_id = $this->_getParam('id');
           if (!isset($_SESSION['Incite']['tutorial_tag'])) {
               //NER
               $categories = getAllCategories();
@@ -345,14 +392,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->view->entities = $ner_entity_table;
               $this->view->transcription = $transformed_transcription;
               $this->_helper->viewRenderer('tagtutorial');
+              $this->view->doc_id = $this->_getParam('id');
               return;
           }
-
+          /*
           if (!isset($_SESSION['Incite']['assessment_tag'])) {
               $this->redirect('incite/documents/tag1/'.$this->_getParam('id'));
               return;
           }
-
+          */
           if ($this->getRequest()->isPost()) {
               $this->saveTags();
           }
@@ -367,7 +415,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
   public function saveTags() {
     $entities = json_decode($_POST["entities"], true);
-    removeAllTagsFromDocument($this->_getParam('id'));
+    //removeAllTagsFromDocument($this->_getParam('id'));
 
     $workingGroupId = $this->getWorkingGroupID();
 
@@ -381,11 +429,28 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
       $_SESSION['incite']['message'] = 'Tagging completed! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag?'.$_POST['query_str'].'">here</a>.';
-      $this->redirect('/incite/documents/connect/'.$this->_getParam('id').'?'.$_POST['query_str']);
+      //$this->redirect('/incite/documents/connect/'.$this->_getParam('id').'?'.$_POST['query_str']);
     } else {
       $_SESSION['incite']['message'] = 'Tagging completed! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
-      $this->redirect('/incite/documents/connect/'.$this->_getParam('id'));
     }
+    $itemID = $this->_getParam('id');
+    $ready_tag = 0;
+    $ready_connect = 1;
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("UPDATE `omeka_incite_available_list` SET `ready_tag`=?,`ready_connect`=? WHERE `item_id` = $itemID");
+    $stmt->bind_param("ii", $ready_tag, $ready_connect);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+    if ($_POST['link'] == 1) {
+      if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
+        $this->redirect('/incite/documents/connect/'.$this->_getParam('id').'?'.$_POST['query_str']);
+      }
+        $this->redirect('/incite/documents/connect/'.$this->_getParam('id'));
+      }
+      else if ($_POST['link'] == 2) {
+        $this->redirect('/incite/documents/tag');
+      }
   }
 
   public function populateDataForTagTask() {
@@ -486,7 +551,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function populateTagSearchResults() {
     if (isSearchQuerySpecifiedViaGet()) {
       $searched_item_ids = getSearchResultsViaGetQuery();
-      $item_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTagsForLatestTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+      //$item_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTagsForLatestTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+      $item_ids = array_slice(getDocumentsWithTranscriptions(), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
     } else {
       $item_ids = array_slice(array_values(getDocumentsWithoutTagsForLatestTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
@@ -517,37 +583,52 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
 
       if ($this->_hasParam('id')) {
-          if (!isset($_SESSION['Incite']['tutorial_conn'])) {
-              $this->view->subjects = getAllSubjectConcepts();
-              $this->view->transcription = 'The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.
-              </div>';
-              $this->_helper->viewRenderer('connecttutorial');
-              return;
-          }
+        $this->view->doc_id = $this->_getParam('id');
+        if (!isset($_SESSION['Incite']['tutorial_conn'])) {
+          $this->view->subjects = getAllSubjectConcepts();
+          $this->view->transcription = 'The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.</div>';
+          $this->_helper->viewRenderer('connecttutorial');
+          $this->view->doc_id = $this->_getParam('id');
+          return;
+        }
+          /*
           if (!isset($_SESSION['Incite']['assessment_conn'])) {
             $this->redirect('incite/documents/conn1/'.$this->_getParam('id'));
           }
-          if ($this->getRequest()->isPost()) {
-              $this->saveConnections();
-
-          }
-          $this->populateDataForConnectTask();
+          */
+        if ($this->getRequest()->isPost()) {
+          $this->saveConnections();
+        }
+        $this->populateDataForConnectTask();
       }
   }
 
   public function saveConnections() {
     $all_subject_ids = getAllSubjectConceptIds();
     $workingGroupId = $this->getWorkingGroupID();
-
+    $subject = "subject";
+    for($i = 1; $i < 10; $i++) {
+      $sub = $subject.$i;
+      addConnectRating($_SESSION['Incite']['USER_DATA']['id'], 0, $i, $_POST[$sub], $this->_getParam('id'), 1, getLatestTaggedTranscriptionID($this->_getParam('id')));
+      //addConceptToDocument($i, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST[$sub], 1);
+    }
+    $itemID = $this->_getParam('id');
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("DELETE FROM `omeka_incite_available_list` WHERE `item_id` = $itemID");
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
     //connect by multiselection
     if (isset($_POST['subjects']) || isset($_POST['no_subjects'])) {
       foreach ((array) $all_subject_ids as $subject_id) {
+        
         if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array())))
         addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 1);
         else
         addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 0);
       }
-    } else { //connect by tags
+    } 
+    else { //connect by tags
       if (isset($_POST['subject']) && $_POST['connection'] == 'true')
       addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 1);
       else if (isset($_POST['subject']) && $_POST['connection'] == 'false')
@@ -555,13 +636,27 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
     $_SESSION['Incite']['previous_task'] = 'connect';
 
+
     if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
       $_SESSION['incite']['message'] = 'Connecting successful! You can now select a document to transcribe from the list below or find a document to <a href="'.getFullInciteUrl().'/documents/tag?'.$_POST['query_str'].'">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect?'.$_POST['query_str'].'">connect</a>.';
-      $this->redirect('/incite/documents/transcribe?'.$_POST['query_str']);
+      //$this->redirect('/incite/documents/transcribe?'.$_POST['query_str']);
     } else {
       $_SESSION['incite']['message'] = 'Connecting successful! You can now select a document to transcribe from the list below or find a document to <a href="'.getFullInciteUrl().'/documents/tag">tag</a> or <a href="'.getFullInciteUrl().'/documents/connect">connect</a>.';
-      $this->redirect('/incite/documents/transcribe');
+     // $this->redirect('/incite/documents/transcribe');
     }
+
+    if ($_POST['link'] == 1) {
+      if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
+        $this->redirect('/incite/documents/transcribe?'.$_POST['query_str']);
+      }
+      else {
+        $this->redirect('/incite/documents/transcribe');
+      }
+    }
+    else if ($_POST['link'] == 2) {
+        $this->redirect('/incite/documents/connect');
+      }
+    
   }
 
   public function populateDataForConnectTask() {
@@ -571,10 +666,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
 
-
     if ($this->view->document_metadata != null) {
       if ($this->view->document_metadata->getFile() == null) {
-        echo 'no image';
+        $_SESSION['incite']['message'] = 'Unfortunately, there is no such document. Please search again!';
+        return;
+        //echo 'no image';
       }
 
       $this->view->image_url = get_image_url_for_item($this->view->document_metadata);

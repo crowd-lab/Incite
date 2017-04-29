@@ -201,6 +201,20 @@ SQL
         );
 
         get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_available_list (
+        `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`               int(11) NOT NULL,
+        `ready_tag`             int(8) NOT NULL,
+        `ready_connect`         int(8) NOT NULL,
+        
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
+
+
+
+        get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tagged_transcriptions (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `item_id`               int(11) NOT NULL,
@@ -300,7 +314,8 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
    
 SQL
-    );    
+    );  
+      
 }
 
     /**

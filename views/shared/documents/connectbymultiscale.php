@@ -53,7 +53,7 @@
                             </thead>
                         <?php foreach ((array)$this->subjects as $subject): ?>
                             <tr>
-                                <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-c    ontent="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
+                                <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="0"></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="1"></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="2"></td>
@@ -70,7 +70,9 @@
                         <br>
                         <input type="hidden" name="connection_type" value="multiscale">
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
-                        <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
+                        <input id="links" type="hidden" value="" name="link"> </input>
+                        <button type="button" id="submit-continue-connect" class="btn btn-primary">Submit & Continue Connect</button>
+                        <button type="button" id="submit-selection-btn" class="btn btn-primary">Submit & Transcribe</button>
                     </form>
                 </div>
 
@@ -109,17 +111,20 @@
 
         function addButtonAndCheckboxListeners() {
             $("#submit-selection-btn").click(function() {
-                if ($('input[type="checkbox"]:checked').length === 0) {
+              /*  if ($('input[type="checkbox"]:checked').length == 0) {
                     notifyOfErrorInForm("At least one category must be selected")
                     return;
                 }
-
+*/
                 //from progress_indicator.php
                 styleProgressIndicatorForCompletion();
-
+                $("#links").val('1');
                 $("#subject-form").submit();
             });
-
+            $("#submit-continue-connect").click(function() {
+              $("#links").val('2');
+              $("#subject-form").submit();
+            });
             $(".subject-checkbox").on('click', function(e) {
                 $(".none-checkbox").prop('checked', false);
             });
@@ -169,8 +174,9 @@
                 $('#connecting-container').show();
             });
         }
+        /*
         var tour = new Tour({
-            
+
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
         steps: [
             {
@@ -236,6 +242,7 @@
 
         // Start the tour
         tour.start(true);
+        */
     </script>
 
     <style>
@@ -252,18 +259,22 @@
         #connecting-work-area {
             margin-top: -32px;
         }
-        
+
         #step-0 .btn-end { display: block; }
-        
+
         #step-5 .btn-end { display: block; }
-        
+
         .tooltip {
             position: fixed;
         }
-        
+
         .btn-end {
             display: none;
         }
+        #submit-selection-btn {
+          float:right;
+        }
+
     </style>
 </body>
 </html>

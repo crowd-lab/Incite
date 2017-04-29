@@ -36,7 +36,19 @@ function getDocumentsWithTranscriptions()
     $stmt->close();
     $db->close();
 
-    return $documents_with_trans;
+    //get document from list
+    $list = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_available_list` WHERE `ready_tag` = 1");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $list[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+    return $list;
+    //return $documents_with_trans;
 }
 
 function getDocumentsWithoutTranscriptions()
@@ -65,21 +77,48 @@ function getDocumentsWithTags()
 {
     $db = DB_Connect::connectDB();
     $tagged_item_ids = array();
-    $stmt = $db->prepare("SELECT DISTINCT `omeka_incite_documents`.`item_id` FROM `omeka_incite_documents` INNER JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`item_id`");
+    $conected_item_ids = array();
+    //$stmt = $db->prepare("SELECT DISTINCT `omeka_incite_documents`.`item_id` FROM `omeka_incite_documents` INNER JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`item_id`");
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_tagged_transcriptions` WHERE `type` = 1");
+    $stmt->bind_result($item);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $tagged_item_ids[] = $item;
+    }
+    $tagged = array_unique($tagged_item_ids);
+    $stmt->close();
+    $db->close();
+    //find connected item_ids
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_documents_subject_conjunction` WHERE `type` = 1");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {
-        $tagged_item_ids[] = $result;
+        $conected_item_ids[] = $result;
+    }
+    $conn = array_unique($conected_item_ids);
+    $stmt->close();
+    $db->close();
+    //get document from list
+    $list = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_available_list` WHERE `ready_connect` = 1");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $list[] = $result;
     }
     $stmt->close();
     $db->close();
+    return $list;
+    //return array_diff($tagged, $conn);
 
     //Select document that are untranscribed but transcribable. Since currently if there is not transcription for the document to be tagged, the user will be redirected to transcribe task.
     //$taggable_documents = getTranscribableDocuments();
 
     //Select documents that have approved transcriptions
 
-    return $tagged_item_ids;
+    //return $tagged_item_ids;
 }
 
 /**

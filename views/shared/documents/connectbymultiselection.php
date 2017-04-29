@@ -151,7 +151,7 @@
             });
         }
         var tour = new Tour({
-            
+
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
         steps: [
             {
@@ -233,15 +233,15 @@
         #connecting-work-area {
             margin-top: -32px;
         }
-        
+
         #step-0 .btn-end { display: block; }
-        
+
         #step-5 .btn-end { display: block; }
-        
+
         .tooltip {
             position: fixed;
         }
-        
+
         .btn-end {
             display: none;
         }
