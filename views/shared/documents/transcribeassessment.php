@@ -6,9 +6,13 @@
 		$_SESSION['Incite']['assessment_trans'] = true;
 		include(dirname(__FILE__) . '/../common/header.php');
 		include(dirname(__FILE__) . '/../common/progress_indicator.php');
+		$tone = getTone(731);
+		$toneReason = getToneReason(731);
 	?>
 
 	<script type="text/javascript">
+		var answer_tone = <?php echo json_encode($tone).";\n" ?>
+		var tone_reason = <?php echo json_encode($toneReason).";\n" ?>
 		var msgbox;
 		var comment_type = 0;
 		var textArea;
@@ -227,6 +231,7 @@
 	                    <div class="tab-pane" id="tones">
 												<br>
 												<div id = "right_tone"></div>
+												<button class="btn btn-default" id="reason_pop" type="button" data-toggle="popover" data-trigger="manual">see why</button>
 	                    </div>
 											<br>
 				        </div>
@@ -313,12 +318,16 @@
         });
 
 				function UserTone () {
-					if ($('#tone-selector').val() == "informational")
-						$("#right_tone").append("You selected " + $('#tone-selector').val() + ".");
+					if ($('#tone-selector').val() == answer_tone)
+						$("#right_tone").append("You selected " + $('#tone-selector').val() + "." );
 					else
-						$("#right_tone").append("You selected " + "<del>" + $('#tone-selector').val() +"</del>" + "<ins>informational</ins>"+ ".");
+						$("#right_tone").append("You selected " + "<del>" + $('#tone-selector').val() +"</del>" + "<ins>" + answer_tone + "</ins>"+ ".");
 
 				}
+				$('#reason_pop').on('click', function(){
+				    $(this).attr('data-content',tone_reason);
+				    $(this).popover('show');
+				});
         function styleForEditing() {
             populateWithLatestTranscriptionData();
             addRevisionHistoryListeners();

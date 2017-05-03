@@ -21,6 +21,30 @@ function getTranscriptionAuthorID($transcriptionID) {
     $db->close();
     return $userID;
 }
+
+function getTone($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tone FROM omeka_incite_transcriptions WHERE item_id = ?");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($tone);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $tone;
+}
+function getToneReason($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_trans_reason.reason FROM omeka_incite_trans_reason WHERE item_id = ?");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($toneReason);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $toneReason;
+}
+
 /**
  * Get the summarized text of a specific transcription
  * @param int $documentID

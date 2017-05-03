@@ -293,6 +293,16 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
 SQL
    );
+   get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_trans_reason (
+        `id`            int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`       int(11) NOT NULL,
+        `reason`        varchar(100000) ,
+  
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
+SQL
+   );
         get_db()->query(<<<SQL
     INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization'), (NULL, 'Other');
     
