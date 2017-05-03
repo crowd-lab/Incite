@@ -512,15 +512,15 @@
                 placement: "left",
                 onShown: function() {
                   $("#work-view").css("z-index", "0");
-                  tour.next();
+                  
                 }
             },
             {
-                //element: "#work-view",
-                orphan: true,
+
+                element: "#submit-selection-btn",
                 title: "Congratulations! You've finished the Connect Tutorial.",
-                content: 'You’re all done!  <br>Press End Tour to exit this tutorial.',
-                placement: "right"
+                content: 'You’re all done! Press Submit to do the real document.',
+                placement: "left"
 
             }
         ],

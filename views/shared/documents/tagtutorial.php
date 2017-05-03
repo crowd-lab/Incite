@@ -134,7 +134,7 @@
 <div id="work-view" >
         <div class="document-header" id = "header" style = "position: relative">
             <span class="document-title" title="Incite Tutorial - Tag">
-                <b>Title:</b> Incite tutorial - Tag
+                <b>Title:</b> Sunday School Celebration in Prussia
             </span>
 
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
@@ -1034,10 +1034,10 @@
             },
 
             {
-                orphan: true,
+                element: "#confirm-button",
                 title: "Congratulations!",
-                content: "You've finished the tutorial for the tagging process! Press End Tour to close this tutorial.",
-                placement: "auto"
+                content: "You've finished the tutorial for the tagging process! Press Submit to go to the real document you just selected.",
+                placement: "left"
 
             }
     ],

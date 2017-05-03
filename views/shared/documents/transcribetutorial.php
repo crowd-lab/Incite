@@ -16,8 +16,6 @@
 		var msgbox;
 		var comment_type = 0;
 		var textArea;
-		var textToCheck;
-		textToCheck = "Hello World";
 		textArea = document.getElementById("transcription-textarea");
 	</script>
 
@@ -219,7 +217,7 @@
 								window.location = '<?php echo getFullInciteUrl().'/documents/transcribe/'.$this->doc_id; ?>';
 								//location.reload();
                 //$('#transcribe-form').submit();
-                alert('This will redirect you to assessment document');
+                //alert('This will redirect you to assessment document');
             });
 
 						$('#summary-textarea').keyup(function() {
@@ -410,6 +408,7 @@
                 placement: "bottom",
 
                 onShown: function() {
+									$("#viewer2").css("z-index", "6");
 										$('#tone-selector').change(function() {
 										if ($('#tone-selector').val() == 'informational') {
 											tone_times++;
@@ -426,11 +425,13 @@
 						//Congratulations
 						{
 							  orphan: true,
+								element: "#submit_transcription",
                 title: "Congratulations",
-                content: 'Complete Transcribe tutorial.',
-                placement: "auto",
+                content: 'You have completed transcribe tutorial, and you can click the submit to go to the real document that you just chose.',
+                placement: "left",
 								onShow: function(){
-									$("#work-view").css("z-index", "3");
+
+									$("#viewer2").css("z-index", "-1");
 								}
 
             },
