@@ -841,7 +841,7 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
       }
       
       for ($i = 0; $i < sizeof($question_arr); $i++) {
-        print_r($question_arr[$i + 1]);
+        //print_r($question_arr[$i + 1]);
         saveQuestions($taggedID, $i + 1, $question_arr[$i + 1], 3);
       }
     }

@@ -9,6 +9,7 @@
 
         $category_object = getAllCategories();
         $subject_from_gold_standard = findAllRatingsFromGoldStandard(findTaggedTransIDFromGoldStandard(731));
+        $explain_list = explainDic(731);
     ?>
 
     <!-- Page Content -->
@@ -441,6 +442,7 @@
       window.location = '<?php echo getFullInciteUrl().'/documents/connect/'.$this->doc_id; ?>';
     });
       var rating_list = <?php echo json_encode($subject_from_gold_standard).";\n" ?>
+      var ex_list = <?php echo json_encode($explain_list).";\n" ?>
         $(document).ready(function() {
             <?php
                 if (isset($_SESSION['incite']['message'])) {
@@ -486,6 +488,7 @@
                   updateRatingsAjaxRequest();
                   $('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
                   $('#submit-selection-btn').prop("disabled", "true");
+                  $("[data-toggle=popover]").popover();
                }
                 //$("#subject-form").submit();
             });
@@ -507,15 +510,20 @@
             var title = $(this).find('a').html();
             var value = $(this).find('[type=radio]:checked').val();
             upload_rating.push({"concept_id": concept_to_id[title], "rank": value});
-            if (theme_ratings[value] == theme_ratings[rating_list[i + 1]-1])
+            if (theme_ratings[value] == theme_ratings[rating_list[i + 1]-1]) {
               $($("#userTheme tr")[i + 1]).append("<td>" + theme_ratings[value] + "</td>");
-            else
-              $($("#userTheme tr")[i + 1]).append("<td>" + "<wrong>" + theme_ratings[value] + "</wrong>" + "&nbsp&nbsp&nbsp" + " <insert>" + theme_ratings[rating_list[i + 1]-1] + "</insert>" + "</td>");
+              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-placement="left">why</a>');
+            }
 
+            else {
+              $($("#userTheme tr")[i + 1]).append("<td>" + "<wrong>" + theme_ratings[value] + "</wrong>" + "&nbsp&nbsp&nbsp" + " <insert>" + theme_ratings[rating_list[i + 1]-1] + "</insert>" + "</td>");
+              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-placement="left">why</a>');
+            }
+            $($($("#userTheme tr")[i + 1]).find('a')).attr('data-content',ex_list[i + 1]);
             i++;
           });
-
         }
+
 
         function styleForEditing() {
             checkPositiveSubjects();

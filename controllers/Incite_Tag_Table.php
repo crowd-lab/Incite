@@ -61,9 +61,9 @@ function createTag($userID, $groupID, $tag_text, $category, $subcategory, $descr
     //since there could be multiple subcategories, do this in a loop
     $db = DB_Connect::connectDB();
     for ($i = 0; $i < sizeof($subcategory); $i++) {
-        print_r($tagID);
-        echo "\n";
-        $insertSubCat = $db->prepare("INSERT INTO omeka_incite_tags_subcategory_conjunction VALUES (?, ?)");
+        //print_r($tagID);
+        //echo "\n";
+        $insertSubCat = $db->prepare("INSERT INTO omeka_incite_tags_subcategory_conjunction VALUES (NULL,?, ?)");
         $insertSubCat->bind_param("ii", $tagID, $subcategory[$i]);
         $insertSubCat->execute();
         $insertSubCat->close();
@@ -704,6 +704,90 @@ function saveTaggedTranscription($item_id, $transcription_id, $userID, $working_
     $stmt->close();
     $db->close();
     return $tagID;
+}
+
+function getSub($tagID) {
+    $arr = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory_conjunction.subcategory_id FROM omeka_incite_tags_subcategory_conjunction WHERE tag_id = ? ");
+    $stmt->bind_param("i", $tagID);
+    $stmt->bind_result($subs);
+    $stmt->execute();
+    while($stmt->fetch()) {
+        $arr[] = matchSub($subs);
+    }
+    $stmt->close();
+    $db->close();
+    return $arr;
+}
+function findAllTagsIDFromGoldStandard($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `id`, `tag_text` FROM `omeka_incite_tags` WHERE `item_id` = $itemID AND `type` = 2");
+    $stmt->bind_result($cat, $text);
+    $stmt->execute();
+    $tag_list = array();
+    while($stmt->fetch()) {
+        $tag_list[$text] = $cat;
+    }
+    $stmt->close();
+    $db->close();
+    return $tag_list;
+}
+
+function matchSub($catID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory.name FROM omeka_incite_tags_subcategory WHERE `id` = $catID");
+    $stmt->bind_result($name);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    $sub = $name;
+    return $sub;
+}
+//need to manually insert correct subcatgegory into database
+function findAllSubs($itemID) {
+    $textArr = findAllTagsIDFromGoldStandard($itemID);
+    $idArr = array();
+    foreach ($textArr as $key => $value) {
+        $subcatID = getSub($value);
+        if ($subcatID[0] == NULL) {
+            $subcatID[0] = "empty";
+        }
+         $idArr[$key] = $subcatID;
+       
+    }
+    //print_r($idArr);
+    return $idArr;
+}
+
+function SubcatDic() {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory.id, omeka_incite_tags_subcategory.name FROM omeka_incite_tags_subcategory");
+    $stmt->bind_result($id, $name);
+    $stmt->execute();
+    $subcat_list = array();
+    while($stmt->fetch()) {
+        $subcat_list[$id] = $name;
+    }
+    $stmt->close();
+    $db->close();
+    $sub = $name;
+    return $subcat_list;
+}
+
+function explainDic($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_subject_explain.concept_id, omeka_incite_subject_explain.explaination FROM omeka_incite_subject_explain WHERE item_id = $itemID");
+    $stmt->bind_result($id, $explain);
+    $stmt->execute();
+    $explain_list = array();
+    while($stmt->fetch()) {
+        $explain_list[$id] = $explain;
+    }
+    $stmt->close();
+    $db->close();
+    return $explain_list;
 }
 
 ?>

@@ -9,9 +9,12 @@
 
             $category_object = getAllCategories();
             $category_id_name_table = getSubcategoryIdAndNames();
+            $sub_dic = SubcatDic();
+            $sub_dic[-1] = "empty";
             $category_name_id_table = getCategoryNameAndId();
             $tag_list = findAllTagsFromGoldStandard(731);
             $ans_list = findAllAnswersFromGoldStandard(findTaggedTransIDFromGoldStandard(731));
+            $sub_list = findAllSubs(731);
         ?>
 
         <script type="text/javascript">
@@ -394,7 +397,7 @@
                         <tr><th>Questions</th><th>Answers</th></tr>
                         <tr><td>When was this document produced?</td><td><input type="text" id = "date-detail" placeholder="YYYY-MM-DD"></td></tr>
                         <tr><td>Where was this document produced?</td><td><input type="text" id = "place-detail" placeholder="location"></td></tr>
-                        <tr><td>Based on your reading, what location does this document tell you most about?</td><td><input type="text" id = "location-detail" placeholder="State - County - City"></td></tr>
+                        <tr><td>Based on your reading, what location does this document tell you most about?</td><td><input type="text" id = "location-detail" placeholder="City, State, or region"></td></tr>
                         <tr><td style="vertical-align: middle;">Based your reading of the document, what period does this document tell you most about? (contextualize)</td>
                             <td>
                                 <select id = "period-selector" class="form-control">
@@ -409,10 +412,11 @@
                         <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
                             <td>
                                 <select id = "race-selector" class="form-control">
-                                    <option>What race?</option>
+                                    <option>What socail group?</option>
                                     <option>White</option>
                                     <option>African American</option>
                                     <option>Foreigner</option>
+                                    <option>Abolitionist</option>
                                     <option>Not specified</option>
                                 </select>
                                 <select id = "gender-selector" class="form-control">
@@ -423,7 +427,6 @@
                                 </select>
                                 <select id = "occupation-selector" class="form-control">
                                     <option>What occupation?</option>
-                                    <option>Abolitionist</option>
                                     <option>Soldier</option>
                                     <option>Civilian</option>
                                     <option>Not specified</option>
@@ -497,6 +500,7 @@
                         <tr>
                           <th>Tag</th>
                           <th>Category</th>
+                          <th>Subcategory</th>
                         </tr>
                       </table>
                     </div>
@@ -512,8 +516,8 @@
                     <div = id = "right_questions">
                       <table class = "rightTable" id = "urquestions">
                         <tr>
-                          <th>Tag</th>
-                          <th>Category</th>
+                          <th>Question</th>
+                          <th>Answer</th>
                         </tr>
                         <tr>
                           <td>Date</td>
@@ -607,6 +611,8 @@
     var correct_tag_list = <?php echo json_encode($tag_list).";\n" ?>
     var answer_list = <?php echo json_encode($ans_list).";\n" ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
+    var subcat_list = <?php echo json_encode($sub_list).";\n" ?>
+    var subcat_dic = <?php echo json_encode($sub_dic).";\n" ?>
 
     function set_tag_id_counter() {
         var max_id = 0;
@@ -772,9 +778,10 @@
             for(var i = 0; i < len; i++) {
               var key = Object.keys(correct_tag_list)[i];
               var index = correct_tag_list[key];
-              $("#rightTags tbody").append("<tr><td>"+ key +"</td><td>" + category_id_to_name_table[index] + "</td><td></td><td></td></tr>");
+              //$("#rightTags tbody").append("<tr><td>" + key + "</td><td>" + category_id_to_name_table[index] + "</td><td></td><td></td></tr>");
               tags_list[key] = index;
             }
+
             fillQuestions();
             updateTagsAjaxRequest();
             $('#confirm-button').prop("disabled", "true");
@@ -898,40 +905,7 @@
           $($(selec)[i]).append('<td>' + '<wrong>' + question_array[i] + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>' + answer_list[i] + '</insert>' + '</td>');
 
       }
-      /*
-      if (date == ans_list[1])
-        $($(selec)[1]).append('<td>' + date + '</td>');
-      else if (date == '')
-        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + '<insert>' + ans_list[1] + '</insert>' + '</td>');
-      else
-        $($(selec)[1]).append('<td>' + '<wrong>' + date + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>' + ans_list[1] + '</insert>' + '</td>');
-      if (location == 'Germany-Berlin state-Berlin')
-        $($(selec)[2]).append('<td>' + location + '</td>');
-      else if (location == '') $($(selec)[2]).append('<td>' + '<wrong>' + location + ' </wrong>' + '<insert>Germany-Berlin state-Berlin</insert>' + '</td>');
-      else
-        $($(selec)[2]).append('<td>' + '<wrong>' + location + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Germany-Berlin state-Berlin</insert>' + '</td>');
-      if (pointed_location == 'Not Sure')
-        $($(selec)[3]).append('<td>' + pointed_location + '</td>')
-      else if (pointed_location == '') $($(selec)[3]).append('<td>' + '<wrong>' + pointed_location + ' </wrong>' + '<insert>Not specified</insert>' + '</td>');
-      else
-        $($(selec)[3]).append('<td>' + '<wrong>' + pointed_location + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
-      if (period == 'Not specified')
-        $($(selec)[4]).append('<td>' + occupation + '</td>')
-      else
-        $($(selec)[4]).append('<td>' + '<wrong>' + period + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
-      if (race == 'Not specified')
-        $($(selec)[5]).append('<td>' + race + '</td>');
-      else
-        $($(selec)[5]).append('<td>' + '<wrong>' + race + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
-      if (gender == 'Not specified')
-        $($(selec)[6]).append('<td>' + gender + '</td>');
-      else
-        $($(selec)[6]).append('<td>' + '<wrong>' + gender + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
-      if (occupation == 'Not specified')
-        $($(selec)[7]).append('<td>' + occupation + '</td>')
-      else
-        $($(selec)[7]).append('<td>' + '<wrong>' + occupation + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>Not specified</insert>' + '</td>');
-*/
+
       $("#transcribe_copy .tagged-text").each(function(){
         var subcategories_array = [];
         var tagName = this.innerHTML;
@@ -943,28 +917,52 @@
         var sub2 = $(sub1).find("li.active");
         var sub3 = $(table_id)[3];
         var detail = $($(sub3).find("input")).val();
+        /*
         sub2.each(function() {
-          subcategories_array.push($($(this).find("input")).val());
+          var value = $($(this).find("input")).val();
+          if (value == "") {
+            value = -1;
+          }
+          console.log(value);
+          //subcategories_array.push(value);
         });
+        */
+        var select = $(sub1).find("option:selected");
+        var value;
+        if ($(select).length == 0) {
+          value = -1;
+          subcategories_array.push(value);
+        }
+        else {
+          select.each(function(){
+            value = $(this).val();
+            subcategories_array.push(value);
+          });
+        }
+        //$($($("#tag_id_0_table td")[2]).find('option:selected')[1]).val()
         var cat = class_name.split(" ")[0];
         var exist = processTag(tagName);
         var edited_category = cat.charAt(0).toUpperCase() + cat.slice(1);
         entities_array.push({"entity": tagName, "category": category_name_to_id_table[edited_category], "subcategory": subcategories_array, "details": detail});
 
         if (exist){
-          if (edited_category == category_id_to_name_table[tags_list[tagName]])
-            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td></tr>");
+          if (edited_category == category_id_to_name_table[tags_list[tagName]]) {
+            if (subcat_dic[value] == subcat_list[tagName])
+              $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>" + subcat_dic[value] + "</td></tr>");
+            else
+              $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td><wrong>" + subcat_dic[value] + "</wrong>&nbsp&nbsp&nbsp<insert>" + subcat_list[tagName] + "</insert></td></tr>");
+          }
           else
-            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + "<wrong>" + edited_category + "</wrong>" + "&nbsp&nbsp&nbsp" + "<insert>" + tag_dic[tagName] + "</insert>" + "</td></tr>");
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td><wrong>" + edited_category + "</wrong>&nbsp&nbsp&nbsp<insert>" + category_id_to_name_table[copy_dic[tagName]] + "</insert></td><td><wrong>" + subcat_list[key] + "</wrong>&nbsp&nbsp&nbsp<insert>" + subcat_list[tagName] + "</insert></td></tr>");
           delete copy_dic[tagName];
         }
         else
-          $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td></tr>");
+          $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td><td><wrong>" + subcat_dic[value] + "</wrong></td></tr>");
       });
 
       if (copy_dic.length != 0) {
         for (var key in copy_dic) {
-          $("#urtable").append("<tr><td>"+ "<insert>" + key + "</wrong>" + "</td><td>" + "<insert>" + category_id_to_name_table[copy_dic[key]] + "</insert>" + "</td></tr>");
+          $("#urtable").append("<tr><td>"+ "<insert>" + key + "</wrong>" + "</td><td>" + "<insert>" + category_id_to_name_table[copy_dic[key]] + "</insert>" + "</td><td><insert>" + subcat_list[key] + "</insert></td></tr>");
         }
       }
 

@@ -241,6 +241,16 @@ SQL
 SQL
         );
         get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_subject_explain (
+        `id`                   int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`              int(11) NOT NULL,
+        `concept_id`           int(11) NOT NULL,   
+        `explaination`         varchar(1000) NOT NULL,
+        
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
+        get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_question_index (
         `id`                   int(11) NOT NULL,
         `question`             varchar(1000) NOT NULL,
