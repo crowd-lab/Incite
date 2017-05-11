@@ -15,6 +15,7 @@
             $tag_list = findAllTagsFromGoldStandard(731);
             $ans_list = findAllAnswersFromGoldStandard(findTaggedTransIDFromGoldStandard(731));
             $sub_list = findAllSubs(731);
+            $answer_pack = answerPack(731);
         ?>
 
         <script type="text/javascript">
@@ -613,6 +614,7 @@
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
     var subcat_list = <?php echo json_encode($sub_list).";\n" ?>
     var subcat_dic = <?php echo json_encode($sub_dic).";\n" ?>
+    var all_answer = <?php echo json_encode($answer_pack).";\n" ?>
 
     function set_tag_id_counter() {
         var max_id = 0;
@@ -710,6 +712,7 @@
 
 
     $(document).ready(function () {
+
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
@@ -785,6 +788,7 @@
             fillQuestions();
             updateTagsAjaxRequest();
             $('#confirm-button').prop("disabled", "true");
+            $("[data-toggle=popover]").popover();
         });
 
         $('.subcategory-select').each(function (idx) {
@@ -896,14 +900,33 @@
       var selec = $("#urquestions tr");
       question_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':race, '6': gender, '7': occupation};
       var question_len = Object.keys(question_array).length;
-      for (var i = 1; i < question_len + 1; i++) {
-        if (question_array[i] == answer_list[i])
-          $($(selec)[i]).append('<td>' + date + '</td>');
-        else if (question_array[i] == '')
-          $($(selec)[i]).append('<td>' + '<wrong>' + question_array[i] + ' </wrong>' + '<insert>' + answer_list[i] + '</insert>' + '</td>');
-        else
-          $($(selec)[i]).append('<td>' + '<wrong>' + question_array[i] + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>' + answer_list[i] + '</insert>' + '</td>');
-
+      for (var i = 1; i < question_len; i++) {
+        var ansList = all_answer[i];
+        var a = ansList["a"][question_array[i]];
+        var t = ansList["c"]["true"];
+        if (a == null) {
+          var correct = "";
+          var pop_over = "";
+          for (var j = 0; j < t.length; j++) {
+            correct = correct + t[j]["a"] + "  ";
+            pop_over = pop_over + '<a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+t[j]["ex"]+'">'+t[j]["a"]+'</a>' + '&nbsp;';
+          }
+          $($(selec)[i]).append('<td>' + '<wrong>' + question_array[i] + ' </wrong>' + '<insert>' + pop_over+ '</insert>' + '</td>');
+        }
+        else {
+          if (a["t"] == "true") {
+            $($(selec)[i]).append('<td><a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="' + a["ex"] +'">' + question_array[i] + '</a></td>');
+          }
+          else {
+            var pop_over = "";
+            for (var j = 0; j < t.length; j++) {
+              pop_over = pop_over + '<a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+t[j]["ex"]+'">'+t[j]["a"]+'</a>' + '&nbsp;';
+            }
+            var wrong_ans = '<a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+a["ex"]+'">'+question_array[i]+'</a>' + '&nbsp;';
+            $($(selec)[i]).append('<td>' + '<wrong>' + wrong_ans + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>' + pop_over + '</insert>' + '</td>');
+            correct = "";
+          }
+        }
       }
 
       $("#transcribe_copy .tagged-text").each(function(){

@@ -790,4 +790,67 @@ function explainDic($itemID) {
     return $explain_list;
 }
 
+function questionAnswer($itemID, $questionID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tag_answer_explain_list.answer, omeka_incite_tag_answer_explain_list.correct, omeka_incite_tag_answer_explain_list.explaination FROM omeka_incite_tag_answer_explain_list WHERE `item_id` = $itemID AND `question_id` = $questionID");
+    $stmt->bind_result($ans, $cor, $ex);
+    $stmt->execute();
+    $answer = array();
+    $correct = array();
+    $explain = array();
+    $total = array();
+    $trueTable = array();
+    $falseTable = array();
+    
+    $true_i = 0;
+    $false_i = 0;
+    while($stmt->fetch()) {
+        $c_ex = array();
+        $c_ex["t"] = $cor;
+        $c_ex["ex"] = $ex;
+        $answer[$ans] = $c_ex;
+        if ($cor == "true") {
+            $a_ex = array();
+            $a_ex["a"] = $ans;
+            if ($ex == NUll) {
+                $a_ex["ex"] = "";
+            }
+            else {
+                $a_ex["ex"] = $ex;
+            }
+            $trueTable[$true_i] = $a_ex;
+            $true_i++;
+        }
+        if ($cor == "false") {
+            $a_ex = array();
+            $a_ex["a"] = $ans;
+            if ($ex == NUll) {
+                $a_ex["ex"] = "";
+            }
+            else {
+                $a_ex["ex"] = $ex;
+            }
+            $falseTable[$false_i] = $a_ex;
+            $false_i++;
+        }
+       
+    }
+    //print_r($correct);
+    $stmt->close();
+    $db->close();
+    $correct["true"] = $trueTable;
+    $correct["false"] = $falseTable;
+    $total["a"] = $answer;
+    $total["c"] = $correct;
+    return $total;
+}
+
+function answerPack($itemID) {
+    $pack = array();
+    for ($i = 1; $i < 7; $i++) {
+        $pack[$i] = questionAnswer($itemID, $i);
+    }
+    return $pack;
+}
+
 ?>

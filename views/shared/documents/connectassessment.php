@@ -512,12 +512,12 @@
             upload_rating.push({"concept_id": concept_to_id[title], "rank": value});
             if (theme_ratings[value] == theme_ratings[rating_list[i + 1]-1]) {
               $($("#userTheme tr")[i + 1]).append("<td>" + theme_ratings[value] + "</td>");
-              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-placement="left">why</a>');
+              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
             }
 
             else {
               $($("#userTheme tr")[i + 1]).append("<td>" + "<wrong>" + theme_ratings[value] + "</wrong>" + "&nbsp&nbsp&nbsp" + " <insert>" + theme_ratings[rating_list[i + 1]-1] + "</insert>" + "</td>");
-              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-placement="left">why</a>');
+              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
             }
             $($($("#userTheme tr")[i + 1]).find('a')).attr('data-content',ex_list[i + 1]);
             i++;
