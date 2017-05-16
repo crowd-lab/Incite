@@ -470,12 +470,24 @@
                 title: "Welcome!",
                 content: "It looks like you haven’t connected a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
                 placement: "right",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                },
+                onShown: function() {
+                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
+                }
             },
             {
                 element: '#work-view',
                 title: "document",
                 content: "This is a document that has already been transcribed and tagged. Go ahead and read through it now.",
                 placement: "right",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                },
+                onShown: function() {
+                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
+                }
 
             },
             {
@@ -483,7 +495,11 @@
                 title: "Connect Task",
                 content: 'Now that you’ve read the transcription<br>look through the themes rate how useful the document would be to a historian who is interested in that theme.<br>Once you’ve considered all the themes, provide an explanation for your ratings in the text box below.<br>',
                 placement: "left",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                },
                 onShown: function() {
+                    $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
                     $("#work-view").css("background", "white");
                     $("#work-view").css("z-index", "1101");
                     $("#en-table").click(function() {
@@ -510,9 +526,12 @@
                 title: "Comment",
                 content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
                 placement: "left",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                },
                 onShown: function() {
                   $("#work-view").css("z-index", "0");
-                  
+                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
                 }
             },
             {
@@ -520,10 +539,19 @@
                 element: "#submit-selection-btn",
                 title: "Congratulations! You've finished the Connect Tutorial.",
                 content: 'You’re all done! Press Submit to do the real document.',
-                placement: "left"
+                placement: "left",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                },
+                onShown: function() {
+                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
+                }
 
             }
         ],
+        onEnd: function(tour) {
+          $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+        },
         backdrop: true,
         storage: false});
 

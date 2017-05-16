@@ -56,6 +56,11 @@
 		});
 */
 		$(document).ready(function () {
+
+      $(".btn-end").click(function(){
+        alert("2333");
+        $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+      });
             migrateTaggedDocumentsFromV1toV2();
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
 		    $("#document_img").hide();
@@ -132,7 +137,7 @@
 
 <body>
 <div id="work-view" >
-        <div class="document-header" id = "header" style = "position: relative">
+        <div class="document-header" id = "header" >
             <span class="document-title" title="Incite Tutorial - Tag">
                 <b>Title:</b> Sunday School Celebration in Prussia
             </span>
@@ -216,7 +221,7 @@
     .viewer {
         width: 100%;
         border: 1px solid black;
-        position: relative;
+        /*position: relative;*/
     }
 
     .wrapper {
@@ -810,19 +815,29 @@
                 title: "Welcome!",
                 content: "It looks like you haven’t tagged a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
                 placement: "right",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  //$("#work-view").css("z-index", "1101");
+                },
                 onShown: function() {
                   $("#work-view").css("z-index", "1101");
+                  $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
                 }
+
             },
             {
                 element: '#entity-table',
                 title: "Auto-suggested and Previous Tags",
                 content: "This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag. <br>A tag has four parts: <br>1. Name <br>2. Category <br>3. Sub-category <br>4. Details",
                 placement: 'left',
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $("#work-view").css("z-index", "0");
+                },
                 onShown: function() {
-                    $("#work-view").css("z-index", "0");
-                    //$(".remove-entity-button").prop("disabled", true);
-
+                    //$("#work-view").css("z-index", "0");
+                    //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                    $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
                 }
             },
 
@@ -831,7 +846,12 @@
                 title: "Delete the existing tags",
                 content: "The first one seems to be a wrong tag. <br> Can you help us delete it by clicking the trash button? <br>",
                 placement: 'left',
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                },
                 onShown: function() {
+                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
                   $(".remove-entity-button").first().click(function() {
                     delete_times++;
                     if(delete_times == 1) {
@@ -850,18 +870,24 @@
                 title: "Modify the exsiting Tags",
                 content: "Thanks! Can you also help us to complete the tag <br>'Berlin' by typing 'German Methodist Sunday school' to the details area? <br>",
                 placement: 'left',
-                onShown: function() {
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $("#work-view").css("z-index", "0");
-                    $($(".entity-details").first()).keyup(function() {
-                      if ($(this).val() == 'German Methodist Sunday school') {
-                        detail_times++;
-  											if(detail_times == 1) {
-  												$('<img id = "pic2" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
-  												$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-  											}
-  											setTimeout(function(){$( "#pic2" ).remove();}, 3000);
-                      }
-                    });
+                },
+                onShown: function() {
+                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+                  //$("#work-view").css("z-index", "0");
+                  $($(".entity-details").first()).keyup(function() {
+                    if ($(this).val() == 'German Methodist Sunday school') {
+                      detail_times++;
+  										if(detail_times == 1) {
+  											$('<img id = "pic2" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
+  											$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+  										}
+  										setTimeout(function(){$( "#pic2" ).remove();}, 3000);
+                    }
+                  });
                     //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
 
                 }
@@ -873,28 +899,61 @@
                 title: "Adding your own Tags",
                 content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you highlight the word 'PRUSSIA' by selecting the text?<br>",
                 placement: "right",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  //$("#work-view").css("z-index", "1101");
+                },
                 onShown: function() {
-                    $("#work-view").css("z-index", "1101");
-                    var isDragging = false;
-                    $("#work-view").mousedown(function() {
-                        isDragging = false;
-                    }).mousemove(function() {
-                        isDragging = true;
-                    }).mouseup(function() {
-                        var wasDragging = isDragging;
-                        isDragging = false;
-                        if (wasDragging) {
-                          add_times++;
-    											if(add_times == 1) {
-    												$('<img id = "pic3"  height = "100" width = "100" >').appendTo($("#step-4 .popover-content"));
-    												$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic3" ).remove();}, 3000);
-                        }
-                    });
+                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+                  $("#work-view").css("z-index", "1101");
+                  var isDragging = false;
+                  $("#work-view").mousedown(function() {
+                      isDragging = false;
+                  }).mousemove(function() {
+                      isDragging = true;
+                  }).mouseup(function() {
+                      var wasDragging = isDragging;
+                      isDragging = false;
+                      if (wasDragging) {
+                        add_times++;
+    										if(add_times == 1) {
+    											$('<img id = "pic3"  height = "100" width = "100" >').appendTo($("#step-4 .popover-content"));
+    											$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    										}
+    										setTimeout(function(){$( "#pic3" ).remove();}, 3000);
+                      }
+                  });
 
                 }
 
+            },
+
+            {
+                element: '#entity-table',
+                title: "Transition step",
+                content: "",
+                placement: 'left',
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $("#work-view").css("z-index", "0");
+                },
+                onShown: function() {
+                    $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+                    console.log("Have u been here?");
+                    if ($("#user-entity-table tbody tr span:contains('PRUSSIA')") == 1)
+                      tour.next();
+                    else {
+                      console.log("Not secure at all");
+                      addUserTag("PRUSSIA", tagid_id_counter++);
+                      var original_text = $("#transcribe_copy").html();
+                      var to_be_replaced = '<em id="tag_id_' + tagid_id_counter +'" class="unknown tagged-text">PRUSSIA</em>';
+                      var final = original_text.replace("PRUSSIA", to_be_replaced);
+                      //console.log(original_text);
+                      $("#transcribe_copy").html(final);
+                      tour.next();
+                    }
+                }
             },
 
             {
@@ -902,8 +961,14 @@
                 title: "Adding the components to your tag",
                 content: "Now let's try completing the parts to the tag you just made.<br>Try setting the most appropriate category and subcategory.<br>Hint: 'PRUSSIA' is a location here.<br>",
                 placement: "left",
-                onShown: function() {
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $("#work-view").css("z-index", "0");
+                },
+                onShown: function() {
+                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+                  //$("#work-view").css("z-index", "0");
                   $('#categorySelect').change(function() {
                     if (this.value == 1) {
                       change_times++;
@@ -916,7 +981,7 @@
 
                 });
 
-                }
+              }
 
             },
 
@@ -925,9 +990,15 @@
                 title: "Adding the components to your tag",
                 content: "Now add some details about the tag. <br>For example, ’Former country that now includes Germany and Poland’.<br>",
                 placement: "left",
-                onShown: function() {
-                  //$("#work-view").css("background", "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box");
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $("#work-view").css("z-index", "0");
+                },
+                onShown: function() {
+                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+                  //$("#work-view").css("background", "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box");
+                  //$("#work-view").css("z-index", "0");
                   $("#document-info-glphicon").popover('hide');
                   $('#detail').on("input", function() {
                   if (this.value == 'Former country that now includes Germany and Poland') {
@@ -939,7 +1010,7 @@
                     setTimeout(function(){$( "#pic5" ).remove();}, 3000);
                   }
                 });
-                }
+              }
 
             },
 
@@ -948,22 +1019,28 @@
                 title: "Fill in the document context",
                 content: "Fill in information about the document’s context and the author’s perspective. <br>You and other users can share ideas, questions, and opinions on this document by posting comments here. <br>Make sure to login or sign up to contribute to the discussion!",
                 placement: "top",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  //$("#work-view").css("z-index", "1101");
+                },
                 onShown: function() {
-                    $("#work-view").css("background", "white");
-                    $("#work-view").css("z-index", "1101");
-                    var i = 0;
-                    $('#date-detail').on("input", function() {
-                        if (this.value == '1860-08-06') {
-                            i++;
-                        }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
+                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
+                  $("#work-view").css("background", "white");
+                  $("#work-view").css("z-index", "1101");
+                  var i = 0;
+                  $('#date-detail').on("input", function() {
+                      if (this.value == '1860-08-06') {
+                          i++;
+                      }
+                      if(i == 5) {
+                        choice_times++;
+    										if(choice_times == 1) {
+    											$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
+    											$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    										}
+    										setTimeout(function(){$( "#pic6" ).remove();}, 3000);
+                      }
                     });
                     $('#place-detail').on("input", function() {
                         if (this.value == 'Germany-Berlin state-Berlin') {
@@ -1026,21 +1103,36 @@
                 title: "Comments",
                 content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
                 placement: "top",
-                onShown: function() {
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $("#work-view").css("z-index", "0");
+                },
+                onShown: function() {
+                  //$("#work-view").css("z-index", "0");
+                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
                     //$("#document-info-glphicon").popover('hide');
                 }
-
             },
 
             {
                 element: "#confirm-button",
                 title: "Congratulations!",
                 content: "You've finished the tutorial for the tagging process! Press Submit to go to the real document you just selected.",
-                placement: "left"
+                placement: "left",
+                onShow: function() {
+                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+                },
+                onShown: function() {
+                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
+                }
 
             }
+
     ],
+    onEnd: function(tour) {
+      $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+    },
     backdrop: true,
     storage: false});
 

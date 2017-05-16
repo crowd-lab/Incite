@@ -23,6 +23,7 @@ function getMembersWithActivityOverviewByGroupId($groupid)
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT user_id, privilege from omeka_incite_group_members WHERE group_id = ?");
     $stmt->bind_param("i", $groupid);
+
     $stmt->bind_result($user, $privilege);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -59,7 +60,10 @@ function getGroupInfoByGroupId($groupid)
     $stmt->execute();
     $stmt->fetch();
     $user = getUserDataByUserId($creator);
-    $group_info = array('id' => $groupid, 'name' => $name, 'creator' => $user, 'type' => $group_type, 'instructions' => $instructions, 'created_time' => $time);
+    if ($name != null)
+        $group_info = array('id' => $groupid, 'name' => $name, 'creator' => $user, 'type' => $group_type, 'instructions' => $instructions, 'created_time' => $time);
+    else
+        $group_info = null;
     $db->close();
     return $group_info;
 }

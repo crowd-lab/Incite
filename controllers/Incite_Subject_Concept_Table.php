@@ -152,7 +152,7 @@ function getAllSubjectsOnId($item_id)
 {
     $db = DB_Connect::connectDB();
     $subjects = array();
-    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, is_positive, omeka_incite_documents_subject_conjunction.user_id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.item_id WHERE omeka_incite_documents.item_id = ?");
+    $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.name, rank, omeka_incite_documents_subject_conjunction.user_id FROM `omeka_incite_subject_concepts` JOIN omeka_incite_documents_subject_conjunction ON omeka_incite_subject_concepts.id=omeka_incite_documents_subject_conjunction.subject_concept_id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_subject_conjunction.item_id WHERE omeka_incite_documents.item_id = ?");
     $stmt->bind_param("i", $item_id);
     $stmt->bind_result($subject, $is_positive, $userID);
     $stmt->execute();

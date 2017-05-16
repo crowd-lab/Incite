@@ -4,11 +4,11 @@
     <?php
         include(dirname(__FILE__) . '/../common/header.php');
     ?>
-
     <script type="text/javascript">
         var filters = ["transcribe", "tag", "connect", "discuss"];
-
+        var groupCount = <?php echo count($this->groups); ?>;
         $(document).ready(function () {
+
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -19,7 +19,7 @@
                     echo "$('#group-creation-and-join-container').hide();";
                 }
             ?>
-
+            addTableToManageGroupsDiv();
             hideElementsByDefault();
             addListenersToOverview();
             populateGroups();
@@ -28,11 +28,33 @@
             addGroupCreateOrJoinListeners();
             addListenersToGroupSelector();
             redirectToProfileEditPage();
+
         });
 
+        function addTableToManageGroupsDiv() {
+          if (groupCount == 0) {
+            $("#manage-group-div").append("<span><h3>You don't have or currently in any groups yet </h3></span>");
+          }
+          else {
+            $("#manage-group-div").append('<table class="table" id="manage-group-group-table"></table>');
+            $("#manage-group-group-table").append('<tr><th>Group Name</th><th>Actions</th></tr>');
+            var i = 0;
+            <?php foreach ((array)$this->groups as $group): ?>
+              var remove_id = i + "_remove";
+              $("#manage-group-group-table").append("<tr><td>" + "<?php echo $group['name']; ?>" + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
+              i++;
+            <?php endforeach; ?>
+          }
+        }
+
+        function alert_remove() {
+          confirm("Are you sure you want to remove this group");
+        }
         function hideElementsByDefault() {
+            $('#manage-group-div').show();
             $('#create-group-div').hide();
             $('#join-group-table').hide();
+            $("#search-groups-section").hide();
             $('#no-groups-found-paragraph').hide();
         };
 
@@ -157,17 +179,26 @@
         };
 
         function addGroupCreateOrJoinListeners() {
-            $('#join-group-tab').click(function () {
-                $("#create-group-div").hide();
-                $("#search-groups-section").show();
-                selectTab($("#join-group-tab"), $("#create-group-tab"));
-            });
+          $('#manage-group-tab').click(function () {
+              $("#create-group-div").hide();
+              $("#search-groups-section").hide();
+              $("#manage-group-div").show();
+              selectTab($('#manage-group-tab'), $("#join-group-tab"), $("#create-group-tab"));
+          });
 
-            $('#create-group-tab').click(function () {
-                $("#search-groups-section").hide();
-                $("#create-group-div").show();
-                selectTab($("#create-group-tab"), $("#join-group-tab"));
-            });
+          $('#join-group-tab').click(function () {
+              $("#create-group-div").hide();
+              $("#manage-group-div").hide();
+              $("#search-groups-section").show();
+              selectTab($("#join-group-tab"), $("#create-group-tab"), $('#manage-group-tab'));
+          });
+
+          $('#create-group-tab').click(function () {
+              $("#search-groups-section").hide();
+              $("#manage-group-div").hide();
+              $("#create-group-div").show();
+              selectTab($("#create-group-tab"), $("#join-group-tab"), $('#manage-group-tab'));
+          });
 
             $('#group-search-btn').click(function(e) {
                 $('#join-group-table tbody tr td').parent().empty();
@@ -187,9 +218,10 @@
             });
         };
 
-        function selectTab(tabToSelect, tabToUnselect) {
+        function selectTab(tabToSelect, tabToUnselect1, tabToUnselect2) {
             tabToSelect.addClass("active");
-            tabToUnselect.removeClass("active");
+            tabToUnselect1.removeClass("active");
+            tabToUnselect2.removeClass("active");
         };
 
         function createGroupAjaxRequest() {
@@ -199,7 +231,6 @@
                 data: {"groupName": $('#group-name-input').val(), "groupType": 0},
                 success: function (response) {
                     var groupId = response.trim();
-
                     redirectToGroupPage(groupId);
                 }
             });
@@ -462,7 +493,7 @@
         }
 
         .nav-tabs > li {
-            width: 50%;
+            width: 33%;
             margin-top: 20px;
             text-align: center;
         }
@@ -517,6 +548,17 @@
             position: relative;
             bottom: 5px;
         }
+        #manage-group-group-table table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        }
+
+        #manage-group-group-table td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
     </style>
 </head>
 
@@ -539,12 +581,14 @@
 
         <div id="group-creation-and-join-container">
             <ul class="nav nav-tabs" id="group-create-or-join-tabs">
-                <li id="join-group-tab" class="active"><a>Join a group</a></li>
+                <li id="manage-group-tab" class="active"><a>Manage existing groups</a></li>
+                <li id="join-group-tab" ><a>Join a group</a></li>
                 <li id="create-group-tab"><a>Create a group</a></li>
+
             </ul>
 
             <div id="join-or-create-info-container">
-
+                <div id = "manage-group-div"></div>
                 <div id="search-groups-section">
                     <span>
                         <label class="control-label" for="group-name-input">Search Groups By Keyword: </label>
@@ -573,6 +617,8 @@
                     </span>
                     <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
                 </div>
+
+
             </div>
         </div>
 

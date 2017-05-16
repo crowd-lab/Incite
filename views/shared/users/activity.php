@@ -88,7 +88,6 @@
 
         function populateGroups() {
             var span;
-
             <?php foreach ((array) $this->groups as $group): ?>
 
                 if ($("#groups-list span").length === 0) {
@@ -96,7 +95,6 @@
                 } else {
                     span = $('<span class="group-member-link">, </span>');
                 }
-
                 span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
 
                 $('#groups-list').append(span);
@@ -566,7 +564,7 @@
             <h2 class="activity-title" id="activity-feed-title">Activity Feed for Work Done in </h2>
             <select id="activity-feed-group-selector-filter" class="form-control" name="task">
                 <option id="default-group-selector-option" value="All groups" selected>All Groups</option>
-
+                
                 <?php foreach ((array)$this->groups as $group): ?>
                     <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 30) ? substr($group['name'],0,27).'...' : $group['name']; ?></option>
                 <?php endforeach; ?>

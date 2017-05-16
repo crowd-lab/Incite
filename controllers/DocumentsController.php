@@ -149,7 +149,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
   public function transcribeAction() {
       $this->_helper->db->setDefaultModelName('Item');
-
+      $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
 
       if ($this->_hasParam('id')) {
         $this->view->doc_id = $this->_getParam('id');
@@ -340,7 +340,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function tagAction() {
       $this->_helper->db->setDefaultModelName('Item');
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
+      $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
       if ($this->_hasParam('id')) {
           $this->view->doc_id = $this->_getParam('id');
           if (!isset($_SESSION['Incite']['tutorial_tag'])) {
@@ -581,7 +581,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function connectAction() {
       $this->_helper->db->setDefaultModelName('Item');
       $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
-
+      $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
       if ($this->_hasParam('id')) {
         $this->view->doc_id = $this->_getParam('id');
         if (!isset($_SESSION['Incite']['tutorial_conn'])) {
@@ -609,7 +609,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $subject = "subject";
     for($i = 1; $i < 10; $i++) {
       $sub = $subject.$i;
-      addConnectRating($_SESSION['Incite']['USER_DATA']['id'], 0, $i, $_POST[$sub], $this->_getParam('id'), 1, getLatestTaggedTranscriptionID($this->_getParam('id')));
+      addConnectRating($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $i, $_POST[$sub], $this->_getParam('id'), 1, getLatestTaggedTranscriptionID($this->_getParam('id')));
       //addConceptToDocument($i, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST[$sub], 1);
     }
     $itemID = $this->_getParam('id');

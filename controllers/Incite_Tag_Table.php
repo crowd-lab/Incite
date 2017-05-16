@@ -778,7 +778,7 @@ function SubcatDic() {
 
 function explainDic($itemID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT omeka_incite_subject_explain.concept_id, omeka_incite_subject_explain.explaination FROM omeka_incite_subject_explain WHERE item_id = $itemID");
+    $stmt = $db->prepare("SELECT omeka_incite_subject_explain.concept_id, omeka_incite_subject_explain.explanation FROM omeka_incite_subject_explain WHERE item_id = $itemID");
     $stmt->bind_result($id, $explain);
     $stmt->execute();
     $explain_list = array();
@@ -792,7 +792,7 @@ function explainDic($itemID) {
 
 function questionAnswer($itemID, $questionID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT omeka_incite_tag_answer_explain_list.answer, omeka_incite_tag_answer_explain_list.correct, omeka_incite_tag_answer_explain_list.explaination FROM omeka_incite_tag_answer_explain_list WHERE `item_id` = $itemID AND `question_id` = $questionID");
+    $stmt = $db->prepare("SELECT omeka_incite_tag_answer_explain_list.answer, omeka_incite_tag_answer_explain_list.correct, omeka_incite_tag_answer_explain_list.explanation FROM omeka_incite_tag_answer_explain_list WHERE `item_id` = $itemID AND `question_id` = $questionID");
     $stmt->bind_result($ans, $cor, $ex);
     $stmt->execute();
     $answer = array();
