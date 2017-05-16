@@ -280,12 +280,17 @@
         steps: [
             {
 
-								element: '#viewer2',
+								//element: '#viewer2',
+								element: "#work-view",
                 title: "Welcome!",
                 content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now.",
                 placement: "right",
+								onShow: function() {
+									//$("#viewer2").css("z-index", "1101");
+									$("#work-view").css("z-index", "1101");
+								},
 								onShown: function() {
-									$("#viewer2").css("z-index", "6");
+									//$("#viewer2").css("z-index", "6");
 								}
             },
             {
@@ -293,11 +298,13 @@
                 title: "Welcome! (continued)",
                 content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this text searchable by transcribing it. This means you will type what the image says.',
                 placement: "right",
+								onShow: function() {
+									//$("#viewer2").css("z-index", "1101");
+									$("#viewer2").css("z-index", "1101");
+								},
                 onShown: function() {
-
-
-										$("#viewer2").css("z-index", "6");
-
+										//$("#viewer2").css("z-index", "6");
+										//$("#work-view").css("z-index", "1101");
                 }
             },
 
@@ -326,9 +333,12 @@
                 title: "Zoom",
                 content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. <br><br> Press Next when you are ready.<br>',
                 placement: "right",
-
+								onShow: function() {
+									//$("#viewer2").css("z-index", "1101");
+									$("#viewer2").css("z-index", "1101");
+								},
                 onShown: function(){
-										$("#viewer2").css("z-index", "6");
+										
 										$('.iviewer_common').click(function() {
 											zoomer_times++;
 											if(zoomer_times == 1) {
@@ -456,6 +466,7 @@
 				/*position: fixed;*/
 				/*margin-top: -39px;*/
 				margin-top: -30px;
+
 			}
 
 
@@ -538,7 +549,7 @@
 
         .tour-backdrop,
     .tour-step-background {
-        z-index: 3;
+        /*z-index: 3;*/
 
     }
 

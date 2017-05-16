@@ -137,7 +137,7 @@
 	<div id="work-view">
         <div class="document-header">
             <span class="document-title" title="Incite Tutorial - Connect">
-                <b>Title:</b> Incite Tutorial - Connect
+                <b>Title:</b> Sunday School Celebration in Prussia
             </span>
             <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
                 data-toggle="popover" data-html="true" data-trigger="hover"

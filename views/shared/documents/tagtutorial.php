@@ -251,7 +251,7 @@
 
     .tour-backdrop,
 .tour-step-background {
-    z-index: 3;
+    /*z-index: 3;*/
 
 }
 </style>
