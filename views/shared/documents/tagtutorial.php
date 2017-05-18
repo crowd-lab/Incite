@@ -19,10 +19,13 @@
             var change_times = 0;
             var choice_times = 0;
             var entity_times = 0;
+            function resize() {
+    					$('#work-view').width($('#work-zone').width());
+    				}
         </script>
     </head>
 
-    <body> <!-- Page Content -->
+    <body onresize="resize()"> <!-- Page Content -->
         <?php
             include(dirname(__FILE__) . '/../common/task_header.php');
         ?>
@@ -50,11 +53,11 @@
 				7 //so it doesn't overflow
 			);
 		};
-/*
+
 		$('#work-zone').ready(function() {
 		    $('#work-view').width($('#work-zone').width());
 		});
-*/
+
 		$(document).ready(function () {
 
       $(".btn-end").click(function(){
@@ -180,7 +183,6 @@
 	#work-view {
         position: fixed;
         margin-top: -30px;
-        width: 40%;
     }
 
 	.document-header {
@@ -219,7 +221,6 @@
     }
 
     .viewer {
-        width: 100%;
         border: 1px solid black;
         /*position: relative;*/
     }
@@ -940,16 +941,14 @@
                 },
                 onShown: function() {
                     $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
-                    console.log("Have u been here?");
-                    if ($("#user-entity-table tbody tr span:contains('PRUSSIA')") == 1)
+                    //console.log();
+                    if ($("#user-entity-table tbody tr span:contains('PRUSSIA')").length == 1)
                       tour.next();
                     else {
-                      console.log("Not secure at all");
                       addUserTag("PRUSSIA", tagid_id_counter++);
                       var original_text = $("#transcribe_copy").html();
                       var to_be_replaced = '<em id="tag_id_' + tagid_id_counter +'" class="unknown tagged-text">PRUSSIA</em>';
                       var final = original_text.replace("PRUSSIA", to_be_replaced);
-                      //console.log(original_text);
                       $("#transcribe_copy").html(final);
                       tour.next();
                     }

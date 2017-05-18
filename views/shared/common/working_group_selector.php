@@ -1,9 +1,10 @@
 <head>
     <script type="text/javascript">
     $(document).ready(function () {
-        removeDuplicateOfCurrentlySelectedGroupFromOptions();
+        //removeDuplicateOfCurrentlySelectedGroupFromOptions();
         addChangeListenerToGroupSelector();
         addListenerToInfoGlyphicon();
+        //updateOption();
     });
 
     function removeDuplicateOfCurrentlySelectedGroupFromOptions() {
@@ -24,6 +25,9 @@
             var groupId = $('#working-group-selector option:selected').val();
 
             if (groupName === "No group selected") {
+                return;
+            }
+            if ($('.option-for-current-working-group').length != 0 && $('.option-for-current-working-group').data("name") == groupName) {
                 return;
             }
 
@@ -76,6 +80,7 @@
         $('#working-group-modal-cancel-btn').off();
         $('#working-group-modal-no-btn').click(resetOptionSelection);
         $('#working-group-modal-cancel-btn').click(resetOptionSelection);
+        //$('#reset-option').click($('#default-working-group-selector-option').prop("selected", true));
     };
 
     function setWorkingGroupAjaxRequest(groupId) {
@@ -93,6 +98,7 @@
                     setTimeout(function () {
                         location.reload();
                     }, 500);
+                    
                 } else {
                     resetOptionSelection();
                     notifyOfErrorInForm("Something went wrong, try again.");
@@ -123,17 +129,33 @@
         <span id="working-group-info-glyphicon" class="glyphicon glyphicon-info-sign"></span>
     </span>
     <select id="working-group-selector" class="form-control" name="task">
-        <option id="default-working-group-selector-option" value="none" disabled>No Group Selected</option>
+        <!-- IF THE GROUP IS NOT SPECIFIED -->
+        <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] <= 0): ?>
+            <option value="none" id = "default-working-group-selector-option" selected disabled>No Group Selected</option>
+        <?php endif; ?>
+        <!--
         <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] > 0): ?>
-            <option data-name="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?>" value="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['id']; ?>" class="option-for-current-working-group" selected disabled><?php echo (strlen($_SESSION['Incite']['USER_DATA']['working_group']['name']) > 23) ? substr($_SESSION['Incite']['USER_DATA']['working_group']['name'],0,20).'...' : $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?></option>
+            <option  data-name="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?>" value="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['id']; ?>" class="option-for-current-working-group" selected ><?php echo (strlen($_SESSION['Incite']['USER_DATA']['working_group']['name']) > 23) ? substr($_SESSION['Incite']['USER_DATA']['working_group']['name'],0,20).'...' : $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?></option>
+        <?php endif; ?>
+        -->
+        <?php foreach ((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group): ?>
+            <!-- IF THE GROUP IS SPECIFIED -->
+            <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] > 0): ?>
+                <?php if ($group['id'] != $_SESSION['Incite']['USER_DATA']['working_group']['id']): ?>
+                    <option  data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 23) ? substr($group['name'],0,20).'...' : $group['name']; ?></option>
+                <?php else: ?>
+                    <option  data-name="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?>" value="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['id']; ?>" class="option-for-current-working-group" selected ><?php echo (strlen($_SESSION['Incite']['USER_DATA']['working_group']['name']) > 23) ? substr($_SESSION['Incite']['USER_DATA']['working_group']['name'],0,20).'...' : $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?></option>
+                <?php endif; ?>
+            <!-- IF THE GROUP IS NOT SPECIFIED -->
+            <?php else: ?>
+                <option  data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 23) ? substr($group['name'],0,20).'...' : $group['name']; ?></option>
             <?php endif; ?>
-
-            <?php foreach ((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group): ?>
-                <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 23) ? substr($group['name'],0,20).'...' : $group['name']; ?></option>
-            <?php endforeach; ?>
-            <option id="reset-option" value="0">Reset Working Group</option>
-        </select>
-    </div>
+        <?php endforeach; ?>
+        <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] > 0): ?>
+            <option  id="reset-option" value="0">Reset Working Group</option>
+        <?php endif; ?>
+    </select>
+</div>
 
     <style>
     #working-group-header {
@@ -147,11 +169,7 @@
     }
 
     #default-working-group-selector-option {
-        display: none;
-    }
-
-    .option-for-current-working-group {
-        display: none;
+        /*display: none;*/
     }
 
     #working-group-info-glyphicon {

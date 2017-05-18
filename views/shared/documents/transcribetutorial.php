@@ -27,19 +27,23 @@
 	<div class="container-fluid">
 		<head>
 			<script type="text/javascript">
-/*
-				$('#work-zone').ready(function () {
-					$('#work-view').width($('#work-zone').width());
-				});
-*/
+			function resize() {
+				$('#work-view').width($('#work-zone').width());
+			}
+			$('#work-zone').ready(function () {
+				$('#work-view').width($('#work-zone').width());
+			});
+
 				$(document).ready(function () {
 
 					$('[data-toggle="popover"]').popover({trigger: "hover"});
 
 					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
-
+					console.log($(window).height());
+					console.log($('.viewer')[0].getBoundingClientRect().top);
+					console.log($(".navbar-fixed-bottom").height());
 					$("#viewer2").iviewer({
-						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
+						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/assess1.png",
 						zoom_min: 1,
 						zoom: "fit"
 					});
@@ -79,7 +83,7 @@
 			</script>
 		</head>
 
-		<body>
+		<body onresize="resize()">
 			<div class="col-md-6" id="work-zone">
 				<div id="work-view">
 					<div class="document-header" id="document-header">
@@ -338,7 +342,7 @@
 									$("#viewer2").css("z-index", "1101");
 								},
                 onShown: function(){
-										
+
 										$('.iviewer_common').click(function() {
 											zoomer_times++;
 											if(zoomer_times == 1) {
@@ -370,7 +374,7 @@
                 content: 'When transcribing, try your best to be as accurate as possible.  <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total for the first sentence!<br>',
                 placement: "bottom",
 							 onShown: function() {
-								 $("#viewer2").css("z-index", "6");
+								 $("#viewer2").css("z-index", "1101");
 								 $('#transcription-textarea').on("input", function()
 									{
 										 if (this.value == 'SUNDAY SCHOOL CELEBRATION IN PRUSSIA.')
@@ -462,16 +466,15 @@
 
 
     <style>
-    #work-view {
-				/*position: fixed;*/
+		#work-view {
+				position: fixed;
 				/*margin-top: -39px;*/
 				margin-top: -30px;
-
 			}
 
 
 			.viewer {
-				width: 100%;
+				/*width: 100%;*/
 				border: 1px solid black;
 				position: relative;
 			}
@@ -540,7 +543,6 @@
 				#viewer2 {
 					background: white;
 					margin-left: 10px;
-					width: 90%;
 				}
 
 				#document-header {

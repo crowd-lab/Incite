@@ -158,13 +158,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->view->doc_id = $this->_getParam('id');
               return;
           }
-          /*
-          if (!isset($_SESSION['Incite']['assessment_trans'])) {
-            
+          
+          if ($this->getWorkingGroupID() != 0) {
               $this->redirect('incite/documents/trans1/'.$this->_getParam('id'));
               return;
           }
-          */
+          
           if ($this->getRequest()->isPost()) {
               $this->saveTranscription();
           }
@@ -395,12 +394,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->view->doc_id = $this->_getParam('id');
               return;
           }
-          /*
-          if (!isset($_SESSION['Incite']['assessment_tag'])) {
+          
+          if ($this->getWorkingGroupID() != 0) {
               $this->redirect('incite/documents/tag1/'.$this->_getParam('id'));
               return;
           }
-          */
+          
           if ($this->getRequest()->isPost()) {
               $this->saveTags();
           }
@@ -591,11 +590,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           $this->view->doc_id = $this->_getParam('id');
           return;
         }
-          /*
-          if (!isset($_SESSION['Incite']['assessment_conn'])) {
+          if ($this->getWorkingGroupID() != 0) {
             $this->redirect('incite/documents/conn1/'.$this->_getParam('id'));
           }
-          */
+          
         if ($this->getRequest()->isPost()) {
           $this->saveConnections();
         }

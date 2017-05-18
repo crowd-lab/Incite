@@ -25,6 +25,9 @@
             var copy_dic = tags_list;
             var entities_array = [];
             var question_array;
+            function resize() {
+    					$('#work-view').width($('#work-zone').width());
+    				}
         </script>
     </head>
 
@@ -67,11 +70,11 @@
 				7 //so it doesn't overflow
 			);
 		};
-/*
+
 		$('#work-zone').ready(function() {
 		    $('#work-view').width($('#work-zone').width());
 		});
-*/
+
 		$(document).ready(function () {
             migrateTaggedDocumentsFromV1toV2();
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
@@ -147,7 +150,7 @@
 	</script>
 </head>
 
-<body>
+<body onresize="resize()">
 <div id="work-view" >
         <div class="document-header" id = "header" style = "position: relative">
             <span class="document-title" title="Incite Tutorial - Tag">
@@ -192,7 +195,6 @@
 	#work-view {
         position: fixed;
         margin-top: -30px;
-        width: 40%;
     }
 
 	.document-header {
@@ -231,7 +233,6 @@
     }
 
     .viewer {
-        width: 100%;
         border: 1px solid black;
         position: relative;
     }

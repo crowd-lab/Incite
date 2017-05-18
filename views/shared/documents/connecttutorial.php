@@ -12,9 +12,12 @@
     <!-- Page Content -->
     <script type="text/javascript">
         var comment_type = 2;
+        function resize() {
+					$('#work-view').width($('#work-zone').width());
+				}
     </script>
 </head>
-<body id = "main-body">
+<body id = "main-body" onresize="resize()">
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
     ?>
@@ -43,11 +46,11 @@
 				7 //so it doesn't overflow
 			);
 		};
-/*
+
 		$('#work-zone').ready(function() {
 		    $('#work-view').width($('#work-zone').width());
 		});
-*/
+
 		$(document).ready(function () {
 
 
@@ -176,7 +179,6 @@
 	#work-view {
         position: fixed;
         margin-top: -30px;
-        width: 45%;
     }
 
 	.document-header {
@@ -213,7 +215,6 @@
     }
 
     .viewer {
-        width: 100%;
         border: 1px solid black;
         position: relative;
     }

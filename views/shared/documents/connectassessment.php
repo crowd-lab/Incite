@@ -19,9 +19,12 @@
         var answer_ratings = ["Very useful","Very useful","Very useful", "Very useful", "Very useful"];
         var concept_to_id = {"Religion":1, "White Supremacy":2, "Racial Equality":3, "Gender Equality/Inequality":4, "Human Equality":5, "Self Goverment":6, "America as a Global Beacon":7, "Celebration of Revolutionary Generation":8, "White Southerners":9};
         var upload_rating = [];
+        function resize() {
+					$('#work-view').width($('#work-zone').width());
+				}
     </script>
 </head>
-<body id = "main-body">
+<body id = "main-body" onresize="resize()">
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
     ?>
@@ -61,11 +64,11 @@
 				7 //so it doesn't overflow
 			);
 		};
-/*
+
 		$('#work-zone').ready(function() {
 		    $('#work-view').width($('#work-zone').width());
 		});
-*/
+
 		$(document).ready(function () {
 
 
@@ -194,7 +197,6 @@
 	#work-view {
         position: fixed;
         margin-top: -30px;
-        width: 45%;
     }
 
 	.document-header {
@@ -231,7 +233,6 @@
     }
 
     .viewer {
-        width: 100%;
         border: 1px solid black;
         position: relative;
     }
