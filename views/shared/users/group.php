@@ -53,22 +53,54 @@
           }
           else {
             $("#manage-group-div").append('<table class="table" id="manage-group-group-table"></table>');
-            $("#manage-group-group-table").append('<tr><th>Group Name</th><th>Actions</th></tr>');
+            $("#manage-group-group-table").append('<tr><th>Group Name</th><th>Status</th><th>Actions</th></tr>');
             var i = 0;
             var span;
             <?php foreach ((array)$this->groups as $group): ?>
-              span = $('<span class="group-member-link"></span>');
+              span = $('<span 2class="group-member-link"></span>');
               span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
-              var remove_id = i + "_remove";
+              var remove_id = <?php echo $group['id']; ?> + "_remove";
+              var status;
+              var op;
+              <?php if ($_SESSION['Incite']['USER_DATA']['id'] == $group['creator']['id']): ?>
+                status = "Creator";
+                op = $('<span><a id="' + remove_id + '" onClick = "alert_remove(<?php echo $group['id']; ?>)">Delete</a></span>');
+              <?php else: ?>
+                status = "Member";
+                op = $('<span><a id="' + remove_id + '"onClick = "alert_quit(<?php echo $group['id']; ?>)">Quit</a></span>');
+              <?php endif ?>
+              
               //$("#manage-group-group-table").append("<tr><td>" + "<?php echo $group['name']; ?>" + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
-              $("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
+              //$("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>"+ status + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
+              $("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>"+ status + "</td><td>" + op.html() + "</td></tr>");
               i++;
             <?php endforeach; ?>
           }
         }
+        function removeUserFromGroupAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/removememberfromgroup'; ?>",
+                data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
+                success: function (response) {
+                    console.log(response);
+                    //removing the row
+                    var target = "#" + groupId + "_remove";
+                    var row = $($(target).parent()).parent();
+                    $(row).remove();
+                    //row.remove();
+                }
+            });
+        };
 
-        function alert_remove() {
+        function alert_remove(groupId) {
           confirm("Are you sure you want to remove this group");
+        }
+        function alert_quit(groupId) {
+          if (confirm("Are you sure you want to quit this group")) {
+            removeUserFromGroupAjaxRequest(groupId);
+          }
+          
         }
         function hideElementsByDefault() {
             $('#manage-group-div').show();
