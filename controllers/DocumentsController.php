@@ -141,9 +141,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->_helper->db->setDefaultModelName('Item');
     $assessment_doc_id = 731;
     $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
-            
     $this->_helper->viewRenderer('transcribeassessment');
-    $this->view->assDocID = 3;
     $this->view->doc_id = $this->_getParam('id');
   }
 
@@ -159,7 +157,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               return;
           }
           
-          if ($this->getWorkingGroupID() != 0) {
+          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_trans']) {
               $this->redirect('incite/documents/trans1/'.$this->_getParam('id'));
               return;
           }
@@ -395,7 +393,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               return;
           }
           
-          if ($this->getWorkingGroupID() != 0) {
+          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_tag']) {
               $this->redirect('incite/documents/tag1/'.$this->_getParam('id'));
               return;
           }
@@ -590,7 +588,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           $this->view->doc_id = $this->_getParam('id');
           return;
         }
-          if ($this->getWorkingGroupID() != 0) {
+          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_conn']) {
             $this->redirect('incite/documents/conn1/'.$this->_getParam('id'));
           }
           

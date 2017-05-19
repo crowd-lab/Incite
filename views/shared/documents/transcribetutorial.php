@@ -39,11 +39,8 @@
 					$('[data-toggle="popover"]').popover({trigger: "hover"});
 
 					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
-					console.log($(window).height());
-					console.log($('.viewer')[0].getBoundingClientRect().top);
-					console.log($(".navbar-fixed-bottom").height());
 					$("#viewer2").iviewer({
-						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/assess1.png",
+						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
 						zoom_min: 1,
 						zoom: "fit"
 					});

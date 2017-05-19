@@ -14,23 +14,39 @@
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
-
+                if ($_SESSION['Incite']['Guest']) {
+                    echo "styleForGuest();";
+                }
+                else {
+                    echo 'populateGroups(); ';
+                    echo 'populateActivityOverview(); ';
+                    echo 'populateActivityFeed(); ';
+                    echo 'addGroupCreateOrJoinListeners(); ';
+                    echo 'addListenersToGroupSelector(); ';
+                    echo 'redirectToProfileEditPage(); ';
+                }
                 if ($this->user['id'] != $_SESSION['Incite']['USER_DATA']['id']) {
-                    echo "$('#group-creation-and-join-container').hide();";
+                    
+                    //echo "$('#group-creation-and-join-container').hide();";
                 }
             ?>
             addTableToManageGroupsDiv();
             hideElementsByDefault();
             addListenersToOverview();
-            populateGroups();
-            populateActivityOverview();
-            populateActivityFeed();
-            addGroupCreateOrJoinListeners();
-            addListenersToGroupSelector();
-            redirectToProfileEditPage();
+            //populateGroups();
+            //populateActivityOverview();
+            //populateActivityFeed();
+            //addGroupCreateOrJoinListeners();
+            //addListenersToGroupSelector();
+            //redirectToProfileEditPage();
 
         });
+        function styleForGuest() {
+        $('#groupprofile-activity-container').hide();
 
+        var pleaseLogInText = $('<p style="color: red; text-align: center;">Please log in to be able to view groups!</p>');
+        $('body').append(pleaseLogInText);
+        };
         function addTableToManageGroupsDiv() {
           if (groupCount == 0) {
             $("#manage-group-div").append("<span><h3>You don't have or currently in any groups yet </h3></span>");
@@ -39,9 +55,13 @@
             $("#manage-group-div").append('<table class="table" id="manage-group-group-table"></table>');
             $("#manage-group-group-table").append('<tr><th>Group Name</th><th>Actions</th></tr>');
             var i = 0;
+            var span;
             <?php foreach ((array)$this->groups as $group): ?>
+              span = $('<span class="group-member-link"></span>');
+              span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
               var remove_id = i + "_remove";
-              $("#manage-group-group-table").append("<tr><td>" + "<?php echo $group['name']; ?>" + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
+              //$("#manage-group-group-table").append("<tr><td>" + "<?php echo $group['name']; ?>" + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
+              $("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
               i++;
             <?php endforeach; ?>
           }
@@ -563,14 +583,15 @@
 </head>
 
 <body>
+
   <div id="userprofile-header">
         <!-- <?php
 
         echo '<h1> Email: '. $this->user['email'] . '</h1>';
             ?>
- -->
+        -->
     <h1>Group</h1>
-
+    <?php if (!$_SESSION['Incite']['Guest']): ?>
 
         <div>
             <p id="groups-list">Belongs to group(s): </p>
@@ -620,8 +641,9 @@
 
 
             </div>
+            <?php endif; ?>
         </div>
-
+        
 
 </body>
 </html>

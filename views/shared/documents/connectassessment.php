@@ -8,8 +8,8 @@
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
         $category_object = getAllCategories();
-        $subject_from_gold_standard = findAllRatingsFromGoldStandard(findTaggedTransIDFromGoldStandard(731));
-        $explain_list = explainDic(731);
+        $subject_from_gold_standard = findAllRatingsFromGoldStandard(findTaggedTransIDFromGoldStandard($this->document_metadata->id));
+        $explain_list = explainDic($this->document_metadata->id);
     ?>
 
     <!-- Page Content -->

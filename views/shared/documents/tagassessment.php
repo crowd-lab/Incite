@@ -12,10 +12,10 @@
             $sub_dic = SubcatDic();
             $sub_dic[-1] = "empty";
             $category_name_id_table = getCategoryNameAndId();
-            $tag_list = findAllTagsFromGoldStandard(731);
-            $ans_list = findAllAnswersFromGoldStandard(findTaggedTransIDFromGoldStandard(731));
-            $sub_list = findAllSubs(731);
-            $answer_pack = answerPack(731);
+            $tag_list = findAllTagsFromGoldStandard($this->document_metadata->id);
+            $ans_list = findAllAnswersFromGoldStandard(findTaggedTransIDFromGoldStandard($this->document_metadata->id));
+            $sub_list = findAllSubs($this->document_metadata->id);
+            $answer_pack = answerPack($this->document_metadata->id);
         ?>
 
         <script type="text/javascript">

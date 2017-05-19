@@ -6,8 +6,8 @@
 		$_SESSION['Incite']['assessment_trans'] = true;
 		include(dirname(__FILE__) . '/../common/header.php');
 		include(dirname(__FILE__) . '/../common/progress_indicator.php');
-		$tone = getTone(731);
-		$toneReason = getToneReason(731);
+		$tone = getTone($this->document_metadata->id);
+		$toneReason = getToneReason($this->document_metadata->id);
 	?>
 
 	<script type="text/javascript">
@@ -24,7 +24,7 @@
     	var request = $.ajax({
         type: "POST",
         url: "<?php echo getFullInciteUrl().'/ajax/finddiff'; ?>",
-        data: {'userTranscription': $('#transcription-textarea').val(), "docID": <?php echo $assDocID; ?>},
+        data: {'userTranscription': $('#transcription-textarea').val()},
 				success: function (response) {
 					$("#userText").append(response);
         }
@@ -66,10 +66,6 @@
 					$('[data-toggle="popover"]').popover({trigger: "hover"});
 
 					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
-					console.log($(window).height());
-					console.log($('.viewer')[0].getBoundingClientRect().top);
-					console.log($(".navbar-fixed-bottom").height());
-
 					$("#viewer2").iviewer({
 						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/assess1.png",
 						zoom_min: 1,
@@ -288,7 +284,7 @@
 					});
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
-							saveTransAjaxRequest()
+							saveTransAjaxRequest();
 							UserTone();
 							updateTransAjaxRequest();
 							$('#myModal').modal({backdrop: 'static', keyboard: false, show: true});
