@@ -134,9 +134,30 @@ function removeMemberFromGroup($memberId, $groupId)
     $stmt->bind_param("ii", $memberId, $groupId);
     $stmt->execute();
     $stmt->close();
-
     return "true";
 }
+
+/**
+  * Remove a group from database
+  *
+  * @param int $groupId
+  * @return "true"
+  */
+  function removeGroup($groupId)
+  {
+      $db = DB_Connect::connectDB();
+      $stmt = $db->prepare("DELETE FROM `omeka_incite_groups` WHERE `id` = ?");
+      $stmt->bind_param("i", $groupId);
+      $stmt->execute();
+      $stmt->close();
+      $db->close();
+      $db = DB_Connect::connectDB();
+      $stmt = $db->prepare("DELETE FROM `omeka_incite_group_members` WHERE `group_id` = ?");
+      $stmt->bind_param("i", $groupId);
+      $stmt->execute();
+      $stmt->close();
+      return "true";
+  }
 
 /**
  * Changes the privilege of a member in a group, both specified by ID

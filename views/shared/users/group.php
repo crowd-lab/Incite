@@ -88,13 +88,28 @@
                     var target = "#" + groupId + "_remove";
                     var row = $($(target).parent()).parent();
                     $(row).remove();
-                    //row.remove();
+                }
+            });
+        };
+        function removeGroupAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/removeselectedgroup'; ?>",
+                data: {"groupId": groupId},
+                success: function (response) {
+                    console.log(response);
+                    //removing the row
+                    var target = "#" + groupId + "_remove";
+                    var row = $($(target).parent()).parent();
+                    $(row).remove();
                 }
             });
         };
 
         function alert_remove(groupId) {
-          confirm("Are you sure you want to remove this group");
+          if(confirm("Are you sure you want to remove this group")) {
+              removeGroupAjaxRequest(groupId);
+          }
         }
         function alert_quit(groupId) {
           if (confirm("Are you sure you want to quit this group")) {

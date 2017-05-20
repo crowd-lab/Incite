@@ -556,14 +556,44 @@ public function getallavailabledocsAction(){
       $group = getGroupInfoByGroupId($groupId);
 
       //prevent non group owners from changing people's privilege levels to banned or added
-      if ($_SESSION['Incite']['USER_DATA']['id'] != $group['creator']['id']) {
-        echo false;
-        return;
+      if ($_SESSION['Incite']['USER_DATA']['id'] == $userId || $_SESSION['Incite']['USER_DATA']['id'] == $group['creator']['id']) {
+        echo json_encode(removeMemberFromGroup($userId, $groupId));
+      }
+      else {
+        echo "false";
       }
 
-      echo json_encode(removeMemberFromGroup($userId, $groupId));
+      
     }
   }
+
+
+/**
+  * Ajax function that remove the selected group
+  *
+  * Returns true/false
+  */
+  public function removeselectedgroupAction() {
+    if ($this->getRequest()->isPost()) {
+      $groupId = $_POST['groupId'];
+      $group = getGroupInfoByGroupId($groupId);
+      //prevent non group owners from changing people's privilege levels to banned or added
+      if ($_SESSION['Incite']['USER_DATA']['id'] == $group['creator']['id']) {
+        echo json_encode(removeGroup($groupId));
+      }
+      else {
+        echo "false";
+      }
+
+      
+    }
+  }
+
+
+
+
+
+
   /**
   * Ajax function that updates the privilege of a member of a group
   *
