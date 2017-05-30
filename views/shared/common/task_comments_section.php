@@ -8,6 +8,12 @@
             $currentTaskID = $this->document_metadata->id;
         } else if (strpos($currentURL, "/connect/") !== false) {
             $currentTaskID = $this->document_metadata->id;
+        } else if (strpos($currentURL, "/trans1/") !== false) {
+            $currentTaskID = $this->document_metadata->id;
+        } else if (strpos($currentURL, "/tag1/") !== false) {
+            $currentTaskID = $this->document_metadata->id;
+        } else if (strpos($currentURL, "/conn1/") !== false) {
+            $currentTaskID = $this->document_metadata->id;
         } else if (strpos($currentURL, "/view/") !== false) {
             $currentTaskID = $this->document->id;
         } else {

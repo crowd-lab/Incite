@@ -22,6 +22,17 @@
         function resize() {
 					$('#work-view').width($('#work-zone').width());
 				}
+        function updateRatingsAjaxRequest() {
+          var request = $.ajax({
+            type: "POST",
+            url: "<?php echo getFullInciteUrl().'/ajax/uploadratings'; ?>",
+            data: {'ratings': upload_rating},
+            success: function (response) {
+              console.log(response);
+              //alert(response);
+            }
+          });
+        }
     </script>
 </head>
 <body id = "main-body" onresize="resize()">
@@ -32,19 +43,13 @@
         <div class="container-fluid" style="padding: 0px;">
 
             <div class="col-md-6" id="work-zone">
+              <?php
+                   include(dirname(__FILE__) . '/../common/document_viewer_section_with_transcription.php');
+               ?>
+<!--
 <head>
 	<script type="text/javascript">
-    function updateRatingsAjaxRequest() {
-      var request = $.ajax({
-        type: "POST",
-        url: "<?php echo getFullInciteUrl().'/ajax/uploadratings'; ?>",
-        data: {'ratings': upload_rating},
-        success: function (response) {
-          console.log(response);
-          //alert(response);
-        }
-      });
-    }
+
         function migrateTaggedDocumentsFromV1toV2() {
             $('#transcribe_copy em').each( function (idx) {
                 $(this).addClass('tagged-text');
@@ -108,7 +113,7 @@
 	            zoom: "fit"
         	});
 
-            buildPopoverContent();
+            //buildPopoverContent();
 		});
 
         function buildPopoverContent() {
@@ -262,6 +267,7 @@
         top: 5px;
     }
 </style>
+-->
             </div>
 
             <div class="col-md-6" id="connecting-work-area" style = "clear: both;">
@@ -320,8 +326,11 @@
                 ?>
 
                 <hr size=2 class="discussion-seperation-line">
-
+                <?php
+                    include(dirname(__FILE__) . '/../common/task_comments_section.php');
+                ?>
 <body>
+  <!--
 	<div id="comment-container" class="comments-section-container">
         <h3> Comment </h3>
         <div id="onLogin">
@@ -341,7 +350,7 @@
         <br>
         <ul id="comments" class="comments-list"></ul>
     </div>
-
+-->
     <div class="container">
       <!-- Trigger the modal with a button -->
 

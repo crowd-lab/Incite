@@ -3,7 +3,7 @@
         $('#work-zone').ready(function () {
             $('#work-view').width($('#work-zone').width());
         });
-
+        
         $(document).ready(function () {
         	 $('[data-toggle="popover"]').popover({trigger: "hover"});
 
@@ -58,10 +58,13 @@
                 $('#document-info-glyphicon').attr('data-content', "No available document information, sorry!");
             }
         }
+        function resize() {
+			$('#work-view').width($('#work-zone').width());
+		}
     </script>
 </head>
 
-<body>
+<body onresize="resize()">
 	<div class="col-md-6" id="work-zone">
         <div id="work-view">
             <div class="document-header" id="document-header">
@@ -83,7 +86,8 @@
 
 <style>
 	#work-view {
-        position: relative;
+        /*position: relative;*/
+        position: fixed;
         width: 35%;
         margin-top: -39px;
     }

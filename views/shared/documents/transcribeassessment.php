@@ -48,19 +48,24 @@
 	<?php
 		include(dirname(__FILE__) . '/../common/task_header.php');
 	?>
-
+	<?php
+			include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
+	?>
 	<div class="container-fluid">
+		<!--
 		<head>
+
 			<script type="text/javascript">
 				function resize() {
 					$('#work-view').width($('#work-zone').width());
 				}
-
+/*
 				$('#work-zone').ready(function () {
 					$('#work-view').width($('#work-zone').width());
 					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
 				});
-
+				*/
+/*
 				$(document).ready(function () {
 
 					$('[data-toggle="popover"]').popover({trigger: "hover"});
@@ -72,12 +77,12 @@
 						zoom: "fit"
 					});
 
-					buildPopoverContent();
+					//buildPopoverContent();
 				});
 
 
-
-
+*/
+/*
 				function buildPopoverContent() {
 					var content = '';
 					var date = "1861-06-29";
@@ -101,10 +106,14 @@
 					} else $('#document-info-glyphicon').attr('data-content', "No available document information, sorry!");
 
 				}
+				*/
 			</script>
-		</head>
 
+		</head>
+	-->
+<!--
 		<body onresize="resize()">
+
 			<div class="col-md-6" id="work-zone">
 				<div id="work-view">
 					<div class="document-header" id="document-header">
@@ -122,7 +131,7 @@
 					</div>
 				</div>
 			</div>
-
+-->
 			<div class="col-md-6" id="submit-zone">
 				<div id="transcribing-work-area">
 					<form method="post" id="transcribe-form">
@@ -252,7 +261,10 @@
 
 				<br>
 				<hr size=2 class="discussion-seperation-line">
-
+				<?php
+						include(dirname(__FILE__) . '/../common/task_comments_section.php');
+				?>
+<!--
 				<div id="comment-container" class="comments-section-container">
 					<h3> Comment </h3>
 					<div id="onLogin">
@@ -271,8 +283,11 @@
 					<br><br>
 					<ul id="comments" class="comments-list"></ul>
 				</div>
+			-->
 			</div>
+			<!--
 		</body>
+	-->
 	</div>
 
 
@@ -360,27 +375,25 @@
 
 
     <style>
+		/*
     #work-view {
 				position: fixed;
-				/*margin-top: -39px;*/
 				margin-top: -30px;
 			}
 
-
 			.viewer {
-				/*width: 100%;*/
 				border: 1px solid black;
 				position: relative;
 			}
-
-			.wrapper {
+*/
+/*
+		.wrapper {
 				overflow: hidden;
 				margin-top: 7px;
-				/*width: 70%;*/
+				width: 70%;
 			}
-
-
-
+			*/
+/*
 			.document-title {
 				font-size: 25px;
 				position: relative;
@@ -392,16 +405,19 @@
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
-
+			*/
+/*
 			#document-info-glyphicon {
 				color: #337AB7;
 				font-size: 20px;
 				top: -8px;
 			}
-
+			*/
+/*
 			.popover {
 				max-width: 100%;
 			}
+			*/
         #submit-zone {
             margin-top: -32px;
         }
@@ -434,6 +450,7 @@
             right: 0;
             cursor: pointer;
         }
+				/*
 				#viewer2 {
 					background: white;
 					margin-left: 10px;
@@ -443,7 +460,7 @@
 				#document-header {
 					margin-left: 10px;
 				}
-
+*/
         .tour-backdrop,
     .tour-step-background {
         z-index: 3;

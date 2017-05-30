@@ -1,5 +1,8 @@
 <head>
 	<script type="text/javascript">
+        function resize() {
+    					$('#work-view').width($('#work-zone').width());
+        }
         function migrateTaggedDocumentsFromV1toV2() {
             $('#transcribe_copy em').each( function (idx) {
                 $(this).addClass('tagged-text');
@@ -99,7 +102,7 @@
 	</script>
 </head>
 
-<body>
+<body onresize="resize()">
 	<div style="position: fixed;" id="work-view">
         <div class="document-header">
             <span class="document-title" title="<?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>">

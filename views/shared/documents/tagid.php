@@ -157,26 +157,21 @@
                         <tr><th>Questions</th><th>Answers</th></tr>
                         <tr><td>When was this document produced?</td><td><input type="text" placeholder="YYYY-MM-DD"></td></tr>
                         <tr><td>Where was this document produced?</td><td><input type="text" placeholder="location"></td></tr>
+                        <tr><td>Based on your reading, what location does this document tell you most about?</td><td><input type="text" id = "location-detail" placeholder="City, State, or region"></td></tr>
                         <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
                             <td>
-                                <select class="form-control">
-                                    <option>What race?</option>
-                                    <option>White</option>
-                                    <option>African American</option>
-                                    <option>Foreigner</option>
-                                    <option>Not specified</option>
-                                </select>
+                              <select class="form-control">
+                                  <option>What social group?</option>
+                                  <option>White Americans</option>
+                                  <option>African Americans</option>
+                                  <option>Foreigners</option>
+                                  <option>Abolitionists</option>
+                                  <option>Not specified</option>
+                              </select>
                                 <select class="form-control">
                                     <option>What gender?</option>
                                     <option>Male</option>
                                     <option>Female</option>
-                                    <option>Not specified</option>
-                                </select>
-                                <select class="form-control">
-                                    <option>What occupation?</option>
-                                    <option>Abolitionist</option>
-                                    <option>Soldier</option>
-                                    <option>Civilian</option>
                                     <option>Not specified</option>
                                 </select>
                             </td>

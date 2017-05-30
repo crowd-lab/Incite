@@ -25,9 +25,17 @@
             var copy_dic = tags_list;
             var entities_array = [];
             var question_array;
-            function resize() {
-    					$('#work-view').width($('#work-zone').width());
-    				}
+
+            function updateTagsAjaxRequest() {
+              var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/uploadtags'; ?>",
+                data: {'entities': entities_array, 'tagged_doc': $('#transcribe_copy').html(), 'questions': question_array},
+                success: function (response) {
+                  alert(response);
+                }
+              });
+            }
         </script>
     </head>
 
@@ -38,24 +46,20 @@
 
         <div class="container-fluid">
             <div class="col-md-5" id="work-zone">
+              <?php
+                  include(dirname(__FILE__) . '/../common/document_viewer_section_with_transcription.php');
+              ?>
+<!--
 <head>
 	<script type="text/javascript">
 
-  function updateTagsAjaxRequest() {
-    var request = $.ajax({
-      type: "POST",
-      url: "<?php echo getFullInciteUrl().'/ajax/uploadtags'; ?>",
-      data: {'entities': entities_array, 'tagged_doc': $('#transcribe_copy').html(), 'questions': question_array},
-      success: function (response) {
-        alert(response);
-      }
-    });
-  }
-        function migrateTaggedDocumentsFromV1toV2() {
-            $('#transcribe_copy em').each( function (idx) {
-                $(this).addClass('tagged-text');
-            });
-        }
+
+  /*
+    function migrateTaggedDocumentsFromV1toV2() {
+        $('#transcribe_copy em').each( function (idx) {
+            $(this).addClass('tagged-text');
+        });
+    }
 		var selectTab = function (tabToSelect, tabToUnselect) {
 		    tabToSelect.addClass("active");
 		    tabToUnselect.removeClass("active");
@@ -104,7 +108,7 @@
 	            zoom: "fit"
         	});
 
-            buildPopoverContent();
+            //buildPopoverContent();
 		});
 
         function buildPopoverContent() {
@@ -147,9 +151,11 @@
                 $('#document-info-glphicon').attr('data-content', "No available document information, sorry!");
             }
         }
+        */
 	</script>
 </head>
-
+-->
+<!--
 <body onresize="resize()">
 <div id="work-view" >
         <div class="document-header" id = "header" style = "position: relative">
@@ -190,7 +196,8 @@
         </div>
     </div>
 </body>
-
+-->
+<!--
 <style>
 	#work-view {
         position: fixed;
@@ -268,6 +275,7 @@
 
 }
 </style>
+-->
             </div>
 
             <div class="col-md-7">
@@ -414,23 +422,17 @@
                         <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
                             <td>
                                 <select id = "race-selector" class="form-control">
-                                    <option>What socail group?</option>
-                                    <option>White</option>
-                                    <option>African American</option>
-                                    <option>Foreigner</option>
-                                    <option>Abolitionist</option>
+                                    <option>What social group?</option>
+                                    <option>White Americans</option>
+                                    <option>African Americans</option>
+                                    <option>Foreigners</option>
+                                    <option>Abolitionists</option>
                                     <option>Not specified</option>
                                 </select>
                                 <select id = "gender-selector" class="form-control">
                                     <option>What gender?</option>
                                     <option>Male</option>
                                     <option>Female</option>
-                                    <option>Not specified</option>
-                                </select>
-                                <select id = "occupation-selector" class="form-control">
-                                    <option>What occupation?</option>
-                                    <option>Soldier</option>
-                                    <option>Civilian</option>
                                     <option>Not specified</option>
                                 </select>
                             </td>
@@ -454,6 +456,7 @@
 
 
 <body>
+  <!--
 	<div id="comment-container" class="comments-section-container">
         <h3> Comment </h3>
         <div id="onLogin">
@@ -473,7 +476,7 @@
         <br>
         <ul id="comments" class="comments-list"></ul>
     </div>
-
+-->
     <div class="container">
       <!-- Trigger the modal with a button -->
 
@@ -559,7 +562,7 @@
       </div>
 
 </body>
-
+<!--
 <style>
 	.submit-reply {
         float: right;
@@ -596,6 +599,10 @@
     }
 
 </style>
+-->
+<?php
+    include(dirname(__FILE__) . '/../common/task_comments_section.php');
+?>
             </div>
         </div>
     <!-- End work container -->
