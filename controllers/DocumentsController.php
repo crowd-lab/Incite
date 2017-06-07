@@ -143,7 +143,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
     $this->view->image_url = getFullOmekaUrl()."plugins/Incite/views/shared/images/assess1.png";
     $this->_helper->viewRenderer('transcribeassessment');
-    //$this->view->doc_id = $this->_getParam('id');
+    $this->view->doc_id = $this->_getParam('id');
+    $this->view->groupid = (string)$this->getWorkingGroupID();
   }
 
   public function transcribeAction() {
@@ -157,9 +158,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->view->doc_id = $this->_getParam('id');
               return;
           }
-          
-          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_trans']) {
+          $groupAssessStatus = "group".(string)$this->getWorkingGroupID();
+          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_trans'][$groupAssessStatus]) {
               $this->redirect('incite/documents/trans1/'.$this->_getParam('id'));
+              
               return;
           }
           
@@ -282,6 +284,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $assessment_doc_id = 731;
     $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
     $this->view->image_url = getFullOmekaUrl()."plugins/Incite/views/shared/images/assess1.png";
+    $this->view->doc_id = $this->_getParam('id');
+    $this->view->groupid = (string)$this->getWorkingGroupID();
     $categories = getAllCategories();
               $ner_entity_table = array();
               $tag_id_counter = 0;
@@ -385,7 +389,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               return;
           }
           
-          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_tag']) {
+          $groupAssessStatus = "group".(string)$this->getWorkingGroupID();
+          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_tag'][$groupAssessStatus]) {
               $this->redirect('incite/documents/tag1/'.$this->_getParam('id'));
               return;
           }
@@ -556,10 +561,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $assessment_doc_id = 731;
     $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
     $this->view->image_url = getFullOmekaUrl()."plugins/Incite/views/shared/images/assess1.png";
+    $this->view->doc_id = $this->_getParam('id');
     $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
     $this->view->subjects = getAllSubjectConcepts();
     $this->view->transcription = getLatestTaggedTransForUser($assessment_doc_id);
     $this->_helper->viewRenderer('connectassessment');
+    $this->view->groupid = (string)$this->getWorkingGroupID();
     unset($_SESSION['Incite']['assessment_trans']);
     return;
   }
@@ -577,7 +584,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           $this->view->doc_id = $this->_getParam('id');
           return;
         }
-          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_conn']) {
+          $groupAssessStatus = "group".(string)$this->getWorkingGroupID();
+          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_conn'][$groupAssessStatus]) {
             $this->redirect('incite/documents/conn1/'.$this->_getParam('id'));
           }
           

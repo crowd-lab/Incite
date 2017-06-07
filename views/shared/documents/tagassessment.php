@@ -3,7 +3,9 @@
     <head>
         <?php
             $_SESSION['Incite']['tutorial_tag'] = true;
-            $_SESSION['Incite']['assessment_tag'] = true;
+            $groupid = $this->groupid;
+            $groupAssessStatus = "group".$groupid;
+        		$_SESSION['Incite']['assessment_tag'][$groupAssessStatus] = true;
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
 
@@ -491,13 +493,14 @@
               <h4 class="modal-title">Results</h4>
             </div>
             <div class="modal-body">
-              <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=wrong, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=inserted correct answers</b>
-              <br>
               <br>
               <ul class="nav nav-tabs nav-justified nav-pills">
-                  <li class="active" ><a >Tags</a></li>
+                <li class="active" ><a >Tags</a></li>
               </ul>
                   <div class="tab-pane active" id="tags">
+                    <br>
+                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplimental answers, no color means matching answers</b>
+                    <br>
                     <br>
                     <div id = "userTags">
 
@@ -517,7 +520,9 @@
                   </ul>
                   <div class="tab-pane" id="questions">
                     <br>
-
+                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplimental answers, no color means matching answers</b>
+                    <br>
+                    <br>
                     <div = id = "right_questions">
                       <table class = "rightTable" id = "urquestions">
                         <tr>
@@ -541,9 +546,6 @@
                         </tr>
                         <tr>
                           <td>Gender</td>
-                        </tr>
-                        <tr>
-                          <td>Occupation</td>
                         </tr>
                       </table>
                     </div>
@@ -899,39 +901,52 @@
 
     function fillQuestions() {
       var date = $('#date-detail').val();
+      if (date == "")
+        date = "You did not answer this question"
       var location = $('#place-detail').val();
+      if (location == "")
+        location = "You did not answer this question"
       var pointed_location = $('#location-detail').val();
+      if (pointed_location == "")
+        pointed_location = "You did not answer this question"
       var period = $('#period-selector').val();
+      if (period == "What period?")
+        period = "You did not answer this question"
       var race = $('#race-selector').val();
+      if (race == "What social group?")
+        race = "You did not answer this question"
       var gender = $('#gender-selector').val();
-      var occupation = $('#occupation-selector').val();
+      if (gender == "What gender?")
+        gender = "You did not answer this question"
       var selec = $("#urquestions tr");
-      question_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':race, '6': gender, '7': occupation};
+      question_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':race, '6': gender};
       var question_len = Object.keys(question_array).length;
-      for (var i = 1; i < question_len; i++) {
+      for (var i = 1; i < question_len + 1; i++) {
         var ansList = all_answer[i];
         var a = ansList["a"][question_array[i]];
         var t = ansList["c"]["true"];
         if (a == null) {
           var correct = "";
-          var pop_over = "";
+          var pop_over = "<ol>";
           for (var j = 0; j < t.length; j++) {
             correct = correct + t[j]["a"] + "  ";
-            pop_over = pop_over + '<a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+t[j]["ex"]+'">'+t[j]["a"]+'</a>' + '&nbsp;';
+            pop_over = pop_over + '<li><insert><b>' + t[j]["a"]+ "</b>: <ul>" + t[j]["ex"] +'</ul></insert></li>';
           }
-          $($(selec)[i]).append('<td>' + '<wrong>' + question_array[i] + ' </wrong>' + '<insert>' + pop_over+ '</insert>' + '</td>');
+          pop_over += "</ol>";
+            $($(selec)[i]).append('<td>' + '<p><wrong><b>' + question_array[i] + '</b> </wrong>' + '<br/><br />'+ "Hitorians' answers:" +'<br /><insert>' + pop_over+ '</insert>' + '</td><p>');
         }
         else {
           if (a["t"] == "true") {
-            $($(selec)[i]).append('<td><a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="' + a["ex"] +'">' + question_array[i] + '</a></td>');
+            $($(selec)[i]).append('<td><b>' + question_array[i] + '</b><br />'+ "Your answer is matched with historians' answers" +'</td>');
           }
           else {
-            var pop_over = "";
+            var pop_over = "<ol>";
             for (var j = 0; j < t.length; j++) {
-              pop_over = pop_over + '<a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+t[j]["ex"]+'">'+t[j]["a"]+'</a>' + '&nbsp;';
+              pop_over = pop_over + '<li><insert><b>'+t[j]["a"]+ "</b>: <ul>" +t[j]["ex"] +'</ul></insert></li>';
             }
-            var wrong_ans = '<a data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="'+a["ex"]+'">'+question_array[i]+'</a>' + '&nbsp;';
-            $($(selec)[i]).append('<td>' + '<wrong>' + wrong_ans + ' </wrong>' + "&nbsp&nbsp&nbsp" + '<insert>' + pop_over + '</insert>' + '</td>');
+            pop_over += "</ol>";
+            var wrong_ans = question_array[i];
+            $($(selec)[i]).append('<td>' + '<p><wrong><b>' + wrong_ans + '</b></wrong>' + '<br/><br />'+ "Hitorians' answers:"  + '<br/><insert>' + pop_over + '</insert>' + '</p></td>');
             correct = "";
           }
         }
@@ -1082,29 +1097,28 @@
   }
 
   wrong {
-    color: red;
-    background: #fdd;
+    color: #8B0000;
+    background: 	#F08080;
     text-decoration: none;
   }
 
   insert {
-    color: green;
-    background: #dfd;
+    color: #2F4F4F;
+    background: #A8E6CF;
     text-decoration: none;
   }
 
   .wrong {
-    color: red;
-    background: #fdd;
+    color: #8B0000;
+    background: 	#F08080;
     text-decoration: none;
   }
 
   .insert {
-    color: green;
-    background: #dfd;
+    color: #2F4F4F;
+    background: #A8E6CF;
     text-decoration: none;
   }
-
 
 
 </style>

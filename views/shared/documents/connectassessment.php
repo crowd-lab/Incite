@@ -3,7 +3,9 @@
 <head>
     <?php
         $_SESSION['Incite']['tutorial_conn'] = true;
-        $_SESSION['Incite']['assessment_conn'] = true;
+        $groupid = $this->groupid;
+        $groupAssessStatus = "group".$groupid;
+        $_SESSION['Incite']['assessment_conn'][$groupAssessStatus] = true;
         include(dirname(__FILE__).'/../common/header.php');
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
@@ -28,7 +30,7 @@
             url: "<?php echo getFullInciteUrl().'/ajax/uploadratings'; ?>",
             data: {'ratings': upload_rating},
             success: function (response) {
-              console.log(response);
+              //console.log(response);
               //alert(response);
             }
           });
@@ -521,15 +523,15 @@
             var value = $(this).find('[type=radio]:checked').val();
             upload_rating.push({"concept_id": concept_to_id[title], "rank": value});
             if (theme_ratings[value] == theme_ratings[rating_list[i + 1]-1]) {
-              $($("#userTheme tr")[i + 1]).append("<td>" + theme_ratings[value] + "</td>");
-              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
+              $($("#userTheme tr")[i + 1]).append("<td><b>" + theme_ratings[value] + "</b><br /><br />" + "Your answer is matched with historians' answer <br /><ul>"+ ex_list[i + 1] +"</ul></td>");
+              //$($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
             }
 
             else {
-              $($("#userTheme tr")[i + 1]).append("<td>" + "<wrong>" + theme_ratings[value] + "</wrong>" + "&nbsp&nbsp&nbsp" + " <insert>" + theme_ratings[rating_list[i + 1]-1] + "</insert>" + "</td>");
-              $($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
+              $($("#userTheme tr")[i + 1]).append("<td>" + "<wrong><b>" + theme_ratings[value] + "</b></wrong><br /><br />" + "Historians' answer: " + "<br /><br /><insert><b>" + theme_ratings[rating_list[i + 1]-1] + "</b></insert><br /><ul>"+ ex_list[i + 1] + "</ul></td>");
+              //$($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
             }
-            $($($("#userTheme tr")[i + 1]).find('a')).attr('data-content',ex_list[i + 1]);
+            //$($($("#userTheme tr")[i + 1]).find('a')).attr('data-content',ex_list[i + 1]);
             i++;
           });
         }

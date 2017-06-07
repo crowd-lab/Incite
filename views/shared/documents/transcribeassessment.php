@@ -3,7 +3,9 @@
 
 	<?php
 		$_SESSION['Incite']['tutorial_trans'] = true;
-		$_SESSION['Incite']['assessment_trans'] = true;
+		$groupid = $this->groupid;
+		$groupAssessStatus = "group".$groupid;
+		$_SESSION['Incite']['assessment_trans'][$groupAssessStatus] = true;
 		include(dirname(__FILE__) . '/../common/header.php');
 		include(dirname(__FILE__) . '/../common/progress_indicator.php');
 		$tone = getTone($this->document_metadata->id);
@@ -243,10 +245,10 @@
 	                    <div class="tab-pane" id="tones">
 												<br>
 												<div id = "right_tone"></div>
-												<button class="btn btn-default" id="reason_pop" type="button" data-toggle="popover" data-trigger="manual">see why</button>
 	                    </div>
 											<br>
 				        </div>
+								<div class = "clearfix"></div>
 				        <div class="modal-footer">
 				          <button type="button" id = "closeButton" class="btn btn-default" data-dismiss="modal">Close</button>
 				        </div>
@@ -337,15 +339,11 @@
 
 				function UserTone () {
 					if ($('#tone-selector').val() == answer_tone)
-						$("#right_tone").append("You selected " + $('#tone-selector').val() + "." );
+						$("#right_tone").append("You selected <b>" + $('#tone-selector').val() + "</b>.<br /><br />Your answer is matched with historians' answers" );
 					else
-						$("#right_tone").append("You selected " + "<del>" + $('#tone-selector').val() +"</del>" + "<ins>" + answer_tone + "</ins>"+ ".");
+						$("#right_tone").append("You selected <del><b>" + $('#tone-selector').val() +"</b></del><br /><br />Hitorians' answers:<br /><ul><ins><b>" + answer_tone + "</b></ins>. <ul>"+ tone_reason + "</ul></ul>");
 
 				}
-				$('#reason_pop').on('click', function(){
-				    $(this).attr('data-content',tone_reason);
-				    $(this).popover('show');
-				});
         function styleForEditing() {
             populateWithLatestTranscriptionData();
             addRevisionHistoryListeners();

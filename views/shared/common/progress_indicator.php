@@ -35,7 +35,16 @@
 	        	styleForTag(numberOfTasksCompleted);
 	        } else if (pathname.indexOf("/connect/") > -1) {
 	        	styleForConnect(numberOfTasksCompleted);
-	        } else {
+	        }
+			
+			else if (pathname.indexOf("/trans1/") > -1) {
+            	styleForTranscribe(numberOfTasksCompleted);
+			} else if (pathname.indexOf("/tag1/") > -1) {
+				styleForTag(numberOfTasksCompleted);
+			} else if (pathname.indexOf("/conn1/") > -1) {
+				styleForConnect(numberOfTasksCompleted);
+			} 
+			else {
 	        	alert("Using progress indicator on incorrect page, please contact the developers");
 	        }
 

@@ -61,7 +61,6 @@
 		$(document).ready(function () {
 
       $(".btn-end").click(function(){
-        alert("2333");
         $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
       });
             migrateTaggedDocumentsFromV1toV2();
@@ -1050,7 +1049,7 @@
                         }
                     });
                     $('#location-detail').change(function() {
-                      if (this.value == 'Germany-Berlin state-Berlin') {
+                      if (this.value == 'Prussia' || this.value == 'Berlin') {
                           i++;
                       }
                       if(i == 5) {

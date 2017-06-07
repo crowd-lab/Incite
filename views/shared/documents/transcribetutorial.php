@@ -82,8 +82,9 @@
 
 		<body onresize="resize()">
 			<div class="col-md-6" id="work-zone">
+
 				<div id="work-view">
-					<div class="document-header" id="document-header">
+					<div class="document-header" id="document-header" style = "position:relative">
 						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> Sunday School Celebration in Prussia</span>
 						<span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
 							aria-hidden="true" data-trigger="hover"
@@ -287,25 +288,23 @@
                 content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now.",
                 placement: "right",
 								onShow: function() {
-									//$("#viewer2").css("z-index", "1101");
-									$("#work-view").css("z-index", "1101");
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
 								},
 								onShown: function() {
-									//$("#viewer2").css("z-index", "6");
+									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
 								}
             },
             {
-							  element: '#viewer2',
+							  //element: '#viewer2',
+								element: "#work-view",
                 title: "Welcome! (continued)",
                 content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this text searchable by transcribing it. This means you will type what the image says.',
                 placement: "right",
 								onShow: function() {
-									//$("#viewer2").css("z-index", "1101");
-									$("#viewer2").css("z-index", "1101");
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
 								},
                 onShown: function() {
-										//$("#viewer2").css("z-index", "6");
-										//$("#work-view").css("z-index", "1101");
+										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
                 }
             },
 
@@ -314,9 +313,13 @@
                 title: "More Information",
                 content: 'By hovering over the <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon" style="top: 5px;;"></span> at the top of a document, we will provide you with more in-depth information on the document.<br> Press Next when you are ready.<br>',
                 placement: "right",
-
+								onShow: function() {
+									$("#document-header").css("z-index", "1102");
+									$("#viewer2").css("z-index", "-1");
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+								},
                 onShown: function(){
-										$("#viewer2").css("z-index", "-1");
+										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
 										$("#document-info-glyphicon").hover(function() {
 											info_times++;
 										 if(info_times == 1) {
@@ -330,16 +333,16 @@
                 }
             },
             {
-                element: '#viewer2',
+                //element: '#viewer2',
+								element: "#work-view",
                 title: "Zoom",
                 content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. <br><br> Press Next when you are ready.<br>',
                 placement: "right",
 								onShow: function() {
-									//$("#viewer2").css("z-index", "1101");
-									$("#viewer2").css("z-index", "1101");
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
 								},
                 onShown: function(){
-
+										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
 										$('.iviewer_common').click(function() {
 											zoomer_times++;
 											if(zoomer_times == 1) {
@@ -356,9 +359,11 @@
                 title: "Transcribing Process",
                 content: 'The transcribing process includes three steps. <br> 1. Transcribe: Type the contents of the document, word-for-word. <br> 2. Summarize: Provide a brief summary of the document. <br> 3. Tone: Out of the options available, select the most relevant tone of the document.',
                 placement: "left",
-
+								onShow: function() {
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+								},
                 onShown: function() {
-
+										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
 										$("#viewer2").css("z-index", "-1");
                 }
             },
@@ -370,7 +375,11 @@
                 title: "Transcription",
                 content: 'When transcribing, try your best to be as accurate as possible.  <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total for the first sentence!<br>',
                 placement: "bottom",
-							 onShown: function() {
+								onShow: function() {
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+								},
+							 	onShown: function() {
+								 $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
 								 $("#viewer2").css("z-index", "1101");
 								 $('#transcription-textarea').on("input", function()
 									{
@@ -396,8 +405,12 @@
                 title: "Transcribing Process",
                 content: 'Summarize: Provide a brief summary of the document.<br>',
                 placement: "bottom",
+								onShow: function() {
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+								},
                 onShown: function() {
-										$('#summary-textarea').on("input", function() {
+									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+									$('#summary-textarea').on("input", function() {
 											if (this.value !== '') {
 												sum_times++;
 												if(sum_times == 1) {
@@ -417,8 +430,11 @@
                 title: "Transcribing Process",
                 content: 'Tone: Out of the options available, select the most relevant tone of the document. <br> Hint: “Informational” could be a correct answer.<br>',
                 placement: "bottom",
-
+								onShow: function() {
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+								},
                 onShown: function() {
+									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
 									$("#viewer2").css("z-index", "6");
 										$('#tone-selector').change(function() {
 										if ($('#tone-selector').val() == 'informational') {
@@ -441,13 +457,20 @@
                 content: 'You have completed transcribe tutorial, and you can click the submit to go to the real document that you just chose.',
                 placement: "left",
 								onShow: function(){
-
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
 									$("#viewer2").css("z-index", "-1");
-								}
+								},
+								onShown: function() {
+									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+                }
 
             },
 
-           ], backdrop: true,
+        ],
+				onEnd: function(tour) {
+			     $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+			  },
+				backdrop: true,
         storage: false});
 
         // Initialize the tour
@@ -464,11 +487,13 @@
 
     <style>
 		#work-view {
-				position: fixed;
+				position: relative;
 				/*margin-top: -39px;*/
 				margin-top: -30px;
 			}
-
+			#viewer2 {
+				/*position: absolute;*/
+			}
 
 			.viewer {
 				/*width: 100%;*/
