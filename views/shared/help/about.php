@@ -34,13 +34,42 @@ p{
       <br>
       Coordinated by the Virginia Center for Civil War Studies, Mapping the Fourth involves faculty, staff, and support from around Virginia Tech: the Center for Human-Computer Interaction, History, Computer Science, the School of Education, and the University Libraries. The project is funded with a “Literacy and Engagement with Historical Records” grant from the National Archives’ National Historical Publications and Records Commission.<br>
       <br><br>
-      The project team includes:<br><br>
-      ♦ Paul Quigley  (project director) is the James I. Robertson, Jr. Associate Professor of Civil War Studies and director of the Virginia Center for Civil War Studies, housed in the Virginia Tech History Department. <br>
-      ♦ David Hicks  (project co-director) is associate professor of history and social science education (Social Studies) in Virginia Tech’s School of Education.<br>
-      ♦ Kurt Luther  (project co-director) is assistant professor of Computer Science at Virginia Tech, where he is also a member of the Center for Human-Computer Interaction and the Institute for Creativity, Arts, and Technology.<br>
-      ♦ Andrea Ogier, Steven Tatum, and Edwin Brooks, all from the Virginia Tech University Libraries, contribute expertise in data management, the Omeka platform, and GIS mapping.<br>
-      ♦ Nai-Ching Wang  (major developer and designer of Incite) is a PhD student of Computer Science at Virginia Tech.<br>
-      ♦ Other students from the departments of history and computer science: Kevin Caprice, Daniel Newcomb, Amit Dayal, Vijay Kuruvilla, Jayanth Prathipati, Seth Nute, Abby Jetmundsen, and So Hyun Jo.<br>
+      <p>The project team includes:</p>
+        <ul>
+            <li>Paul Quigley  (project director) is the James I. Robertson, Jr. Associate Professor of Civil War Studies and director of the Virginia Center for Civil War Studies, housed in the Virginia Tech History Department.</li>
+            <li>David Hicks  (project co-director) is associate professor of history and social science education (Social Studies) in Virginia Tech’s School of Education.</li>
+            <li>Kurt Luther  (project co-director) is assistant professor of Computer Science at Virginia Tech, where he is also a member of the Center for Human-Computer Interaction and the Institute for Creativity, Arts, and Technology.</li>
+            <li>Andrea Ogier, Steven Tatum, and Edwin Brooks, all from the Virginia Tech University Libraries, contribute expertise in data management, the Omeka platform, and GIS mapping.</li>
+            <li>Nai-Ching Wang  (major developer and designer of Incite) is a PhD student of Computer Science at Virginia Tech.</li>
+            <li>Other students from the departments of history and computer science: Kevin Caprice, Daniel Newcomb, Amit Dayal, Vijay Kuruvilla, Jayanth Prathipati, Seth Nute, Abby Jetmundsen, and So Hyun Jo.</li>
+        </ul>
+      <br>
+      <p>The Mapping the Fourth team thanks our beta users and their students for testing the site and providing valuable feedback:</p>
+      <ul>
+        <li>Kristen Epps (University of Central Arkansas)</li>
+        <li>Hilary Green (University of Alabama)</li>
+        <li>Bradley Kraft (Blacksburg High School)</li>
+        <li>Evan Liddiard (Virginia Historical Society)</li>
+        <li>Scott Nesbit (University of Georgia)</li>
+        <li>Jennafer O'Neill (Pittsburgh Public Schools)</li>
+        <li>Jeffrey Pedersen (Staunton River Middle School, Bedford County, Va.) </li>
+        <li>Paul Quigley (Virginia Tech)</li>
+        <li>Jon Schildknecht (Yorktown High School, Arlington County, Va.)</li>
+        <li>Margaret Storey (DePaul University)</li>
+      </ul>
+      <br>
+      <p>We are also grateful to our distinguished advisory board members:</p>
+      <ul>
+        <li>Wayne Graham (Council on Library and Information Resources)</li>
+        <li>John Lee (North Carolina State University)</li>
+        <li>Evan Liddiard (Virginia Historical Society)</li>
+        <li>Scott Nesbit (University of Georgia)</li>
+        <li>Craig Perrier (Fairfax County Public Schools)</li>
+        <li>Anne Rubin (University of Maryland Baltimore County)</li>
+        <li>Sam Smith (Civil War Trust)</li>
+        <li>Loren Terveen (University of Minnesota)</li>
+        <li>Sharon Zuckerwar (Montgomery County Public Schools)</li>
+      </ul>
       <br>
 
       Questions? Please email <a href="mailto:july4.civilwar-g@vt.edu">july4.civilwar-g@vt.edu</a>
