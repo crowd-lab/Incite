@@ -325,22 +325,23 @@ public function getallavailabledocsAction(){
           }
 
           $record = get_record_by_id('item', $document_ids[$i]);
-          $file = $record->getFile();
+            if ($record != null) {
+                $file = $record->getFile();
+                if($file != null) {
+                // $records[] = $this->_helper->db->find($document_ids[$i]);
+                $records[] = array('id' => $document_ids[$i],
+                'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
+                'desc' => metadata($record, array('Dublin Core','Description')),
+                'name' => metadata($record, array('Dublin Core','Title')),
+                'loc' => metadata($record, array('Item Type Metadata', 'Location')),
+                'contr'=> metadata($record, array('Dublin Core', 'Contributor')),
+                'rights' =>metadata($record, array('Dublin Core', 'Rights')),
+                'src' => metadata($record, array('Dublin Core', 'Rights')),
+                'url'=> get_image_url_for_item($record, true),
+                'lat_long' => loc_to_lat_long(metadata($record, array('Item Type Metadata', 'Location'))));
 
-          if($file != null){
-            // $records[] = $this->_helper->db->find($document_ids[$i]);
-            $records[] = array('id' => $document_ids[$i],
-            'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
-            'desc' => metadata($record, array('Dublin Core','Description')),
-            'name' => metadata($record, array('Dublin Core','Title')),
-            'loc' => metadata($record, array('Item Type Metadata', 'Location')),
-            'contr'=> metadata($record, array('Dublin Core', 'Contributor')),
-            'rights' =>metadata($record, array('Dublin Core', 'Rights')),
-            'src' => metadata($record, array('Dublin Core', 'Rights')),
-            'url'=> get_image_url_for_item($record, true),
-            'lat_long' => loc_to_lat_long(metadata($record, array('Item Type Metadata', 'Location'))));
-
-          }
+                }
+           }
         }
 
         $data['records'] = $records;

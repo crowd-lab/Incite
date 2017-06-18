@@ -199,7 +199,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     } else {
       $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
       $this->view->query_str = "";
-      debug_to_console("no queries");
+      //debug_to_console("no queries");
 
     }
 
