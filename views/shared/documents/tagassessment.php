@@ -51,233 +51,7 @@
               <?php
                   include(dirname(__FILE__) . '/../common/document_viewer_section_with_transcription.php');
               ?>
-<!--
-<head>
-	<script type="text/javascript">
 
-
-  /*
-    function migrateTaggedDocumentsFromV1toV2() {
-        $('#transcribe_copy em').each( function (idx) {
-            $(this).addClass('tagged-text');
-        });
-    }
-		var selectTab = function (tabToSelect, tabToUnselect) {
-		    tabToSelect.addClass("active");
-		    tabToUnselect.removeClass("active");
-		};
-
-		var setLegendWidth = function() {
-			$('#legend-container').width(
-				$('#tabs-and-legend-container').width()
-				-
-				$(".document-display-type-tabs").width()
-				-
-				7 //so it doesn't overflow
-			);
-		};
-
-		$('#work-zone').ready(function() {
-		    $('#work-view').width($('#work-zone').width());
-		});
-
-		$(document).ready(function () {
-            migrateTaggedDocumentsFromV1toV2();
-		    $('[data-toggle="popover"]').popover({trigger: "hover"});
-		    $("#document_img").hide();
-
-		    $("#hide").click(function () {
-		        $("#document_img").hide();
-		        $("#transcribe_copy").show();
-		        selectTab($("#hide"), $("#show"));
-		    });
-
-		    $("#show").click(function () {
-		        $("#document_img").show();
-		        $("#transcribe_copy").hide();
-		        selectTab($("#show"), $("#hide"));
-		    });
-
-		    //setLegendWidth();
-
-		    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
-
-	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
-
-	        $("#document_img").iviewer({
-	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/assess1.png",
-	            zoom_min: 1,
-	            zoom: "fit"
-        	});
-
-            //buildPopoverContent();
-		});
-
-        function buildPopoverContent() {
-            var content = '';
-            var date = "1861-06-29";
-  					var location = "Louisiana - Orleans Parish - New Orleans";
-  					var source = "Daily True Delta";
-  					var contributor = "";
-  					var rights = "American Antiquarian Society";
-
-            if (date) {
-                content += '<strong>Date: </strong>' + date + '<br><br>';
-            }
-
-            if (location) {
-                content += '<strong>Location: </strong>' + location + '<br><br>';
-            }
-
-            if (source) {
-                content += '<strong>Source: </strong>' + source + '<br><br>';
-            }
-
-            if (contributor) {
-                content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
-            }
-
-            if (rights) {
-                content += '<strong>Rights: </strong>' + rights + '<br><br>';
-            } else {
-                content += '<strong>Rights: </strong>Public Domain<br><br>';
-            }
-
-
-            if (content) {
-                //cut off the last <br><br>
-                content = content.slice(0, -8);
-
-                $('#document-info-glphicon').attr('data-content', content);
-            } else {
-                $('#document-info-glphicon').attr('data-content', "No available document information, sorry!");
-            }
-        }
-        */
-	</script>
-</head>
--->
-<!--
-<body onresize="resize()">
-<div id="work-view" >
-        <div class="document-header" id = "header" style = "position: relative">
-            <span class="document-title" title="Incite Tutorial - Tag">
-                <b>Title:</b> The Fourth of July at Shreveport - Tag
-            </span>
-
-            <span id="document-info-glphicon" class="glyphicon glyphicon-info-sign"
-                data-toggle="popover" data-html="true" data-trigger="hover"
-                data-viewport=".document-header" aria-hidden="true"
-                data-title="<strong>Document Information</strong>"
-                data-placement="bottom" data-id="">
-            </span>
-
-        </div>
-
-        <div id="tabs-and-legend-container" >
-            <ul class="nav nav-tabs document-display-type-tabs">
-                <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
-                <li role="presentation" id="show"><a href="#">Document</a></li>
-            </ul>
-
-            <div id="legend-container" >
-                <span><b>Legend: </b></span>
-                <?php $all_categories = getAllCategories(); ?>
-                <?php foreach ((array)$all_categories as $category): ?>
-                    <em class="<?php echo strtolower($category['name']); ?> legend-item"><?php echo ucfirst(strtolower($category['name'])); ?></em>
-                <?php endforeach; ?>
-            </div>
-        </div>
-
-        <div style="border: 1px solid; overflow: scroll;" name="transcribe_text" rows="10" id="transcribe_copy" style="width: 100%;">
-            <?php print_r($this->transcription); ?>
-        </div>
-
-        <div class="wrapper">
-            <div id="document_img" class="viewer"></div>
-        </div>
-    </div>
-</body>
--->
-<!--
-<style>
-	#work-view {
-        position: fixed;
-        margin-top: -30px;
-    }
-
-	.document-header {
-    width: 100%;
-    margin-left: 20px;
-    }
-
-	.document-title {
-        font-size: 25px;
-        position: relative;
-        top: -5px;
-        overflow: hidden;
-        display: inline-block;
-        max-width: 90%;
-        height: 32px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-     #document-info-glphicon {
-        color: #337AB7;
-        font-size: 20px;
-        top: -8px;
-    }
-
-    .popover {
-    	max-width: 100%;
-    }
-
-    #legend-container {
-        display: inline-block;
-        position: relative;
-        top: 10px;
-        text-align: right;
-        width: 60%;
-    }
-
-    .viewer {
-        border: 1px solid black;
-        position: relative;
-    }
-
-    .wrapper {
-        overflow: hidden;
-    }
-
-    .legend-item {
-        border-radius: 6px;
-        padding: 2px;
-        font-size: 13px;
-        box-sizing: border-box;
-        box-shadow: 2px 2px 2px #888;
-    }
-
-    #tabs-and-legend-container {
-        overflow: hidden;
-        height: 42px;
-    }
-
-    .document-display-type-tabs {
-        display: inline-block;
-        vertical-align: top;
-        font-size: 12px;
-        position: relative;
-        top: 5px;
-    }
-
-    .tour-backdrop,
-.tour-step-background {
-    z-index: 3;
-
-}
-</style>
--->
             </div>
 
             <div class="col-md-7">
@@ -489,7 +263,6 @@
           <!-- Modal content-->
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h4 class="modal-title">Results</h4>
             </div>
             <div class="modal-body">
@@ -499,7 +272,7 @@
               </ul>
                   <div class="tab-pane active" id="tags">
                     <br>
-                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplimental answers, no color means matching answers</b>
+                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplemental answers, No color = matched answer</b>
                     <br>
                     <br>
                     <div id = "userTags">
@@ -520,7 +293,7 @@
                   </ul>
                   <div class="tab-pane" id="questions">
                     <br>
-                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplimental answers, no color means matching answers</b>
+                    <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplemental answers, No color = matched answer</b>
                     <br>
                     <br>
                     <div = id = "right_questions">
@@ -530,19 +303,19 @@
                           <th>Answer</th>
                         </tr>
                         <tr>
-                          <td>Date</td>
+                          <td>Date of Publication</td>
                         </tr>
                         <tr>
-                          <td>Location</td>
+                          <td>Location of Publication</td>
                         </tr>
                         <tr>
-                          <td>point-out Location</td>
+                          <td>Location of Content</td>
                         </tr>
                         <tr>
                           <td>Period</td>
                         </tr>
                         <tr>
-                          <td>Race</td>
+                          <td>Social Group</td>
                         </tr>
                         <tr>
                           <td>Gender</td>
@@ -564,44 +337,7 @@
       </div>
 
 </body>
-<!--
-<style>
-	.submit-reply {
-        float: right;
-    }
 
-    .reply-box {
-        margin-bottom: 10px;
-        width: 100%;
-        height: 80px;
-    }
-
-    .reply-container {
-        width: 50%;
-        margin-bottom: 30px;
-    }
-
-    .comment-textarea {
-        width: 100%;
-        height: 80px;
-        margin-bottom: 10px;
-    }
-
-    .submit-comment-btn {
-        float: right;
-    }
-
-    .comments-list {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    .reply-comment {
-    	margin-bottom: 15px;
-    }
-
-</style>
--->
 <?php
     include(dirname(__FILE__) . '/../common/task_comments_section.php');
 ?>
@@ -921,32 +657,42 @@
       var selec = $("#urquestions tr");
       question_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':race, '6': gender};
       var question_len = Object.keys(question_array).length;
+      var checkmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "20" width = "20" >'+ '&nbsp;&nbsp;&nbsp;';
+      var crossmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "20" width = "20" >' + '&nbsp;&nbsp;&nbsp;';
       for (var i = 1; i < question_len + 1; i++) {
         var ansList = all_answer[i];
         var a = ansList["a"][question_array[i]];
         var t = ansList["c"]["true"];
         if (a == null) {
           var correct = "";
-          var pop_over = "<ol>";
+          var pop_over = "<ol style='margin-left: 45px;'>";
           for (var j = 0; j < t.length; j++) {
             correct = correct + t[j]["a"] + "  ";
-            pop_over = pop_over + '<li><insert><b>' + t[j]["a"]+ "</b>: <ul>" + t[j]["ex"] +'</ul></insert></li>';
+            pop_over = pop_over + '<li><insert>' + t[j]["a"]+ "</insert>: " + t[j]["ex"] +'</li>';
           }
           pop_over += "</ol>";
-            $($(selec)[i]).append('<td>' + '<p><wrong><b>' + question_array[i] + '</b> </wrong>' + '<br/><br />'+ "Hitorians' answers:" +'<br /><insert>' + pop_over+ '</insert>' + '</td><p>');
+            $($(selec)[i]).append('<td>' + '<p> Your answer: <br /><ul>' + crossmark + '<wrong>' + question_array[i] + "</wrong> (Your answer did not match with historians' answer below)</ul>"+ "Historians' answer:" +'<br />' + pop_over + '</td><p>');
         }
         else {
           if (a["t"] == "true") {
-            $($(selec)[i]).append('<td><b>' + question_array[i] + '</b><br />'+ "Your answer is matched with historians' answers" +'</td>');
+            var pop_over = "<ol style='margin-left: 45px;'>";
+            for (var j = 0; j < t.length; j++) {
+              if (question_array[i] == t[j]["a"])
+                pop_over = pop_over + '<li>' + checkmark + '<insert>'+ t[j]["a"] + ": <ul>" +t[j]["ex"] +'</ul></insert></li>';
+              else
+                pop_over = pop_over + '<li>' + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +'<insert>' + t[j]["a"]+ ": <ul>" +t[j]["ex"] +'</ul></insert></li>';
+            }
+            pop_over += "</ol>";
+            $($(selec)[i]).append('<td>Your answer: <br /><ul>' + checkmark + question_array[i] + " (Your answer matched with historians' answer below)</ul>"+ "Historians' answer:" + pop_over +'</td>');
           }
           else {
-            var pop_over = "<ol>";
+            var pop_over = "<ol style='margin-left: 45px;'>";
             for (var j = 0; j < t.length; j++) {
-              pop_over = pop_over + '<li><insert><b>'+t[j]["a"]+ "</b>: <ul>" +t[j]["ex"] +'</ul></insert></li>';
+              pop_over = pop_over + '<li><insert>'+t[j]["a"]+ ": <ul>" +t[j]["ex"] +'</ul></insert></li>';
             }
             pop_over += "</ol>";
             var wrong_ans = question_array[i];
-            $($(selec)[i]).append('<td>' + '<p><wrong><b>' + wrong_ans + '</b></wrong>' + '<br/><br />'+ "Hitorians' answers:"  + '<br/><insert>' + pop_over + '</insert>' + '</p></td>');
+            $($(selec)[i]).append('<td>' + '<p>Your answer: <br /><ul>' + crossmark +'<wrong>' + wrong_ans + "</wrong> (Your answers did not match historians' answer) </ul>"+ "Historians' answer:"  + '<br/><insert>' + pop_over + '</insert>' + '</p></td>');
             correct = "";
           }
         }
@@ -963,16 +709,6 @@
         var sub2 = $(sub1).find("li.active");
         var sub3 = $(table_id)[3];
         var detail = $($(sub3).find("input")).val();
-        /*
-        sub2.each(function() {
-          var value = $($(this).find("input")).val();
-          if (value == "") {
-            value = -1;
-          }
-          console.log(value);
-          //subcategories_array.push(value);
-        });
-        */
         var select = $(sub1).find("option:selected");
         var value;
         if ($(select).length == 0) {
@@ -985,21 +721,23 @@
             subcategories_array.push(value);
           });
         }
-        //$($($("#tag_id_0_table td")[2]).find('option:selected')[1]).val()
         var cat = class_name.split(" ")[0];
         var exist = processTag(tagName);
         var edited_category = cat.charAt(0).toUpperCase() + cat.slice(1);
         entities_array.push({"entity": tagName, "category": category_name_to_id_table[edited_category], "subcategory": subcategories_array, "details": detail});
 
         if (exist){
-          if (edited_category == category_id_to_name_table[tags_list[tagName]]) {
-            if (subcat_dic[value] == subcat_list[tagName])
+          if (edited_category == category_id_to_name_table[tags_list[tagName]]) { //If the categories matched
+
+            if (subcat_dic[value] == subcat_list[tagName]) //if subcategories also matched
               $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>" + subcat_dic[value] + "</td></tr>");
-            else
+            else { //If categories matched but subcategories don't match
               $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td><wrong>" + subcat_dic[value] + "</wrong>&nbsp&nbsp&nbsp<insert>" + subcat_list[tagName] + "</insert></td></tr>");
+            }
           }
-          else
-            $("#urtable").append("<tr><td>"+ tagName +"</td><td><wrong>" + edited_category + "</wrong>&nbsp&nbsp&nbsp<insert>" + category_id_to_name_table[copy_dic[tagName]] + "</insert></td><td><wrong>" + subcat_list[key] + "</wrong>&nbsp&nbsp&nbsp<insert>" + subcat_list[tagName] + "</insert></td></tr>");
+
+          else //If categories don't match
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td><wrong>" + edited_category + "</wrong>&nbsp&nbsp&nbsp<insert>" + category_id_to_name_table[copy_dic[tagName]] + "</insert></td><td><wrong>" + subcat_dic[value] + "</wrong>&nbsp&nbsp&nbsp<insert>" + subcat_list[tagName] + "</insert></td></tr>");
           delete copy_dic[tagName];
         }
         else
@@ -1008,6 +746,7 @@
 
       if (copy_dic.length != 0) {
         for (var key in copy_dic) {
+          console.log(key);
           $("#urtable").append("<tr><td>"+ "<insert>" + key + "</wrong>" + "</td><td>" + "<insert>" + category_id_to_name_table[copy_dic[key]] + "</insert>" + "</td><td><insert>" + subcat_list[key] + "</insert></td></tr>");
         }
       }
@@ -1065,57 +804,50 @@
         margin-top: -32px;
     }
     #userTags {
-      /*width: 100%;*/
       padding 0 10px;
       padding-left: 10px;
     }
 
     #right_questions {
-      /*width: 100%;*/
       padding 0 10px;
       padding-left: 10px;
     }
 
-    table .rightTable{
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    /*width: 100%;*/
+    table .rightTable {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
     }
 
     .rightTable td, .rightTable th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
     }
 
     .rightTable tr:nth-child(odd) {
-    background-color: #dddddd;
-  }
+      background-color: #dddddd;
+    }
 
-  .modal.modal-wide .modal-dialog {
-    width: 80%;
-  }
+    .modal.modal-wide .modal-dialog {
+      width: 80%;
+    }
 
   wrong {
-    color: #8B0000;
-    background: 	#F08080;
+    background: #FAB5C2;
     text-decoration: none;
   }
 
   insert {
-    color: #2F4F4F;
     background: #A8E6CF;
     text-decoration: none;
   }
 
   .wrong {
-    color: #8B0000;
-    background: 	#F08080;
+    background: #FAB5C2;
     text-decoration: none;
   }
 
   .insert {
-    color: #2F4F4F;
     background: #A8E6CF;
     text-decoration: none;
   }

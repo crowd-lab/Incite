@@ -23,9 +23,9 @@
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
     ?>
-        <?php
-            include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
-        ?>
+    <?php
+        include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
+    ?>
     <div class="container-fluid">
 
         <div class="col-md-6" id="submit-zone">
@@ -213,7 +213,7 @@
         z-index: 3;
     }
 
-    
+
 
     </style>
 </body>

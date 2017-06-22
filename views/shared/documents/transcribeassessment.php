@@ -44,6 +44,10 @@
 			}
 	});
 }
+
+	function resize() {
+			$('#work-view').width($('#work-zone').width());
+	}
 	</script>
 
 	<!-- Page Content -->
@@ -53,87 +57,8 @@
 	<?php
 			include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
 	?>
+
 	<div class="container-fluid">
-		<!--
-		<head>
-
-			<script type="text/javascript">
-				function resize() {
-					$('#work-view').width($('#work-zone').width());
-				}
-/*
-				$('#work-zone').ready(function () {
-					$('#work-view').width($('#work-zone').width());
-					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
-				});
-				*/
-/*
-				$(document).ready(function () {
-
-					$('[data-toggle="popover"]').popover({trigger: "hover"});
-
-					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
-					$("#viewer2").iviewer({
-						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/assess1.png",
-						zoom_min: 1,
-						zoom: "fit"
-					});
-
-					//buildPopoverContent();
-				});
-
-
-*/
-/*
-				function buildPopoverContent() {
-					var content = '';
-					var date = "1861-06-29";
-					var location = "Louisiana - Orleans Parish - New Orleans";
-					var source = "Daily True Delta";
-					var contributor = "";
-					var rights = "American Antiquarian Society";
-
-					if (date) content += '<strong>Date: </strong>' + date + '<br><br>';
-					if (location) content += '<strong>Location: </strong>' + location + '<br><br>';
-					if (source) content += '<strong>Source: </strong>' + source + '<br><br>';
-					if (contributor) content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
-					if (rights) content += '<strong>Rights: </strong>' + rights + '<br><br>';
-					else content += '<strong>Rights: </strong>Public Domain<br><br>';
-
-					if (content) {
-						//cut off the last <br><br>
-						content = content.slice(0, -8);
-
-						$('#document-info-glyphicon').attr('data-content', content);
-					} else $('#document-info-glyphicon').attr('data-content', "No available document information, sorry!");
-
-				}
-				*/
-			</script>
-
-		</head>
-	-->
-<!--
-		<body onresize="resize()">
-
-			<div class="col-md-6" id="work-zone">
-				<div id="work-view">
-					<div class="document-header" id="document-header">
-						<span class="document-title" title="Incite Tutorial - Transcribe" ><b>Title:</b> The Fourth of July at Shreveport</span>
-						<span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon"
-							aria-hidden="true" data-trigger="hover"
-							data-toggle="popover" data-html="true"
-							data-viewport=".document-header"
-							data-title="<strong>Document Information</strong>"
-							data-placement="bottom" data-id="">
-						</span>
-					</div>
-					<div class="wrapper">
-						<div id="viewer2" class="viewer"></div>
-					</div>
-				</div>
-			</div>
--->
 			<div class="col-md-6" id="submit-zone">
 				<div id="transcribing-work-area">
 					<form method="post" id="transcribe-form">
@@ -217,15 +142,15 @@
 				      <!-- Modal content-->
 				      <div class="modal-content">
 				        <div class="modal-header">
-				          <button type="button" class="close" data-dismiss="modal">&times;</button>
 				          <h4 class="modal-title">Results</h4>
 				        </div>
 				        <div class="modal-body">
 									<ul class="nav nav-justified nav-pills">
-										<b>Color Meaning: <span class="del" style="display:inline-block;width:16px">&nbsp;</span>=delete, <span class="ins" style="display:inline-block;width:16px">&nbsp;</span>=insert, <span class="rep" style="display:inline-block;width:16px">&nbsp;</span>=replace</b>
-									  <br>
 										<br>
 										<li class="active"><a>Transcription</a></li>
+										<br>
+										<b>Color Meaning: <span class="del" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="ins" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplimental answers, No color = matched answer</b>
+									  <br>
 									</ul>
 
 	                    <div id="trans">
@@ -243,6 +168,9 @@
 									</ul>
 
 	                    <div class="tab-pane" id="tones">
+												<br>
+												<b>Color Meaning: <span class="del" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="ins" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplemental answers, No color = matched answer</b>
+											  <br>
 												<br>
 												<div id = "right_tone"></div>
 	                    </div>
@@ -292,7 +220,6 @@
 	-->
 	</div>
 
-
     <!-- /.container -->
     <script type="text/javascript">
         $(document).ready(function () {
@@ -338,10 +265,12 @@
         });
 
 				function UserTone () {
+					var checkmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "20" width = "20" >'+ '&nbsp;&nbsp;&nbsp;';
+					var crossmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "20" width = "20" >' + '&nbsp;&nbsp;&nbsp;';
 					if ($('#tone-selector').val() == answer_tone)
-						$("#right_tone").append("You selected <b>" + $('#tone-selector').val() + "</b>.<br /><br />Your answer is matched with historians' answers" );
+						$("#right_tone").append("Your answer: <ul>"+ checkmark + $('#tone-selector').val() + " (Your answer matched with historians answers below)</ul>" +"Historians' answer:<br /><ul>" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + "<ins>" + answer_tone + "</b></ins>: "+ tone_reason + "</ul>");
 					else
-						$("#right_tone").append("You selected <del><b>" + $('#tone-selector').val() +"</b></del><br /><br />Hitorians' answers:<br /><ul><ins><b>" + answer_tone + "</b></ins>. <ul>"+ tone_reason + "</ul></ul>");
+						$("#right_tone").append("Your answer: <ul>" + crossmark + "<del>" + $('#tone-selector').val() +"</del> (Your answer did not match with historians answers below)</ul>Historians' answer:<br /><ul>" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + "<ins>" + answer_tone + "</b></ins>: "+ tone_reason + "</ul>");
 
 				}
         function styleForEditing() {
@@ -373,49 +302,14 @@
 
 
     <style>
-		/*
-    #work-view {
-				position: fixed;
-				margin-top: -30px;
-			}
+		html, body {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
 
-			.viewer {
-				border: 1px solid black;
-				position: relative;
-			}
-*/
-/*
-		.wrapper {
-				overflow: hidden;
-				margin-top: 7px;
-				width: 70%;
-			}
-			*/
-/*
-			.document-title {
-				font-size: 25px;
-				position: relative;
-				top: -5px;
-				display: inline-block;
-				overflow: hidden;
-				max-width: 90%;
-				height: 32px;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-			}
-			*/
-/*
-			#document-info-glyphicon {
-				color: #337AB7;
-				font-size: 20px;
-				top: -8px;
-			}
-			*/
-/*
-			.popover {
-				max-width: 100%;
-			}
-			*/
+				#work-zone {
+					overflow: hidden;
+				}
         #submit-zone {
             margin-top: -32px;
         }
@@ -448,17 +342,7 @@
             right: 0;
             cursor: pointer;
         }
-				/*
-				#viewer2 {
-					background: white;
-					margin-left: 10px;
 
-				}
-
-				#document-header {
-					margin-left: 10px;
-				}
-*/
         .tour-backdrop,
     .tour-step-background {
         z-index: 3;
@@ -466,53 +350,33 @@
 
     }
 		ins {
-			color: green;
-			background: #dfd;
-			text-decoration: none;
+
+	    background: #A8E6CF;
+	    text-decoration: none;
 		}
 		del {
-			color: red;
-			background: #fdd;
-			text-decoration: none;
+
+	    background: #FAB5C2;
+	    text-decoration: none;
 		}
 
 		.ins {
-			background:#dfd;
+			background:#A8E6CF;
 			}
 		.del {
-			background:#fdd;
+	    background: #FAB5C2;
 			}
-		.rep {
-			color: #008;
-			background: #eef;
-			}
-/*
-			#rightText {
-	      width: 50%;
-	      padding 0 10px;
-	      float:left;
-				padding-left: 5px;
-				padding-right: 10px;
-	    }
-			*/
+
 	    #userText {
 	      width: 100%;
-	      /*border-left: 1px solid #ccc;*/
 	      float:right;
 	      padding 0 10px;
 				padding-left: 10px;
 				padding-right: 5px;
 	    }
-/*
-			#left_tone {
-				width: 50%;
-	      padding 0 10px;
-	      float:left;
-			}
-*/
+
 			#right_tone {
 				width: 100%;
-	      /*border-left: 1px solid #ccc;*/
 	      float:right;
 	      padding 0 10px;
 				padding-left: 10px;

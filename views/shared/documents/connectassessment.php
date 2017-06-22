@@ -363,7 +363,6 @@
           <!-- Modal content-->
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h4 class="modal-title">Results</h4>
             </div>
             <div class="modal-body">
@@ -372,7 +371,7 @@
               </ul>
               <div id = "themes">
                 <br>
-                <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=wrong, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=inserted correct answers</b>
+                <b>Color Meaning: <span class="wrong" style="display:inline-block;width:16px">&nbsp;</span>=mismatching answers, <span class="insert" style="display:inline-block;width:16px">&nbsp;</span>=historians' supplemental answers, No color = matched answer</b>
                 <br>
                 <br>
               <div id = "userPart">
@@ -518,20 +517,19 @@
 
         function retrieveRating() {
           var i = 0;
+          var checkmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "20" width = "20" >'+ '&nbsp;&nbsp;&nbsp;';
+          var crossmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "20" width = "20" >' + '&nbsp;&nbsp;&nbsp;';
           $("#en-table tbody tr").each(function() {
             var title = $(this).find('a').html();
             var value = $(this).find('[type=radio]:checked').val();
             upload_rating.push({"concept_id": concept_to_id[title], "rank": value});
             if (theme_ratings[value] == theme_ratings[rating_list[i + 1]-1]) {
-              $($("#userTheme tr")[i + 1]).append("<td><b>" + theme_ratings[value] + "</b><br /><br />" + "Your answer is matched with historians' answer <br /><ul>"+ ex_list[i + 1] +"</ul></td>");
-              //$($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
-            }
+              $($("#userTheme tr")[i + 1]).append("<td>Your answer:<br /><ul>" + checkmark + theme_ratings[value] + "  (Your answer matched with historians' answers below)</ul>Historians' answer: " + "<ol style='margin-left: 45px;'><li>" + checkmark + "<insert>" + theme_ratings[rating_list[i + 1]-1] + "</insert>: "+ ex_list[i + 1] + "</li></ol></td>");
+              }
 
             else {
-              $($("#userTheme tr")[i + 1]).append("<td>" + "<wrong><b>" + theme_ratings[value] + "</b></wrong><br /><br />" + "Historians' answer: " + "<br /><br /><insert><b>" + theme_ratings[rating_list[i + 1]-1] + "</b></insert><br /><ul>"+ ex_list[i + 1] + "</ul></td>");
-              //$($("#userTheme tr")[i + 1]).append('<a data-toggle="popover" data-trigger="hover" data-placement="left">why</a>');
-            }
-            //$($($("#userTheme tr")[i + 1]).find('a')).attr('data-content',ex_list[i + 1]);
+              $($("#userTheme tr")[i + 1]).append("<td>Your answer:<br /><ul>" + crossmark + "<wrong>" + theme_ratings[value] + "</wrong>  (Your answer did not match with historians' answers below)</ul>" + "Historians' answer: " + "<br /><ol style='margin-left: 45px;'><li><insert>" + theme_ratings[rating_list[i + 1]-1] + "</insert>: "+ ex_list[i + 1] + "</li></ol></td>");
+              }
             i++;
           });
         }
@@ -604,7 +602,7 @@
         */
         #userPart {
           width: 100%;
-          border-left: 1px solid #ccc;
+          /*border-left: 1px solid #ccc;*/
           float:right;
           padding 0 10px;
           padding-left: 10px;
@@ -636,27 +634,26 @@
         }
 
         wrong {
-          color: red;
-    			background: #fdd;
-    			text-decoration: none;
+
+          background: #FAB5C2;
+          text-decoration: none;
         }
 
         insert {
-          color: green;
-          color: green;
-          background: #dfd;
+
+          background: #A8E6CF;
           text-decoration: none;
         }
 
         .wrong {
-          color: red;
-    			background: #fdd;
-    			text-decoration: none;
+
+          background: #FAB5C2;
+          text-decoration: none;
         }
 
         .insert {
-          color: green;
-          background: #dfd;
+
+          background: #A8E6CF;
           text-decoration: none;
         }
 

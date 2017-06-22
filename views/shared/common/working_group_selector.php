@@ -92,7 +92,7 @@
                 //response will be true or false depending of if group is set or not
 
                 if (response === "true") {
-                    notifyOfSuccessfulActionWithTimeout("Working group successfully changed!");
+                    notifyOfSuccessfulActionWithTimeout("Working group successfully changed/unset!");
 
                     //reloading is easiest way to get new instructions for group
                     setTimeout(function () {

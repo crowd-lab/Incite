@@ -102,8 +102,7 @@
 	</script>
 </head>
 
-<body onresize="resize()">
-	<div style="position: fixed;" id="work-view">
+	<div id="work-view">
         <div class="document-header">
             <span class="document-title" title="<?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>">
                 <b>Title:</b> <?php echo metadata($this->document_metadata, array('Dublin Core', 'Title')); ?>
@@ -139,7 +138,7 @@
             <div id="document_img" class="viewer"></div>
         </div>
     </div>
-</body>
+
 
 <style>
 	#work-view {

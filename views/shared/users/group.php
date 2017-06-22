@@ -89,9 +89,8 @@
                     var row = $($(target).parent()).parent();
                     var toBeDeletedGroupName = $($(row).find('span')).text();
                     var currentGroupName = $("#working-group-selector option:selected").text();
-                    if (toBeDeletedGroupName == currentGroupName) {
+                    if (toBeDeletedGroupName == currentGroupName) {//If the group users just quit is the group they currently in
                         setWorkingGroupAjaxRequest(groupId);
-                        notifyOfSuccessfulActionWithTimeout("Since you just quitted the group you are currently in, so you have been unset.");
                     }
                     $(row).remove();
                     if ($("#manage-group-group-table tr").length == 1) {
@@ -113,9 +112,8 @@
                     var row = $($(target).parent()).parent();
                     var toBeDeletedGroupName = $($(row).find('span')).text();
                     var currentGroupName = $("#working-group-selector option:selected").text();
-                    if (toBeDeletedGroupName == currentGroupName) {
+                    if (toBeDeletedGroupName == currentGroupName) {//If the group users just delete is the group they currently in
                         setWorkingGroupAjaxRequest(groupId);
-                        notifyOfSuccessfulActionWithTimeout("Since you just deleted the group you are currently in, so you have been unset.");
                     }
                     $(row).remove();
                     if ($("#manage-group-group-table tr").length == 1) {
