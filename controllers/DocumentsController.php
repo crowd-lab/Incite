@@ -72,14 +72,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     setup_session();
   }
 
-  public function getWorkingGroupID() {
-    if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
-      return $_SESSION['Incite']['USER_DATA']['working_group']['id'];
-    } else {
-      return 0;
-    }
-  }
-
   public function createSearchResultPages($item_ids, $task_name) {
     if (count($item_ids) <= 0) {
       if (isSearchQuerySpecifiedViaGet()) {
@@ -144,7 +136,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->view->image_url = getFullOmekaUrl()."plugins/Incite/views/shared/images/assess1.png";
     $this->_helper->viewRenderer('transcribeassessment');
     $this->view->doc_id = $this->_getParam('id');
-    $this->view->groupid = (string)$this->getWorkingGroupID();
+    $this->view->groupid = (string)getWorkingGroupID();
   }
 
   public function transcribeAction() {
@@ -158,8 +150,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               $this->view->doc_id = $this->_getParam('id');
               return;
           }
-          $groupAssessStatus = "group".(string)$this->getWorkingGroupID();
-          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_trans'][$groupAssessStatus]) {
+          $groupAssessStatus = "group".(string)getWorkingGroupID();
+          if (getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_trans'][$groupAssessStatus]) {
               $this->redirect('incite/documents/trans1/'.$this->_getParam('id'));
               
               return;
@@ -176,7 +168,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   }
 
   public function saveTranscription() {
-    $workingGroupId = $this->getWorkingGroupID();
+    $workingGroupId = getWorkingGroupID();
 
     createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
     $_SESSION['Incite']['previous_task'] = 'transcribe';
@@ -285,7 +277,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->view->document_metadata = $this->_helper->db->find($assessment_doc_id);
     $this->view->image_url = getFullOmekaUrl()."plugins/Incite/views/shared/images/assess1.png";
     $this->view->doc_id = $this->_getParam('id');
-    $this->view->groupid = (string)$this->getWorkingGroupID();
+    $this->view->groupid = (string)getWorkingGroupID();
     $categories = getAllCategories();
               $ner_entity_table = array();
               $tag_id_counter = 0;
@@ -389,8 +381,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
               return;
           }
           
-          $groupAssessStatus = "group".(string)$this->getWorkingGroupID();
-          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_tag'][$groupAssessStatus]) {
+          $groupAssessStatus = "group".(string)getWorkingGroupID();
+          if (getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_tag'][$groupAssessStatus]) {
               $this->redirect('incite/documents/tag1/'.$this->_getParam('id'));
               return;
           }
@@ -411,7 +403,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $entities = json_decode($_POST["entities"], true);
     //removeAllTagsFromDocument($this->_getParam('id'));
 
-    $workingGroupId = $this->getWorkingGroupID();
+    $workingGroupId = getWorkingGroupID();
 
     for ($i = 0; $i < sizeof($entities); $i++) {
       createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), 0, 1);
@@ -566,7 +558,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->view->subjects = getAllSubjectConcepts();
     $this->view->transcription = getLatestTaggedTransForUser($assessment_doc_id);
     $this->_helper->viewRenderer('connectassessment');
-    $this->view->groupid = (string)$this->getWorkingGroupID();
+    $this->view->groupid = (string)getWorkingGroupID();
     unset($_SESSION['Incite']['assessment_trans']);
     return;
   }
@@ -584,8 +576,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
           $this->view->doc_id = $this->_getParam('id');
           return;
         }
-          $groupAssessStatus = "group".(string)$this->getWorkingGroupID();
-          if ($this->getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_conn'][$groupAssessStatus]) {
+          $groupAssessStatus = "group".(string)getWorkingGroupID();
+          if (getWorkingGroupID() != 0 && !$_SESSION['Incite']['assessment_conn'][$groupAssessStatus]) {
             $this->redirect('incite/documents/conn1/'.$this->_getParam('id'));
           }
           
@@ -598,7 +590,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
   public function saveConnections() {
     $all_subject_ids = getAllSubjectConceptIds();
-    $workingGroupId = $this->getWorkingGroupID();
+    $workingGroupId = getWorkingGroupID();
     $subject = "subject";
     for($i = 1; $i < 10; $i++) {
       $sub = $subject.$i;

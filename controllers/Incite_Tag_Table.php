@@ -61,8 +61,6 @@ function createTag($userID, $groupID, $tag_text, $category, $subcategory, $descr
     //since there could be multiple subcategories, do this in a loop
     $db = DB_Connect::connectDB();
     for ($i = 0; $i < sizeof($subcategory); $i++) {
-        //print_r($tagID);
-        //echo "\n";
         $insertSubCat = $db->prepare("INSERT INTO omeka_incite_tags_subcategory_conjunction VALUES (NULL,?, ?)");
         $insertSubCat->bind_param("ii", $tagID, $subcategory[$i]);
         $insertSubCat->execute();
@@ -752,10 +750,10 @@ function findAllSubs($itemID) {
     foreach ($textArr as $key => $value) {
         $subcatID = getSub($value);
         if ($subcatID[0] == NULL) {
+        //if (sizeof($subcatID) == 0) { //test
             $subcatID[0] = "empty";
         }
          $idArr[$key] = $subcatID;
-       
     }
     //print_r($idArr);
     return $idArr;

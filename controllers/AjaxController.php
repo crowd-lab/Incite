@@ -862,12 +862,12 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
     if ($this->getRequest()->isPost()) {
       $entities = $_POST['entities'];
       $question_arr = $_POST['questions'];
-      //print_r($question_arr);
       $assessID = 731;
+      $workingGroupId = getWorkingGroupID();
       $index = findTranscriptionId($assessID, $_SESSION['Incite']['USER_DATA']['id']);
       $taggedID = saveTaggedTranscription($assessID, $index, $_SESSION['Incite']['USER_DATA']['id'], 0, $_POST['tagged_doc']);
       for ($i = 0; $i < sizeof($entities); $i++) {
-        createTag($_SESSION['Incite']['USER_DATA']['id'], 0, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $assessID, $taggedID, 3);
+        createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $assessID, $taggedID, 3);
       }
       
       for ($i = 0; $i < sizeof($question_arr); $i++) {
@@ -884,8 +884,9 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
       $ratings = $_POST['ratings'];
       $assessID = 731;
       $tagged_tran_id = findTaggedTransIDFromGoldStandard($assessID);
+      $workingGroupId = getWorkingGroupID();
       for ($i = 0; $i < sizeof($ratings); $i++) {
-        addConnectRating($_SESSION['Incite']['USER_DATA']['id'], 0, $ratings[$i]['concept_id'], $ratings[$i]['rank'], $assessID, 3, $tagged_tran_id);
+        addConnectRating($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $ratings[$i]['concept_id'], $ratings[$i]['rank'], $assessID, 3, $tagged_tran_id);
       }
 
       

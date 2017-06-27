@@ -34,7 +34,7 @@
                 url: "<?php echo getFullInciteUrl().'/ajax/uploadtags'; ?>",
                 data: {'entities': entities_array, 'tagged_doc': $('#transcribe_copy').html(), 'questions': question_array},
                 success: function (response) {
-                  alert(response);
+                
                 }
               });
             }
@@ -710,15 +710,18 @@
         var sub3 = $(table_id)[3];
         var detail = $($(sub3).find("input")).val();
         var select = $(sub1).find("option:selected");
+        var value_array = [];
         var value;
         if ($(select).length == 0) {
           value = -1;
           subcategories_array.push(value);
+          value_array.push(value);
         }
         else {
           select.each(function(){
             value = $(this).val();
             subcategories_array.push(value);
+            value_array.push(value);
           });
         }
         var cat = class_name.split(" ")[0];
@@ -726,27 +729,132 @@
         var edited_category = cat.charAt(0).toUpperCase() + cat.slice(1);
         entities_array.push({"entity": tagName, "category": category_name_to_id_table[edited_category], "subcategory": subcategories_array, "details": detail});
 
-        if (exist){
-          if (edited_category == category_id_to_name_table[tags_list[tagName]]) { //If the categories matched
+        if (exist) {
 
-            if (subcat_dic[value] == subcat_list[tagName]) //if subcategories also matched
-              $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>" + subcat_dic[value] + "</td></tr>");
-            else { //If categories matched but subcategories don't match
-              $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td><wrong>" + subcat_dic[value] + "</wrong>&nbsp&nbsp&nbsp<insert>" + subcat_list[tagName] + "</insert></td></tr>");
+
+          if (edited_category == category_id_to_name_table[tags_list[tagName]]) { //If the categories matched
+            //subs = subs + subcat_dic[value_array[value_array.length - 1]];
+            var correct_sub_array = subcat_list[tagName];
+            //Create users input subs
+            var subs = "";
+            var user_input_sub_array = [];
+            //convert sub ids in value_array to sub names in user_input_sub_array
+            for (var i = 0; i < value_array.length; i++) {
+              user_input_sub_array.push(subcat_dic[value_array[i]]);
             }
+
+            for (var i = 0; i < value_array.length - 1; i++) {
+              if (jQuery.inArray(subcat_dic[value_array[i]], correct_sub_array) != -1)
+                subs = subs + subcat_dic[value_array[i]] + " ,";
+              else {
+                subs = subs + "<wrong>" + subcat_dic[value_array[i]] + "</wrong> ,";
+              }
+            }
+            if (value_array.length > 0 && jQuery.inArray(subcat_dic[value_array[value_array.length - 1]], correct_sub_array) != -1)
+              subs = subs + subcat_dic[value_array[value_array.length - 1]];
+            else
+              subs = subs + "<wrong>" + subcat_dic[value_array[i]] + "</wrong>";
+            //Create correct subs
+            var correct_subs = "";
+
+            var correct_and_notinput_sub = []; //store the subs that correct but have not been chosen by users
+            for (var i = 0; i < correct_sub_array.length; i++) {
+              if (jQuery.inArray(correct_sub_array[i], user_input_sub_array) == -1)
+                correct_and_notinput_sub.push(correct_sub_array[i]);
+            }
+            for (var i = 0; i < correct_and_notinput_sub.length - 1; i++) {
+              correct_subs = correct_subs + "<insert>" + correct_and_notinput_sub[i] + "</insert> ,";
+            }
+            if (correct_and_notinput_sub.length > 0) {
+              correct_subs = correct_subs + "<insert>" + correct_and_notinput_sub[correct_and_notinput_sub.length - 1] + "</insert>";
+            }
+            $("#urtable").append("<tr><td>"+ tagName +"</td><td>" + edited_category + "</td><td>" + subs + "&nbsp&nbsp&nbsp" + correct_subs + "</td></tr>");
+
+          }
+          else {//If categories don't match
+          /*
+            var correct_subs = "";
+            var correct_sub_array = subcat_list[tagName];
+            for (var i = 0; i < correct_sub_array.length - 1; i++) {
+              correct_subs = correct_subs + "<insert>" + correct_sub_array[i] + "</insert> ,";
+            }
+            correct_subs = correct_subs + "<insert>" + correct_sub_array[correct_sub_array.length - 1]+ "</insert>";
+
+            //user input subs
+            var subs = "";
+            for (var i = 0; i < value_array.length - 1; i++) {
+              subs = subs + subcat_dic[value_array[i]] + " ,";
+            }
+            subs = subs + subcat_dic[value_array[value_array.length - 1]];
+
+            if (value_array[0] == -1) {
+              if (correct_subs == empty)
+                $("#urtable").append("<tr><td>"+  tagName + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td><td><wrong>empty</wrong>&nbsp&nbsp&nbsp" + correct_subs + "</td></tr>");
+              else
+              $("#urtable").append("<tr><td>"+  tagName + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td><td><wrong>empty</wrong>&nbsp&nbsp&nbsp" + correct_subs + "</td></tr>");
+            }
+            else {
+
+
+              $("#urtable").append("<tr><td>"+ tagName +"</td><td><wrong>" + edited_category + "</wrong>&nbsp&nbsp&nbsp<insert>" + category_id_to_name_table[copy_dic[tagName]] + "</insert></td><td><wrong>" + subs + "</wrong>&nbsp&nbsp&nbsp<insert>" + correct_subs + "</insert></td></tr>");
+              }
+              */
+              var correct_sub_array = subcat_list[tagName];
+              //Create users input subs
+              var subs = "";
+              var user_input_sub_array = [];
+              //convert sub ids in value_array to sub names in user_input_sub_array
+              for (var i = 0; i < value_array.length; i++) {
+                user_input_sub_array.push(subcat_dic[value_array[i]]);
+              }
+
+              for (var i = 0; i < value_array.length - 1; i++) {
+                if (jQuery.inArray(subcat_dic[value_array[i]], correct_sub_array) != -1)
+                  subs = subs + subcat_dic[value_array[i]] + " ,";
+                else {
+                  subs = subs + "<wrong>" + subcat_dic[value_array[i]] + "</wrong> ,";
+                }
+              }
+              if (value_array.length > 0 && jQuery.inArray(subcat_dic[value_array[value_array.length - 1]], correct_sub_array) != -1)
+                subs = subs + subcat_dic[value_array[value_array.length - 1]];
+              else
+                subs = subs + "<wrong>" + subcat_dic[value_array[i]] + "</wrong>";
+              //Create correct subs
+              var correct_subs = "";
+
+              var correct_and_notinput_sub = []; //store the subs that correct but have not been chosen by users
+              for (var i = 0; i < correct_sub_array.length; i++) {
+                if (jQuery.inArray(correct_sub_array[i], user_input_sub_array) == -1)
+                  correct_and_notinput_sub.push(correct_sub_array[i]);
+              }
+              for (var i = 0; i < correct_and_notinput_sub.length - 1; i++) {
+                correct_subs = correct_subs + "<insert>" + correct_and_notinput_sub[i] + "</insert> ,";
+              }
+              if (correct_and_notinput_sub.length > 0) {
+                correct_subs = correct_subs + "<insert>" + correct_and_notinput_sub[correct_and_notinput_sub.length - 1] + "</insert>";
+              }
+              $("#urtable").append("<tr><td>"+ tagName +"</td><td><wrong>" + edited_category + "</wrong>&nbsp&nbsp&nbsp<insert>" + category_id_to_name_table[copy_dic[tagName]] + "</insert></td><td>" + subs + "&nbsp&nbsp&nbsp" + correct_subs + "</td></tr>");
           }
 
-          else //If categories don't match
-            $("#urtable").append("<tr><td>"+ tagName +"</td><td><wrong>" + edited_category + "</wrong>&nbsp&nbsp&nbsp<insert>" + category_id_to_name_table[copy_dic[tagName]] + "</insert></td><td><wrong>" + subcat_dic[value] + "</wrong>&nbsp&nbsp&nbsp<insert>" + subcat_list[tagName] + "</insert></td></tr>");
           delete copy_dic[tagName];
         }
-        else
-          $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td><td><wrong>" + subcat_dic[value] + "</wrong></td></tr>");
+        else {
+          if (value_array[0] == -1) {
+            $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td><td>empty</td></tr>");
+          }
+          else {
+            var subs = "";
+            for (var i = 0; i < value_array.length - 1; i++) {
+              subs = subs + subcat_dic[value_array[i]] + " ,";
+            }
+            subs = subs + subcat_dic[value_array[value_array.length - 1]];
+            $("#urtable").append("<tr><td>"+ "<wrong>" + tagName + "</wrong>" + "</td><td>" + "<wrong>" + edited_category + "</wrong>" + "</td><td><wrong>" + subs + "</wrong>&nbsp&nbsp&nbsp<insert>empty</insert></td></tr>");
+          }
+        }
       });
 
       if (copy_dic.length != 0) {
         for (var key in copy_dic) {
-          console.log(key);
           $("#urtable").append("<tr><td>"+ "<insert>" + key + "</wrong>" + "</td><td>" + "<insert>" + category_id_to_name_table[copy_dic[key]] + "</insert>" + "</td><td><insert>" + subcat_list[key] + "</insert></td></tr>");
         }
       }
