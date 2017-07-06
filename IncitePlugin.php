@@ -24,6 +24,7 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
         $db = get_db();
         $db->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents (
+        `id`                int(11) NOT NULL AUTO_INCREMENT,
         `item_id`               int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `tags_ignored`          int(11) NOT NULL,
@@ -244,23 +245,27 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
+
+
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_question_conjunction (
-        `tagged_trans_id`      int(11) NOT NULL,
-        `question_id`          int(11) NOT NULL,
-        `answer`               varchar(500) NOT NULL,
-        `type`                 int(11) NOT NULL,
+        `id` int(11) NOT NULL,
+        `item_id` int(11) NOT NULL,
+        `tag_id` int(11) NOT NULL
         
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
+
+
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_subject_explain (
         `id`                   int(11) NOT NULL AUTO_INCREMENT,
         `item_id`              int(11) NOT NULL,
         `concept_id`           int(11) NOT NULL,   
         `explanation`         varchar(1000) NOT NULL,
-        
+
+        PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
@@ -367,6 +372,30 @@ SQL
         );
         get_db()->query(<<<SQL
       DROP TABLE IF EXISTS {$this->_db->prefix}incite_groups
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_answer_explain_list
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_available_list
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_subject_explain
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_question_conjunction
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_question_index
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_trans_reason
 SQL
         );
         get_db()->query(<<<SQL
