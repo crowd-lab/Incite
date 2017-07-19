@@ -232,16 +232,24 @@ function loc_to_lat_long($loc_str)
     //Parse state and city names
     if (count($elem) >= 3) { //currently ignore extra info about location. Item 11 is an exception here!
         $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
-        if (!isset($states[$state_index]))
-            return array('lat' => '37.23', 'long' => '-80.4178');
+        if (!array_key_exists($state_index, $states)) {
+            //default blacksburg:
+            //return array('lat' => '37.23', 'long' => '-80.4178');
+            return array();
+        }
         $state  = $states[$state_index];
         $city   = trim($elem[2]);
         $county = trim(str_replace('County', '', $elem[1]));
     } else if (count($elem) == 2) {
-        $state = $states[trim(str_replace('State', '', str_replace('state', '', $elem[0])))];
-        $city  = strstr(trim($elem[1]), ' Indep.', true);
-        if ($city == "")
-            $city = trim($elem[1]);
+        $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
+        if (!array_key_exists($state_index, $states)) {
+            return array();
+        } else {
+            $state = $states[$state_index];
+            $city  = strstr(trim($elem[1]), ' Indep.', true);
+            if ($city == "")
+                $city = trim($elem[1]);
+        }
     } else {
         //Should send to log and to alert new format of location!
     }
