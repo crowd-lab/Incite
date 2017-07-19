@@ -571,7 +571,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->doc_id = $this->_getParam('id');
         if (!isset($_SESSION['Incite']['tutorial_conn'])) {
           $this->view->subjects = getAllSubjectConcepts();
-          $this->view->transcription = 'The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.</div>';
+          $this->view->transcription = 'The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.';
           $this->_helper->viewRenderer('connecttutorial');
           $this->view->doc_id = $this->_getParam('id');
           return;

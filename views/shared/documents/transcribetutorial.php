@@ -464,6 +464,7 @@
         ],
 				onEnd: function(tour) {
 			     $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+					 window.location = '<?php echo getFullInciteUrl().'/documents/transcribe/'.$this->doc_id; ?>';
 			  },
 				backdrop: true,
         storage: false});
@@ -483,7 +484,7 @@
 			#viewer2 {
 				/*position: absolute;*/
 			}
-			
+
 			.viewer {
 				/*width: 100%;*/
 				border: 1px solid black;

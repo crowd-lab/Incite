@@ -413,7 +413,7 @@
 	.submit-reply {
         float: right;
     }
-    
+
     .reply-box {
         margin-bottom: 10px;
         width: 100%;
@@ -969,6 +969,7 @@
     ],
     onEnd: function(tour) {
       $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
+      window.location = '<?php echo getFullInciteUrl().'/documents/tag/'.$this->doc_id; ?>';
     },
     backdrop: true,
     storage: false});
