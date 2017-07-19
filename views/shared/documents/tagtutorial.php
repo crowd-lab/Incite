@@ -5,7 +5,6 @@
             $_SESSION['Incite']['tutorial_tag'] = true;
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
-
             $category_object = getAllCategories();
             $category_id_name_table = getSubcategoryIdAndNames();
         ?>
@@ -43,7 +42,6 @@
 		    tabToSelect.addClass("active");
 		    tabToUnselect.removeClass("active");
 		};
-
 		var setLegendWidth = function() {
 			$('#legend-container').width(
 				$('#tabs-and-legend-container').width()
@@ -53,47 +51,33 @@
 				7 //so it doesn't overflow
 			);
 		};
-
 		$('#work-zone').ready(function() {
 		    $('#work-view').width($('#work-zone').width());
 		});
-
 		$(document).ready(function () {
-
-      $(".btn-end").click(function(){
-        $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
-      });
             migrateTaggedDocumentsFromV1toV2();
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
 		    $("#document_img").hide();
-
 		    $("#hide").click(function () {
 		        $("#document_img").hide();
 		        $("#transcribe_copy").show();
 		        selectTab($("#hide"), $("#show"));
 		    });
-
 		    $("#show").click(function () {
 		        $("#document_img").show();
 		        $("#transcribe_copy").hide();
 		        selectTab($("#show"), $("#hide"));
 		    });
-
-		    //setLegendWidth();
-
+		    setLegendWidth();
 		    $('.viewer').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
-
 	        $('#transcribe_copy').height($(window).height()-$('#transcribe_copy')[0].getBoundingClientRect().top-10-$(".navbar-fixed-bottom").height());
-
 	        $("#document_img").iviewer({
-	            src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
+	            src: "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/tutorial_img.jpg",
 	            zoom_min: 1,
 	            zoom: "fit"
         	});
-
             buildPopoverContent();
 		});
-
         function buildPopoverContent() {
             var content = '';
             var date = "1860-08-06";
@@ -101,34 +85,26 @@
             var source = "The Daily Dispatch (Richmond, VA)";
             var contributor = "";
             var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
-
             if (date) {
                 content += '<strong>Date: </strong>' + date + '<br><br>';
             }
-
             if (location) {
                 content += '<strong>Location: </strong>' + location + '<br><br>';
             }
-
             if (source) {
                 content += '<strong>Source: </strong>' + source + '<br><br>';
             }
-
             if (contributor) {
                 content += '<strong>Contributor: </strong>' + contributor + '<br><br>';
             }
-
             if (rights) {
                 content += '<strong>Rights: </strong>' + rights + '<br><br>';
             } else {
                 content += '<strong>Rights: </strong>Public Domain<br><br>';
             }
-
-
             if (content) {
                 //cut off the last <br><br>
                 content = content.slice(0, -8);
-
                 $('#document-info-glphicon').attr('data-content', content);
             } else {
                 $('#document-info-glphicon').attr('data-content', "No available document information, sorry!");
@@ -183,12 +159,10 @@
         position: fixed;
         margin-top: -30px;
     }
-
 	.document-header {
     width: 100%;
     margin-left: 20px;
     }
-
 	.document-title {
         font-size: 25px;
         position: relative;
@@ -200,17 +174,14 @@
         white-space: nowrap;
         text-overflow: ellipsis;
     }
-
      #document-info-glphicon {
         color: #337AB7;
         font-size: 20px;
         top: -8px;
     }
-
     .popover {
     	max-width: 100%;
     }
-
     #legend-container {
         display: inline-block;
         position: relative;
@@ -218,16 +189,14 @@
         text-align: right;
         width: 60%;
     }
-
     .viewer {
+        width: 100%;
         border: 1px solid black;
-        /*position: relative;*/
+        position: relative;
     }
-
     .wrapper {
         overflow: hidden;
     }
-
     .legend-item {
         border-radius: 6px;
         padding: 2px;
@@ -235,12 +204,10 @@
         box-sizing: border-box;
         box-shadow: 2px 2px 2px #888;
     }
-
     #tabs-and-legend-container {
         overflow: hidden;
         height: 42px;
     }
-
     .document-display-type-tabs {
         display: inline-block;
         vertical-align: top;
@@ -248,11 +215,9 @@
         position: relative;
         top: 5px;
     }
-
     .tour-backdrop,
 .tour-step-background {
     /*z-index: 3;*/
-
 }
 </style>
             </div>
@@ -448,7 +413,7 @@
 	.submit-reply {
         float: right;
     }
-
+    
     .reply-box {
         margin-bottom: 10px;
         width: 100%;
@@ -490,7 +455,6 @@
     // alert(categories[2]['subcategory'].length);
     var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
-
     function set_tag_id_counter() {
         var max_id = 0;
         $('#entity-table tr').each( function (idx) {
@@ -505,7 +469,6 @@
 
     function addUserTag(text, span_id) {
         var new_entity = $('<tr id="tag_id_'+span_id+'_table" data-tagid="'+span_id+'"><td><span class="entity-name">'+text+'</span></td><td><select class="category-select" id="categorySelect"></select></td><td><select class="subcategory-select" multiple="multiple"></select></td><td><input class="form-control entity-details" id="detail" type="text" value=""></td><td><button type="button" class="btn btn-default remove-entity-button" aria-label="Left Align" id="addTrashButton"><span class="glyphicon glyphicon-trash" aria-hidden="true" id="addTrashButton"></span></button></td></tr>');
-
         new_entity.find('.subcategory-select').multiselect({
             enableFiltering: true,
             filterBehavior: 'text',
@@ -515,7 +478,6 @@
             numberDisplayed: 1
         });
         new_entity.find('.category-select').append('<option value="0">&nbsp;</option>');
-
         <?php foreach ($category_object as $id => $content) {
             echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
         }?>
@@ -541,7 +503,6 @@
                 disableIfEmpty: true,
                 numberDisplayed: 1
             });
-
             <?php foreach ($category_object as $id => $content) {
                 echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
                 //echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
@@ -551,7 +512,6 @@
                 disableIfEmpty: true
             });
             $('.category-select').multiselect('rebuild');
-
             $('#entity-table').append(new_entity);
             new_entity.closest('tr').find('.subcategory-select').multiselect('rebuild');
             //Select previsouly selected category
@@ -570,7 +530,6 @@
             } else {
                 subcategory_menu.multiselect('rebuild');
             }
-
             if (typeof this.dataset.subs !== typeof undefined && this.dataset.subs !== false && this.dataset.subs !== "") {
                 var selected_subs = this.dataset.subs.split(',');
                 for (i = 0; i < selected_subs.length; i++) {
@@ -581,24 +540,19 @@
             if (this.dataset.details !== "") {
                 $('#'+this.id+'_table .entity-details').val(this.dataset.details);
             }
-
         });
     }
-
 
     $(document).ready(function () {
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
-
         <?php if ($this->is_being_edited): ?>
             styleForEditing();
         <?php endif; ?>
-
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
         });
-
         $('#user-entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
@@ -617,17 +571,14 @@
                 $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass("unknown tagged-text");
             }
         });
-
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).contents().unwrap();
             $(this).parent().parent().remove();
         });
-
         $('#entity-table').on('click', '.remove-entity-button', function (e) {
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).contents().unwrap();
             $(this).parent().parent().remove();
         });
-
         $('#entity-table').on('change', '.category-select', function (e) {
             var subcategory_menu = $(this).closest('tr').find('.subcategory-select');
             subcategory_menu.find('option').remove().end();
@@ -642,53 +593,9 @@
             var selected_category = $(this).find('option[value='+$(this).val()+']').text().toLowerCase();
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass( selected_category + " tagged-text");
         });
-
         $('#confirm-button').on('click', function (e) {
-            if ($('.category-select option:selected[value=0]').length > 0) {
-                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
-                return;
-            }
+
             window.location = '<?php echo getFullInciteUrl().'/documents/tag/'.$this->doc_id; ?>';
-            //location.reload();
-            /*
-            var entities = [];
-            var rows = $('#entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
-                });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            rows = $('#user-entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
-                });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            */
-            //alert is for testing
-            //$('#entity-info').val(JSON.stringify(entities));
-            //$('#tagged-doc').val($('#transcribe_copy').html());
-            //alert('Redirecting to assessment document!');
-            //$('#entity-form').submit();
-            //data, that is, JSON.stringify(entities) are ready to be submitted for processing
         });
 
         $('.subcategory-select').each(function (idx) {
@@ -718,7 +625,6 @@
             var parentOffset = $(this).offset();
             var relX = e.pageX - parentOffset.left;
             var relY = e.pageY - parentOffset.top;
-
             //Bug fix - make sure the selection is still within the transcription on mouseup
             //so you can't tag anything outside the transcription. Can't just check for hover here
             //due to selection weirdness
@@ -727,7 +633,6 @@
                 var tag_text = tag_selection.toString();
                 var needs_extra_whitespace = tag_text.charAt(tag_text.length - 1) === ' ';
                 tag_text = tag_text.trim();
-
                 if (tag_selection.rangeCount && tag_text !== "") {
                     if (tag_text.length > 30) {
                         alert ('The length of a tag should be shorter than 30 characters');
@@ -739,7 +644,6 @@
                     tag_em.className = 'unknown tagged-text';
                     tag_em.appendChild(document.createTextNode(tag_text));
                     tag_range.deleteContents();
-
                     //If the user selects a tag with whitespace it will be trimmed, reinsert a space outside the tag
                     if (needs_extra_whitespace) {
                         tag_range.insertNode(document.createElement('p').appendChild(document.createTextNode("\u00A0")));
@@ -750,7 +654,6 @@
                 }
             }
         });
-
         $('#transcribe_copy').on('mouseenter', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
             var view_baseline = $('#work-view').position().top;
@@ -758,7 +661,6 @@
             var vis_bottom = vis_top+$('#work-view').height();
             var tag_top = $("#"+this.id+'_table').offset().top;
             var tag_bottom = tag_top+$("#"+this.id+'_table').height();
-
             if (tag_top < vis_top) {
                 $('html, body').animate({
                     scrollTop: $('#'+this.id+'_table').offset().top-view_baseline
@@ -770,13 +672,10 @@
             } else {
                 //element is already in the visible area
             }
-
         });
-
         $('#transcribe_copy').on('mouseleave', 'em', function (e) {
             $('#'+this.id+'_table').toggleClass(this.className.split(" ")[0]);
         });
-
         <?php
             if (isset($_SESSION['incite']['message'])) {
                 echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -784,41 +683,36 @@
             }
         ?>
     });
-
     function styleForEditing() {
         addRevisionHistoryListeners();
     }
-
     function addRevisionHistoryListeners() {
         $('#view-revision-history-link').show();
-
         $('#view-revision-history-link').click(function(e) {
             $('#tagging-container').hide();
             $('#revision-history-container').show();
         });
-
         $('#view-editing-link').click(function(e) {
             $('#revision-history-container').hide();
             $('#tagging-container').show();
         });
     }
     var tour = new Tour({
+        keyboard: false,
         template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
         steps: [
             {
                 element: '#work-view',
                 title: "Welcome!",
-                content: "It looks like you haven’t tagged a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
+                content: "It looks like you haven’t tagged a document before. We have a short tutorial to guide you through the process. <br><br>If you already know all this information, press End Tour now, and press the submit button when you want to leave the tutorial.",
                 placement: "right",
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
-                  //$("#work-view").css("z-index", "1101");
                 },
                 onShown: function() {
                   $("#work-view").css("z-index", "1101");
                   $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
                 }
-
             },
             {
                 element: '#entity-table',
@@ -830,16 +724,13 @@
                   $("#work-view").css("z-index", "0");
                 },
                 onShown: function() {
-                    //$("#work-view").css("z-index", "0");
-                    //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                     $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
                 }
             },
-
             {
                 element: '#entity-table',
                 title: "Delete the existing tags",
-                content: "The first one seems to be a wrong tag. <br> Can you help us delete it by clicking the trash button? <br>",
+                content: "The first tag, 'CELEBRATION', seems to be a wrong tag. <br> Can you help us delete it by clicking the trash button? <br>",
                 placement: 'left',
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
@@ -851,48 +742,39 @@
                     delete_times++;
                     if(delete_times == 1) {
                       $('<img id = "pic1"  height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
-                      $("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+                      $("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
                     }
                     setTimeout(function(){$( "#pic1" ).remove();}, 3000);
                   });
-
                 }
-
             },
-
             {
                 element: '#entity-table',
                 title: "Modify the exsiting Tags",
-                content: "Thanks! Can you also help us to complete the tag <br>'Berlin' by typing 'German Methodist Sunday school' to the details area? <br>",
+                content: "Thanks! Can you also help us to complete the tag 'Berlin' <br>by typing 'German Methodist Sunday School' to the details area? <br>",
                 placement: 'left',
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $("#work-view").css("z-index", "0");
                 },
                 onShown: function() {
-                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
-                  //$("#work-view").css("z-index", "0");
                   $($(".entity-details").first()).keyup(function() {
-                    if ($(this).val() == 'German Methodist Sunday school') {
+                    if ($(this).val() == 'German Methodist Sunday School') {
                       detail_times++;
   										if(detail_times == 1) {
   											$('<img id = "pic2" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
-  											$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+  											$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
   										}
   										setTimeout(function(){$( "#pic2" ).remove();}, 3000);
                     }
                   });
-                    //$(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-
                 }
-
             },
-
             {
                 element: '#work-view',
-                title: "Adding your own Tags",
-                content: "Now, highlight words in the transcription on the left to add any missing tags. <br>Can you highlight the word 'PRUSSIA' by selecting the text?<br>",
+                title: "Adding your own tags",
+                content: "You can also add any missing tags by highlighting them in the transcription.<br><br>Can you highlight the word 'PRUSSIA' by selecting the text?<br>",
                 placement: "right",
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
@@ -913,111 +795,80 @@
                       if (wasDragging) {
                         add_times++;
     										if(add_times == 1) {
-    											$('<img id = "pic3"  height = "100" width = "100" >').appendTo($("#step-4 .popover-content"));
-    											$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    										}
+                            if ($("#user-entity-table tbody tr span:contains('PRUSSIA')").length == 1) {
+        											$('<img id = "pic3"  height = "100" width = "100" >').appendTo($("#step-4 .popover-content"));
+        											$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+                            }
+                        }
     										setTimeout(function(){$( "#pic3" ).remove();}, 3000);
                       }
                   });
-
-                }
-
-            },
-
-            {
-                element: '#entity-table',
-                title: "Transition step",
-                content: "",
-                placement: 'left',
-                onShow: function() {
-                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
-                  $("#work-view").css("z-index", "0");
-                },
-                onShown: function() {
-                    $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
-                    //console.log();
-                    if ($("#user-entity-table tbody tr span:contains('PRUSSIA')").length == 1)
-                      tour.next();
-                    else {
-                      addUserTag("PRUSSIA", tagid_id_counter++);
-                      var original_text = $("#transcribe_copy").html();
-                      var to_be_replaced = '<em id="tag_id_' + tagid_id_counter +'" class="unknown tagged-text">PRUSSIA</em>';
-                      var final = original_text.replace("PRUSSIA", to_be_replaced);
-                      $("#transcribe_copy").html(final);
-                      tour.next();
-                    }
                 }
             },
-
             {
                 element: '#user-entity-table',
-                title: "Adding the components to your tag",
-                content: "Now let's try completing the parts to the tag you just made.<br>Try setting the most appropriate category and subcategory.<br>Hint: 'PRUSSIA' is a location here.<br>",
+                title: "Complete category information for the tag",
+                content: "Now let's try completing the category information for tag you just added.<br>by selecting the most appropriate category and subcategories.<br><br>Hint: 'PRUSSIA' is a location here.<br>",
                 placement: "left",
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $("#work-view").css("z-index", "0");
+                  if ($("#user-entity-table tbody tr span:contains('PRUSSIA')").length != 1) {
+                    addUserTag("PRUSSIA", tagid_id_counter++);
+                    var original_text = $("#transcribe_copy").html();
+                    var to_be_replaced = '<em id="tag_id_' + tagid_id_counter +'" class="unknown tagged-text">PRUSSIA</em>';
+                    var final = original_text.replace("PRUSSIA", to_be_replaced);
+                    $("#transcribe_copy").html(final);
+                  }
                 },
                 onShown: function() {
-                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
-                  //$("#work-view").css("z-index", "0");
                   $('#categorySelect').change(function() {
                     if (this.value == 1) {
                       change_times++;
+                      console.log(change_times);
 											if(change_times == 1) {
 												$('<img id = "pic4" height = "100" width = "100" >').appendTo($("#step-5 .popover-content"));
-												$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+												$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 											}
 											setTimeout(function(){$( "#pic4" ).remove();}, 3000);
                   }
-
                 });
-
               }
-
             },
-
             {
                 element: '#user-entity-table',
-                title: "Adding the components to your tag",
-                content: "Now add some details about the tag. <br>For example, ’Former country that now includes Germany and Poland’.<br>",
+                title: "Adding details to the tag",
+                content: "Now add some details about the tag, 'PRUSSIA'. <br><br>For example, ’Former country that now includes Germany and Poland’.<br>",
                 placement: "left",
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $("#work-view").css("z-index", "0");
                 },
                 onShown: function() {
-                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
-                  //$("#work-view").css("background", "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box");
-                  //$("#work-view").css("z-index", "0");
                   $("#document-info-glphicon").popover('hide');
                   $('#detail').on("input", function() {
                   if (this.value == 'Former country that now includes Germany and Poland') {
                     entity_times++;
                     if(entity_times == 1) {
                       $('<img id = "pic5" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
-                      $("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+                      $("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
                     }
                     setTimeout(function(){$( "#pic5" ).remove();}, 3000);
                   }
                 });
               }
-
             },
-
             {
                 element: '#choice-table',
                 title: "Fill in the document context",
-                content: "Fill in information about the document’s context and the author’s perspective. <br>You and other users can share ideas, questions, and opinions on this document by posting comments here. <br>Make sure to login or sign up to contribute to the discussion!",
+                content: "Fill in information about the document’s context and the author’s perspective. ",
                 placement: "top",
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
-                  //$("#work-view").css("z-index", "1101");
                 },
                 onShown: function() {
-                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
                   $("#work-view").css("background", "white");
                   $("#work-view").css("z-index", "1101");
@@ -1030,7 +881,7 @@
                         choice_times++;
     										if(choice_times == 1) {
     											$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    											$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    											$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
     										}
     										setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                       }
@@ -1043,7 +894,7 @@
                           choice_times++;
     											if(choice_times == 1) {
     												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
     											}
     											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
@@ -1056,7 +907,7 @@
                         choice_times++;
                         if(choice_times == 1) {
                           $('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-                          $("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+                          $("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
                         }
                         setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                       }
@@ -1069,7 +920,7 @@
                           choice_times++;
     											if(choice_times == 1) {
     												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
     											}
     											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
@@ -1082,15 +933,13 @@
                           choice_times++;
     											if(choice_times == 1) {
     												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
     											}
     											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
                         }
                     });
                 }
-
             },
-
             {
                 element: '#comment-container',
                 title: "Comments",
@@ -1101,13 +950,10 @@
                   $("#work-view").css("z-index", "0");
                 },
                 onShown: function() {
-                  //$("#work-view").css("z-index", "0");
-                  //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
                   $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
                     //$("#document-info-glphicon").popover('hide');
                 }
             },
-
             {
                 element: "#confirm-button",
                 title: "Congratulations!",
@@ -1119,19 +965,15 @@
                 onShown: function() {
                   $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
                 }
-
             }
-
     ],
     onEnd: function(tour) {
       $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
     },
     backdrop: true,
     storage: false});
-
     // Initialize the tour
     tour.init();
-
     // Start the tour
     tour.start(true);
 </script>
@@ -1150,7 +992,6 @@
         padding-left: 15px;
     }
 
-
     #revision-history-container {
         padding-left: 1.5%;
     }
@@ -1161,8 +1002,6 @@
         cursor: pointer;
         margin-top: -32px;
     }
-
-
 
 </style>
 
