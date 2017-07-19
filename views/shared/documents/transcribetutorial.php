@@ -40,7 +40,7 @@
 
 					$('.viewer').height($(window).height() - $('.viewer')[0].getBoundingClientRect().top - 10 - $(".navbar-fixed-bottom").height());
 					$("#viewer2").iviewer({
-						src: "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/tutorial_img.jpg",
+						src: "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/tutorial_img.jpg",
 						zoom_min: 1,
 						zoom: "fit"
 					});
@@ -49,10 +49,9 @@
 				});
 
 				function draw() {
-					$('<img id = "pic" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.png" height = "100" width = "100" >').appendTo($("#step .popover-content"));
+					$('<img id = "pic" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.png" height = "100" width = "100" >').appendTo($("#step .popover-content"));
 					setTimeout(function(){$( "#pic" ).remove();}, 3000);
 				}
-
 
 				function buildPopoverContent() {
 					var content = '';
@@ -61,7 +60,6 @@
 					var source = "The Daily Dispatch (Richmond, VA)";
 					var contributor = "";
 					var rights = "Chronicling America: Historic American Newspapers. Lib. of Congress.";
-
 					if (date) content += '<strong>Date: </strong>' + date + '<br><br>';
 					if (location) content += '<strong>Location: </strong>' + location + '<br><br>';
 					if (source) content += '<strong>Source: </strong>' + source + '<br><br>';
@@ -72,10 +70,8 @@
 					if (content) {
 						//cut off the last <br><br>
 						content = content.slice(0, -8);
-
 						$('#document-info-glyphicon').attr('data-content', content);
 					} else $('#document-info-glyphicon').attr('data-content', "No available document information, sorry!");
-
 				}
 			</script>
 		</head>
@@ -139,7 +135,7 @@
 
 						<div id = "sum-div">
 						<textarea id="summary-textarea" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
-						<p>Character Count: <span id = "s-counting">0</span></p>
+						<p style = "float: right">Character Count: <span id = "s-counting">0</span></p>
 						</div>
 
 						<div class="form-group" id="tone-selection">
@@ -202,7 +198,6 @@
 
     <!-- /.container -->
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
@@ -221,133 +216,122 @@
                 //$('#transcribe-form').submit();
                 //alert('This will redirect you to assessment document');
             });
-
 						$('#summary-textarea').keyup(function() {
 							var text_length = $('#summary-textarea').val().length;
-
 							$('#s-counting').text(text_length);
-
 						});
-
 						$('#transcription-textarea').keyup(function() {
 							var text_length = $('#transcription-textarea').val().length;
-
 							$('#counting').text(text_length);
-
 						});
-
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
             ?>
-
             <?php if ($this->is_being_edited): ?>
                 styleForEditing();
             <?php endif; ?>
         });
-
-
         function styleForEditing() {
             populateWithLatestTranscriptionData();
             addRevisionHistoryListeners();
         }
-
         function populateWithLatestTranscriptionData() {
             $('#transcription-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription['transcription']) ? $this->latest_transcription['transcription'] : 'nothing'); ?>.value);
             $('#summary-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription['summary']) ? $this->latest_transcription['summary'] : 'nothing'); ?>.value);
             $('#tone-selector').val('<?php echo isset($this->latest_transcription["tone"]) ? $this->latest_transcription["tone"] : "nothing"; ?>');
         }
-
         function addRevisionHistoryListeners() {
             $('#view-revision-history-link').show();
-
             $('#view-revision-history-link').click(function(e) {
                 $('#transcribe-form').hide();
                 $('#revision-history-container').show();
             });
-
             $('#view-editing-link').click(function(e) {
                 $('#revision-history-container').hide();
                 $('#transcribe-form').show();
             });
         }
-
-
         var tour = new Tour({
-
-
+						keyboard: false,
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End Tour</button></nav></div>",
         steps: [
             {
-
 								//element: '#viewer2',
 								element: "#work-view",
                 title: "Welcome!",
-                content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now.",
+                content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now, and press the submit button when you want to leave the tutorial.",
                 placement: "right",
 								onShow: function() {
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
+									$("#viewer2").css("z-index", "3");
 								},
 								onShown: function() {
 									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+									$("#document-header").css("z-index", "1101");
 								}
             },
             {
 							  //element: '#viewer2',
 								element: "#work-view",
                 title: "Welcome! (continued)",
-                content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this text searchable by transcribing it. This means you will type what the image says.',
+                content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this image searchable by transcribing it. This means you will type what the image says.',
                 placement: "right",
 								onShow: function() {
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
+									$("#viewer2").css("z-index", "3");
 								},
                 onShown: function() {
 										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+										$("#document-header").css("z-index", "1101");
                 }
             },
-
             {
                 element: '#document-header',
                 title: "More Information",
-                content: 'By hovering over the <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon" style="top: 5px;;"></span> at the top of a document, we will provide you with more in-depth information on the document.<br> Press Next when you are ready.<br>',
+                content: 'By hovering over the <span class="glyphicon glyphicon-info-sign" id="document-info-glyphicon" style="top: 5px;;"></span> at the top of a document, you will see more in-depth information about the document.<br>',
                 placement: "right",
 								onShow: function() {
-									$("#document-header").css("z-index", "1102");
-									$("#viewer2").css("z-index", "-1");
+									$("#document-header").css("z-index", "3");
+									//$("#viewer2").css("z-index", "3");
+									//$("#work-view").css("z-index", "3");
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
 								},
                 onShown: function(){
+										$("#document-header").css("z-index", "1102");
 										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
 										$("#document-info-glyphicon").hover(function() {
 											info_times++;
 										 if(info_times == 1) {
 												$('<img id = "pic1"  height = "100" width = "100" >').appendTo($("#step-2 .popover-content"));
-												$("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+												$("#pic1").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 											}
 											setTimeout(function(){$( "#pic1" ).remove();}, 3000);
 											}
 										);
-
                 }
             },
             {
-                //element: '#viewer2',
 								element: "#work-view",
                 title: "Zoom",
-                content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. <br><br> Press Next when you are ready.<br>',
+                content: 'You can get a better look at the document by using the zoom tools in the bottom left corner. <br>',
                 placement: "right",
 								onShow: function() {
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
 								},
                 onShown: function(){
 										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+										$("#document-header").css("z-index", "1101");
 										$('.iviewer_common').click(function() {
 											zoomer_times++;
 											if(zoomer_times == 1) {
 												$('<img id = "pic2" height = "100" width = "100" >').appendTo($("#step-3 .popover-content"));
-												$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+												$("#pic2").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 											}
 											setTimeout(function(){$( "#pic2" ).remove();}, 3000);
 											}
@@ -361,22 +345,21 @@
                 placement: "left",
 								onShow: function() {
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
+									$("#viewer2").css("z-index", "3");
 								},
                 onShown: function() {
 										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
-										$("#viewer2").css("z-index", "-1");
                 }
             },
-
             {
-                orphan: true,
-
-								element: "#tran-div",
-                title: "Transcription",
-                content: 'When transcribing, try your best to be as accurate as possible.  <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br>Hint: There are 37 characters including space in total for the first sentence!<br>',
+                element: "#tran-div",
+                title: "Transcribe",
+                content: 'When transcribing, try your best to be as accurate as possible.  <br> Since this is a tutorial, you can just type in the first sentence of the paragraph. <br><br>Hint: There are 37 characters including space in total for the first sentence!<br>',
                 placement: "bottom",
 								onShow: function() {
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
 								},
 							 	onShown: function() {
 								 $('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
@@ -388,67 +371,79 @@
 											 trans_times++;
  											 if(trans_times == 1) {
  													$('<img id = "pic3" height = "100" width = "100" >').appendTo($("#step-5 .popover-content"));
- 													$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+ 													$("#pic3").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
  												}
  											setTimeout(function(){$( "#pic3" ).remove();}, 3000);
 										 }
 									 }
 								 );
-
 								 }
-
             },
 						//Summary part
 						{
                 //element: "#summary-textarea",
 								element: "#sum-div",
-                title: "Transcribing Process",
-                content: 'Summarize: Provide a brief summary of the document.<br>',
+                title: "Summarize",
+                content: 'Provide a brief summary of the document.<br>',
                 placement: "bottom",
 								onShow: function() {
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
 								},
                 onShown: function() {
 									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+									$("#viewer2").css("z-index", "1101");
 									$('#summary-textarea').on("input", function() {
 											if (this.value !== '') {
 												sum_times++;
 												if(sum_times == 1) {
 													$('<img id = "pic4" height = "100" width = "100" >').appendTo($("#step-6 .popover-content"));
-													$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+													$("#pic4").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 												}
 												setTimeout(function(){$( "#pic4" ).remove();}, 3000);
 										 }
  									 });
-
                 }
             },
-
 						//tone part
 						{
                 element: "#tone-selector",
-                title: "Transcribing Process",
-                content: 'Tone: Out of the options available, select the most relevant tone of the document. <br> Hint: “Informational” could be a correct answer.<br>',
+                title: "Tone",
+                content: 'Out of the options available, select the most relevant tone of the document. <br><br> Hint: “Informational” could be a correct answer.<br>',
                 placement: "bottom",
 								onShow: function() {
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
 								},
                 onShown: function() {
-									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
-									$("#viewer2").css("z-index", "6");
+									$("#viewer2").css("z-index", "1101");
 										$('#tone-selector').change(function() {
 										if ($('#tone-selector').val() == 'informational') {
 											tone_times++;
 											if(tone_times == 1) {
 												$('<img id = "pic5"  height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-												$("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/check.gif?"+ Math.random());
+												$("#pic5").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
 											}
 											setTimeout(function(){$( "#pic5" ).remove();}, 3000);
 										}
+										$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
                     });
                 }
             },
-
+						{
+							element: '#comment-container',
+							title: "Comments",
+							content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
+							placement: "top",
+								onShow: function() {
+									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
+									$("#document-header").css("z-index", "3");
+									$("#viewer2").css("z-index", "3");
+								},
+                onShown: function() {
+										$('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
+                }
+            },
 						//Congratulations
 						{
 							  orphan: true,
@@ -458,30 +453,24 @@
                 placement: "left",
 								onShow: function(){
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
-									$("#viewer2").css("z-index", "-1");
+									$("#viewer2").css("z-index", "3");
+									$("#document-header").css("z-index", "3");
 								},
 								onShown: function() {
 									$('html, body').css({overflow: 'hidden',height: '100%'});//disable scrolling
+									$("#viewer2").css("z-index", "6");
                 }
-
             },
-
         ],
 				onEnd: function(tour) {
 			     $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
 			  },
 				backdrop: true,
         storage: false});
-
         // Initialize the tour
         tour.init();
-
         // Start the tour
         tour.start(true);
-
-
-
-
     </script>
 
 
@@ -494,7 +483,7 @@
 			#viewer2 {
 				/*position: absolute;*/
 			}
-
+			
 			.viewer {
 				/*width: 100%;*/
 				border: 1px solid black;
@@ -506,8 +495,6 @@
 				margin-top: 7px;
 				/*width: 70%;*/
 			}
-
-
 
 			.document-title {
 				font-size: 25px;
@@ -533,7 +520,6 @@
         #submit-zone {
             margin-top: -32px;
         }
-
 
         #submit_transcription {
             float: right;
@@ -574,9 +560,7 @@
         .tour-backdrop,
     .tour-step-background {
         /*z-index: 3;*/
-
     }
-
 
     </style>
 </body>
