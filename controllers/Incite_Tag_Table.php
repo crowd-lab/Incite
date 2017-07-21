@@ -644,12 +644,10 @@ function findTaggedTransIDFromGoldStandard($itemID) {
     $stmt = $db->prepare("SELECT `id` FROM `omeka_incite_tagged_transcriptions` WHERE `item_id` = $itemID AND `type` = 2");
     $stmt->bind_result($id);
     $stmt->execute();
-    while($stmt->fetch()) {
-        $taggedID = $id;
-    }
+    $stmt->fetch();
     $stmt->close();
     $db->close();
-    return $taggedID;
+    return $id;
 }
 
 function findAllAnswersFromGoldStandard($taggedTranscriptionID) {
@@ -678,6 +676,18 @@ function findAllRatingsFromGoldStandard($taggedTranscriptionID) {
     $stmt->close();
     $db->close();
     return $subject_list;
+}
+
+function findAssessmentTaggedTransForUser($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 2 ");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($taggedTranscription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $taggedTranscription;
 }
 
 function getLatestTaggedTransForUser($itemID) {
@@ -749,13 +759,11 @@ function findAllSubs($itemID) {
     $idArr = array();
     foreach ($textArr as $key => $value) {
         $subcatID = getSub($value);
-        if ($subcatID[0] == NULL) {
-        //if (sizeof($subcatID) == 0) { //test
+        if (count($subcatID) == 0) {
             $subcatID[0] = "empty";
         }
          $idArr[$key] = $subcatID;
     }
-    //print_r($idArr);
     return $idArr;
 }
 

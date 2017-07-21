@@ -556,7 +556,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->view->doc_id = $this->_getParam('id');
     $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
     $this->view->subjects = getAllSubjectConcepts();
-    $this->view->transcription = getLatestTaggedTransForUser($assessment_doc_id);
+    //$this->view->transcription = getLatestTaggedTransForUser($assessment_doc_id);
+    $this->view->transcription = findAssessmentTaggedTransForUser($assessment_doc_id);
     $this->_helper->viewRenderer('connectassessment');
     $this->view->groupid = (string)getWorkingGroupID();
     unset($_SESSION['Incite']['assessment_trans']);

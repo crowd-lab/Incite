@@ -249,10 +249,13 @@ SQL
 
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_question_conjunction (
-        `id` int(11) NOT NULL,
-        `item_id` int(11) NOT NULL,
-        `tag_id` int(11) NOT NULL
-        
+        `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `tagged_trans_id`       int(11) NOT NULL,
+        `question_id`           int(11) NOT NULL,
+        `answer`                varchar(500) NOT NULL,
+        `type`                  int(11) NOT NULL,
+
+        PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
@@ -347,9 +350,11 @@ SQL
     );
         get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags_subcategory_conjunction (
+        `id`                int(11) NOT NULL AUTO_INCREMENT,
         `tag_id`            int(11) NOT NULL,
-        `subcategory_id`    int(11) NOT NULL
+        `subcategory_id`    int(11) NOT NULL,
     
+   PRIMARY KEY (`id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
    
 SQL

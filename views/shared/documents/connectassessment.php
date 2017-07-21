@@ -10,7 +10,8 @@
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
         $category_object = getAllCategories();
-        $subject_from_gold_standard = findAllRatingsFromGoldStandard(findTaggedTransIDFromGoldStandard($this->document_metadata->id));
+        //$subject_from_gold_standard = findAllRatingsFromGoldStandard(findTaggedTransIDFromGoldStandard($this->document_metadata->id));
+        $subject_from_gold_standard = findAllRatingsFromGoldStandard($this->document_metadata->id);
         $explain_list = explainDic($this->document_metadata->id);
     ?>
 
