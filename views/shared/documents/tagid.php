@@ -13,6 +13,7 @@
         <script type="text/javascript">
             var msgbox;
             var comment_type = 1;
+            var questions_array;
         </script>
     </head>
 
@@ -155,20 +156,31 @@
                     <p class="step"><i>Step 3 of 3: Based on the document on the left and its metadata, please answer the following questions.</i></p>
                     <table class="table">
                         <tr><th>Questions</th><th>Answers</th></tr>
-                        <tr><td>When was this document produced?</td><td><input type="text" placeholder="YYYY-MM-DD"></td></tr>
-                        <tr><td>Where was this document produced?</td><td><input type="text" placeholder="location"></td></tr>
+                        <tr><td>When was this document produced?</td><td><input type="text" id = "date-detail" placeholder="YYYY-MM-DD"></td></tr>
+                        <tr><td>Where was this document produced?</td><td><input type="text" id = "place-detail" placeholder="location"></td></tr>
                         <tr><td>Based on your reading, what location does this document tell you most about?</td><td><input type="text" id = "location-detail" placeholder="City, State, or region"></td></tr>
+                        <tr><td style="vertical-align: middle;">Based your reading of the document, what period does this document tell you most about? (contextualize)</td>
+                            <td>
+                                <select id = "period-selector" class="form-control">
+                                    <option>What period?</option>
+                                    <option>Pre Civil war (year range, - 1861)</option>
+                                    <option>Civil war (year range, 1861 - 1865)</option>
+                                    <option>Post Civil war (year range, 1865 - )</option>
+                                    <option>Unclear</option>
+                                </select>
+                            </td>
+                        </tr>
                         <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
                             <td>
-                              <select class="form-control">
-                                  <option>What social group?</option>
-                                  <option>White Americans</option>
-                                  <option>African Americans</option>
-                                  <option>Foreigners</option>
-                                  <option>Abolitionists</option>
-                                  <option>Not specified</option>
-                              </select>
-                                <select class="form-control">
+                                <select id = "social_selector" class="form-control">
+                                    <option>What social group?</option>
+                                    <option>White Americans</option>
+                                    <option>African Americans</option>
+                                    <option>Foreigners</option>
+                                    <option>Abolitionists</option>
+                                    <option>Not specified</option>
+                                </select>
+                                <select id = "gender-selector" class="form-control">
                                     <option>What gender?</option>
                                     <option>Male</option>
                                     <option>Female</option>
@@ -184,6 +196,7 @@
                         <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                         <input id="what_type" type="hidden" value="" name="link"> </input>
+                        <input id="question_arr" type="hidden" value="" name="questions"> </input>
                         <hr size=1 class="discussion-seperation-line">
                         <button type="submit" class="btn btn-primary" id="confirm-button-repeat">Submit & Continue Tag</button>
                         <button type="submit" class="btn btn-primary" id="confirm-button">Submit & Connect</button>
@@ -263,8 +276,7 @@
 
             <?php foreach ($category_object as $id => $content) {
                 echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
-                //echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
-            }
+                }
             ?>
             new_entity.find('.category-select').multiselect({
                 disableIfEmpty: true
@@ -306,6 +318,10 @@
 
 
     $(document).ready(function () {
+        $("#comment-container").click(function(){
+          createQuestionArray();
+          console.log(questions_array);
+        });
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
@@ -363,6 +379,7 @@
         });
 
         $('#confirm-button').on('click', function (e) {
+            createQuestionArray()
             if ($('.category-select option:selected[value=0]').length > 0) {
                 notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
@@ -398,10 +415,11 @@
                 $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
                 $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
             });
-            //alert is for testing
+
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
             $('#what_type').val('1');
+            $('#question_arr').val(JSON.stringify(questions_array));
             $('#entity-form').submit();
 
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
@@ -447,6 +465,7 @@
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
             $('#what_type').val('2');
+            $('#question_arr').val(questions_array);
             $('#entity-form').submit();
 
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
@@ -546,6 +565,34 @@
         ?>
     });
 
+    function createQuestionArray() {
+      var date = $('#date-detail').val();
+      if (date == "")
+        date = "You did not answer this question";
+      //questions_array.push({'1': date});
+      var location = $('#place-detail').val();
+      if (location == "")
+        location = "You did not answer this question";
+      //questions_array.push({'2': location});
+      var pointed_location = $('#location-detail').val();
+      if (pointed_location == "")
+        pointed_location = "You did not answer this question";
+      //questions_array.push({'3': pointed_location});
+      var period = $('#period-selector').val();
+      if (period == "What period?")
+        period = "You did not answer this question";
+      //questions_array.push({'4': period});
+      var social = $('#social_selector').val();
+      if (social == "What social group?")
+        social = "You did not answer this question";
+      //questions_array.push({'5': social});
+      var gender = $('#gender-selector').val();
+      if (gender == "What gender?")
+        gender = "You did not answer this question";
+      //questions_array.push({'6': gender});
+      questions_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':social, '6': gender};
+    }
+
     function styleForEditing() {
         addRevisionHistoryListeners();
     }
@@ -563,179 +610,7 @@
             $('#tagging-container').show();
         });
     }
-    /*
-    var tour = new Tour({
-        template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
-        steps: [
-            {
-                element: '#work-view',
-                title: "Welcome!",
-                content: "It looks like you haven’t tagged a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
-                placement: "right",
-            },
-            {
-                element: '#entity-table',
-                title: "Auto-suggested and Previous Tags",
-                content: 'This is a document that has been transcribed. Incite has auto-suggested some tags. <br>Read through the suggested tags and get acquainted with the structure of a tag.',
-                placement: 'left',
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-            },
-            {
-                element: '#entity-table',
-                title: "Parts of a tag",
-                content: "A tag consists of four components. <br>1. The name <br>2. The category <br>3. The sub-category <br>4. The details",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
 
-            },
-            {
-                element: '#work-view',
-                title: "Adding your own Tags",
-                content: "Now, highlight words in the transcription on the left to add any missing tags. You can highlight a word by clicking and dragging.<br>Try highlighting the author's name.",
-                placement: "right",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    var isDragging = false;
-                    $("#work-view").mousedown(function() {
-                        isDragging = false;
-                    }).mousemove(function() {
-                        isDragging = true;
-                    }).mouseup(function() {
-                        var wasDragging = isDragging;
-                        isDragging = false;
-                        if (wasDragging) {
-                            tour.next();
-                        }
-                    });
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-            {
-                element: '#work-view',
-                title: "",
-                content: "Great Work! Click next to continue.",
-                placement: "right",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-
-            {
-                element: '#user-entity-table',
-                title: "Adding the components to your tag",
-                content: "Now let's try setting the components to the tag you just made. <br>If a tag doesn't fit under any given category, select Other for the category or None for the subcategory. <br>Try setting the most appropriate category/subcategory.",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $('#categorySelect').change(function() {
-                        if (this.value == 3) {
-                            tour.next();
-                        }
-
-                    });
-
-                }
-
-            },
-            {
-                element: '#user-entity-table',
-                title: "",
-                content: "Great Work! Click next to continue.",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-            {
-                element: '#user-entity-table',
-                title: "Adding the components to your tag",
-                content: "Now add a small detail about the tag. For example, try typing 'author'.",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('#detail').on("input", function() {
-
-                        if (this.value == 'author') {
-                            tour.next();
-                        }
-                    });
-                }
-
-            },
-            {
-                element: '#user-entity-table',
-                title: "",
-                content: "Great Work! You've created your first tag! Press next to continue",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-            {
-                element: '#user-entity-table',
-                title: "Deletion",
-                content: 'Now try deleting the tag we just finalized. You can do this by clicking the trash button.',
-                placement: 'left',
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('#addTrashButton').one("mouseup", function() {
-                        tour.next();
-                    });
-                }
-            },
-            {
-                element: '#user-entity-table',
-                title: "",
-                content: "Great Work! Press next to continue",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-
-
-            {
-                element: '#comment-container',
-                title: "Comments",
-                content: "Other users may give tips or opinions on a certain document. Make sure to login or sign up to contribute to the discussion!",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-
-            },
-
-            {
-                element: '#work-view',
-                title: "Congratulations!",
-                content: "You've finished the tutorial for the tagging process! Press End Tour to close this tutorial.",
-                placement: "right",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", false);
-                }
-
-            }
-    ],
-    backdrop: true,
-    storage: false});
-
-    // Initialize the tour
-    tour.init();
-
-    // Start the tour
-    tour.start(true);
-    */
 </script>
 
 <style>

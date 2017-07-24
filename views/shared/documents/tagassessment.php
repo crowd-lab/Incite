@@ -34,7 +34,7 @@
                 url: "<?php echo getFullInciteUrl().'/ajax/uploadtags'; ?>",
                 data: {'entities': entities_array, 'tagged_doc': $('#transcribe_copy').html(), 'questions': question_array},
                 success: function (response) {
-                
+
                 }
               });
             }
@@ -197,7 +197,7 @@
                         </tr>
                         <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
                             <td>
-                                <select id = "race-selector" class="form-control">
+                                <select id = "social_selector" class="form-control">
                                     <option>What social group?</option>
                                     <option>White Americans</option>
                                     <option>African Americans</option>
@@ -648,14 +648,14 @@
       var period = $('#period-selector').val();
       if (period == "What period?")
         period = "You did not answer this question"
-      var race = $('#race-selector').val();
-      if (race == "What social group?")
-        race = "You did not answer this question"
+      var social = $('#social_selector').val();
+      if (social == "What social group?")
+        social = "You did not answer this question"
       var gender = $('#gender-selector').val();
       if (gender == "What gender?")
         gender = "You did not answer this question"
       var selec = $("#urquestions tr");
-      question_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':race, '6': gender};
+      question_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':social, '6': gender};
       var question_len = Object.keys(question_array).length;
       var checkmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/checkMark.png" height = "20" width = "20" >'+ '&nbsp;&nbsp;&nbsp;';
       var crossmark = '<img src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/wrong.png" height = "20" width = "20" >' + '&nbsp;&nbsp;&nbsp;';

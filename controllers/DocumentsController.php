@@ -336,10 +336,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
               $oldwd = getcwd();
               chdir('./plugins/Incite/stanford-ner-2015-04-20/');
-/*
-              $this->view->file = 'not exist';
-              system("java -mx600m -cp stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier classifiers/english.muc.7class.distsim.crf.ser.gz -outputFormat inlineXML -textFile " . '../tmp/ner/tutorial_trans > ../tmp/ner/tutorial_trans.ner');
-*/
               $nered_file = fopen('../tmp/ner/tutorial_trans.ner', "r");
               $nered_file_size = filesize('../tmp/ner/tutorial_trans.ner');
               
@@ -360,18 +356,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                       $transformed_transcription = classifyTextWithinTagWithId($transformed_transcription, strtoupper($category['name']), $tag_id_counter++);
                   }
                  
-                  //$tag_id_counter -= $repitition;
                   if (isset($entities[1]) && count($entities[1]) > 0) {
-                      //$uniq_entities = array_unique($entities[1]);
                       $uniq_entities = $entities[1];
                       foreach ($uniq_entities as $entity) {
                           //$ner_entity_table[] = array('entity' => $entity, 'category' => strtoupper($category['name']), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
                       }
                   }
               }
-              //Wrong tags to be removed in tutorial
-              //$ner_entity_table[] = array('entity' => "Passenger", 'category' => strtoupper("location"), 'subcategories' => array(), 'details' => '', 'tag_id' => $tag_id_counter++);
-
 
               chdir($oldwd);
               $this->view->entities = $ner_entity_table;
@@ -405,11 +396,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     $workingGroupId = getWorkingGroupID();
 
-    for ($i = 0; $i < sizeof($entities); $i++) {
-      createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), 0, 1);
-    }
+    $tagged_trans_id = createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
 
-    createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
+    for ($i = 0; $i < sizeof($entities); $i++) {
+      createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), $tagged_trans_id, 1);
+    }
+    $question_arr = json_decode($_POST["questions"], true);
+    for ($i = 0; $i < sizeof($question_arr); $i++) {
+      saveQuestions($tagged_trans_id, $i + 1, $question_arr[$i], 1);
+    }
     $_SESSION['Incite']['previous_task'] = 'tag';
 
 

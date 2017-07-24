@@ -847,10 +847,6 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
   public function savetransAction() {
     //$workingGroupId = $this->getWorkingGroupID();
     if ($this->getRequest()->isPost()) {
-        //print_r($_POST['transcription']);
-        //echo "\n";
-        //print_r($_POST['tone']);
-      
       $assessID = 731;
       $userID = $_SESSION['Incite']['USER_DATA']['id'];
       $groupID = 0;
@@ -871,7 +867,6 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
       }
       
       for ($i = 0; $i < sizeof($question_arr); $i++) {
-        //print_r($question_arr[$i + 1]);
         saveQuestions($taggedID, $i + 1, $question_arr[$i + 1], 3);
       }
     }
