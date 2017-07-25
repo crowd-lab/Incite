@@ -315,14 +315,6 @@ function x() {
 	map.setView([37.8, -95], 4);
 	map.addLayer(osm_normal);
     
-    var osmUrl_land='http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png';
-	var osmAttrib_land='&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors & <a href="http://thunderforest.com/">Thunderforest</a>';
-	var osm_land = new L.TileLayer(osmUrl_land, {attribution: osmAttrib_land});	
-    var baseLayers = {
-			"Normal": osm_normal,
-			"Landscape": osm_land
-		};
-	L.control.layers(baseLayers).addTo(map);
 
 
 /*

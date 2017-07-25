@@ -323,12 +323,12 @@ public function getallavailabledocsAction(){
             break;
           }
 
-          $record = get_record_by_id('item', $document_ids[$i]);
+          $record = get_record_by_id('item', $item_ids[$i]);
             if ($record != null) {
                 $file = $record->getFile();
                 if($file != null) {
                 // $records[] = $this->_helper->db->find($document_ids[$i]);
-                $records[] = array('id' => $document_ids[$i],
+                $records[] = array('id' => $item_ids[$i],
                 'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
                 'desc' => metadata($record, array('Dublin Core','Description')),
                 'name' => metadata($record, array('Dublin Core','Title')),
