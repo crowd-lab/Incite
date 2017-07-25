@@ -588,8 +588,8 @@
 <body>
     <div id="groupprofile-header">
         <?php
-        echo '<h1> Group: ' . $this->group['name'] . '</h1>';
-        echo '<h3 id="group-owner">Group Owner: </h3>';
+            echo '<h1> Group: ' . $this->group['name'] . '</h1>';
+            echo '<h3 id="group-owner">Group Owner: </h3>';
         ?>
     </div>
 

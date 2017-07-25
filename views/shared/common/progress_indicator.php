@@ -9,16 +9,16 @@
 	        var numberOfTasksCompleted = 0;
 
 	        <?php
-	        	$document_id = $this->document_metadata->id;
+	        	$item_id = $this->document_metadata->id;
 
-	        	$newestTranscription = getNewestTranscription($document_id);
-	        	$newestSubjects = getNewestSubjectsForNewestTaggedTranscription($document_id);
+	        	$newestTranscription = getNewestTranscription($item_id);
+	        	$newestSubjects = getNewestSubjectsForNewestTaggedTranscription($item_id);
 
 	        	if (!empty($newestTranscription)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (hasTaggedTranscriptionForNewestTranscription($document_id)) {
+	        	if (hasTaggedTranscriptionForNewestTranscription($item_id)) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
@@ -35,7 +35,16 @@
 	        	styleForTag(numberOfTasksCompleted);
 	        } else if (pathname.indexOf("/connect/") > -1) {
 	        	styleForConnect(numberOfTasksCompleted);
-	        } else {
+	        }
+			
+			else if (pathname.indexOf("/trans1/") > -1) {
+            	styleForTranscribe(numberOfTasksCompleted);
+			} else if (pathname.indexOf("/tag1/") > -1) {
+				styleForTag(numberOfTasksCompleted);
+			} else if (pathname.indexOf("/conn1/") > -1) {
+				styleForConnect(numberOfTasksCompleted);
+			} 
+			else {
 	        	alert("Using progress indicator on incorrect page, please contact the developers");
 	        }
 

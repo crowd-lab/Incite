@@ -10,14 +10,23 @@
         var comment_type = 0;
     </script>
 
+    <script type="text/javascript">
+        var textArea;
+        var textToCheck;
+        textToCheck = "Hello World";
+        textArea = document.getElementById("transcription-textarea");
+
+
+    </script>
+
     <!-- Page Content -->
     <?php
         include(dirname(__FILE__) . '/../common/task_header.php');
     ?>
+    <?php
+        include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
+    ?>
     <div class="container-fluid">
-        <?php
-            include(dirname(__FILE__) . '/../common/document_viewer_section_without_transcription.php');
-        ?>
 
         <div class="col-md-6" id="submit-zone">
             <div id="transcribing-work-area">
@@ -38,8 +47,11 @@
                     </span>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                 </p>
+                <div id = "tran-div">
+                  <textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
+                  <p style = "float: right">Character Count: <span id = "counting">0</span></p>
+                </div>
 
-                <textarea id="transcription-textarea" name="transcription" rows="15" placeholder="Provide a 1:1 transcription of the document"></textarea>
                 <p class="step">
                     <i>Step 2 of 3: Summarize</i>
                     <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
@@ -51,8 +63,12 @@
                         data-placement="bottom" data-id="<?php echo $transcription->id; ?>">
                     </span>
                 </p>
-                <textarea id="summary-textarea" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
-                <div class="form-group">
+
+                <div id = "sum-div">
+                  <textarea id="summary-textarea" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
+                  <p style = "float: right">Character Count: <span id = "s-counting">0</span></p>
+      					</div>
+                <div class="form-group" id="tone-selection">
                     <p class="step">
                         <i>Step 3 of 3: Select the tone of the document</i>
                         <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"
@@ -65,15 +81,17 @@
                         </span>
                     </p>
                     <select id="tone-selector" class="form-control" name="tone">
-                        <option value="informational" default selected>Informational</option>
+                        <option value="informational">Informational</option>
                         <option value="anxiety">Anxiety</option>
-                        <option value="optimism">Optimism</option>
+                        <option value="optimism" default selected>Optimism</option>
                         <option value="sarcasm">Sarcasm</option>
                         <option value="pride">Pride</option>
                         <option value="aggression">Aggression</option>
                     </select>
                 </div>
-                <button id="submit_transcription" type="button" class="btn btn-primary">Submit</button>
+                <button id="submit_and_repeat" type="button" class="btn btn-primary" >Submit & Continue Transcribe</button>
+                <button id="submit_to_tag" type="button" class="btn btn-primary" >Submit & Tag</button>
+                <input id="which_type" type="hidden" value="" name="link"> </input>
                 <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
             </form>
 
@@ -95,7 +113,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
-            $('#submit_transcription').on('click', function(e) {
+            $('#submit_to_tag').on('click', function(e) {
                 if ($('#transcription-textarea').val() === "") {
                     notifyOfErrorInForm('Please provide a transcription of the document');
                     return;
@@ -108,8 +126,29 @@
                     notifyOfErrorInForm('Please select the tone of the document');
                     return;
                 }
+                $('#which_type').val('1');
                 $('#transcribe-form').submit();
+
             });
+            $('#submit_and_repeat').on('click', function(e) {
+              $('#which_type').val('2');
+              $('#transcribe-form').submit();
+
+            });
+
+            $('#summary-textarea').keyup(function() {
+							var text_length = $('#summary-textarea').val().length;
+
+							$('#s-counting').text(text_length);
+
+						});
+
+						$('#transcription-textarea').keyup(function() {
+							var text_length = $('#transcription-textarea').val().length;
+
+							$('#counting').text(text_length);
+
+						});
 
             <?php
                 if (isset($_SESSION['incite']['message'])) {
@@ -122,6 +161,7 @@
                 styleForEditing();
             <?php endif; ?>
         });
+
 
         function styleForEditing() {
             populateWithLatestTranscriptionData();
@@ -147,49 +187,21 @@
                 $('#transcribe-form').show();
             });
         }
-        var tour = new Tour({
-        steps: [
-            {
-                element: "#work-view",
-                title: "Original Document",
-                content: '1. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of title provides more info of the document.<br>2. Below the title is an image viewer with zooming controls at the bottom left corner. Mouse over each control to see its tooltip',
-                placement: "right"
-            },
-            {
-                element: "#transcribing-work-area",
-                title: "Transcribe Task",
-                content: '1. Please follow the three steps to complete the task.<br>2. The icon <span class="glyphicon glyphicon-info-sign"></span> at the end of each step provides detailed instructions.<br>3. If you are editing an existing transcription, you can view revision history by clicking the link at the top right corner of Step 1.',
-                placement: "left"
-            },
-            {
-                element: "#comment-container",
-                title: "Comment",
-                content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-                placement: "left"
-            },
-            {
-                element: "#navbar-bottom",
-                title: "Status of The Document",
-                content: '1. Orange color: you are the first person working on the task.<br>2. Green color: the task has been done before.<br>3. Gray color: the task has not been done before.',
-                placement: "top"
-            }
-        ],
-        backdrop: true,
-        storage: false});
 
-        // Initialize the tour
-        tour.init();
-
-        // Start the tour
-        tour.start(true);
     </script>
 
     <style>
         #submit-zone {
             margin-top: -32px;
         }
+        .btn-end {
+            display: none;
+        }
+        #step-0 .btn-end { display: block; }
 
-        #submit_transcription {
+        #step-14 .btn-end { display: block; }
+
+        #submit_to_tag {
             float: right;
         }
 
@@ -216,6 +228,13 @@
             right: 0;
             cursor: pointer;
         }
+        .tour-backdrop,
+    .tour-step-background {
+        z-index: 3;
+    }
+
+
+
     </style>
 </body>
 

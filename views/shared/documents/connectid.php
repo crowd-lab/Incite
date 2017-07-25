@@ -30,9 +30,9 @@
                         <div>Description: <?php echo metadata($this->connection, array('Dublin Core', 'Description')); ?></div>
                     <h4>Transcription:</h4>
                     <div>
-<?php foreach ($this->category_colors as $category => $color): ?>
+                        <?php foreach ($this->category_colors as $category => $color): ?>
                         <span style="background-color:<?php echo $color; ?>;"><?php echo ucfirst(strtolower($category)); ?></span>
-<?php endforeach; ?>
+                        <?php endforeach; ?>
                     </div>
                     <div style="border-style: solid;" name="transcribe_text" rows="20" id="transcribe_copy" style="width: 100%;"><?php print_r($this->transcription); ?></div>
                     <div class="wrapper">
@@ -50,30 +50,30 @@
                     <button type="submit" class="btn btn-default" name="connection" value="false">No</button>
                     <input type="hidden" name="subject" value="<?php echo $this->subject_id; ?>" />
                 </form>
-<?php if (count($this->related_documents) == 0): ?>
-<?php elseif (count($this->related_documents) == 1): ?>
-                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
-<?php else: ?>
-                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
-<?php endif; ?>
-<?php foreach($this->related_documents as $document): ?>
+                <?php if (count($this->related_documents) == 0): ?>
+                <?php elseif (count($this->related_documents) == 1): ?>
+                                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so does the following document.</h3>
+                <?php else: ?>
+                                <h3>It mentions (<?php echo implode(', ', $this->entities);  ?>) and so do the following <?php echo count($this->related_documents); ?> documents.</h3>
+                <?php endif; ?>
+                <?php foreach($this->related_documents as $document): ?>
                 <div class="col-md-4">
                     <a href="/m4j/incite/documents/connect/<?php echo $document->id; ?>" data-toggle="popover" title="Summary" data-content="<?php echo metadata($document, array('Dublin Core', 'Description')); ?>">
                         <img src="<?php echo $document->getFile()->getProperty('uri'); ?>" class="thumbnail img-responsive">
                     </a>
                     <h4 style=""><?php echo metadata($document, array('Dublin Core', 'Title')); ?></h4>
                 </div>
-<?php endforeach; ?>
+                <?php endforeach; ?>
                 <div class="clearfix"></div>
                 <div id="container">
                     <h3> Discussion </h3>
                     <div id="onLogin">
-<?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
+                      <?php if (isset($_SESSION['Incite']['IS_LOGIN_VALID']) && $_SESSION['Incite']['IS_LOGIN_VALID'] == true /** && is_permitted **/): ?>
                     <textarea name="comment_text" cols="60" rows="10" id="comment" placeholder="Your comment"></textarea>
                     <button type="button" class="btn btn-default" onclick="submitComment(<?php echo $this->connection->id; ?>)">Submit</button>
-<?php else: ?>
+                    <?php else: ?>
                     Please login or signup to join the discussion!
-<?php endif; ?>
+                    <?php endif; ?>
                     </div>
                     <ul id="comments">
                     </ul>
@@ -143,6 +143,12 @@ $(document).ready(function(){
             {
                 overflow: hidden;
             }
+    .btn-end {
+            display: none;
+        }
+        #step-0 .btn-end { display: block; }
+
+        #step-7 .btn-end { display: block; }
         </style>
 
 </body>

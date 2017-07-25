@@ -14,10 +14,10 @@ require_once("DB_Connect.php");
  * @param type $question
  * @param type $user_id
  * @param int  $group_id
- * @param type $document_ids: references used in the question
+ * @param type $item_ids: references used in the question
  * @param type $type
  */
-function createQuestion($question, $user_id, $group_id, $document_ids, $type)
+function createQuestion($question, $user_id, $group_id, $item_ids, $type)
 {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_questions VALUES (DEFAULT, ?, ?, ?, 1, CURRENT_TIMESTAMP, ?)");
@@ -27,9 +27,9 @@ function createQuestion($question, $user_id, $group_id, $document_ids, $type)
     $stmt->close();
     $db->close();
     $newdb = DB_Connect::connectDB();
-    for ($i = 0; $i < sizeof($document_ids); $i++)
+    for ($i = 0; $i < sizeof($item_ids); $i++)
     {
-        $documentID = intval($document_ids[$i]);
+        $documentID = intval($item_ids[$i]);
         $newstmt = $newdb->prepare("INSERT INTO omeka_incite_documents_questions_conjunction VALUES (DEFAULT, ?, ?)");
         $newstmt->bind_param("ii", $documentID, $insertedID);
         $newstmt->execute();
@@ -153,25 +153,25 @@ function getAllReferencedDocumentIdsForQuestion($question_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT document_id FROM omeka_incite_documents_questions_conjunction WHERE question_id = ?");
+    $stmt = $db->prepare("SELECT item_id FROM omeka_incite_documents_questions_conjunction WHERE question_id = ?");
     $stmt->bind_param("i", $question_id);
-    $stmt->bind_result($document_id);
+    $stmt->bind_result($item_id);
     $stmt->execute();
     while ($stmt->fetch())
     {
-        $idArray[] = $document_id;
+        $idArray[] = $item_id;
     }
     $stmt->close();
     $db->close();
     return $idArray;
 }
 
-function pullQuestionsForDocumentOnly($document_id)
+function pullQuestionsForDocumentOnly($item_id)
 {
     $idArray = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT question_id FROM omeka_incite_documents_questions_conjunction INNER JOIN omeka_incite_questions ON omeka_incite_questions.id = omeka_incite_documents_questions_conjunction.question_id WHERE (question_type = 0 OR question_type = 1 OR question_type = 2 OR question_type = 3) AND document_id = ? ORDER BY timestamp");
-    $stmt->bind_param("i", $document_id);
+    $stmt = $db->prepare("SELECT question_id FROM omeka_incite_documents_questions_conjunction INNER JOIN omeka_incite_questions ON omeka_incite_questions.id = omeka_incite_documents_questions_conjunction.question_id WHERE (question_type = 0 OR question_type = 1 OR question_type = 2 OR question_type = 3) AND item_id = ? ORDER BY timestamp");
+    $stmt->bind_param("i", $item_id);
     $stmt->bind_result($question_id);
     $stmt->execute();
     while ($stmt->fetch())

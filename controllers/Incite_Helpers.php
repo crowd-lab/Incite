@@ -153,8 +153,7 @@ function getInciteUrl()
 
 function getFullOmekaUrl()
 {
-    $host = $_SERVER['HTTP_HOST'];
-    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $host . '/' . getOmekaFolderName();
+    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . getOmekaUrl() . '/';
 }
 
 function getFullInciteUrl()
@@ -204,4 +203,11 @@ function debug_to_console( $data ) {
 function getPositiveSubjects($subjects) {
 
 }
+function getWorkingGroupID() {
+    if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
+      return $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+    } else {
+      return 0;
+    }
+  }
 ?>

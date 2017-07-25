@@ -88,7 +88,6 @@
 
         function populateGroups() {
             var span;
-
             <?php foreach ((array) $this->groups as $group): ?>
 
                 if ($("#groups-list span").length === 0) {
@@ -96,7 +95,6 @@
                 } else {
                     span = $('<span class="group-member-link">, </span>');
                 }
-
                 span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
 
                 $('#groups-list').append(span);
@@ -129,7 +127,7 @@
                     <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ?
                         $activity['discussion_title'] : $activity['document_title']); ?>.value,
                     <?php echo (($activity['activity_type'] === 'Discuss') ?
-                        $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>"
+                        $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>"
                 );
             <?php endforeach; ?>
         };
@@ -321,7 +319,7 @@
             <?php foreach ((array)$this->activities as $activity): ?>
                 if (parseInt(groupId) === <?php echo $activity['working_group_id']; ?>) {
                     <?php echo $activity['activity_type']; ?>++;
-                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>");
                 }
             <?php endforeach; ?>
 
@@ -566,7 +564,7 @@
             <h2 class="activity-title" id="activity-feed-title">Activity Feed for Work Done in </h2>
             <select id="activity-feed-group-selector-filter" class="form-control" name="task">
                 <option id="default-group-selector-option" value="All groups" selected>All Groups</option>
-
+                
                 <?php foreach ((array)$this->groups as $group): ?>
                     <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 30) ? substr($group['name'],0,27).'...' : $group['name']; ?></option>
                 <?php endforeach; ?>

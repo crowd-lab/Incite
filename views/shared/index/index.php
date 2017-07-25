@@ -3,7 +3,6 @@
 <?php
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
 $db = get_db();
-
 include(dirname(__FILE__).'/../common/header.php');
 ?>
 
@@ -11,25 +10,20 @@ include(dirname(__FILE__).'/../common/header.php');
 .carousel-inner {
     height: 150px;
 }
-
 .carousel-control {
     top: 20%;
 }
-
 .carousel-control.left, .carousel-control.right {
     background: none;
     color: @red;
     border: none;
 }
-
 .carousel-control.left {
     margin-left: -45px; color: black;
 }
-
 .carousel-control.right {
     margin-right: -45px; color: black;
 }
-
 @media (max-width: 748px) {
     #transcribe_itm > div, #tag_itm > div, #connect_itm > div , button.btn.btn-danger{
         font-size: 11px;
@@ -37,15 +31,11 @@ include(dirname(__FILE__).'/../common/header.php');
     h1{
         font-size: 32px;
     }
-
-
 }
-
 @media (max-width: 590px) {
     #transcribe_itm > div, #tag_itm > div, #connect_itm > div, button.btn.btn-danger {
         font-size: 10px;
     }
-
     h1{
         font-size: 25px;
     }
@@ -54,30 +44,22 @@ include(dirname(__FILE__).'/../common/header.php');
     }
     .all_task_item > img{
         height: 100px;
-
     }
-
 }
-
 @media (max-width: 410px) {
     #transcribe_itm > div, #tag_itm > div, #connect_itm > div, button.btn.btn-danger {
         font-size: 8px;
     }
-
     h1{
         font-size: 20px;
     }
     .all_task_item > img, #transcribe_itm > div > img, #tag_itm > div > img, #connect_itm > div > img{
         height: 80px;
-
     }
-
     #all_task_row > div {
         padding: 10px;
     }
-
 }
-
 </style>
 
 <div id="fb-root"></div>
@@ -144,11 +126,10 @@ include(dirname(__FILE__).'/../common/header.php');
             &rsaquo;
         </a>
     </div> <!-- homepage-carousel -->
-    <br>
     <div id="homepage-details" style="margin-top: 30px;">
-        <div id="twitter-tweets" style="float: right; width:25%; margin-bottom: -250px;">
+        <div id="twitter-tweets" style="float: right; width:20%; margin-bottom: -250px;">
             <h3 style="color: #8BB7C8; margin-top: 0px;">CONNECT WITH US</h3>
-            <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @J    uly4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @July4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
             <a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
             <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
             <div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/July4CivilWar/">Mapping the Fourth of July: Exploring Independence in the Civil War Era</a></blockquote></div>
@@ -157,13 +138,15 @@ include(dirname(__FILE__).'/../common/header.php');
 -->
         </div>
 
-        <div id="homepage-introduction" style="width: 73%;">
+        <div id="homepage-introduction" style="width: 78%;">
             <h3 style="color: #8BB7C8;">WE ARE UNCOVERING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
-            <div style="margin-left: 140px;">
-                <div style="float: right; width:100%;"><p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p></div>
-                <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="margin-right: 20px; max-width: 120px; float: left;"></div>
-                <div style="clear:both"></div>
+            <div>
+                <iframe style="float: right; margin-bottom: 10px;" width="40%" height="210" src="https://youtube.com/embed/2ZAj-WnBIls" frameborder="1" allowfullscreen>
+                </iframe>
+                <div style="float: right; width:59%; margin-right: 1%;"><p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity. <a href="<?php echo getFullInciteUrl(); ?>/documents/contribute">Click here to get started.</a></p></div>
+                <div style="clear: both;"></div>
             </div>
+            <div style="margin-left: 140px; height: 10px;"></div>
             <br>
             <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
             <div style="margin-left: 140px;">
@@ -211,33 +194,25 @@ $(document).ready(function(){
     },
     function (start, end, label) {
     });
-
-
     var hoverEvent = false;
-
     var slideIndex = {
         TRANSCRIBE: 0,
         TAG: 1,
         CONNECT: 2
     };
-
     $('#myCarousel').carousel({
         interval:   4000
     });
-
     $('#myCarousel').on('mouseenter', '.nav a', function() {
         hoverEvent = true;
         $('.nav li').removeClass('active');
         $(this).parent().addClass('active');
-
         var slideNumber = $(this).parent()[0].getAttribute('data-slide-to');
         $("#myCarousel").carousel(parseInt(slideNumber));
     }).on('click', '.nav a', function() {
         var slideNumber;
-
         slideNumber = $(this).parent()[0].getAttribute('data-slide-to');
         slideNumber = parseInt(slideNumber);
-
         if (slideNumber === slideIndex.TRANSCRIBE) {
             window.location = '<?php echo getFullInciteUrl(); ?>/documents/transcribe';
         } else if (slideNumber === slideIndex.TAG) {
@@ -248,9 +223,7 @@ $(document).ready(function(){
     }).on('slid.bs.carousel', function(e) {
         if (!hoverEvent) {
             var count = $('#myCarousel > .nav').children().length -1;
-
             var current = $('.carouselNavLi.active');
-
             current.removeClass('active').next().addClass('active');
             var id = parseInt(current.data('slide-to'));
             if(count == id) {

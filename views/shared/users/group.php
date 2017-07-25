@@ -4,35 +4,142 @@
     <?php
         include(dirname(__FILE__) . '/../common/header.php');
     ?>
-
     <script type="text/javascript">
         var filters = ["transcribe", "tag", "connect", "discuss"];
-
+        var groupCount = <?php echo count($this->groups); ?>;
         $(document).ready(function () {
+
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
                     unset($_SESSION['incite']['message']);
                 }
-
+                if ($_SESSION['Incite']['Guest']) {
+                    echo "styleForGuest();";
+                }
+                else {
+                    echo 'populateGroups(); ';
+                    echo 'populateActivityOverview(); ';
+                    echo 'populateActivityFeed(); ';
+                    echo 'addGroupCreateOrJoinListeners(); ';
+                    echo 'addListenersToGroupSelector(); ';
+                    echo 'redirectToProfileEditPage(); ';
+                }
                 if ($this->user['id'] != $_SESSION['Incite']['USER_DATA']['id']) {
-                    echo "$('#group-creation-and-join-container').hide();";
+                    
+                    //echo "$('#group-creation-and-join-container').hide();";
                 }
             ?>
-
+            addTableToManageGroupsDiv();
             hideElementsByDefault();
             addListenersToOverview();
-            populateGroups();
-            populateActivityOverview();
-            populateActivityFeed();
-            addGroupCreateOrJoinListeners();
-            addListenersToGroupSelector();
-            redirectToProfileEditPage();
-        });
+            //populateGroups();
+            //populateActivityOverview();
+            //populateActivityFeed();
+            //addGroupCreateOrJoinListeners();
+            //addListenersToGroupSelector();
+            //redirectToProfileEditPage();
 
+        });
+        function styleForGuest() {
+        $('#groupprofile-activity-container').hide();
+
+        var pleaseLogInText = $('<p style="color: red; text-align: center;">Please log in to be able to view groups!</p>');
+        $('body').append(pleaseLogInText);
+        };
+        function addTableToManageGroupsDiv() {
+          if (groupCount == 0) {
+            $("#manage-group-div").append("<span><h3>You are not affiliated with any groups yet </h3></span>");
+          }
+          else {
+            $("#manage-group-div").append('<table class="table" id="manage-group-group-table"></table>');
+            $("#manage-group-group-table").append('<tr><th>Group Name</th><th>Status</th><th>Actions</th></tr>');
+            var i = 0;
+            var span;
+            <?php foreach ((array)$this->groups as $group): ?>
+              span = $('<span 2class="group-member-link"></span>');
+              span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
+              var remove_id = <?php echo $group['id']; ?> + "_remove";
+              var status;
+              var op;
+              <?php if ($_SESSION['Incite']['USER_DATA']['id'] == $group['creator']['id']): ?>
+                status = "Creator";
+                op = $('<span><a id="' + remove_id + '" onClick = "alert_remove(<?php echo $group['id']; ?>)">Delete</a></span>');
+              <?php else: ?>
+                status = "Member";
+                op = $('<span><a id="' + remove_id + '"onClick = "alert_quit(<?php echo $group['id']; ?>)">Quit</a></span>');
+              <?php endif ?>
+              
+              //$("#manage-group-group-table").append("<tr><td>" + "<?php echo $group['name']; ?>" + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
+              //$("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>"+ status + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
+              $("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>"+ status + "</td><td>" + op.html() + "</td></tr>");
+              i++;
+            <?php endforeach; ?>
+          }
+        }
+        function removeUserFromGroupAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/removememberfromgroup'; ?>",
+                data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
+                success: function (response) {
+                    console.log(response);
+                    //removing the row
+                    var target = "#" + groupId + "_remove";
+                    var row = $($(target).parent()).parent();
+                    var toBeDeletedGroupName = $($(row).find('span')).text();
+                    var currentGroupName = $("#working-group-selector option:selected").text();
+                    if (toBeDeletedGroupName == currentGroupName) {//If the group users just quit is the group they currently in
+                        setWorkingGroupAjaxRequest(groupId);
+                    }
+                    $(row).remove();
+                    if ($("#manage-group-group-table tr").length == 1) {
+                        $("#manage-group-group-table").remove();
+                        $("#manage-group-div").append("<span><h3>You are not affiliated with any groups yet </h3></span>");
+                    }
+                }
+            });
+        };
+        function removeGroupAjaxRequest(groupId) {
+            var request = $.ajax({
+                type: "POST",
+                url: "<?php echo getFullInciteUrl().'/ajax/removeselectedgroup'; ?>",
+                data: {"groupId": groupId},
+                success: function (response) {
+                    console.log(response);
+                    //removing the row
+                    var target = "#" + groupId + "_remove";
+                    var row = $($(target).parent()).parent();
+                    var toBeDeletedGroupName = $($(row).find('span')).text();
+                    var currentGroupName = $("#working-group-selector option:selected").text();
+                    if (toBeDeletedGroupName == currentGroupName) {//If the group users just delete is the group they currently in
+                        setWorkingGroupAjaxRequest(groupId);
+                    }
+                    $(row).remove();
+                    if ($("#manage-group-group-table tr").length == 1) {
+                        $("#manage-group-group-table").remove();
+                        $("#manage-group-div").append("<span><h3>You are not affiliated with any groups yet </h3></span>");
+                    }
+                }
+            });
+        };
+
+        function alert_remove(groupId) {
+          if(confirm("Are you sure you want to remove this group")) {
+              removeGroupAjaxRequest(groupId);
+          }
+        }
+        function alert_quit(groupId) {
+          if (confirm("Are you sure you want to quit this group")) {
+            removeUserFromGroupAjaxRequest(groupId);
+          }
+          
+        }
         function hideElementsByDefault() {
+            $('#manage-group-div').show();
             $('#create-group-div').hide();
             $('#join-group-table').hide();
+            $("#search-groups-section").hide();
             $('#no-groups-found-paragraph').hide();
         };
 
@@ -129,7 +236,7 @@
                     <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ?
                         $activity['discussion_title'] : $activity['document_title']); ?>.value,
                     <?php echo (($activity['activity_type'] === 'Discuss') ?
-                        $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>"
+                        $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>"
                 );
             <?php endforeach; ?>
         };
@@ -157,17 +264,26 @@
         };
 
         function addGroupCreateOrJoinListeners() {
-            $('#join-group-tab').click(function () {
-                $("#create-group-div").hide();
-                $("#search-groups-section").show();
-                selectTab($("#join-group-tab"), $("#create-group-tab"));
-            });
+          $('#manage-group-tab').click(function () {
+              $("#create-group-div").hide();
+              $("#search-groups-section").hide();
+              $("#manage-group-div").show();
+              selectTab($('#manage-group-tab'), $("#join-group-tab"), $("#create-group-tab"));
+          });
 
-            $('#create-group-tab').click(function () {
-                $("#search-groups-section").hide();
-                $("#create-group-div").show();
-                selectTab($("#create-group-tab"), $("#join-group-tab"));
-            });
+          $('#join-group-tab').click(function () {
+              $("#create-group-div").hide();
+              $("#manage-group-div").hide();
+              $("#search-groups-section").show();
+              selectTab($("#join-group-tab"), $("#create-group-tab"), $('#manage-group-tab'));
+          });
+
+          $('#create-group-tab').click(function () {
+              $("#search-groups-section").hide();
+              $("#manage-group-div").hide();
+              $("#create-group-div").show();
+              selectTab($("#create-group-tab"), $("#join-group-tab"), $('#manage-group-tab'));
+          });
 
             $('#group-search-btn').click(function(e) {
                 $('#join-group-table tbody tr td').parent().empty();
@@ -187,9 +303,10 @@
             });
         };
 
-        function selectTab(tabToSelect, tabToUnselect) {
+        function selectTab(tabToSelect, tabToUnselect1, tabToUnselect2) {
             tabToSelect.addClass("active");
-            tabToUnselect.removeClass("active");
+            tabToUnselect1.removeClass("active");
+            tabToUnselect2.removeClass("active");
         };
 
         function createGroupAjaxRequest() {
@@ -199,7 +316,6 @@
                 data: {"groupName": $('#group-name-input').val(), "groupType": 0},
                 success: function (response) {
                     var groupId = response.trim();
-
                     redirectToGroupPage(groupId);
                 }
             });
@@ -321,7 +437,7 @@
             <?php foreach ((array)$this->activities as $activity): ?>
                 if (parseInt(groupId) === <?php echo $activity['working_group_id']; ?>) {
                     <?php echo $activity['activity_type']; ?>++;
-                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['document_id']); ?>, "<?php echo $activity['time']; ?>");
+                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>");
                 }
             <?php endforeach; ?>
 
@@ -462,7 +578,7 @@
         }
 
         .nav-tabs > li {
-            width: 50%;
+            width: 33%;
             margin-top: 20px;
             text-align: center;
         }
@@ -517,18 +633,30 @@
             position: relative;
             bottom: 5px;
         }
+        #manage-group-group-table table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        }
+
+        #manage-group-group-table td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
     </style>
 </head>
 
 <body>
+
   <div id="userprofile-header">
         <!-- <?php
 
         echo '<h1> Email: '. $this->user['email'] . '</h1>';
             ?>
- -->
+        -->
     <h1>Group</h1>
-
+    <?php if (!$_SESSION['Incite']['Guest']): ?>
 
         <div>
             <p id="groups-list">Belongs to group(s): </p>
@@ -539,12 +667,14 @@
 
         <div id="group-creation-and-join-container">
             <ul class="nav nav-tabs" id="group-create-or-join-tabs">
-                <li id="join-group-tab" class="active"><a>Join a group</a></li>
+                <li id="manage-group-tab" class="active"><a>Manage existing groups</a></li>
+                <li id="join-group-tab" ><a>Join a group</a></li>
                 <li id="create-group-tab"><a>Create a group</a></li>
+
             </ul>
 
             <div id="join-or-create-info-container">
-
+                <div id = "manage-group-div"></div>
                 <div id="search-groups-section">
                     <span>
                         <label class="control-label" for="group-name-input">Search Groups By Keyword: </label>
@@ -573,9 +703,12 @@
                     </span>
                     <button id="group-create-submit-btn" class="btn btn-primary">Create Group</button>
                 </div>
-            </div>
-        </div>
 
+
+            </div>
+            <?php endif; ?>
+        </div>
+        
 
 </body>
 </html>

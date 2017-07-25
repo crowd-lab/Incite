@@ -22,7 +22,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Questions_Table.php");
     require_once("DiscoverController.php");
     require_once("DocumentsController.php");
-
     require_once("Incite_Search.php");
     require_once("Incite_Tag_Table.php");
     require_once("Incite_Transcription_Table.php");
@@ -33,8 +32,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Env_Setting.php");
     require_once("DB_Connect.php");
     require_once("Email.php");
-
-    require_once("Incite_Subject_Concept_Table.php");
+    require_once('finediff.php');
+    require_once("Incite_Assessment_Table.php");
 
   }
   /**
@@ -257,22 +256,22 @@ public function getallavailabledocsAction(){
     }
 
     $records = array();
-    $document_ids = Incite_DocumentsController::populateViewSearchResults();
+    $item_ids = Incite_DocumentsController::populateViewSearchResults();
 
-    if (count($document_ids) > 0 ) {
-      $total_pages = ceil(count($document_ids) / $items_per_page);
+    if (count($item_ids) > 0 ) {
+      $total_pages = ceil(count($item_ids) / $items_per_page);
       $data['total_pages'] = $total_pages;
       for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page * $current_page; $i++) {
-        if ($i >= count($document_ids)){
+        if ($i >= count($item_ids)){
           break;
         }
 
-        $record = get_record_by_id('item', $document_ids[$i]);
+        $record = get_record_by_id('item', $item_ids[$i]);
         $file = $record->getFile();
 
         if($file != null){
-          // $records[] = $this->_helper->db->find($document_ids[$i]);
-          $records[] = array('id' => $document_ids[$i],
+          // $records[] = $this->_helper->db->find($item_ids[$i]);
+          $records[] = array('id' => $item_ids[$i],
           'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
           'desc' => metadata($record, array('Dublin Core','Description')),
           'name' => metadata($record, array('Dublin Core','Title')),
@@ -281,7 +280,7 @@ public function getallavailabledocsAction(){
           'rights' =>metadata($record, array('Dublin Core', 'Rights')),
           'src' => metadata($record, array('Dublin Core', 'Rights')),
           'url'=> get_image_url_for_item($record, true),
-          'taskinfo'=>getTaskCompletionInfoFor($document_ids[$i]),
+          'taskinfo'=>getTaskCompletionInfoFor($item_ids[$i]),
           'lat_long' => loc_to_lat_long(metadata($record, array('Item Type Metadata', 'Location'))));
 
         }
@@ -314,13 +313,13 @@ public function getallavailabledocsAction(){
       }
 
       $records = array();
-      $document_ids = Incite_DocumentsController::populateTranscribeSearchResults();
+      $item_ids = Incite_DocumentsController::populateTranscribeSearchResults();
 
-      if (count($document_ids) > 0 ) {
-        $total_pages = ceil(count($document_ids) / $items_per_page);
+      if (count($item_ids) > 0 ) {
+        $total_pages = ceil(count($item_ids) / $items_per_page);
         $data['total_pages'] = $total_pages;
         for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page * $current_page; $i++) {
-          if ($i >= count($document_ids)){
+          if ($i >= count($item_ids)){
             break;
           }
 
@@ -370,22 +369,22 @@ public function getallavailabledocsAction(){
       }
 
       $records = array();
-      $document_ids = Incite_DocumentsController::populateTagSearchResults();
+      $item_ids = Incite_DocumentsController::populateTagSearchResults();
 
-      if (count($document_ids) > 0 ) {
-        $total_pages = ceil(count($document_ids) / $items_per_page);
+      if (count($item_ids) > 0 ) {
+        $total_pages = ceil(count($item_ids) / $items_per_page);
         $data['total_pages'] = $total_pages;
         for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page * $current_page; $i++) {
-          if ($i >= count($document_ids)){
+          if ($i >= count($item_ids)){
             break;
           }
 
-          $record = get_record_by_id('item', $document_ids[$i]);
+          $record = get_record_by_id('item', $item_ids[$i]);
           $file = $record->getFile();
 
           if($file != null){
-            // $records[] = $this->_helper->db->find($document_ids[$i]);
-            $records[] = array('id' => $document_ids[$i],
+            // $records[] = $this->_helper->db->find($item_ids[$i]);
+            $records[] = array('id' => $item_ids[$i],
             'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
             'desc' => metadata($record, array('Dublin Core','Description')),
             'name' => metadata($record, array('Dublin Core','Title')),
@@ -426,22 +425,22 @@ public function getallavailabledocsAction(){
       }
 
       $records = array();
-      $document_ids = Incite_DocumentsController::populateConnectSearchResults();
+      $item_ids = Incite_DocumentsController::populateConnectSearchResults();
 
-      if (count($document_ids) > 0 ) {
-        $total_pages = ceil(count($document_ids) / $items_per_page);
+      if (count($item_ids) > 0 ) {
+        $total_pages = ceil(count($item_ids) / $items_per_page);
         $data['total_pages'] = $total_pages;
         for ($i = ($current_page - 1) * $items_per_page; $i < $items_per_page * $current_page; $i++) {
-          if ($i >= count($document_ids)){
+          if ($i >= count($item_ids)){
             break;
           }
 
-          $record = get_record_by_id('item', $document_ids[$i]);
+          $record = get_record_by_id('item', $item_ids[$i]);
           $file = $record->getFile();
 
           if($file != null){
-            // $records[] = $this->_helper->db->find($document_ids[$i]);
-            $records[] = array('id' => $document_ids[$i],
+            // $records[] = $this->_helper->db->find($item_ids[$i]);
+            $records[] = array('id' => $item_ids[$i],
             'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
             'desc' => metadata($record, array('Dublin Core','Description')),
             'name' => metadata($record, array('Dublin Core','Title')),
@@ -558,14 +557,44 @@ public function getallavailabledocsAction(){
       $group = getGroupInfoByGroupId($groupId);
 
       //prevent non group owners from changing people's privilege levels to banned or added
-      if ($_SESSION['Incite']['USER_DATA']['id'] != $group['creator']['id']) {
-        echo false;
-        return;
+      if ($_SESSION['Incite']['USER_DATA']['id'] == $userId || $_SESSION['Incite']['USER_DATA']['id'] == $group['creator']['id']) {
+        echo json_encode(removeMemberFromGroup($userId, $groupId));
+      }
+      else {
+        echo "false";
       }
 
-      echo json_encode(removeMemberFromGroup($userId, $groupId));
+      
     }
   }
+
+
+/**
+  * Ajax function that remove the selected group
+  *
+  * Returns true/false
+  */
+  public function removeselectedgroupAction() {
+    if ($this->getRequest()->isPost()) {
+      $groupId = $_POST['groupId'];
+      $group = getGroupInfoByGroupId($groupId);
+      //prevent non group owners from changing people's privilege levels to banned or added
+      if ($_SESSION['Incite']['USER_DATA']['id'] == $group['creator']['id']) {
+        echo json_encode(removeGroup($groupId));
+      }
+      else {
+        echo "false";
+      }
+
+      
+    }
+  }
+
+
+
+
+
+
   /**
   * Ajax function that updates the privilege of a member of a group
   *
@@ -801,4 +830,63 @@ public function getallavailabledocsAction(){
     }
     echo json_encode($urlData);
   }
+  public function finddiffAction()
+  {
+    if ($this->getRequest()->isPost()) {
+      $FROM = $_POST['userTranscription'];
+      $TO = "THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:
+The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.
+";
+      $diff = new FineDiff($FROM, $TO, FineDiff::$wordGranularity);
+      $htmlDiff = $diff->renderDiffToHTML();
+      $htmlDiff = html_entity_decode($htmlDiff, ENT_QUOTES, 'UTF-8');
+      
+      echo $htmlDiff;
+    }
+  }
+
+  public function savetransAction() {
+    //$workingGroupId = $this->getWorkingGroupID();
+    if ($this->getRequest()->isPost()) {
+      $assessID = 731;
+      $userID = $_SESSION['Incite']['USER_DATA']['id'];
+      $groupID = 0;
+      createTrans($assessID, $userID, $groupID, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
+    }
+  }
+
+  public function uploadtagsAction() {
+    if ($this->getRequest()->isPost()) {
+      $entities = $_POST['entities'];
+      $question_arr = $_POST['questions'];
+      $assessID = 731;
+      $workingGroupId = getWorkingGroupID();
+      $index = findTranscriptionId($assessID, $_SESSION['Incite']['USER_DATA']['id']);
+      $taggedID = saveTaggedTranscription($assessID, $index, $_SESSION['Incite']['USER_DATA']['id'], 0, $_POST['tagged_doc']);
+      for ($i = 0; $i < sizeof($entities); $i++) {
+        createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $assessID, $taggedID, 3);
+      }
+      
+      for ($i = 0; $i < sizeof($question_arr); $i++) {
+        saveQuestions($taggedID, $i + 1, $question_arr[$i + 1], 3);
+      }
+    }
+  }
+
+
+
+  public function uploadratingsAction() {
+    if ($this->getRequest()->isPost()) {
+      $ratings = $_POST['ratings'];
+      $assessID = 731;
+      $tagged_tran_id = findTaggedTransIDFromGoldStandard($assessID);
+      $workingGroupId = getWorkingGroupID();
+      for ($i = 0; $i < sizeof($ratings); $i++) {
+        addConnectRating($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $ratings[$i]['concept_id'], $ratings[$i]['rank'], $assessID, 3, $tagged_tran_id);
+      }
+
+      
+    }
+  }
+
 }

@@ -24,7 +24,7 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
         $db = get_db();
         $db->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents (
-        `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `id`                int(11) NOT NULL AUTO_INCREMENT,
         `item_id`               int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `tags_ignored`          int(11) NOT NULL,
@@ -54,12 +54,13 @@ SQL
         get_db()->query(<<<SQL
       CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_subject_conjunction (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
-        `document_id`           int(11) NOT NULL,
+        `item_id`               int(11) NOT NULL,
         `tagged_trans_id`       int(11) NOT NULL,             
         `subject_concept_id`    int(11) NOT NULL,
-        `is_positive`           int(5) NOT NULL,
+        `rank`                  int(5) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `working_group_id`      int(11) NOT NULL,
+        `type`                  int(8) NOT NULL,
         `created_time`          timestamp NOT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -68,8 +69,22 @@ SQL
         get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_tags_conjunction (
         `id` int(11) NOT NULL AUTO_INCREMENT,
-        `document_id` int(11) NOT NULL,
+        `item_id` int(11) NOT NULL,
         `tag_id` int(11) NOT NULL,
+                
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;       
+SQL
+        );
+
+        get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_answer_explain_list (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `item_id` int(11) NOT NULL,
+        `question_id` int(11) NOT NULL,
+        `answer`      varchar(500) NOT NULL,
+        `correct`      varchar(11) NOT NULL,
+        `explanation`      varchar(10000) NOT NULL,
                 
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;       
@@ -130,7 +145,7 @@ SQL
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_questions_conjunction (
         `id`                int(11) NOT NULL AUTO_INCREMENT,
-        `document_id`       int(11) NOT NULL,
+        `item_id`       int(11) NOT NULL,
         `question_id`       int(11) NOT NULL,
    
         PRIMARY KEY (`id`)
@@ -140,7 +155,7 @@ SQL
    get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_replies_conjunction (
         `id`                int(11) NOT NULL AUTO_INCREMENT,
-        `document_id`       int(11) NOT NULL,
+        `item_id`       int(11) NOT NULL,
         `reply_id`           int(11) NOT NULL,
         
         PRIMARY KEY (`id`)
@@ -167,12 +182,15 @@ SQL
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`               int(11) NOT NULL,
+        `tagged_trans_id`       int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `working_group_id`      int(11) NOT NULL,
         `tag_text`              varchar(30) NOT NULL,
         `created_timestamp`     timestamp NOT NULL,
         `category_id`           int(11) NOT NULL,
         `description`           varchar(300) NOT NULL,
+        `type`                  int(8) NOT NULL,
   
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -182,13 +200,13 @@ SQL
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_transcriptions (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
-        `document_id`           int(11) NOT NULL,
+        `item_id`           int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `working_group_id`      int(11) NOT NULL,
         `transcribed_text`      varchar(200000) NOT NULL,
         `summarized_text`       varchar(1000) NOT NULL,
         `tone`                  varchar(50) NOT NULL,
-        `is_approved`           int(11) NOT NULL,
+        `type`           int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
         `timestamp_creation`    timestamp NOT NULL,
         
@@ -198,6 +216,20 @@ SQL
         );
 
         get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_available_list (
+        `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`               int(11) NOT NULL,
+        `ready_tag`             int(8) NOT NULL,
+        `ready_connect`         int(8) NOT NULL,
+        
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
+
+
+
+        get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tagged_transcriptions (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
         `item_id`               int(11) NOT NULL,
@@ -205,9 +237,45 @@ SQL
         `user_id`               int(11) NOT NULL,
         `working_group_id`      int(11) NOT NULL,
         `tagged_transcription`  varchar(200000) NOT NULL,
-        `is_approved`           int(11) NOT NULL,
+        `type`           int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
         `timestamp_creation`    timestamp NOT NULL,
+        
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
+
+
+        get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_question_conjunction (
+        `id`                    int(11) NOT NULL AUTO_INCREMENT,
+        `tagged_trans_id`       int(11) NOT NULL,
+        `question_id`           int(11) NOT NULL,
+        `answer`                varchar(500) NOT NULL,
+        `type`                  int(11) NOT NULL,
+
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
+
+
+        get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_subject_explain (
+        `id`                   int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`              int(11) NOT NULL,
+        `concept_id`           int(11) NOT NULL,   
+        `explanation`         varchar(1000) NOT NULL,
+
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+SQL
+        );
+        get_db()->query(<<<SQL
+   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_question_index (
+        `id`                   int(11) NOT NULL,
+        `question`             varchar(1000) NOT NULL,
         
         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -257,6 +325,16 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
 SQL
    );
+   get_db()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_trans_reason (
+        `id`            int(11) NOT NULL AUTO_INCREMENT,
+        `item_id`       int(11) NOT NULL,
+        `reason`        varchar(100000) ,
+  
+        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
+SQL
+   );
         get_db()->query(<<<SQL
     INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization'), (NULL, 'Other');
     
@@ -272,13 +350,16 @@ SQL
     );
         get_db()->query(<<<SQL
     CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags_subcategory_conjunction (
+        `id`                int(11) NOT NULL AUTO_INCREMENT,
         `tag_id`            int(11) NOT NULL,
-        `subcategory_id`    int(11) NOT NULL
+        `subcategory_id`    int(11) NOT NULL,
     
+   PRIMARY KEY (`id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
    
 SQL
-    );    
+    );  
+      
 }
 
     /**
@@ -296,6 +377,30 @@ SQL
         );
         get_db()->query(<<<SQL
       DROP TABLE IF EXISTS {$this->_db->prefix}incite_groups
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_answer_explain_list
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_available_list
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_subject_explain
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_question_conjunction
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_question_index
+SQL
+        );
+        get_db()->query(<<<SQL
+      DROP TABLE IF EXISTS {$this->_db->prefix}incite_trans_reason
 SQL
         );
         get_db()->query(<<<SQL

@@ -9,7 +9,7 @@ function getTranscribableDocuments()
 {
 
     $db = DB_Connect::connectDB();
-    $documents_with_jpeg = array();  //document id's and assume documents with jpeg all need transcriptions and thus tags
+    $documents_with_jpeg = array();  //item id's and assume documents with jpeg all need transcriptions and thus tags
     $stmt = $db->prepare("SELECT DISTINCT `item_id` FROM `omeka_files` WHERE `mime_type` = 'image/jpeg' OR `mime_type` = 'image/png'");
     $stmt->bind_result($result);
     $stmt->execute();
@@ -26,8 +26,8 @@ function getDocumentsWithTranscriptions()
 {
 
     $db = DB_Connect::connectDB();
-    $documents_with_trans = array();  //document id's and assume documents with jpeg all need transcriptions and thus tags
-    $stmt = $db->prepare("SELECT DISTINCT `omeka_items`.`id` FROM `omeka_items` INNER JOIN `omeka_incite_transcriptions` ON `omeka_items`.`id` = `document_id`");
+    $documents_with_trans = array();  //item id's and assume documents with jpeg all need transcriptions and thus tags
+    $stmt = $db->prepare("SELECT DISTINCT `omeka_items`.`id` FROM `omeka_items` INNER JOIN `omeka_incite_transcriptions` ON `omeka_items`.`id` = `item_id`");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -36,14 +36,26 @@ function getDocumentsWithTranscriptions()
     $stmt->close();
     $db->close();
 
-    return $documents_with_trans;
+    //get document from list
+    $list = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_available_list` WHERE `ready_tag` = 1");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $list[] = $result;
+    }
+    $stmt->close();
+    $db->close();
+    return $list;
+    //return $documents_with_trans;
 }
 
 function getDocumentsWithoutTranscriptions()
 {
 
     $db = DB_Connect::connectDB();
-    $documents = array();  //document id's and assume documents with jpeg all need transcriptions and thus tags
+    $documents = array();  //item id's and assume documents with jpeg all need transcriptions and thus tags
     $stmt = $db->prepare("SELECT `id` FROM `omeka_items`");
     $stmt->bind_result($result);
     $stmt->execute();
@@ -64,22 +76,49 @@ function getDocumentsWithoutTranscriptions()
 function getDocumentsWithTags()
 {
     $db = DB_Connect::connectDB();
-    $tagged_document_ids = array();
-    $stmt = $db->prepare("SELECT DISTINCT `omeka_incite_documents`.`item_id` FROM `omeka_incite_documents` INNER JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id`");
+    $tagged_item_ids = array();
+    $conected_item_ids = array();
+    //$stmt = $db->prepare("SELECT DISTINCT `omeka_incite_documents`.`item_id` FROM `omeka_incite_documents` INNER JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`item_id`");
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_tagged_transcriptions` WHERE `type` = 1");
+    $stmt->bind_result($item);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $tagged_item_ids[] = $item;
+    }
+    $tagged = array_unique($tagged_item_ids);
+    $stmt->close();
+    $db->close();
+    //find connected item_ids
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_documents_subject_conjunction` WHERE `type` = 1");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {
-        $tagged_document_ids[] = $result;
+        $conected_item_ids[] = $result;
+    }
+    $conn = array_unique($conected_item_ids);
+    $stmt->close();
+    $db->close();
+    //get document from list
+    $list = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `item_id` FROM `omeka_incite_available_list` WHERE `ready_connect` = 1");
+    $stmt->bind_result($result);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $list[] = $result;
     }
     $stmt->close();
     $db->close();
+    return $list;
+    //return array_diff($tagged, $conn);
 
     //Select document that are untranscribed but transcribable. Since currently if there is not transcription for the document to be tagged, the user will be redirected to transcribe task.
     //$taggable_documents = getTranscribableDocuments();
 
     //Select documents that have approved transcriptions
 
-    return $tagged_document_ids;
+    //return $tagged_item_ids;
 }
 
 /**
@@ -91,9 +130,9 @@ function getDocumentsWithoutTagsForLatestTranscription()
     $documents_without_tag = array();
     $taggable_documents = getDocumentsWithApprovedTranscription();
 
-    foreach($taggable_documents as $document_id) {
-        if (!hasTaggedTranscriptionForNewestTranscription($document_id)) {
-            $documents_without_tag[] = $document_id;
+    foreach($taggable_documents as $item_id) {
+        if (!hasTaggedTranscriptionForNewestTranscription($item_id)) {
+            $documents_without_tag[] = $item_id;
         }
     }
 
@@ -103,11 +142,11 @@ function getDocumentsWithoutConnectionsForLatestTaggedTranscription() {
     $documents_without_connections = array();
     $tagged_documents = getDocumentsWithTags();
 
-    foreach($tagged_documents as $document_id) {
-        $newestSubjects = getNewestSubjectsForNewestTaggedTranscription($document_id);
+    foreach($tagged_documents as $item_id) {
+        $newestSubjects = getNewestSubjectsForNewestTaggedTranscription($item_id);
 
         if (empty($newestSubjects)) {
-            $documents_without_connections[] = $document_id;
+            $documents_without_connections[] = $item_id;
         }
     }
 
@@ -116,12 +155,12 @@ function getDocumentsWithoutConnectionsForLatestTaggedTranscription() {
 /**
  * Takes a list of document ids and returns a new array with info about their task completion
  */
-function getTaskCompletionInfoFor($documentID) {
-    $newestTranscription = getNewestTranscription($documentID);
-    $newestSubjects = getNewestSubjectsForNewestTaggedTranscription($documentID);
+function getTaskCompletionInfoFor($itemID) {
+    $newestTranscription = getNewestTranscription($itemID);
+    $newestSubjects = getNewestSubjectsForNewestTaggedTranscription($itemID);
 
     $isTranscribed = !empty($newestTranscription);
-    $isTagged = hasTaggedTranscriptionForNewestTranscription($documentID);
+    $isTagged = hasTaggedTranscriptionForNewestTranscription($itemID);
     $isConnected = !empty($newestSubjects);
 
     $documents = array('isTranscribed' => ($isTranscribed ? true : false), 'isTagged' => ($isTagged ? true : false), 'isConnected' => ($isConnected ? true : false));
@@ -193,16 +232,24 @@ function loc_to_lat_long($loc_str)
     //Parse state and city names
     if (count($elem) >= 3) { //currently ignore extra info about location. Item 11 is an exception here!
         $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
-        if (!isset($states[$state_index]))
-            return array('lat' => '37.23', 'long' => '-80.4178');
+        if (!array_key_exists($state_index, $states)) {
+            //default blacksburg:
+            //return array('lat' => '37.23', 'long' => '-80.4178');
+            return array();
+        }
         $state  = $states[$state_index];
         $city   = trim($elem[2]);
         $county = trim(str_replace('County', '', $elem[1]));
     } else if (count($elem) == 2) {
-        $state = $states[trim(str_replace('State', '', str_replace('state', '', $elem[0])))];
-        $city  = strstr(trim($elem[1]), ' Indep.', true);
-        if ($city == "")
-            $city = trim($elem[1]);
+        $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
+        if (!array_key_exists($state_index, $states)) {
+            return array();
+        } else {
+            $state = $states[$state_index];
+            $city  = strstr(trim($elem[1]), ' Indep.', true);
+            if ($city == "")
+                $city = trim($elem[1]);
+        }
     } else {
         //Should send to log and to alert new format of location!
     }

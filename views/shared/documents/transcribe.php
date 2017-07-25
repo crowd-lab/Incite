@@ -303,10 +303,34 @@ tl = $('#timeline').jqtimeline({
 
 function x() {
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
+    //test
+    // set up the map
+    map = new L.Map('map-div');
+    // create the tile layer with correct attribution
+	var osmUrl_normal='http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+	var osmAttrib_normal='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+	var osm_normal = new L.TileLayer(osmUrl_normal, {attribution: osmAttrib_normal});		
+
+	// start the map in America
+	map.setView([37.8, -95], 4);
+	map.addLayer(osm_normal);
+    
+    var osmUrl_land='http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png';
+	var osmAttrib_land='&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors & <a href="http://thunderforest.com/">Thunderforest</a>';
+	var osm_land = new L.TileLayer(osmUrl_land, {attribution: osmAttrib_land});	
+    var baseLayers = {
+			"Normal": osm_normal,
+			"Landscape": osm_land
+		};
+	L.control.layers(baseLayers).addTo(map);
+
+
+/*
     map = L.map('map-div').setView([37.8, -95], 4);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+*/
     var marker;
 
     if (docs){

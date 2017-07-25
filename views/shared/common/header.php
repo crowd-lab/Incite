@@ -393,6 +393,7 @@ body {
     margin-left: 45px;
     display: inline-block;
 }
+
 </style>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -491,7 +492,14 @@ if (isset($_GET['time'])) {
             msgbox.close();
         }
 $(document).ready(function () {
-
+    var url = window.location.href;
+    var id = <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>;
+    var n = url.lastIndexOf("/") + 1;
+    var res = url.substring(0, n) + <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>;
+    var last = url.substring(n);
+    if (last.includes("#") && url.includes("users") || last != id && url.includes("users")){
+        window.location.href = res;
+    }
     $("a#forgotpw").bind("click", function() {
         Cookies.set('name', $('#username').val());
     });
@@ -646,10 +654,11 @@ function loginAjaxRequest() {
 
             if (data == "true") {
                 createAlertInLoginModal("Login successful!", false);
-
                 setTimeout(function () {
                     location.reload();
+                    
                 }, 1000);
+                
             } else {
                 createAlertInLoginModal("Wrong username or password", true);
             }

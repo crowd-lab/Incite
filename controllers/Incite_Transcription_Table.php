@@ -21,6 +21,30 @@ function getTranscriptionAuthorID($transcriptionID) {
     $db->close();
     return $userID;
 }
+
+function getTone($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tone FROM omeka_incite_transcriptions WHERE item_id = ?");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($tone);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $tone;
+}
+function getToneReason($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_trans_reason.reason FROM omeka_incite_trans_reason WHERE item_id = ?");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($toneReason);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $toneReason;
+}
+
 /**
  * Get the summarized text of a specific transcription
  * @param int $documentID
@@ -30,7 +54,7 @@ function getTranscriptionAuthorID($transcriptionID) {
 function getSummarizedText($documentID, $transcriptionID) {
     $text = "";
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT summarized_text FROM omeka_incite_transcriptions WHERE document_id = ? AND id = ?");
+    $stmt = $db->prepare("SELECT summarized_text FROM omeka_incite_transcriptions WHERE item_id = ? AND id = ?");
     $stmt->bind_param("ii", $documentID, $transcriptionID);
     $stmt->bind_result($text);
     $stmt->execute();
@@ -77,7 +101,7 @@ function getSummaryText($transcriptionID) {
 function getApprovedTranscriptionIDs($documentID) {
     $db = DB_Connect::connectDB();
     $result = Array();
-    $stmt = $db->prepare("SELECT id FROM omeka_incite_transcriptions WHERE document_id = ? AND is_approved = 1");
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_transcriptions WHERE item_id = ? AND is_approved = 1");
     $stmt->bind_param("i", $documentID);
     $stmt->bind_result($id);
     $stmt->execute();
@@ -208,7 +232,7 @@ function getTranscriptionIDsForDocument($documentID)
 {
     $db = DB_Connect::connectDB();
     $arr = Array();
-    $stmt = $db->prepare("SELECT * FROM omeka_incite_transcriptions WHERE document_id = ?");
+    $stmt = $db->prepare("SELECT * FROM omeka_incite_transcriptions WHERE item_id = ?");
     $stmt->bind_param("i", $documentID);
     $stmt->bind_result($results);
     $stmt->execute();
@@ -228,7 +252,7 @@ function getTranscriptionIDsForDocument($documentID)
  */
 function getNewestTranscription($documentID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT transcribed_text, summarized_text, tone, id FROM omeka_incite_transcriptions WHERE document_id = ? ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt = $db->prepare("SELECT transcribed_text, summarized_text, tone, id FROM omeka_incite_transcriptions WHERE item_id = ? ORDER BY timestamp_creation DESC LIMIT 1");
     $stmt->bind_param("i", $documentID);
     $stmt->bind_result($transcription, $summary, $tone, $transcriptionID);
     $stmt->execute();
@@ -249,7 +273,7 @@ function getNewestTranscription($documentID) {
  */
 function getTranscriptionRevisionHistory($documentID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT omeka_incite_transcriptions.timestamp_creation, omeka_incite_users.email, omeka_incite_users.id FROM omeka_incite_transcriptions, omeka_incite_users WHERE document_id = ? AND omeka_incite_transcriptions.user_id = omeka_incite_users.id ORDER BY timestamp_creation DESC LIMIT 20");
+    $stmt = $db->prepare("SELECT omeka_incite_transcriptions.timestamp_creation, omeka_incite_users.email, omeka_incite_users.id FROM omeka_incite_transcriptions, omeka_incite_users WHERE item_id = ? AND omeka_incite_transcriptions.user_id = omeka_incite_users.id ORDER BY timestamp_creation DESC LIMIT 20");
     $stmt->bind_param("i", $documentID);
     $stmt->bind_result($timestamp, $userEmail, $userID);
     $stmt->execute();
@@ -270,8 +294,8 @@ function getDocumentsWithoutTranscription()
 {
     $db = DB_Connect::connectDB();
     $documents_with_transcription = array();
-    //document_id is actually item_id in omeka
-    $stmt = $db->prepare("SELECT document_id FROM omeka_incite_transcriptions");
+    //item_id is actually item_id in omeka
+    $stmt = $db->prepare("SELECT item_id FROM omeka_incite_transcriptions");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -293,7 +317,7 @@ function getDocumentsWithTranscription()
 {
     $db = DB_Connect::connectDB();
     $documents_with_transcription = array();
-    $stmt = $db->prepare("SELECT DISTINCT document_id FROM omeka_incite_transcriptions");
+    $stmt = $db->prepare("SELECT DISTINCT item_id FROM omeka_incite_transcriptions");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -313,7 +337,7 @@ function getDocumentsWithApprovedTranscription()
 {
     $db = DB_Connect::connectDB();
     $documents_with_transcription = array();
-    $stmt = $db->prepare("SELECT DISTINCT document_id FROM omeka_incite_transcriptions WHERE is_approved = 1");
+    $stmt = $db->prepare("SELECT DISTINCT item_id FROM omeka_incite_transcriptions WHERE type = 1");
     $stmt->bind_result($result);
     $stmt->execute();
     while ($stmt->fetch()) {

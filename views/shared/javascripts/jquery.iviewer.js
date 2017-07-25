@@ -800,11 +800,11 @@ $.widget( "ui.iviewer", $.ui.mouse, {
     {
         var me=this;
 
-        $('<div title="Zoom In" class="iviewer_zoom_in iviewer_common iviewer_button">')
+        $('<div title="Zoom In" class="iviewer_zoom_in iviewer_common iviewer_button" id="zoomer">')
                     .bind('mousedown touchstart',function(){me.zoom_by(1); return false;})
                     .appendTo(this.container);
 
-        $('<div title="Zoom Out" class="iviewer_zoom_out iviewer_common iviewer_button">')
+        $('<div title="Zoom Out" class="iviewer_zoom_out iviewer_common iviewer_button" id="zoomer">')
                     .bind('mousedown touchstart',function(){me.zoom_by(- 1); return false;})
                     .appendTo(this.container);
 

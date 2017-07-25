@@ -23,6 +23,7 @@ function getMembersWithActivityOverviewByGroupId($groupid)
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT user_id, privilege from omeka_incite_group_members WHERE group_id = ?");
     $stmt->bind_param("i", $groupid);
+
     $stmt->bind_result($user, $privilege);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -59,7 +60,10 @@ function getGroupInfoByGroupId($groupid)
     $stmt->execute();
     $stmt->fetch();
     $user = getUserDataByUserId($creator);
-    $group_info = array('id' => $groupid, 'name' => $name, 'creator' => $user, 'type' => $group_type, 'instructions' => $instructions, 'created_time' => $time);
+    if ($name != null)
+        $group_info = array('id' => $groupid, 'name' => $name, 'creator' => $user, 'type' => $group_type, 'instructions' => $instructions, 'created_time' => $time);
+    else
+        $group_info = null;
     $db->close();
     return $group_info;
 }
@@ -130,9 +134,30 @@ function removeMemberFromGroup($memberId, $groupId)
     $stmt->bind_param("ii", $memberId, $groupId);
     $stmt->execute();
     $stmt->close();
-
     return "true";
 }
+
+/**
+  * Remove a group from database
+  *
+  * @param int $groupId
+  * @return "true"
+  */
+  function removeGroup($groupId)
+  {
+      $db = DB_Connect::connectDB();
+      $stmt = $db->prepare("DELETE FROM `omeka_incite_groups` WHERE `id` = ?");
+      $stmt->bind_param("i", $groupId);
+      $stmt->execute();
+      $stmt->close();
+      $db->close();
+      $db = DB_Connect::connectDB();
+      $stmt = $db->prepare("DELETE FROM `omeka_incite_group_members` WHERE `group_id` = ?");
+      $stmt->bind_param("i", $groupId);
+      $stmt->execute();
+      $stmt->close();
+      return "true";
+  }
 
 /**
  * Changes the privilege of a member in a group, both specified by ID

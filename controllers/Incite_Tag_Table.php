@@ -16,21 +16,20 @@ require_once("Incite_Env_Setting.php");
  * @param string $description
  * @param int $documentID
  */
-function createTag($userID, $groupID, $tag_text, $category, $subcategory, $description, $documentID) {
+function createTag($userID, $groupID, $tag_text, $category, $subcategory, $description, $itemID, $taggedTransID, $type) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("INSERT INTO omeka_incite_tags VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
-    $stmt->bind_param('iisis', $userID, $groupID, $tag_text, $category, $description);
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tags () VALUES (NULL, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)");
+    $stmt->bind_param('iiiisisi', $itemID, $taggedTransID, $userID, $groupID, $tag_text, $category, $description, $type);
     $stmt->execute();
     $tagID = $stmt->insert_id;
     $stmt->close();
-
     //see if document is existing in database and tag document if exists
     //if it doesn't exist, create it with the document id and then tag it with the tag id
     $db->close();
     $count = 0;
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT COUNT(*), id FROM omeka_incite_documents WHERE item_id = ?");
-    $stmt->bind_param("i", $documentID);
+    $stmt->bind_param("i", $itemID);
     $stmt->bind_result($count, $id);
     $stmt->execute();
     $stmt->fetch();
@@ -47,7 +46,7 @@ function createTag($userID, $groupID, $tag_text, $category, $subcategory, $descr
         $db->close();
         $db = DB_Connect::connectDB();
         $newStmt = $db->prepare("INSERT INTO omeka_incite_documents VALUES (NULL, ?, ?, -1, 0, 1, -1, CURRENT_TIMESTAMP)");
-        $newStmt->bind_param("ii", $documentID, $userID);
+        $newStmt->bind_param("ii", $itemID, $userID);
         $newStmt->execute();
         $id = $newStmt->insert_id;
         $newStmt->close();
@@ -62,7 +61,7 @@ function createTag($userID, $groupID, $tag_text, $category, $subcategory, $descr
     //since there could be multiple subcategories, do this in a loop
     $db = DB_Connect::connectDB();
     for ($i = 0; $i < sizeof($subcategory); $i++) {
-        $insertSubCat = $db->prepare("INSERT INTO omeka_incite_tags_subcategory_conjunction VALUES (?, ?)");
+        $insertSubCat = $db->prepare("INSERT INTO omeka_incite_tags_subcategory_conjunction VALUES (NULL,?, ?)");
         $insertSubCat->bind_param("ii", $tagID, $subcategory[$i]);
         $insertSubCat->execute();
         $insertSubCat->close();
@@ -158,6 +157,20 @@ function getSubcategoryIdAndNames() {
     $db->close();
     return $results;
 }
+
+function getCategoryNameAndId() {
+    $results = Array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT * FROM omeka_incite_tags_category");
+    $stmt->bind_result($id, $name);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $results[$name] = $id;
+    }
+    $stmt->close();
+    $db->close();
+    return $results;
+}
 /**
  * Returns a list of all categories along with their subcategory information
  * @return an array of results
@@ -197,7 +210,7 @@ function getAllCategories() {
 function getAllTaggedDocuments() {
     $item_ids = array();
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT DISTINCT omeka_incite_documents.item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id=omeka_incite_documents.id");
+    $stmt = $db->prepare("SELECT DISTINCT omeka_incite_documents.item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.item_id=omeka_incite_documents.id");
     $stmt->bind_result($item_id);
     $stmt->execute();
     while ($stmt->fetch()) {
@@ -216,7 +229,7 @@ function getAllTaggedTranscriptions($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
     $transcriptions = array();
-    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND is_approved = 1");
+    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 1");
     $stmt->bind_param("i", $itemID);
     $stmt->bind_result($transcription);
     $stmt->execute();
@@ -236,7 +249,7 @@ function getLatestTaggedTranscriptionID($itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
     $transcriptions = array();
-    $stmt = $db->prepare("SELECT id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND is_approved = 1 ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt = $db->prepare("SELECT id FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 1 ORDER BY timestamp_creation DESC LIMIT 1");
     $stmt->bind_param("i", $itemID);
     $stmt->bind_result($taggedTranscriptionID);
     $stmt->execute();
@@ -271,6 +284,8 @@ function hasTaggedTranscriptionForNewestTranscription($itemID) {
         return false;
     }
 }
+
+
 /**
  * Get the 20 latest tagged transcription edits (approved or not)
  *
@@ -322,7 +337,7 @@ function tagExists($tag) {
 function tagExistsInDocument($tag, $itemID) {
     $count = 0;
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id` WHERE `tag_text` = ? AND `item_id` = ?");
+    $stmt = $db->prepare("SELECT COUNT(*) FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`item_id` WHERE `tag_text` = ? AND `item_id` = ?");
     $stmt->bind_param("si", $tag, $itemID);
     $stmt->bind_result($count);
     $stmt->execute();
@@ -342,9 +357,9 @@ function tagExistsInDocument($tag, $itemID) {
  */
 function removeAllTagsFromDocument($itemID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT `omeka_incite_tags`.`id`, `omeka_incite_documents_tags_conjunction`.`document_id` FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id` WHERE `item_id` = ?");
+    $stmt = $db->prepare("SELECT `omeka_incite_tags`.`id`, `omeka_incite_documents_tags_conjunction`.`document_id` FROM `omeka_incite_tags` JOIN `omeka_incite_documents_tags_conjunction` ON `omeka_incite_tags`.`id` = `omeka_incite_documents_tags_conjunction`.`tag_id` JOIN `omeka_incite_documents` ON `omeka_incite_documents`.`id` = `omeka_incite_documents_tags_conjunction`.`document_id` WHERE `document_id` = ?");
     $stmt->bind_param("i", $itemID);
-    $stmt->bind_result($tag_id, $document_id);
+    $stmt->bind_result($tag_id, $item_id);
     $stmt->execute();
     while ($stmt->fetch()) {
         $db2 = DB_Connect::connectDB();
@@ -355,8 +370,8 @@ function removeAllTagsFromDocument($itemID) {
         $db2->close();
 
         $db2 = DB_Connect::connectDB();
-        $stmt2 = $db2->prepare("DELETE FROM omeka_incite_documents_tags_conjunction WHERE document_id = ? AND tag_id = ?");
-        $stmt2->bind_param("ii", $document_id, $tag_id);
+        $stmt2 = $db2->prepare("DELETE FROM omeka_incite_documents_tags_conjunction WHERE item_id = ? AND tag_id = ?");
+        $stmt2->bind_param("ii", $item_id, $tag_id);
         $stmt2->execute();
         $stmt2->close();
         $db2->close();
@@ -366,17 +381,17 @@ function removeAllTagsFromDocument($itemID) {
 }
 
 /**
- * @param $document_id to pull tags in reference to
- * $document_id is also the item_id
+ * @param $item_id to pull tags in reference to
+ * $item_id is also the item_id
  * @return array of all tags in specified format:
- * [0]["tag_id", "user_id", "document_id", "tag_text", "timestamp", "category_name", "subcategories", "description"]
+ * [0]["tag_id", "user_id", "item_id", "tag_text", "timestamp", "category_name", "subcategories", "description"]
  */
 function getAllTagInformation($item_id)
 {
     $db5 = DB_Connect::connectDB();
     $getDocumentId = $db5->prepare("SELECT id FROM omeka_incite_documents WHERE item_id = ?");
     $getDocumentId->bind_param("i", $item_id);
-    $getDocumentId->bind_result($document_id);
+    $getDocumentId->bind_result($item_id);
     $getDocumentId->execute();
     $getDocumentId->fetch();
     $getDocumentId->close();
@@ -384,8 +399,8 @@ function getAllTagInformation($item_id)
 
     $dataArray = array();
     $db4 = DB_Connect::connectDB();
-    $getTagID = $db4->prepare("SELECT DISTINCT tag_id FROM omeka_incite_documents_tags_conjunction WHERE document_id = ?");
-    $getTagID->bind_param("i", $document_id);
+    $getTagID = $db4->prepare("SELECT DISTINCT tag_id FROM omeka_incite_documents_tags_conjunction WHERE item_id = ?");
+    $getTagID->bind_param("i", $item_id);
     $getTagID->bind_result($id);
     $getTagID->execute();
     while ($getTagID->fetch()) {
@@ -423,7 +438,7 @@ function getAllTagInformation($item_id)
         $getSubCategories->close();
         $db2->close();
 
-        $dataArray[] = array("tag_id" => $id, "user_id" => $user_id, "document_id" => $item_id, "tag_text" => $tag_text, "timestamp" => $timestamp, "category_name" => $category_name, "subcategories" => $subcategory, "description" => $description);
+        $dataArray[] = array("tag_id" => $id, "user_id" => $user_id, "item_id" => $item_id, "tag_text" => $tag_text, "timestamp" => $timestamp, "category_name" => $category_name, "subcategories" => $subcategory, "description" => $description);
     }
     $getTagID->close();
     $db4->close();
@@ -437,7 +452,7 @@ function getTagNamesOnId($item_id)
 {
     $db = DB_Connect::connectDB();
     $tag_names = array();
-    $stmt = $db->prepare("SELECT DISTINCT omeka_incite_tags.tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_tags_conjunction.document_id WHERE omeka_incite_documents.item_id = ?");
+    $stmt = $db->prepare("SELECT DISTINCT omeka_incite_tags.tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id=omeka_incite_documents_tags_conjunction.item_id WHERE omeka_incite_documents.item_id = ?");
     $stmt->bind_param("i", $item_id);
     $stmt->bind_result($tag_name);
     $stmt->execute();
@@ -459,18 +474,18 @@ function findDocumentsWithAtLeastNofGivenTagNames($tag_name_array, $N)
     for ($i = 0; $i < sizeof($tag_name_array); $i++)
     {
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT DISTINCT item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id = omeka_incite_documents_tags_conjunction.document_id WHERE omeka_incite_tags.tag_text = ?");
+        $stmt = $db->prepare("SELECT DISTINCT item_id FROM omeka_incite_documents_tags_conjunction JOIN omeka_incite_tags on omeka_incite_documents_tags_conjunction.tag_id=omeka_incite_tags.id JOIN omeka_incite_documents ON omeka_incite_documents.id = omeka_incite_documents_tags_conjunction.item_id WHERE omeka_incite_tags.tag_text = ?");
         $stmt->bind_param("s", $tag_name_array[$i]);
-        $stmt->bind_result($document_id);
+        $stmt->bind_result($item_id);
         $stmt->execute();
         while ($stmt->fetch())
         {
-            $dictionary[$tag_name_array[$i]][] = $document_id;
+            $dictionary[$tag_name_array[$i]][] = $item_id;
         }
         $stmt->close();
         $db->close();
     }
-    //dictionary setup: tagID --> [document_ids]
+    //dictionary setup: tagID --> [item_ids]
     $allDocumentIDs = array();
     foreach ((array)$dictionary as $tag_name) {
         for ($i = 0; $i < count($tag_name); $i++) {
@@ -514,8 +529,8 @@ function findCommonTagNames($item_ids)
     {
         $tags_for_one_item = array();
         $db = DB_Connect::connectDB();
-        //$stmt = $db->prepare("SELECT tag_id, tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
-        $stmt = $db->prepare("SELECT DISTINCT tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
+        //$stmt = $db->prepare("SELECT tag_id, tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.item_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
+        $stmt = $db->prepare("SELECT DISTINCT tag_text FROM omeka_incite_tags JOIN omeka_incite_documents_tags_conjunction ON omeka_incite_tags.id = omeka_incite_documents_tags_conjunction.tag_id JOIN omeka_incite_documents ON omeka_incite_documents_tags_conjunction.item_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ?");
         $stmt->bind_param("i", $item_ids[$i]);
         $stmt->bind_result($tag_name);
         $stmt->execute();
@@ -547,7 +562,7 @@ function getBestSubjectCandidateList($item_ids)
     {
         $tags_for_one_item = array();
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.id, omeka_incite_subject_concepts.name, omeka_incite_subject_concepts.definition FROM omeka_incite_subject_concepts JOIN omeka_incite_documents_subject_conjunction on omeka_incite_documents_subject_conjunction.subject_concept_id = omeka_incite_subject_concepts.id JOIN omeka_incite_documents ON omeka_incite_documents_subject_conjunction.document_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ? AND omeka_incite_documents_subject_conjunction.is_positive = 1");
+        $stmt = $db->prepare("SELECT omeka_incite_subject_concepts.id, omeka_incite_subject_concepts.name, omeka_incite_subject_concepts.definition FROM omeka_incite_subject_concepts JOIN omeka_incite_documents_subject_conjunction on omeka_incite_documents_subject_conjunction.subject_concept_id = omeka_incite_subject_concepts.id JOIN omeka_incite_documents ON omeka_incite_documents_subject_conjunction.item_id = omeka_incite_documents.id WHERE omeka_incite_documents.item_id = ? AND omeka_incite_documents_subject_conjunction.is_positive = 1");
         $stmt->bind_param("i", $item_ids[$i]);
         $stmt->bind_result($subject_id, $subject_name, $subject_def);
         $stmt->execute();
@@ -577,13 +592,273 @@ function getBestSubjectCandidateList($item_ids)
     return $results;
 }
 
+function findTranscriptionId($item_id, $user_id) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `id` FROM `omeka_incite_transcriptions` WHERE `item_id` = $item_id AND `user_id` = $user_id");
+    $stmt->bind_result($trans_id);
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $dest = $trans_id;
+    }
+    $stmt->close();
+    $db->close();
+    return $dest;
+}
+
+
+function saveQuestions($index, $ques_id,  $answer, $type) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tag_question_conjunction VALUES (NULL, ?, ?, ?, ?)");
+    $stmt->bind_param("iisi", $index, $ques_id, $answer, $type);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+}
+
 function createTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
 
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 1, NULL, CURRENT_TIMESTAMP)");
     $stmt->bind_param("iiiis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription);
     $stmt->execute();
+    $tagID = $stmt->insert_id;
     $stmt->close();
     $db->close();
+    return $tagID;
 }
+
+function findAllTagsFromGoldStandard($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `tag_text`, `category_id` FROM `omeka_incite_tags` WHERE `item_id` = $itemID AND `type` = 2");
+    $stmt->bind_result($text, $cat);
+    $stmt->execute();
+    $tag_list = array();
+    while($stmt->fetch()) {
+        $tag_list[$text] = $cat;
+    }
+    $stmt->close();
+    $db->close();
+    return $tag_list;
+}
+
+function findTaggedTransIDFromGoldStandard($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `id` FROM `omeka_incite_tagged_transcriptions` WHERE `item_id` = $itemID AND `type` = 2");
+    $stmt->bind_result($id);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $id;
+}
+
+function findAllAnswersFromGoldStandard($taggedTranscriptionID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `question_id`, `answer` FROM `omeka_incite_tag_question_conjunction` WHERE `type` = 2 AND `tagged_trans_id` = $taggedTranscriptionID");
+    $stmt->bind_result($question, $ans);
+    $stmt->execute();
+    $answer_list = array();
+    while($stmt->fetch()) {
+        $answer_list[$question] = $ans;
+    }
+    $stmt->close();
+    $db->close();
+    return $answer_list;
+}
+
+function findAllRatingsFromGoldStandard($taggedTranscriptionID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `subject_concept_id`, `rank` FROM `omeka_incite_documents_subject_conjunction` WHERE `type` = 2 AND `tagged_trans_id` = $taggedTranscriptionID");
+    $stmt->bind_result($subject, $rank);
+    $stmt->execute();
+    $subject_list = array();
+    while($stmt->fetch()) {
+        $subject_list[$subject] = $rank;
+    }
+    $stmt->close();
+    $db->close();
+    return $subject_list;
+}
+
+function findAssessmentTaggedTransForUser($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 2 ");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($taggedTranscription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $taggedTranscription;
+}
+
+function getLatestTaggedTransForUser($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 3 ORDER BY timestamp_creation DESC LIMIT 1");
+    $stmt->bind_param("i", $itemID);
+    $stmt->bind_result($taggedTranscription);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    return $taggedTranscription;
+}
+
+function saveTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
+
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("INSERT INTO omeka_incite_tagged_transcriptions VALUES (NULL, ?, ?, ?, ?, ?, 3, NULL, CURRENT_TIMESTAMP)");
+    $stmt->bind_param("iiiis", $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription);
+    $stmt->execute();
+    $tagID = $stmt->insert_id;
+    $stmt->close();
+    $db->close();
+    return $tagID;
+}
+
+function getSub($tagID) {
+    $arr = array();
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory_conjunction.subcategory_id FROM omeka_incite_tags_subcategory_conjunction WHERE tag_id = ? ");
+    $stmt->bind_param("i", $tagID);
+    $stmt->bind_result($subs);
+    $stmt->execute();
+    while($stmt->fetch()) {
+        $arr[] = matchSub($subs);
+    }
+    $stmt->close();
+    $db->close();
+    return $arr;
+}
+function findAllTagsIDFromGoldStandard($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT `id`, `tag_text` FROM `omeka_incite_tags` WHERE `item_id` = $itemID AND `type` = 2");
+    $stmt->bind_result($cat, $text);
+    $stmt->execute();
+    $tag_list = array();
+    while($stmt->fetch()) {
+        $tag_list[$text] = $cat;
+    }
+    $stmt->close();
+    $db->close();
+    return $tag_list;
+}
+
+function matchSub($catID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory.name FROM omeka_incite_tags_subcategory WHERE `id` = $catID");
+    $stmt->bind_result($name);
+    $stmt->execute();
+    $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    $sub = $name;
+    return $sub;
+}
+//need to manually insert correct subcatgegory into database
+function findAllSubs($itemID) {
+    $textArr = findAllTagsIDFromGoldStandard($itemID);
+    $idArr = array();
+    foreach ($textArr as $key => $value) {
+        $subcatID = getSub($value);
+        if (count($subcatID) == 0) {
+            $subcatID[0] = "empty";
+        }
+         $idArr[$key] = $subcatID;
+    }
+    return $idArr;
+}
+
+function SubcatDic() {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory.id, omeka_incite_tags_subcategory.name FROM omeka_incite_tags_subcategory");
+    $stmt->bind_result($id, $name);
+    $stmt->execute();
+    $subcat_list = array();
+    while($stmt->fetch()) {
+        $subcat_list[$id] = $name;
+    }
+    $stmt->close();
+    $db->close();
+    $sub = $name;
+    return $subcat_list;
+}
+
+function explainDic($itemID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_subject_explain.concept_id, omeka_incite_subject_explain.explanation FROM omeka_incite_subject_explain WHERE item_id = $itemID");
+    $stmt->bind_result($id, $explain);
+    $stmt->execute();
+    $explain_list = array();
+    while($stmt->fetch()) {
+        $explain_list[$id] = $explain;
+    }
+    $stmt->close();
+    $db->close();
+    return $explain_list;
+}
+
+function questionAnswer($itemID, $questionID) {
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("SELECT omeka_incite_tag_answer_explain_list.answer, omeka_incite_tag_answer_explain_list.correct, omeka_incite_tag_answer_explain_list.explanation FROM omeka_incite_tag_answer_explain_list WHERE `item_id` = $itemID AND `question_id` = $questionID");
+    $stmt->bind_result($ans, $cor, $ex);
+    $stmt->execute();
+    $answer = array();
+    $correct = array();
+    $explain = array();
+    $total = array();
+    $trueTable = array();
+    $falseTable = array();
+    
+    $true_i = 0;
+    $false_i = 0;
+    while($stmt->fetch()) {
+        $c_ex = array();
+        $c_ex["t"] = $cor;
+        $c_ex["ex"] = $ex;
+        $answer[$ans] = $c_ex;
+        if ($cor == "true") {
+            $a_ex = array();
+            $a_ex["a"] = $ans;
+            if ($ex == NUll) {
+                $a_ex["ex"] = "";
+            }
+            else {
+                $a_ex["ex"] = $ex;
+            }
+            $trueTable[$true_i] = $a_ex;
+            $true_i++;
+        }
+        if ($cor == "false") {
+            $a_ex = array();
+            $a_ex["a"] = $ans;
+            if ($ex == NUll) {
+                $a_ex["ex"] = "";
+            }
+            else {
+                $a_ex["ex"] = $ex;
+            }
+            $falseTable[$false_i] = $a_ex;
+            $false_i++;
+        }
+       
+    }
+    //print_r($correct);
+    $stmt->close();
+    $db->close();
+    $correct["true"] = $trueTable;
+    $correct["false"] = $falseTable;
+    $total["a"] = $answer;
+    $total["c"] = $correct;
+    return $total;
+}
+
+function answerPack($itemID) {
+    $pack = array();
+    for ($i = 1; $i < 7; $i++) {
+        $pack[$i] = questionAnswer($itemID, $i);
+    }
+    return $pack;
+}
+
 ?>
