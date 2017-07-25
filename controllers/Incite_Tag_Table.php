@@ -284,6 +284,8 @@ function hasTaggedTranscriptionForNewestTranscription($itemID) {
         return false;
     }
 }
+
+
 /**
  * Get the 20 latest tagged transcription edits (approved or not)
  *

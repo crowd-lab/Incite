@@ -98,7 +98,7 @@
 
 						<div id = "sum-div">
 						<textarea id="summary-textarea" name="summary" rows="5" placeholder="Provide a 1-2 sentence summary of the document"></textarea>
-						<p>Character Count: <span id = "s-counting">0</span></p>
+						<p style = "float: right">Character Count: <span id = "s-counting">0</span></p>
 						</div>
 
 						<div class="form-group" id="tone-selection">

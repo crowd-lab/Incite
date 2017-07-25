@@ -10,7 +10,6 @@
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
         $category_object = getAllCategories();
-        //$subject_from_gold_standard = findAllRatingsFromGoldStandard(findTaggedTransIDFromGoldStandard($this->document_metadata->id));
         $subject_from_gold_standard = findAllRatingsFromGoldStandard($this->document_metadata->id);
         $explain_list = explainDic($this->document_metadata->id);
     ?>
@@ -78,15 +77,6 @@
 		});
 
 		$(document).ready(function () {
-
-
-
-      $('#reasoning').keyup(function() {
-        var text_length = $('#reasoning').val().length;
-
-        $('#word-counting').text(text_length);
-
-      });
 
             migrateTaggedDocumentsFromV1toV2();
 		    $('[data-toggle="popover"]').popover({trigger: "hover"});
@@ -449,6 +439,15 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script>
+    $(document).ready(function () {
+      $('#reasoning').keyup(function() {
+        var text_length = $('#reasoning').val().length;
+
+        $('#word-counting').text(text_length);
+
+      });
+    });
+
 
     $("#connectClose").click(function(){
       window.location = '<?php echo getFullInciteUrl().'/documents/connect/'.$this->doc_id; ?>';

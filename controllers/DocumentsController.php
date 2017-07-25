@@ -651,7 +651,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       if ($this->view->document_metadata->getFile() == null) {
         $_SESSION['incite']['message'] = 'Unfortunately, there is no such document. Please search again!';
         return;
-        //echo 'no image';
       }
 
       $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
@@ -669,8 +668,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
       }
 
+      
       //Gets the latest tagged transcription and the most recently marked subjects, if they exist
-      if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
+      //if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
+      if (hasTaggedTranscription($this->_getParam('id'))) {
         $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
         $this->view->transcription =  migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
 

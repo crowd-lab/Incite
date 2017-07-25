@@ -65,7 +65,8 @@
                         <p class="header-step">
                             <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
                         </p>
-                        <textarea style="width:100%;" name="reasoning" rows="5"></textarea>
+                        <textarea style="width:100%;" name="reasoning" rows="5" id = "reasoning"></textarea>
+                        <p style = "float: right">Character Count: <span id = "word-counting">0</span></p>
                         <br>
                         <br>
                         <input type="hidden" name="connection_type" value="multiscale">
@@ -95,6 +96,11 @@
     <!-- Bootstrap Core JavaScript -->
     <script>
         $(document).ready(function() {
+          $('#reasoning').keyup(function() {
+            var text_length = $('#reasoning').val().length;
+            $('#word-counting').text(text_length);
+
+          });
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -174,75 +180,7 @@
                 $('#connecting-container').show();
             });
         }
-        /*
-        var tour = new Tour({
 
-            template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End tour</button></nav></div>",
-        steps: [
-            {
-                element: '#work-view',
-                title: "Welcome!",
-                content: "It looks like you haven’t connected a document before. We have a short tutorial to guide you through the process. If you already know all this information, press End Tour now.",
-                placement: "right",
-            },
-            {
-                element: '#work-view',
-                title: "",
-                content: "This is a document that has already been transcribed and tagged. Go ahead and read through it now.",
-                placement: "right",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-            },
-            {
-                element: "#connecting-container",
-                title: "Connect Task",
-                content: 'Now that you’ve read the transcription, check each category that relates to the provided document.',
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=next]").prop("disabled", true);
-                    $('input[type="checkbox"]').one("mouseup", function() {
-                        if (this.value == 100) {
-                            tour.next();
-                        }
-                    });
-                }
-            },
-            {
-                element: '#connecting-container',
-                title: "Great!",
-                content: "Good job! Click next to continue",
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-            },
-            {
-                element: "#comment-container",
-                title: "Comment",
-                content: '1. This area shows comments from others about this document.<br>2. If you are logged in, you will be able to make comments.',
-                placement: "left",
-                onShown: function() {
-                    $(".popover.tour-tour .popover-navigation .btn-group .btn[data-role=end]").prop("disabled", true);
-                }
-            },
-            {
-                element: "#work-view",
-                title: "Congratulations! You've finished the Connect Tutorial.",
-                content: 'You’re all done!  <br>Press End Tour to exit this tutorial.',
-                placement: "right"
-            }
-        ],
-        backdrop: true,
-        storage: false});
-
-        // Initialize the tour
-        tour.init();
-
-        // Start the tour
-        tour.start(true);
-        */
     </script>
 
     <style>
