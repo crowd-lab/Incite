@@ -668,7 +668,7 @@ function findAllAnswersFromGoldStandard($taggedTranscriptionID) {
 
 function findAllRatingsFromGoldStandard($taggedTranscriptionID) {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT `subject_concept_id`, `rank` FROM `omeka_incite_documents_subject_conjunction` WHERE `type` = 2 AND `tagged_trans_id` = $taggedTranscriptionID");
+    $stmt = $db->prepare("SELECT `subject_concept_id`, `rank` FROM `omeka_incite_documents_subject_conjunction` WHERE `type` = 2 AND `item_id` = $taggedTranscriptionID");
     $stmt->bind_result($subject, $rank);
     $stmt->execute();
     $subject_list = array();
