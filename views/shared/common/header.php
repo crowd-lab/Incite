@@ -759,11 +759,11 @@ function year_of_full_iso_date(date) {
             <span class = "icon-bar"></span>
 
         </button>
-        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
+        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_logo.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
     </div> -->
 
     <div class="navbar-header">
-        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
+        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_logo.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -775,9 +775,6 @@ function year_of_full_iso_date(date) {
             <a style="font-size: 125%; color: #8BB7C8;">Browse</a></li>-->
             <li >
                 <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
-            </li>
-            <li >
-                <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teaching</a>
             </li>
             <li>
                 <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>

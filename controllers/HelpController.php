@@ -22,9 +22,6 @@ class Incite_HelpController extends Omeka_Controller_AbstractActionController
     public function aboutAction(){
 
     }
-    public function teachersAction(){
-
-    }
 
 
 }

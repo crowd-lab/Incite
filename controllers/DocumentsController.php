@@ -670,8 +670,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
       
       //Gets the latest tagged transcription and the most recently marked subjects, if they exist
-      //if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
-      if (hasTaggedTranscription($this->_getParam('id'))) {
+      if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
+      //if (hasTaggedTranscription($this->_getParam('id'))) {
         $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
         $this->view->transcription =  migrateTaggedDocumentFromV1toV2($transcriptions[count($transcriptions)-1]);
 
