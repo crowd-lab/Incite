@@ -1,5 +1,6 @@
 <?php
-
+require_once("controllers/Incite_Env_Setting.php");
+require_once("controllers/Incite_Helpers.php");
 /**
  * The Incite plugin.
  *
@@ -489,7 +490,25 @@ SQL
      * Handle the config form.
      */
     public function hookConfig() {
-        set_option('text_test', trim($_POST['text_test']));
+        $uploadOK = 0;
+        set_option('title', trim($_POST['title']));
+        set_option('intro', trim($_POST['intro']));
+        set_option('twitter_timeline', trim($_POST['twitter_timeline']));
+        set_option('twitter_button', trim($_POST['twitter_button']));
+        set_option('fb', trim($_POST['fb']));
+        $target = dirname(__FILE__). "/views/shared/images/customized_logo.png";
+        if(isset($_POST['confirm-logo'])) {
+            $uploadOK = 1;
+        }
+        if ($uploadOK == 1) {
+
+            if (move_uploaded_file($_FILES["logo"]["tmp_name"], $target)) {
+                echo "The file has been uploaded.";
+            } 
+            else {
+                echo "fail";
+            }
+        }
     }
 
     /**

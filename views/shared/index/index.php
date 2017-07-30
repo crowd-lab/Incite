@@ -75,7 +75,7 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <div id="homepage-content" style="margin-top: 25px; margin-left: 15%; margin-right:15%; margin-bottom: 25px;">
     <div id="homepage-summary" style="margin-bottom: 75px">
-        <h1 style="text-align:center">Your project title/description here</h1>
+        <h1 style="text-align:center" id="p_title">Your project title/description here</h1>
     </div>  <!-- homepage-summary -->
     <div id="homepage-carousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
@@ -129,14 +129,25 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="homepage-details" style="margin-top: 30px;">
         <div id="twitter-tweets" style="float: right; width:20%; margin-bottom: -250px;">
             <h3 style="color: #8BB7C8; margin-top: 0px;">Social Feeds below</h3>
+            <div id="twitter" style="height:220px">
+            <!--
+            <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @July4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
+            -->
+            </div>
+            <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
+            <div id="fb" style="height:220px;">
+            <!--
+            <div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/July4CivilWar/">Mapping the Fourth of July: Exploring Independence in the Civil War Era</a></blockquote></div>
+            -->
+            </div>
         </div>
-
         <div id="homepage-introduction" style="width: 78%;">
             <h3 style="color: #8BB7C8;">Your Heading (Introduction Below)</h3>
             <div>
                 <iframe style="float: right; margin-bottom: 10px;" width="40%" height="210" src="https://youtube.com/embed/2ZAj-WnBIls" frameborder="1" allowfullscreen>
                 </iframe>
-                <div style="float: right; width:59%; margin-right: 1%;"><p style="">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui urna, tincidunt id risus eu, porta ultricies turpis. Donec feugiat justo pharetra pharetra auctor. Curabitur eu faucibus sem, in tincidunt diam. Integer elementum nisi felis. Suspendisse mollis efficitur lobortis. Cras sed lacinia sapien. Morbi congue finibus lectus, at luctus mauris imperdiet eget. Proin nulla tellus, blandit eu venenatis a, laoreet et magna. Donec ultricies turpis eget neque scelerisque faucibus. Donec enim quam, malesuada quis mauris ac, porta euismod enim. Proin ut imperdiet velit, sed pretium orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer consectetur iaculis volutpat.</a></p></div>
+                <div style="float: right; width:59%; margin-right: 1%;"><p id="p_intro" style="word-wrap: break-word;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui urna, tincidunt id risus eu, porta ultricies turpis. Donec feugiat justo pharetra pharetra auctor. Curabitur eu faucibus sem, in tincidunt diam. Integer elementum nisi felis. Suspendisse mollis efficitur lobortis. Cras sed lacinia sapien. Morbi congue finibus lectus, at luctus mauris imperdiet eget. Proin nulla tellus, blandit eu venenatis a, laoreet et magna. Donec ultricies turpis eget neque scelerisque faucibus. Donec enim quam, malesuada quis mauris ac, porta euismod enim. Proin ut imperdiet velit, sed pretium orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer consectetur iaculis volutpat.</p></div>
                 <div style="clear: both;"></div>
             </div>
             <div style="margin-left: 140px; height: 10px;"></div>
@@ -163,6 +174,9 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <script>
 $(document).ready(function(){
+    setTitle();
+    setIntro();
+    setTimeLine();
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
     var d = new Date();
     var mon = (d.getMonth()+1) < 10 ? ("0"+(d.getMonth()+1)) : (d.getMonth()+1);
@@ -226,6 +240,38 @@ $(document).ready(function(){
         hoverEvent = false;
     });
 });
+
+    function setTitle() {
+        
+        var title = <?php echo json_encode($this->title).";\n" ?>;
+        if (title != null || title == ' ') {
+            $("#p_title").text(title);
+        }
+    }
+    function setIntro() {
+        <?php if(!empty($this->intro)): ?>
+        var intro = <?php echo json_encode($this->intro).";\n" ?>;
+        $("#p_intro").html(intro);
+        <?php endif; ?>
+    }
+
+    function setTimeLine() {
+        <?php if(empty($this->twitter_timeline) && empty($this->fb)): ?>
+        $("#twitter-tweets").remove();
+        $("#homepage-introduction").width('100%');
+        <?php endif; ?>
+        <?php if(!empty($this->twitter_timeline)): ?>
+        var twitter_timeline = <?php echo json_encode($this->twitter_timeline).";\n" ?>;
+        var twitter_button = <?php echo json_encode($this->twitter_button).";\n" ?>;
+        $("#twitter").append(twitter_timeline);
+        $("#twitter").append(twitter_button);
+        <?php endif; ?>
+        <?php if(!empty($this->twitter) || !empty($this->fb)): ?>
+        var fb = <?php echo json_encode($this->fb).";\n" ?>;
+        $("#fb").append(fb);
+        <?php endif; ?>
+    }
+
 </script>
 
 <?php

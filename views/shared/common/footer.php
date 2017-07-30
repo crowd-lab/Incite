@@ -22,6 +22,9 @@
 
 <div id="footer" style="">
     <div style="color: #B2B1B1; margin-bottom: 12px;">Sponsored by</div>
-    <a target="_blank"><img class="footer-sponsor-logo-img" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
+    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
+    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
+    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
+    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
 
 </div>
