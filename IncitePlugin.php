@@ -1,6 +1,7 @@
 <?php
-require_once("controllers/Incite_Env_Setting.php");
+//require_once("controllers/Incite_Env_Setting.php");
 require_once("controllers/Incite_Helpers.php");
+//require_once("controllers/Incite_Subject_Concept_Table.php");
 /**
  * The Incite plugin.
  *
@@ -175,11 +176,14 @@ SQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;  
 SQL
         );
+        /*
         get_db()->query(<<<SQL
+    
     INSERT INTO {$db->prefix}incite_subject_concepts (`id`, `name`, `definition`) VALUES (NULL, 'Religion', 'This document refers to religious ideas, prayers, ministers, etc.'), (NULL, 'White Supremacy', 'This document discusses the belief that white people are racially superior.'), (NULL, 'Racial Equality', 'This document discusses the belief that people of all racial backgrounds are equal.'), (NULL, 'Gender Equality/Inequality', 'This document discusses the status of men and/or women.'), (NULL, 'Human Equality', 'This document refers to the idea that all people are equal.'), (NULL, 'Self Goverment', 'This document refers to democracy, the idea that people should have a say in their own governance.'), (NULL, 'America as a Global Beacon', 'This document celebrates America''s status as an example for the rest of the world to follow.'), (NULL, 'Celebration of Revolutionary Generation', 'This document glorifies the Americans who fought the revolution.'), (NULL, 'White Southerners', 'This document discusses whether or not white southerners should celebrate July 4.');
+   
 SQL
    );
-
+    */
         get_db()->query(<<<SQL
    CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tags (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
@@ -490,6 +494,18 @@ SQL
      * Handle the config form.
      */
     public function hookConfig() {
+        set_option('encoded_concept', $_POST['encoded_concept']);
+        set_option('encoded_def', $_POST['encoded_def']);
+        $concept = $_POST['concept'];
+        $def = $_POST['def'];
+        $removed_concept = $_POST['del_concept'];
+        for ($i = 0; $i < count($concept); $i++) {
+            $this->addConcept($concept[$i], $def[$i]);
+        }
+        for ($i = 0; $i < count($removed_concept); $i++) {
+            $this->removeConcept($removed_concept[$i]);
+        }
+        
         $uploadOK = 0;
         set_option('title', trim($_POST['title']));
         set_option('intro', trim($_POST['intro']));
@@ -509,6 +525,44 @@ SQL
                 echo "fail";
             }
         }
+    }
+
+    public function addConcept($concept, $def) {
+        $ini_array = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . getOmekaPath(). '/../db.ini');
+        $dbhost = $ini_array["host"];
+        $dbuser = $ini_array["username"];
+        $dbpass = $ini_array["password"];
+        $dbname = $ini_array["dbname"];
+        $db = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+        if (mysqli_connect_errno()) 
+        {
+            printf("Connection to database has failed: %s\n", $db_conn->connect_error);
+            exit();
+        }
+        $stmt = $db->prepare("INSERT INTO omeka_incite_subject_concepts VALUES (NULL, ?, ?)");
+        $stmt->bind_param("ss", $concept, $def);
+        $stmt->execute();
+        $stmt->close();
+        $db->close();
+    }
+
+    public function removeConcept($concept) {
+        $ini_array = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . getOmekaPath(). '/../db.ini');
+        $dbhost = $ini_array["host"];
+        $dbuser = $ini_array["username"];
+        $dbpass = $ini_array["password"];
+        $dbname = $ini_array["dbname"];
+        $db = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+        if (mysqli_connect_errno()) 
+        {
+            printf("Connection to database has failed: %s\n", $db_conn->connect_error);
+            exit();
+        }
+        $stmt = $db->prepare("DELETE FROM `omeka_incite_subject_concepts` WHERE `name` = ?");
+        $stmt->bind_param("s", $concept);
+        $stmt->execute();
+        $stmt->close();
+        $db->close();
     }
 
     /**

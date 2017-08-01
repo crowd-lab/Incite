@@ -35,6 +35,8 @@ function createNewSubjectConcept($name, $definition)
         $db->close();
     }
 }
+
+
 /**
  * Get the definition of a certain subject/concept
  * @param String $name

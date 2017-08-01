@@ -42,6 +42,7 @@
                     </p>
 
                     <form id="subject-form" method="post">
+                        <?php if(!empty($this->subjects)): ?>
                         <table class="table">
                             <thead>
                                 <td>Themes</td>
@@ -51,6 +52,11 @@
                                 <td>Very useful</td>
                                 <td>Extremely useful</td>
                             </thead>
+                        <?php else: ?>
+                        <p><strong>Currently, there is no themes to be connected yet. Please contact the project host to add themes</strong></p>
+                        </br>
+                        </br>
+                        <?php endif; ?>
                         <?php foreach ((array)$this->subjects as $subject): ?>
                             <tr>
                                 <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
