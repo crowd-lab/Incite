@@ -75,7 +75,11 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <div id="homepage-content" style="margin-top: 25px; margin-left: 15%; margin-right:15%; margin-bottom: 25px;">
     <div id="homepage-summary" style="margin-bottom: 75px">
-        <h1 style="text-align:center" id="p_title">Your project title/description here</h1>
+    <?php if ($this->title != null) : ?>
+        <h1 style="text-align:center"><?php echo $this->title; ?></h1>
+    <?php else: ?> 
+        <h1 style="text-align:center">Your project title/description here</h1>
+    <?php endif ?>
     </div>  <!-- homepage-summary -->
     <div id="homepage-carousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
@@ -147,7 +151,11 @@ include(dirname(__FILE__).'/../common/header.php');
             <div>
                 <iframe style="float: right; margin-bottom: 10px;" width="40%" height="210" src="https://youtube.com/embed/2ZAj-WnBIls" frameborder="1" allowfullscreen>
                 </iframe>
-                <div style="float: right; width:59%; margin-right: 1%;"><p id="p_intro" style="word-wrap: break-word;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui urna, tincidunt id risus eu, porta ultricies turpis. Donec feugiat justo pharetra pharetra auctor. Curabitur eu faucibus sem, in tincidunt diam. Integer elementum nisi felis. Suspendisse mollis efficitur lobortis. Cras sed lacinia sapien. Morbi congue finibus lectus, at luctus mauris imperdiet eget. Proin nulla tellus, blandit eu venenatis a, laoreet et magna. Donec ultricies turpis eget neque scelerisque faucibus. Donec enim quam, malesuada quis mauris ac, porta euismod enim. Proin ut imperdiet velit, sed pretium orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer consectetur iaculis volutpat.</p></div>
+                <?php if (!empty($this->intro)): ?>
+                    <div style="float: right; width:59%; margin-right: 1%;"><p  style="word-wrap: break-word;"><?php echo $this->intro ?></p></div>
+                <?php else: ?>
+                    <div style="float: right; width:59%; margin-right: 1%;"><p  style="word-wrap: break-word;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui urna, tincidunt id risus eu, porta ultricies turpis. Donec feugiat justo pharetra pharetra auctor. Curabitur eu faucibus sem, in tincidunt diam. Integer elementum nisi felis. Suspendisse mollis efficitur lobortis. Cras sed lacinia sapien. Morbi congue finibus lectus, at luctus mauris imperdiet eget. Proin nulla tellus, blandit eu venenatis a, laoreet et magna. Donec ultricies turpis eget neque scelerisque faucibus. Donec enim quam, malesuada quis mauris ac, porta euismod enim. Proin ut imperdiet velit, sed pretium orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer consectetur iaculis volutpat.</p></div>
+                <?php endif ?>
                 <div style="clear: both;"></div>
             </div>
             <div style="margin-left: 140px; height: 10px;"></div>
@@ -174,8 +182,6 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <script>
 $(document).ready(function(){
-    setTitle();
-    setIntro();
     setTimeLine();
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
     var d = new Date();
@@ -241,21 +247,7 @@ $(document).ready(function(){
     });
 });
 
-    function setTitle() {
-        
-        var title = <?php echo json_encode($this->title).";\n" ?>;
-        if (title != null || title == ' ') {
-            console.log(title);
-            $("#p_title").text(title);
-        }
-    }
-    function setIntro() {
-        <?php if(!empty($this->intro)): ?>
-        var intro = <?php echo json_encode($this->intro).";\n" ?>;
-        $("#p_intro").html(intro);
-        <?php endif; ?>
-    }
-
+    
     function setTimeLine() {
         <?php if(empty($this->twitter_timeline) && empty($this->fb)): ?>
         $("#twitter-tweets").remove();
