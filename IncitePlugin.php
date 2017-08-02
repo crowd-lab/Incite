@@ -494,35 +494,93 @@ SQL
      * Handle the config form.
      */
     public function hookConfig() {
+        if (!isset($_POST['active']))
+            set_option('active', "no");
+        else
+            set_option('active', $_POST['active']);
+        //process the theme of connect tasks
         set_option('encoded_concept', $_POST['encoded_concept']);
         set_option('encoded_def', $_POST['encoded_def']);
-        $concept = $_POST['concept'];
-        $def = $_POST['def'];
-        $removed_concept = $_POST['del_concept'];
-        for ($i = 0; $i < count($concept); $i++) {
-            $this->addConcept($concept[$i], $def[$i]);
+        //add new themes
+        if (isset($_POST['concept'])) {
+            $concept = $_POST['concept'];
+            $def = $_POST['def'];
+            for ($i = 0; $i < count($concept); $i++) {
+                $this->addConcept($concept[$i], $def[$i]);
+            }
         }
-        for ($i = 0; $i < count($removed_concept); $i++) {
-            $this->removeConcept($removed_concept[$i]);
+        //delete the chosen themes
+        if (isset($_POST['del_concept'])) {
+            $removed_concept = $_POST['del_concept'];
+            for ($i = 0; $i < count($removed_concept); $i++) {
+                $this->removeConcept($removed_concept[$i]);
+            }
         }
-        
-        $uploadOK = 0;
         set_option('title', trim($_POST['title']));
         set_option('intro', trim($_POST['intro']));
         set_option('twitter_timeline', trim($_POST['twitter_timeline']));
         set_option('twitter_button', trim($_POST['twitter_button']));
         set_option('fb', trim($_POST['fb']));
-        $target = dirname(__FILE__). "/views/shared/images/customized_logo.png";
-        if(isset($_POST['confirm-logo'])) {
+        //Change the logo
+        if (!empty($_FILES["logo"]["name"])) {
+            $this->changeImage("customized_logo.png", "logo");
+        }
+
+        if (empty($_FILES["sponsor1"]["name"]) && empty($_FILES["sponsor2"]["name"]) && empty($_FILES["sponsor3"]["name"]) && empty($_FILES["sponsor4"]["name"])) {
+            delete_option('sponsor_arr');
+        }
+        else {
+            $sponsor_arr = array();
+            if (!empty($_FILES["sponsor1"]["name"])) {
+                $sponsor_arr[] = 1;
+                $this->changeImage("customized_sponsors1.png", "sponsor1");
+                if (isset($_POST['sponsorlink1']))
+                    set_option('sponsorlink1', $_POST['sponsorlink1']);
+                else
+                    delete_option('sponsorlink1');
+            }
+            if (!empty($_FILES["sponsor2"]["name"])) {
+                $sponsor_arr[] = 2;
+                $this->changeImage("customized_sponsors2.png", "sponsor2");
+                if (isset($_POST['sponsorlink2']))
+                    set_option('sponsorlink2', $_POST['sponsorlink2']);
+                else
+                    delete_option('sponsorlink2');
+            }
+            if (!empty($_FILES["sponsor3"]["name"])) {
+                $sponsor_arr[] = 3;
+                $this->changeImage("customized_sponsors3.png", "sponsor3");
+                if (isset($_POST['sponsorlink3']))
+                    set_option('sponsorlink3', $_POST['sponsorlink3']);
+                else
+                    delete_option('sponsorlink3');
+            }
+            if (!empty($_FILES["sponsor4"]["name"])) {
+                $sponsor_arr[] = 4;
+                $this->changeImage("customized_sponsors4.png", "sponsor4");
+                if (isset($_POST['sponsorlink4']))
+                    set_option('sponsorlink4', $_POST['sponsorlink4']);
+                else
+                    delete_option('sponsorlink4');
+            }
+            set_option('sponsor_arr', json_encode($sponsor_arr));
+        }
+    }
+
+    public function changeImage($name, $tagName) {
+        $uploadOK = 0;
+        $target = dirname(__FILE__). "/views/shared/images/".$name;
+        if(!empty($_FILES[$tagName]["name"])) {
             $uploadOK = 1;
         }
+        
         if ($uploadOK == 1) {
-
-            if (move_uploaded_file($_FILES["logo"]["tmp_name"], $target)) {
+            if (move_uploaded_file($_FILES[$tagName]["tmp_name"], $target)) {
                 echo "The file has been uploaded.";
             } 
             else {
                 echo "fail";
+                
             }
         }
     }

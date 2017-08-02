@@ -7,20 +7,57 @@
         <p class="explanation"><?php echo __('Upload Your Logo Here'); ?>.</p>
         <div class="input-block">
         <input type="file" class="textinput"  name="logo" accept=".png" id="logo" />
-        <input type="hidden" class="textinput"  name="confirm-logo"/>
+        </div>
+    </div>
+    <!-- First sponsor -->
+    <div class="two columns alpha">
+        <label for="per_page"><?php echo __('Sponsor1'); ?></label>
+    </div>
+    <div class="inputs five columns omega">
+        <p class="explanation"><?php echo __('Upload Your Sponsor Here'); ?>.</p>
+        <div class="input-block">
+        <input type="file" class="textinput"  name="sponsor1" accept=".png" id="sponsor1" />
+        <label style="clear: both;margin-right:-75px;">Link: </label>
+        <input style="width: auto;" type="text" class="textinput"  name="sponsorlink1" value="<?php echo get_option('sponsorlink1'); ?>" id="sponsorlink1" />
+        </div>
+    </div>
+    <!-- Second sponsor -->
+    <div class="two columns alpha">
+        <label for="per_page"><?php echo __('Sponsor2'); ?></label>
+    </div>
+    <div class="inputs five columns omega">
+        <p class="explanation"><?php echo __('Upload Your Sponsor Here'); ?>.</p>
+        <div class="input-block">
+        <input type="file" class="textinput"  name="sponsor2" accept=".png" id="sponsor2" />
+        <label style="clear: both;margin-right:-75px;">Link: </label>
+        <input style="width: auto;" type="text" class="textinput"  name="sponsorlink2" value="<?php echo get_option('sponsorlink2'); ?>" id="sponsorlink2" />
+        </div>
+    </div>
+    <!-- Third sponsor -->
+    <div class="two columns alpha">
+        <label for="per_page"><?php echo __('Sponsor3'); ?></label>
+    </div>
+    <div class="inputs five columns omega">
+        <p class="explanation"><?php echo __('Upload Your Sponsor Here'); ?>.</p>
+        <div class="input-block">
+        <input type="file" class="textinput"  name="sponsor3" accept=".png" id="sponsor3" />
+        <label style="clear: both;margin-right:-75px;">Link: </label>
+        <input style="width: auto;" type="text" class="textinput"  name="sponsorlink3" value="<?php echo get_option('sponsorlink3'); ?>" id="sponsorlink3" />
+        </div>
+    </div>
+    <!-- Fourth sponsor -->
+    <div class="two columns alpha">
+        <label for="per_page"><?php echo __('Sponsor4'); ?></label>
+    </div>
+    <div class="inputs five columns omega">
+        <p class="explanation"><?php echo __('Upload Your Sponsor Here'); ?>.</p>
+        <div class="input-block">
+        <input type="file" class="textinput"  name="sponsor4" accept=".png" id="sponsor4" />
+        <label style="clear: both;margin-right:-75px;">Link: </label>
+        <input style="width: auto;" type="text" class="textinput"  name="sponsorlink4" value="<?php echo get_option('sponsorlink4'); ?>" id="sponsorlink4" />
         </div>
     </div>
     
-    <div class="two columns alpha">
-        <label for="per_page"><?php echo __('Sponsors'); ?></label>
-    </div>
-    <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Write Your Sponsors Here'); ?>.</p>
-        <div class="input-block">
-        <input type="file" class="textinput"  name="sponsor" accept=".png" multiple id="sponsor" />
-        <input type="hidden" class="textinput"  name="confirm-sponsor"/>
-        </div>
-    </div>
     <div class="two columns alpha">
         <label for="per_page"><?php echo __('Homepage Title'); ?></label>
     </div>
@@ -66,7 +103,7 @@
     </div>
     <div class="inputs five columns omega">
         <div class="input-block">
-            <input type="checkbox" name="intro" value="page">
+            <input type="checkbox" name="active" id="active" value="no">
             <span class="explanation"> Active</span>
         </div>
     </div>
@@ -110,6 +147,15 @@ var def_arr = [];
 <?php endif; ?>
 $(document ).ready(function() {
     getConcept();
+    $("#active").click(function(){
+        if ($('#active:checkbox:checked').length > 0) {
+            $("#active").val("yes");
+        }
+        else {
+            $("#active").val("no");
+        }
+    });
+    
     $("#add_button" ).click(function() {
         var concept = $("input[name = 'concept_place']").val();
         var def = $("input[name = 'def_place']").val();

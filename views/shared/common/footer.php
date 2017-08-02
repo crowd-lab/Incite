@@ -21,10 +21,14 @@
 </style>
 
 <div id="footer" style="">
-    <div style="color: #B2B1B1; margin-bottom: 12px;">Sponsored by</div>
-    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
-    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
-    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
-    <a target="_blank"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_sponsors.png"></a>
-
+    <?php if(!empty(get_option('sponsor_arr'))): ?>
+        <div style="color: #B2B1B1; margin-bottom: 12px;">Sponsored by</div>
+    <?php endif; ?>
+    <?php $sponsor_arr = json_decode(get_option('sponsor_arr')); foreach ((array)$sponsor_arr as $sponsor): ?>
+        <a target="_blank" href="<?php echo get_option('sponsorlink'.$sponsor) ?>"><img class="footer-sponsor-logo-img" style="width:200px" src="<?php echo getFullOmekaUrl(); ?>plugins/Incite/views/shared/images/customized_sponsors<?php echo $sponsor; ?>.png"></a>
+    <?php endforeach; ?>
 </div>
+
+
+
+

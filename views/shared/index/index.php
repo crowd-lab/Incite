@@ -245,6 +245,7 @@ $(document).ready(function(){
         
         var title = <?php echo json_encode($this->title).";\n" ?>;
         if (title != null || title == ' ') {
+            console.log(title);
             $("#p_title").text(title);
         }
     }
@@ -258,6 +259,7 @@ $(document).ready(function(){
     function setTimeLine() {
         <?php if(empty($this->twitter_timeline) && empty($this->fb)): ?>
         $("#twitter-tweets").remove();
+        console.log("here");
         $("#homepage-introduction").width('100%');
         <?php endif; ?>
         <?php if(!empty($this->twitter_timeline)): ?>

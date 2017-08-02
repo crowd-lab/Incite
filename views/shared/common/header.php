@@ -492,6 +492,12 @@ if (isset($_GET['time'])) {
             msgbox.close();
         }
 $(document).ready(function () {
+    var active = "<?php echo get_option('active'); ?>";
+    if (active == "no")
+        $("#aboutlist").empty();
+    else if (active == "yes") {
+        $("#aboutlist").append('<a id="activeAbout" class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>');
+    }
     var url = window.location.href;
     var id = <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>;
     var n = url.lastIndexOf("/") + 1;
@@ -773,8 +779,10 @@ function year_of_full_iso_date(date) {
             <!--
             <li class="">
             <a style="font-size: 125%; color: #8BB7C8;">Browse</a></li>-->
-            <li >
-                <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
+            <li id="aboutlist">
+                <!--
+                <a id="activeAbout" class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
+                -->
             </li>
             <li>
                 <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>
