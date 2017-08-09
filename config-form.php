@@ -1,7 +1,6 @@
 <div class="field">
-
     <div class="two columns alpha">
-        <label for="per_page"><?php echo __('Logo'); ?></label>
+        <label for="per_page"><?php echo __('Logo*'); ?></label>
     </div>
     <div class="inputs five columns omega">
         <p class="explanation"><?php echo __('Upload Your Logo Here'); ?>.</p>
@@ -57,9 +56,9 @@
         <input style="width: auto;" type="text" class="textinput"  name="sponsorlink4" value="<?php echo get_option('sponsorlink4'); ?>" id="sponsorlink4" />
         </div>
     </div>
-    
+
     <div class="two columns alpha">
-        <label for="per_page"><?php echo __('Homepage Title'); ?></label>
+        <label for="per_page"><?php echo __('Homepage Title*'); ?></label>
     </div>
     <div class="inputs five columns omega">
         <p class="explanation"><?php echo __('Write Your Homepage Title Here'); ?>.</p>
@@ -69,7 +68,7 @@
     </div>
     
     <div class="two columns alpha">
-        <label for="per_page"><?php echo __('HomePage Introduction'); ?></label>
+        <label for="per_page"><?php echo __('HomePage Introduction*'); ?></label>
     </div>
     <div class="inputs five columns omega">
         <p class="explanation"><?php echo __('Write Your Homepage Introduction Here'); ?>.</p>
@@ -87,14 +86,14 @@
         <div id="twitter_feeds">
             <p class="explanation"><?php echo __('Twitter'); ?></p>
             <label style="clear: both;margin-right:-45px;">Timeline:</label>
-            <input style="width: auto;" type="text" class="textinput"  name="twitter_timeline"  />
+            <input style="width: auto;" type="text" class="textinput"  name="twitter_timeline" value='<?php echo get_option('twitter_timeline'); ?>' />
             <label style="clear: both;margin-right:-45px;">Buttons:</label>
-            <input style="width: auto;" type="text" class="textinput"  name="twitter_button"  />
+            <input style="width: auto;" type="text" class="textinput"  name="twitter_button" value='<?php echo get_option('twitter_button'); ?>' />
         </div>
         <div id="fb_feeds">
             <p class="explanation"><?php echo __('FaceBook'); ?></p>
             <label style="clear: both;margin-right:-45px;">Facebook :</label>
-            <input style="width: auto;" type="text" class="textinput"  name="fb" />
+            <input style="width: auto;" type="text" class="textinput"  name="fb" value='<?php echo get_option('fb'); ?>'/>
         </div>
         </div>
     </div>
@@ -107,8 +106,9 @@
             <span class="explanation"> Active</span>
         </div>
     </div>
+    
     <div class="two columns alpha">
-        <label for="per_page"><?php echo __('Themes '); ?></label>
+        <label for="per_page"><?php echo __('Themes*'); ?></label>
     </div>
     <div class="inputs five columns omega">
         <div id="connect">
@@ -130,7 +130,6 @@
             </table>
         </div>
     </div>
-    
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">

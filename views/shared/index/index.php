@@ -147,10 +147,8 @@ include(dirname(__FILE__).'/../common/header.php');
             </div>
         </div>
         <div id="homepage-introduction" style="width: 78%;">
-            <h3 style="color: #8BB7C8;">Your Heading (Introduction Below)</h3>
+            <h3 style="color: #8BB7C8;">Introduction</h3>
             <div>
-                <iframe style="float: right; margin-bottom: 10px;" width="40%" height="210" src="https://youtube.com/embed/2ZAj-WnBIls" frameborder="1" allowfullscreen>
-                </iframe>
                 <?php if (!empty($this->intro)): ?>
                     <div style="float: right; width:59%; margin-right: 1%;"><p  style="word-wrap: break-word;"><?php echo $this->intro ?></p></div>
                 <?php else: ?>
