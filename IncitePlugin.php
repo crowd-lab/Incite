@@ -524,6 +524,7 @@ SQL
         //Change the logo
         if (!empty($_FILES["logo"]["name"])) {
             $this->changeImage("customized_logo.png", "logo");
+            set_option('logo_set', "true");
         }
 
         if (empty($_FILES["sponsor1"]["name"]) && empty($_FILES["sponsor2"]["name"]) && empty($_FILES["sponsor3"]["name"]) && empty($_FILES["sponsor4"]["name"])) {

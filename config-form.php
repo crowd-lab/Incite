@@ -87,6 +87,7 @@
             <p class="explanation"><?php echo __('Twitter'); ?></p>
             <label style="clear: both;margin-right:-45px;">Timeline:</label>
             <input style="width: auto;" type="text" class="textinput"  name="twitter_timeline" value='<?php echo get_option('twitter_timeline'); ?>' />
+            <p class="explanation"><?php echo __('e.g. blablabla'); ?></p>
             <label style="clear: both;margin-right:-45px;">Buttons:</label>
             <input style="width: auto;" type="text" class="textinput"  name="twitter_button" value='<?php echo get_option('twitter_button'); ?>' />
         </div>
@@ -145,13 +146,39 @@ var def_arr = [];
     $("#encoded_def").val(JSON.stringify(def_arr));
 <?php endif; ?>
 $(document ).ready(function() {
+    $("#install_plugin").attr("disabled", "disabled");
     getConcept();
+    if ($("#title").val() != "" && $("#intro").val() != "" && $("#c_table td").length != 0 && ($("#logo").val() != "" || <?php echo json_encode(get_option('logo_set')); ?> == "true")) {
+        $("#install_plugin").removeAttr('disabled');
+    }
+    $("#title, #intro").change(function(){
+        if ($("#title").val() != "" && $("#intro").val() != "" && $("#c_table td").length != 0 && ($("#logo").val() != "" || <?php echo json_encode(get_option('logo_set')); ?> == "true")) {
+            $("#install_plugin").removeAttr('disabled');
+        }
+    });
+    $("#logo").click(function(){
+        if ($("#title").val() != "" && $("#intro").val() != "" && $("#c_table td").length != 0 && ($("#logo").val() != "" || <?php echo json_encode(get_option('logo_set')); ?> == "true")) {
+            $("#install_plugin").removeAttr('disabled');
+        }
+    });
+    
+    $("#add_button").prop("disabled",true);
     $("#active").click(function(){
         if ($('#active:checkbox:checked').length > 0) {
             $("#active").val("yes");
         }
         else {
             $("#active").val("no");
+        }
+    });
+    $("input[name = 'concept_place']").change(function() {
+        if ($("input[name = 'concept_place']").val() != "" && $("input[name = 'def_place']").val() != "") {
+            $("#add_button").prop("disabled",false);
+        }
+    });
+    $("input[name = 'def_place']").change(function() {
+        if ($("input[name = 'concept_place']").val() != "" && $("input[name = 'def_place']").val() != "") {
+            $("#add_button").prop("disabled",false);
         }
     });
     
@@ -168,6 +195,10 @@ $(document ).ready(function() {
         $("#c_table table").append("<tr><td>" + concept + "<span class='defs' style='display: none'> " + def + "</span>" + concept_element + def_element + trash_button + "</tr>");
         $("#encoded_concept").val(JSON.stringify(concept_arr));
         $("#encoded_def").val(JSON.stringify(def_arr));
+        $("#add_button").prop("disabled",true);
+        if ($("#title").val() != "" && $("#intro").val() != "" && $("#c_table td").length != 0 && ($("#logo").val() != "" || <?php echo json_encode(get_option('logo_set')); ?> == "true")) {
+            $("#install_plugin").removeAttr('disabled');
+        }
     });
     $("#c_table").on("mouseover", "td", function(){
         $($(this).find(".defs")).css("display", "inline");
