@@ -78,7 +78,7 @@ $questions[] = array(
                 'type'    => 'tf',
                 'q'       => 'Please select "Yes" for all statements that are appropriately inferred from the document and otherwise select "No".',
                 'options' => array(
-                    array('val' => 1, 'label' => 'The author is aware of the battles and duels, and provides that these battles and duels are par of a larger picture.'),
+                    array('val' => 1, 'label' => 'The author is aware of the battles and duels, and provides that these battles and duels are part of a larger picture.'),
                     array('val' => 2, 'label' => 'The author focuses on battery accuracy but gives no indication that they are shotting guns to kill people, nor a sense that the enemy is trying to kill them.'),
                     array('val' => 3, 'label' => 'There does not seem to be a sense that the author is aware of the overall strategy of the battle or the war itself.'),
                     array('val' => 4, 'label' => 'From the document, it seems the author\'s army has been making progress, showing that the war is likely to come to an end.')));

@@ -66,6 +66,12 @@ $( function () {
                       </div>
                     </div>
                     <div class="form-group row">
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Class</label>
+                      <div class="col-xs-10">
+                        <input name="class" class="form-control" type="text" value="" id="class" placeholder="Your class info. E.g. HIST 1001">
+                      </div>
+                    </div>
+                    <div class="form-group row">
                       <label for="example-text-input" class="col-xs-2 col-form-label">Age</label>
                       <div class="col-xs-10">
                         <input name="age" class="form-control" type="text" placeholder="Your age (please round to the closest whole number)" id="age">

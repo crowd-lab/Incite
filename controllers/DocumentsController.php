@@ -829,14 +829,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function presurveyAction() {
         if ($this->getRequest()->isPost()) {
             $name   = $_POST['name'];
+            $class   = $_POST['class'];
             $age    = $_POST['age'];
             $gender = $_POST['gender'];
             $majors = $_POST['majors'];
 
             //Save demographics
             $db = DB_Connect::connectDB();
-            $stmt = $db->prepare("UPDATE study2 SET name = ?, age = ?, gender = ?, majors = ?, time1_start = NOW() WHERE id = ?");
-            $stmt->bind_param("sissi", $name, $age, $gender, $majors, $_SESSION['study2']['id']);
+            $stmt = $db->prepare("UPDATE study2 SET name = ?, class= ?, age = ?, gender = ?, majors = ?, time1_start = NOW() WHERE id = ?");
+            $stmt->bind_param("ssissi", $name, $class, $age, $gender, $majors, $_SESSION['study2']['id']);
             $stmt->execute();
             $stmt->close();
             $db->close();
@@ -875,22 +876,26 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         die();
   }
     public function wfdatadumpingtothisAction() {
-
+        /*
         echo '<pre>';
-        //print_r(check_task_performance(1, 1125, 54));
-        //print_r(check_task_performance(2, 1125, 54));
         //1125 -> 4; 1126 -> 5; 1127 -> 15 (item_id -> document_id)
-        print_r(check_task_performance(3, 1125, 54));
+        print_r(check_task_performance(1, 1125, 54));
+        print_r(check_task_performance(2, 1125, 54));
+        //print_r(check_task_performance(3, 1125, 54));
         echo '</pre>';
         die();
+        */
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT `id`, `workflow`, doc1, doc2, doc3, task1, task2, task3, TIME_TO_SEC(TIMEDIFF(time1_end, time1_start)), TIME_TO_SEC(TIMEDIFF(time2_end, time2_start)), TIME_TO_SEC(TIMEDIFF(time3_end, time3_start)), attempts, age, q1, q2, q3, q4, q5, q6, q71, q72, q73, q74, q81, q82, q83, q84, tlx_men, tlx_phy, tlx_tem, tlx_per, tlx_eff, tlx_fru, tlx_int, user_feedback FROM `study2` WHERE id > 1 AND id <= 16");
-        $stmt->bind_result($trial_id, $workflow, $doc1, $doc2, $doc3, $task1, $task2, $task3, $timediff1, $timediff2, $timediff3, $ttempts, $age, $q1, $q2, $q3, $q4, $q5, $q6, $q71, $q72, $q73, $q74, $q81, $q82, $q83, $q84, $tlx_men, $tlx_phy, $tlx_tem, $tlx_per, $tlx_eff, $tlx_fru, $tlx_int, $user_feedback);
+        //Original
+        //$stmt = $db->prepare("SELECT `id`, `workflow`, doc1, doc2, doc3, task1, task2, task3, TIME_TO_SEC(TIMEDIFF(time1_end, time1_start)), TIME_TO_SEC(TIMEDIFF(time2_end, time2_start)), TIME_TO_SEC(TIMEDIFF(time3_end, time3_start)), attempts, age, q1, q2, q3, q4, q5, q6, q71, q72, q73, q74, q81, q82, q83, q84, tlx_men, tlx_phy, tlx_tem, tlx_per, tlx_eff, tlx_fru, tlx_int, user_feedback FROM `study2` WHERE id > 1 AND id <= 16");
+        //Regan's class
+        $stmt = $db->prepare("SELECT `id`, `workflow`, name, doc1, doc2, doc3, task1, task2, task3, TIME_TO_SEC(TIMEDIFF(time1_end, time1_start)), TIME_TO_SEC(TIMEDIFF(time2_end, time2_start)), TIME_TO_SEC(TIMEDIFF(time3_end, time3_start)), attempts, age, q1, q2, q3, q4, q5, q6, q71, q72, q73, q74, q81, q82, q83, q84, tlx_men, tlx_phy, tlx_tem, tlx_per, tlx_eff, tlx_fru, tlx_int, user_feedback FROM `study2` WHERE id >= 24 AND id <= 42");
+        $stmt->bind_result($trial_id, $workflow, $name, $doc1, $doc2, $doc3, $task1, $task2, $task3, $timediff1, $timediff2, $timediff3, $ttempts, $age, $q1, $q2, $q3, $q4, $q5, $q6, $q71, $q72, $q73, $q74, $q81, $q82, $q83, $q84, $tlx_men, $tlx_phy, $tlx_tem, $tlx_per, $tlx_eff, $tlx_fru, $tlx_int, $user_feedback);
         
         $stmt->execute();
-        echo 'trial_id,workflow,doc1,doc2,doc3,task1,task2,task3,timediff1,timediff2,timediff3,atempts,age,q1,q2,q3,q4,q5,q6,q71,q72,q73,q74,q81,q82,q83,q84,tlx_men,tlx_phy,tlx_tem,tlx_per,tlx_eff,tlx_fru,tlx_int,user_feedback'."\n";
+        echo 'trial_id,workflow,name,doc1,doc2,doc3,task1,task2,task3,timediff1,timediff2,timediff3,atempts,age,q1,q2,q3,q4,q5,q6,q71,q72,q73,q74,q81,q82,q83,q84,tlx_men,tlx_phy,tlx_tem,tlx_per,tlx_eff,tlx_fru,tlx_int,user_feedback'."\n";
         while (($result = $stmt->fetch()) != null) {
-            echo $trial_id.",".$workflow.",".$doc1.",".$doc2.",".$doc3.",".$task1.",".$task2.",".$task3.",".$timediff1.",".$timediff2.",".$timediff3.",".$ttempts.",".$age.",".$q1.",".$q2.",".$q3.",".$q4.",".$q5.",".$q6.",".$q71.",".$q72.",".$q73.",".$q74.",".$q81.",".$q82.",".$q83.",".$q84.",".$tlx_men.",".$tlx_phy.",".$tlx_tem.",".$tlx_per.",".$tlx_eff.",".$tlx_fru.",".$tlx_int.",\"".str_replace('"', '""', $user_feedback)."\"\n";
+            echo $trial_id.",".$workflow.",".$name.",".$doc1.",".$doc2.",".$doc3.",".$task1.",".$task2.",".$task3.",".$timediff1.",".$timediff2.",".$timediff3.",".$ttempts.",".$age.",".$q1.",".$q2.",".$q3.",".$q4.",".$q5.",".$q6.",".$q71.",".$q72.",".$q73.",".$q74.",".$q81.",".$q82.",".$q83.",".$q84.",".$tlx_men.",".$tlx_phy.",".$tlx_tem.",".$tlx_per.",".$tlx_eff.",".$tlx_fru.",".$tlx_int.",\"".str_replace('"', '""', $user_feedback)."\"\n";
         }
         $stmt->close();
         $db->close();
