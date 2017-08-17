@@ -103,6 +103,7 @@
     </div>
     <div class="inputs five columns omega">
         <div id="connect">
+            <p class="explanation"><?php echo __('We need at least one theme to make sure the connect task working'); ?>.</p>
             <label style="clear: both;margin-right:-45px;">Concept :</label>
             <input style="width: auto;" type="text" class="textinput"  name="concept_place" />
             <label style="clear: both;margin-right:-45px;">Definition :</label>
@@ -433,6 +434,10 @@ function del_sponsor_check() {
 <style>
 .popover-content {
     word-break: break-all;
+}
+
+table tr td {
+    padding: 5px 5px;
 }
 </style>
 
