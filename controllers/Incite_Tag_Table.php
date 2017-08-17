@@ -183,7 +183,6 @@ function getAllCategories() {
     $stmt->bind_result($id, $name);
     $stmt->execute();
     while ($stmt->fetch()) {
-        //$results[] = Array("id" => $id, "name" => $name, "subcategory" => array());
         $results[$id] = Array("name" => $name, "subcategory" => array());
 
         $newDB = DB_Connect::connectDB();
@@ -192,7 +191,6 @@ function getAllCategories() {
         $subcategoryStmt->bind_result($subID, $subName, $subCreatedBy, $subTimestamp);
         $subcategoryStmt->execute();
         while ($subcategoryStmt->fetch()) {
-            //$results[$count]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
             $results[$id]["subcategory"][] = Array("subcategory_id" => $subID, "subcategory" => $subName, "subcategory_created_by" => $subCreatedBy, "subcategory_timestamp" => $subTimestamp);
         }
         $subcategoryStmt->close();
@@ -485,7 +483,6 @@ function findDocumentsWithAtLeastNofGivenTagNames($tag_name_array, $N)
         $stmt->close();
         $db->close();
     }
-    //dictionary setup: tagID --> [item_ids]
     $allDocumentIDs = array();
     foreach ((array)$dictionary as $tag_name) {
         for ($i = 0; $i < count($tag_name); $i++) {
@@ -591,7 +588,11 @@ function getBestSubjectCandidateList($item_ids)
         $results[] = array('subject' => $subject, 'subject_id' => $subject_and_id[$subject], 'subject_definition' => $subject_and_def[$subject], 'ids' => $subjects_ids[$subject], 'count' => $count);
     return $results;
 }
-
+/**
+ * Get the transcription id
+ * @param int $item_id $user_id
+ * @return the transcription id
+ */
 function findTranscriptionId($item_id, $user_id) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT `id` FROM `omeka_incite_transcriptions` WHERE `item_id` = $item_id AND `user_id` = $user_id");
@@ -605,7 +606,11 @@ function findTranscriptionId($item_id, $user_id) {
     return $dest;
 }
 
-
+/**
+ * Save the question answer in tag task to the database
+ * @param int $index $ques_id $answer $type
+ * @return null
+ */
 function saveQuestions($index, $ques_id,  $answer, $type) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("INSERT INTO omeka_incite_tag_question_conjunction VALUES (NULL, ?, ?, ?, ?)");
@@ -615,6 +620,11 @@ function saveQuestions($index, $ques_id,  $answer, $type) {
     $db->close();
 }
 
+/**
+ * Store the tagged transcription to the database
+ * @param int $item_id $transcription_id $user_id $working_group_id $tagged_transcription
+ * @return id of the row which is just inserted to the database
+ */
 function createTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
 
     $db = DB_Connect::connectDB();
@@ -627,6 +637,11 @@ function createTaggedTranscription($item_id, $transcription_id, $userID, $workin
     return $tagID;
 }
 
+/**
+ * Get all correct tags from database according to the document item id
+ * @param int $itemID
+ * @return array of tags
+ */
 function findAllTagsFromGoldStandard($itemID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT `tag_text`, `category_id` FROM `omeka_incite_tags` WHERE `item_id` = $itemID AND `type` = 2");
@@ -641,6 +656,11 @@ function findAllTagsFromGoldStandard($itemID) {
     return $tag_list;
 }
 
+/**
+ * Get the correct tagged_transcription id from database according to the document item id
+ * @param int $itemID
+ * @return id 
+ */
 function findTaggedTransIDFromGoldStandard($itemID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT `id` FROM `omeka_incite_tagged_transcriptions` WHERE `item_id` = $itemID AND `type` = 2");
@@ -652,6 +672,11 @@ function findTaggedTransIDFromGoldStandard($itemID) {
     return $id;
 }
 
+/**
+ * Get all answers of questions in tag task
+ * @param int $taggedTranscriptionID
+ * @return array of answers
+ */
 function findAllAnswersFromGoldStandard($taggedTranscriptionID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT `question_id`, `answer` FROM `omeka_incite_tag_question_conjunction` WHERE `type` = 2 AND `tagged_trans_id` = $taggedTranscriptionID");
@@ -666,6 +691,11 @@ function findAllAnswersFromGoldStandard($taggedTranscriptionID) {
     return $answer_list;
 }
 
+/**
+ * Get all correct themes ratings for connect task
+ * @param int $taggedTranscriptionID
+ * @return array of ratings
+ */
 function findAllRatingsFromGoldStandard($taggedTranscriptionID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT `subject_concept_id`, `rank` FROM `omeka_incite_documents_subject_conjunction` WHERE `type` = 2 AND `tagged_trans_id` = $taggedTranscriptionID");
@@ -680,6 +710,11 @@ function findAllRatingsFromGoldStandard($taggedTranscriptionID) {
     return $subject_list;
 }
 
+/**
+ * Get the correct tagged transcription content
+ * @param int $itemID
+ * @return string of tagged transcription
+ */
 function findAssessmentTaggedTransForUser($itemID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 2 ");
@@ -692,6 +727,11 @@ function findAssessmentTaggedTransForUser($itemID) {
     return $taggedTranscription;
 }
 
+/**
+ * Get the latest tagged transcription
+ * @param int $itemID
+ * @return string of tagged transcription
+ */
 function getLatestTaggedTransForUser($itemID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT tagged_transcription FROM omeka_incite_tagged_transcriptions WHERE item_id = ? AND type = 3 ORDER BY timestamp_creation DESC LIMIT 1");
@@ -703,7 +743,11 @@ function getLatestTaggedTransForUser($itemID) {
     $db->close();
     return $taggedTranscription;
 }
-
+/**
+ * Store the tagged transcription as assessment mode
+ * @param $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription
+ * @return id of the row just inserted
+ */
 function saveTaggedTranscription($item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription) {
 
     $db = DB_Connect::connectDB();
@@ -716,6 +760,11 @@ function saveTaggedTranscription($item_id, $transcription_id, $userID, $working_
     return $tagID;
 }
 
+/**
+ * Get the subcategory
+ * @param $tag_id
+ * @return array of subcategory
+ */
 function getSub($tagID) {
     $arr = array();
     $db = DB_Connect::connectDB();
@@ -730,6 +779,12 @@ function getSub($tagID) {
     $db->close();
     return $arr;
 }
+
+/**
+ * Get all correct tag ids 
+ * @param $item_id
+ * @return array of tag ids
+ */
 function findAllTagsIDFromGoldStandard($itemID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT `id`, `tag_text` FROM `omeka_incite_tags` WHERE `item_id` = $itemID AND `type` = 2");
@@ -744,6 +799,11 @@ function findAllTagsIDFromGoldStandard($itemID) {
     return $tag_list;
 }
 
+/**
+ * Get the subcategory for specific tag
+ * @param $cat_id
+ * @return subcategory
+ */
 function matchSub($catID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory.name FROM omeka_incite_tags_subcategory WHERE `id` = $catID");
@@ -755,7 +815,11 @@ function matchSub($catID) {
     $sub = $name;
     return $sub;
 }
-//need to manually insert correct subcatgegory into database
+/**
+ * Get all subcategories according to the item id
+ * @param $itemID
+ * @return array of subcategory ids
+ */
 function findAllSubs($itemID) {
     $textArr = findAllTagsIDFromGoldStandard($itemID);
     $idArr = array();
@@ -769,6 +833,11 @@ function findAllSubs($itemID) {
     return $idArr;
 }
 
+/**
+ * Get all subcategories 
+ * @param 
+ * @return array of subcategories
+ */
 function SubcatDic() {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT omeka_incite_tags_subcategory.id, omeka_incite_tags_subcategory.name FROM omeka_incite_tags_subcategory");
@@ -784,6 +853,11 @@ function SubcatDic() {
     return $subcat_list;
 }
 
+/**
+ * Get the explanation of ratings for connect page
+ * @param $item_id
+ * @return array of explanations
+ */
 function explainDic($itemID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT omeka_incite_subject_explain.concept_id, omeka_incite_subject_explain.explanation FROM omeka_incite_subject_explain WHERE item_id = $itemID");
@@ -798,6 +872,11 @@ function explainDic($itemID) {
     return $explain_list;
 }
 
+/**
+ * Get answer array with both correctness-to-answer and answer-to-explanation
+ * @param $item_id, $transcription_id, $userID, $working_group_id, $tagged_transcription
+ * @return id of the row just inserted
+ */
 function questionAnswer($itemID, $questionID) {
     $db = DB_Connect::connectDB();
     $stmt = $db->prepare("SELECT omeka_incite_tag_answer_explain_list.answer, omeka_incite_tag_answer_explain_list.correct, omeka_incite_tag_answer_explain_list.explanation FROM omeka_incite_tag_answer_explain_list WHERE `item_id` = $itemID AND `question_id` = $questionID");
@@ -843,7 +922,6 @@ function questionAnswer($itemID, $questionID) {
         }
        
     }
-    //print_r($correct);
     $stmt->close();
     $db->close();
     $correct["true"] = $trueTable;
@@ -853,6 +931,11 @@ function questionAnswer($itemID, $questionID) {
     return $total;
 }
 
+/**
+ * Get all the answers in an array
+ * @param $item_id
+ * @return array of answers
+ */
 function answerPack($itemID) {
     $pack = array();
     for ($i = 1; $i < 7; $i++) {

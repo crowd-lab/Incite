@@ -20,11 +20,7 @@ class Incite_IndexController extends Omeka_Controller_AbstractActionController
 
     public function indexAction()
     { 
-      $this->view->title = get_option("title");
-      $this->view->intro = get_option("intro");
-      $this->view->twitter_timeline = get_option("twitter_timeline");
-      $this->view->twitter_button = get_option("twitter_button");
-      $this->view->fb = get_option("fb");
+      
     }
     public function aboutAction()
     {

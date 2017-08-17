@@ -75,8 +75,8 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <div id="homepage-content" style="margin-top: 25px; margin-left: 15%; margin-right:15%; margin-bottom: 25px;">
     <div id="homepage-summary" style="margin-bottom: 75px">
-    <?php if ($this->title != null) : ?>
-        <h1 style="text-align:center"><?php echo $this->title; ?></h1>
+    <?php if (get_option("title") != null) : ?>
+        <h1 style="text-align:center"><?php echo get_option("title"); ?></h1>
     <?php else: ?> 
         <h1 style="text-align:center">Your project title/description here</h1>
     <?php endif ?>
@@ -131,28 +131,37 @@ include(dirname(__FILE__).'/../common/header.php');
         </a>
     </div> <!-- homepage-carousel -->
     <div id="homepage-details" style="margin-top: 30px;">
-        <div id="twitter-tweets" style="float: right; width:20%; margin-bottom: -250px;">
+        <?php if (gettype(get_option('twitter_timeline')) == "NULL" || !empty(get_option('twitter_timeline')) || gettype(get_option('fb')) == "NULL" || !empty(get_option('fb'))): ?>
+            <div id="twitter-tweets" style="float: right; width:20%; margin-bottom: -250px;">
             <h3 style="color: #8BB7C8; margin-top: 0px;">Social Feeds below</h3>
-            <div id="twitter" style="height:220px">
-            <!--
-            <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @July4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-            <a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
-            -->
+            <?php if (gettype(get_option('twitter_timeline')) == "NULL"): ?>
+                <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @July4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                <a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
+            <?php elseif (!empty(get_option('twitter_timeline'))): ?>
+                <?php echo get_option("twitter_button"); ?>
+                <?php echo get_option("twitter_timeline"); ?>
+            <?php endif; ?>
+        
+            <?php if (gettype(get_option('fb')) == "NULL"): ?>
+                <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
+                <div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/July4CivilWar/">Mapping the Fourth of July: Exploring Independence in the Civil War Era</a></blockquote></div>
+            <?php elseif (!empty(get_option('fb'))): ?>
+                <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
+                <?php echo get_option("fb"); ?>
+            <?php endif; ?>
             </div>
-            <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
-            <div id="fb" style="height:220px;">
-            <!--
-            <div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/July4CivilWar/">Mapping the Fourth of July: Exploring Independence in the Civil War Era</a></blockquote></div>
-            -->
-            </div>
-        </div>
+            <?php endif; ?>
+        <?php if (gettype(get_option('twitter_timeline')) == "NULL" || !empty(get_option('twitter_timeline')) || gettype(get_option('fb')) == "NULL" || !empty(get_option('fb'))): ?>
         <div id="homepage-introduction" style="width: 78%;">
+        <?php else: ?>
+        <div id="homepage-introduction" >
+        <?php endif; ?>
             <h3 style="color: #8BB7C8;">Introduction</h3>
             <div>
-                <?php if (!empty($this->intro)): ?>
-                    <div style="float: right; width:59%; margin-right: 1%;"><p  style="word-wrap: break-word;"><?php echo $this->intro ?></p></div>
+                <?php if (!empty(get_option('intro'))): ?>
+                    <div ><p  style="word-wrap: break-word;"><?php echo get_option('intro') ?></p></div>
                 <?php else: ?>
-                    <div style="float: right; width:59%; margin-right: 1%;"><p  style="word-wrap: break-word;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui urna, tincidunt id risus eu, porta ultricies turpis. Donec feugiat justo pharetra pharetra auctor. Curabitur eu faucibus sem, in tincidunt diam. Integer elementum nisi felis. Suspendisse mollis efficitur lobortis. Cras sed lacinia sapien. Morbi congue finibus lectus, at luctus mauris imperdiet eget. Proin nulla tellus, blandit eu venenatis a, laoreet et magna. Donec ultricies turpis eget neque scelerisque faucibus. Donec enim quam, malesuada quis mauris ac, porta euismod enim. Proin ut imperdiet velit, sed pretium orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer consectetur iaculis volutpat.</p></div>
+                    <div ><p  style="word-wrap: break-word;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla maximus velit sed felis gravida, et pellentesque libero posuere. Nullam augue mi, lacinia eu mauris iaculis, suscipit hendrerit elit. Ut consectetur nunc eget lorem venenatis, et vehicula nisl vestibulum. Vivamus vel aliquam lectus. Aliquam pulvinar dictum tellus a feugiat. Praesent a eros sed velit suscipit semper eu et orci. Donec elementum tempor sagittis. Duis orci nisl, semper ut erat ac, aliquet commodo purus. Morbi erat massa, dictum quis eleifend at, ornare vitae risus. </p></div>
                 <?php endif ?>
                 <div style="clear: both;"></div>
             </div>
@@ -170,7 +179,7 @@ include(dirname(__FILE__).'/../common/header.php');
                         </ul>
                     </p>
                 </div>
-                <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;"></div>
+                <div style="max-width: 120px; float: left; margin-left: -140px;background-color: #000"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;"></div>
                 <div style="clear:both"></div>
             </div>
         </div>   <!-- homepage-introduction -->
@@ -180,12 +189,10 @@ include(dirname(__FILE__).'/../common/header.php');
 
 <script>
 $(document).ready(function(){
-    setTimeLine();
     $('[data-toggle="popover"]').popover({ trigger: "hover" });
     var d = new Date();
     var mon = (d.getMonth()+1) < 10 ? ("0"+(d.getMonth()+1)) : (d.getMonth()+1);
     var dat = (d.getDate() < 10) ? ("0"+d.getDate()) : d.getDate();
-    //var today = ''+(1830+(Math.floor(Math.random()*(1870-1830))+1))+'-'+mon+'-'+dat;
     var today = '1860-'+mon+'-'+dat;
     var d = new Date();
     d.setMonth(d.getMonth()-1);
@@ -244,26 +251,6 @@ $(document).ready(function(){
         hoverEvent = false;
     });
 });
-
-    
-    function setTimeLine() {
-        <?php if(empty($this->twitter_timeline) && empty($this->fb)): ?>
-        $("#twitter-tweets").remove();
-        console.log("here");
-        $("#homepage-introduction").width('100%');
-        <?php endif; ?>
-        <?php if(!empty($this->twitter_timeline)): ?>
-        var twitter_timeline = <?php echo json_encode($this->twitter_timeline).";\n" ?>;
-        var twitter_button = <?php echo json_encode($this->twitter_button).";\n" ?>;
-        $("#twitter").append(twitter_timeline);
-        $("#twitter").append(twitter_button);
-        <?php endif; ?>
-        <?php if(!empty($this->twitter) || !empty($this->fb)): ?>
-        var fb = <?php echo json_encode($this->fb).";\n" ?>;
-        $("#fb").append(fb);
-        <?php endif; ?>
-    }
-
 </script>
 
 <?php

@@ -526,46 +526,40 @@ SQL
             $this->changeImage("customized_logo.png", "logo");
             set_option('logo_set', "true");
         }
-
-        if (empty($_FILES["sponsor1"]["name"]) && empty($_FILES["sponsor2"]["name"]) && empty($_FILES["sponsor3"]["name"]) && empty($_FILES["sponsor4"]["name"])) {
-            delete_option('sponsor_arr');
+        //Change the sponsor
+        set_option('delete_sponsor1', $_POST['delete_sponsor1']);
+        if ($_POST['delete_sponsor1'] == "yes")
+            delete_option('sponsorlink1');
+        set_option('delete_sponsor2', $_POST['delete_sponsor2']);
+        if ($_POST['delete_sponsor2'] == "yes")
+            delete_option('sponsorlink2');
+        set_option('delete_sponsor3', $_POST['delete_sponsor3']);
+        if ($_POST['delete_sponsor3'] == "yes")
+            delete_option('sponsorlink3');
+        set_option('delete_sponsor4', $_POST['delete_sponsor4']);
+        if ($_POST['delete_sponsor4'] == "yes")
+            delete_option('sponsorlink4');
+        if (!empty($_FILES["sponsor1"]["name"])) {
+            $this->changeImage("customized_sponsors1.png", "sponsor1");
+            if (isset($_POST['sponsorlink1']))
+                set_option('sponsorlink1', $_POST['sponsorlink1']);
         }
-        else {
-            $sponsor_arr = array();
-            if (!empty($_FILES["sponsor1"]["name"])) {
-                $sponsor_arr[] = 1;
-                $this->changeImage("customized_sponsors1.png", "sponsor1");
-                if (isset($_POST['sponsorlink1']))
-                    set_option('sponsorlink1', $_POST['sponsorlink1']);
-                else
-                    delete_option('sponsorlink1');
-            }
-            if (!empty($_FILES["sponsor2"]["name"])) {
-                $sponsor_arr[] = 2;
-                $this->changeImage("customized_sponsors2.png", "sponsor2");
-                if (isset($_POST['sponsorlink2']))
-                    set_option('sponsorlink2', $_POST['sponsorlink2']);
-                else
-                    delete_option('sponsorlink2');
-            }
-            if (!empty($_FILES["sponsor3"]["name"])) {
-                $sponsor_arr[] = 3;
-                $this->changeImage("customized_sponsors3.png", "sponsor3");
-                if (isset($_POST['sponsorlink3']))
-                    set_option('sponsorlink3', $_POST['sponsorlink3']);
-                else
-                    delete_option('sponsorlink3');
-            }
-            if (!empty($_FILES["sponsor4"]["name"])) {
-                $sponsor_arr[] = 4;
-                $this->changeImage("customized_sponsors4.png", "sponsor4");
-                if (isset($_POST['sponsorlink4']))
-                    set_option('sponsorlink4', $_POST['sponsorlink4']);
-                else
-                    delete_option('sponsorlink4');
-            }
-            set_option('sponsor_arr', json_encode($sponsor_arr));
+        if (!empty($_FILES["sponsor2"]["name"])) {
+            $this->changeImage("customized_sponsors2.png", "sponsor2");
+            if (isset($_POST['sponsorlink2']))
+                set_option('sponsorlink2', $_POST['sponsorlink2']);
         }
+        if (!empty($_FILES["sponsor3"]["name"])) {
+            $this->changeImage("customized_sponsors3.png", "sponsor3");
+            if (isset($_POST['sponsorlink3']))
+                set_option('sponsorlink3', $_POST['sponsorlink3']);
+        }
+        if (!empty($_FILES["sponsor4"]["name"])) {
+            $this->changeImage("customized_sponsors4.png", "sponsor4");
+            if (isset($_POST['sponsorlink4']))
+                set_option('sponsorlink4', $_POST['sponsorlink4']);
+        }
+        //end of changing sponsors
     }
 
     public function changeImage($name, $tagName) {

@@ -316,7 +316,6 @@ function searchClosestMatchConcept($id_array, $minimum_match)
         $stmt->close();
         $db->close();
     }
-    //dictionary setup: conceptID --> [item_ids]
     $allDocumentIDs = array();
     for ($i = 0; $i < sizeof($dictionary); $i++)
     {

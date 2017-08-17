@@ -227,11 +227,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
   }
 
   public function getcurrpageAction(){
-    // $page = getCurrentPage();
     if ($this->getRequest()->isGet()) {
-      // if(isSearchQuerySpecifiedViaGet()){
       $page = getCurrentPage();
-      // $page = 1;
       echo $page;
 
 
@@ -270,7 +267,6 @@ public function getallavailabledocsAction(){
         $file = $record->getFile();
 
         if($file != null){
-          // $records[] = $this->_helper->db->find($item_ids[$i]);
           $records[] = array('id' => $item_ids[$i],
           'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
           'desc' => metadata($record, array('Dublin Core','Description')),
@@ -327,7 +323,6 @@ public function getallavailabledocsAction(){
             if ($record != null) {
                 $file = $record->getFile();
                 if($file != null) {
-                // $records[] = $this->_helper->db->find($document_ids[$i]);
                 $records[] = array('id' => $item_ids[$i],
                 'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
                 'desc' => metadata($record, array('Dublin Core','Description')),
@@ -383,7 +378,6 @@ public function getallavailabledocsAction(){
           $file = $record->getFile();
 
           if($file != null){
-            // $records[] = $this->_helper->db->find($item_ids[$i]);
             $records[] = array('id' => $item_ids[$i],
             'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
             'desc' => metadata($record, array('Dublin Core','Description')),
@@ -439,7 +433,6 @@ public function getallavailabledocsAction(){
           $file = $record->getFile();
 
           if($file != null){
-            // $records[] = $this->_helper->db->find($item_ids[$i]);
             $records[] = array('id' => $item_ids[$i],
             'date' => trim(metadata($record, array('Dublin Core', 'Date'))),
             'desc' => metadata($record, array('Dublin Core','Description')),
@@ -844,17 +837,25 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
       echo $htmlDiff;
     }
   }
-
+  /**
+  * Ajax function that uploads the assessment transcription in transcribe task
+  *
+  * No Return
+  */
   public function savetransAction() {
-    //$workingGroupId = $this->getWorkingGroupID();
+    $workingGroupId = $this->getWorkingGroupID();
     if ($this->getRequest()->isPost()) {
       $assessID = 731;
       $userID = $_SESSION['Incite']['USER_DATA']['id'];
-      $groupID = 0;
-      createTrans($assessID, $userID, $groupID, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
+      createTrans($assessID, $userID, $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
     }
   }
 
+  /**
+  * Ajax function that uploads the assessment tags in tag task
+  *
+  * No Return
+  */
   public function uploadtagsAction() {
     if ($this->getRequest()->isPost()) {
       $entities = $_POST['entities'];
@@ -874,7 +875,11 @@ The Yankees have robbed us of too much already. We have no idea of giving up the
   }
 
 
-
+ /**
+  * Ajax function that uploads the assessment themes rating in connect task
+  *
+  * No Return
+  */
   public function uploadratingsAction() {
     if ($this->getRequest()->isPost()) {
       $ratings = $_POST['ratings'];
