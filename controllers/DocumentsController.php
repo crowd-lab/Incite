@@ -180,26 +180,30 @@ function completeTask($id, $task_seq, $worker_id, $submission_id, $user_id)
     $db->close();
 }
 
-function urlGenerator($doc_id, $task_type)
+function urlGenerator($task_type)
 {
     $action = '';
     switch($task_type) {
         case 0:
             $action = 'presurvey'; break;
         case 1:
-            $action = 'transcribe'; break;
+            $action = 'pretest'; break;
         case 2:
-            $action = 'tag'; break;
+            $action = 'summarytone'; break;
         case 3:
-            $action = 'connect'; break;
+            $action = 'tag'; break;
         case 4:
-            $action = 'postsurvey'; break;
+            $action = 'connect'; break;
         case 5:
+            $action = 'posttest'; break;
+        case 6:
+            $action = 'postsurvey'; break;
+        case 7:
             $action = 'complete'; break;
         default:
             $action = 'error'; break;
     }
-    return getFullInciteUrl().'/documents/'.$action.'/'.$doc_id;
+    return getFullInciteUrl().'/documents/'.$action.'/';
 }
 
 
@@ -273,10 +277,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function showAction() {
         //Session initialization
         $is_session_on = FALSE;
-        if (!isset($_SESSION))
+        if (!isset($_SESSION)) {
             $is_session_on = session_start();
-        else
+        } else {
             $is_session_on = TRUE;
+        }
 
         if ($is_session_on === FALSE) {
             echo 'Something went wrong. Our system does not seem to work correctly on your device. Please return the HIT. Sorry for any inconvenience!';
@@ -284,7 +289,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
 
         //Check if there is task available. If not, redirect to a page to notify the user.
-        if (!isAnyTrialAvailable())  {
+        $isAnyTrialAvailable = isAnyTrialAvailable();
+        //testing so we assuming there is trial available
+        $isAnyTrialAvailable = true;
+        if (!$isAnyTrialAvailable)  {
             $this->_helper->viewRenderer('taskless');
             return;
         }
@@ -292,7 +300,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         //Get an available task. Default: AMT
         $is_hit_accepted = !(!isset($_GET['assignmentId']) || (isset($_GET['assignmentId']) && $_GET['assignmentId'] == "ASSIGNMENT_ID_NOT_AVAILABLE"));
 
-        //Classroom use so we can assume hit is accepted
+        //testing so we can assume hit is accepted
         $is_hit_accepted = true;
         if ($is_hit_accepted) {
             $this->_helper->viewRenderer('taskless');
@@ -309,17 +317,22 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 return;
             }
             $trial = getNextTrial($assignment_id, $worker_id);
+            //testing with a particular technique
+            $trial = array('trial_id' => 1, 'technique' => 'scim');
             if ($trial != null) {
-                //Mapping between testing materials and qa-set
-                $doc_qa_mapping = array('1125' => 1, '1126' => 2, '1127' => 3);
                 //Initialization
+                //Docs
+                $_SESSION['study2']['pretest_doc'] = 1125;
+                $_SESSION['study2']['work_doc'] = 1126;
+                $_SESSION['study2']['posttest_doc'] = 1127;
+
+                //AMT stuff
                 $_SESSION['study2']['worker_id'] = $worker_id;
                 $_SESSION['study2']['id'] = $trial['trial_id'];
-                $_SESSION['study2']['workflow'] = $trial['workflow'];
+                $_SESSION['study2']['technique'] = $trial['technique'];
                 $_SESSION['study2']['task_seq'] = 0;
-                $_SESSION['study2']['qa-set'] = $doc_qa_mapping[$trial['doc3']];
-                //0: presurvey, 4: postsurvey, 5: complete
-                $_SESSION['study2']['urls'] = array(urlGenerator('', 0), urlGenerator($trial['doc1'], $trial['task1']), urlGenerator($trial['doc2'], $trial['task2']), urlGenerator($trial['doc3'], $trial['task3']), urlGenerator('', 4), urlGenerator('', 5));
+                //0: presurvey, 1: pretest, 5: posttest, 6: postsurvey, 7: complete 
+                $_SESSION['study2']['urls'] = array(urlGenerator(0), urlGenerator(1), urlGenerator(2), urlGenerator(3), urlGenerator(4), urlGenerator(5), urlGenerator(6), urlGenerator(7));
 
                 //All set. Redirec the user to the first task!
                 $this->redirect($_SESSION['study2']['urls'][0]);
@@ -331,25 +344,40 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             //This should happen for classroom use!
             echo 'Something went wrong (1).'; 
             die();
-            $this->_helper->viewRenderer('example2');
+            //$this->_helper->viewRenderer('example2');
         }
   }
 
-  public function transcribeAction() {
+  public function summarytoneAction() {
     $this->_helper->db->setDefaultModelName('Item');
+    $work_doc = $_SESSION['study2']['work_doc'];
+    $this->view->document_metadata = $this->_helper->db->find($work_doc);
+    $newestTranscription = getFirstTranscription($work_doc);
+    $this->view->transcription_id = $newestTranscription['id'];
+    $this->view->transcription = $newestTranscription['transcription'];
 
-    if ($this->_hasParam('id')) {
-      if ($this->getRequest()->isPost()) {
-        $this->saveTranscription();
-      }
-
-      $this->populateDataForTranscribeTask();
-    } else {
-      $this->populateTranscribeSearchResults();
+    //Error handling
+    if (!isset($_SESSION['study2']['work_doc'])) {
+        $this->view->error_reason = 'no working doc';
+        $this->_helper->viewRenderer('error');
+        return;
     }
+    if (!isset($_SESSION['study2']['technique'])) {
+        $this->view->error_reason = 'no condition specified';
+        $this->_helper->viewRenderer('error');
+        return;
+    }
+
+    //Task handling
+    if ($this->getRequest()->isPost()) {
+        $this->saveSummaryTone();
+    } else {
+        $this->showSummaryToneTask();
+    }
+
   }
 
-  public function saveTranscription() {
+  public function saveSummaryTone() {
     $workingGroupId = $this->getWorkingGroupID();
 
     //Save results of current task
@@ -365,51 +393,20 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     $this->redirect($urls[$task_seq]);
   }
 
-  public function populateDataForTranscribeTask() {
-    $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
+  public function showSummaryToneTask() {
+    $this->view->document_metadata = $this->_helper->db->find($_SESSION['study2']['work_doc']);
 
     if ($this->view->document_metadata != null) {
       if ($this->view->document_metadata->getFile() == null) {
-        $this->redirect('incite/documents/transcribe');
+        $this->view->error_reason = 'working doc file not found';
+        $this->_helper->viewRenderer('error');
+        return;
       }
-
-      $this->_helper->viewRenderer('transcribeid');
-        /*
-      $this->view->latest_transcription = getNewestTranscription($this->_getParam('id'));
-      $this->view->is_being_edited = !empty($this->view->latest_transcription);
-
-      if ($this->view->is_being_edited) {
-        $this->view->revision_history = getTranscriptionRevisionHistory($this->_getParam('id'));
-      }
-        */
-
       $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
-      $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
     } else {
-      $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select another document to transcribe from the list below.';
-
-      if (isset($this->view->query_str) && $this->view->query_str !== "")
-      $this->redirect('/incite/documents/transcribe?'.$this->view->query_str);
-      else
-      $this->redirect('/incite/documents/transcribe');
+        $this->view->error_reason = 'working doc not found';
+        $this->_helper->viewRenderer('error');
     }
-  }
-
-  public function populateTranscribeSearchResults() {
-    if (isSearchQuerySpecifiedViaGet()) {
-      $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
-    } else {
-      $document_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = "";
-      debug_to_console("no queries");
-
-    }
-
-
-      return $document_ids;
   }
 
   public function tagAction() {
@@ -554,19 +551,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
   }
 
-  public function populateTagSearchResults() {
-    if (isSearchQuerySpecifiedViaGet()) {
-      $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTagsForLatestTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-    } else {
-      $document_ids = array_slice(array_values(getDocumentsWithoutTagsForLatestTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = "";
-    }
-    return $document_ids;
-    // $this->createSearchResultPages($document_ids, 'Tags');
-  }
-
   public function connectAction() {
     $this->_helper->db->setDefaultModelName('Item');
     $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
@@ -612,97 +596,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
   }
 
-  public function populateDataForConnectTask() {
-    $is_connectable_by_tags = true;
-    $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
-
-    $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
-
-
-    if ($this->view->document_metadata != null) {
-      if ($this->view->document_metadata->getFile() == null) {
-        echo 'no image';
-      }
-
-      $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
-      $this->view->subjects = getAllSubjectConcepts();
-
-      //Filter out untranscribed documents
-      //$newestTranscription = getNewestTranscription($this->_getParam('id'));
-      //1. If workflow = 0 (artisan), find newest transcription from self
-      if ($_SESSION['study2']['workflow'] == 0) {
-        $newestTranscription = getNewestTranscriptionFromUserId($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id']);
-      } else { //workflow = 1 (assembly): find first transcription => pre-set transcription
-        $newestTranscription = getFirstTranscription($this->_getParam('id'));
-      }
-      if (empty($newestTranscription)) {
-        if (isset($this->view->query_str) && $this->view->query_str !== "") {
-          $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
-          $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id').'?'.$this->view->query_str);
-        } else {
-          $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
-          $this->redirect('/incite/documents/transcribe/'.$this->_getParam('id'));
-        }
-      }
-
-      //Gets the latest tagged transcription and the most recently marked subjects, if they exist
-      //1. If workflow = 0 (artisan), find newest transcription from self
-      if ($_SESSION['study2']['workflow'] == 0) {
-        $taggedTranscription = getNewestTaggedTranscriptionFromUserId($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id']);
-      } else { //workflow = 1 (assembly): find first transcription => pre-set transcription
-        $taggedTranscription = getFirstTaggedTranscription($this->_getParam('id'));
-      }
-      //if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
-      if (!empty($taggedTranscription)) {
-        //$transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
-        $this->view->transcription =  migrateTaggedDocumentFromV1toV2($taggedTranscription['transcription']);
-
-        //$this->view->newest_n_subjects = getNewestSubjectsForNewestTaggedTranscription($this->_getParam('id'));
-        /*
-        $this->view->is_being_edited = !empty($this->view->newest_n_subjects);
-
-        if ($this->view->is_being_edited) {
-          $this->view->revision_history = getConnectionRevisionHistory($this->_getParam('id'));
-        }
-        */
-
-        $this->_helper->viewRenderer('connectbymultiscale');
-      } else {
-        if (isset($this->view->query_str) && $this->view->query_str !== "") {
-          $_SESSION['incite']['message'] = 'Unfortunately, the document has not been tagged yet. Please help tag the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
-          $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$this->view->query_str);
-        } else {
-          $_SESSION['incite']['message'] = 'Unfortunately, the document has not been tagged yet. Please help tag the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
-          $this->redirect('/incite/documents/tag/'.$this->_getParam('id'));
-        }
-      }
-    } else {
-      $_SESSION['incite']['message'] = 'Unfortunately, we can not find the specified document. Please select another document from the connectable document list below.';
-
-      if (isset($this->view->query_str) && $this->view->query_str !== "")
-        $this->redirect('/incite/documents/connect?'.$this->view->query_str);
-      else
-        $this->redirect('/incite/documents/connect');
-    }
-  }
-
-  public function populateConnectSearchResults() {
-    $connectable_documents = getDocumentsWithoutConnectionsForLatestTaggedTranscription();
-    $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
-    if (isSearchQuerySpecifiedViaGet()) {
-      $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-    } else {
-      $document_ids = array_slice(array_values($connectable_documents), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = "";
-    }
-
-    // $this->createSearchResultPages($document_ids, 'Connections');
-    return $document_ids;
-  }
 
   public function discussAction() {
     //testing controller
@@ -721,111 +614,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
   }
 
-  public function viewAction() {
-    $this->_helper->db->setDefaultModelName('Item');
-
-    $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
-
-    if ($this->_hasParam('id')) {
-      $this->populateDataForViewTask();
-    } else {
-      $this->populateViewSearchResults();
-    }
-  }
-
-  public function populateDataForViewTask() {
-    $this->_helper->viewRenderer('viewid');
-
-    //make sure the document is valid
-    $document_id = $this->_getParam('id');
-    $this->view->documentId = $document_id;
-    $document = $this->_helper->db->find($document_id);
-
-    if ($document != null) {
-      $this->view->document = $document;
-      $this->view->image_url = get_image_url_for_item($document);
-    }
-
-    //find the transcription for the document
-    $transcription = getNewestTranscription($document_id);
-    $this->view->hasTranscription = false;
-
-    if (!empty($transcription)) {
-      $this->view->hasTranscription = true;
-      $this->view->transcription_id = $transcription['id'];
-      $this->view->transcription = $transcription['transcription'];
-    }
-
-    //find the tagged transcription of the document
-    $this->view->hasTaggedTranscriptionForNewestTranscription = false;
-
-    if (hasTaggedTranscriptionForNewestTranscription($document_id)) {
-      $taggedTranscriptions = getAllTaggedTranscriptions($document_id);
-      $this->view->taggedTranscription = $taggedTranscriptions[count($taggedTranscriptions)-1];
-      $this->view->hasTaggedTranscriptionForNewestTranscription = true;
-    }
-
-    //find if a document has been connected
-    $this->view->hasBeenConnected = false;
-    $subjectsForDocument = getAllSubjectsOnId($document_id);
-
-    $pos_subs = array();
-    $neg_subs = array();
-    $distinct_subNames = array();
-    foreach ((array) $subjectsForDocument as $subject) {
-      if (!isset($distinct_subNames[$subject['subject_name']]))
-      $distinct_subNames[$subject['subject_name']] = $subject['subject_name'];
-
-      if ($subject['is_positive']) {
-        if (!isset($pos_subs[$subject['subject_name']]))
-        $pos_subs[$subject['subject_name']] = array();
-
-        array_push($pos_subs[$subject['subject_name']], $subject['user_id']);
-      } else {
-        if (!isset($neg_subs[$subject['subject_name']]))
-        $neg_subs[$subject['subject_name']] = array();
-
-        array_push($neg_subs[$subject['subject_name']], $subject['user_id']);
-      }
-    }
-
-    if (!empty($subjectsForDocument)) {
-      $this->view->hasBeenConnected = true;
-      $this->view->subjectNames = $distinct_subNames;
-      $this->view->positive_subjects = $pos_subs;
-      $this->view->negative_subjects = $neg_subs;
-    }
-  }
-
-
-  public function populateViewSearchResults() {
-    $all_doc_ids = getTranscribableDocuments();
-    $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-
-    if (isSearchQuerySpecifiedViaGet()) {
-      $searched_item_ids = getSearchResultsViaGetQuery();
-      $document_ids = array_slice(array_intersect(array_values($all_doc_ids), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-    } else {
-      $document_ids = array_slice(array_values($all_doc_ids), 0, MAXIMUM_SEARCH_RESULTS);
-      $this->view->query_str = "";
-    }
-    return $document_ids;
-    // $this->createSearchResultPages($document_ids, 'Documents');
-  }
-
-
-  public function contributeAction() {
-    $task = 'transcribe';
-    if (isset($_GET['task'])) {
-      if ($_GET['task'] === 'tag') {
-        $task = 'tag';
-      } else if ($_GET['task'] === 'connect') {
-        $task = 'connect';
-      }
-    }
-    $this->view->task_type = $task;
-  }
   public function presurveyAction() {
         if ($this->getRequest()->isPost()) {
             $name   = $_POST['name'];
@@ -841,6 +629,70 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $stmt->execute();
             $stmt->close();
             $db->close();
+
+            //All set. Move to next task!
+            $_SESSION['study2']['task_seq']++;
+            $task_seq = $_SESSION['study2']['task_seq'];
+            $urls = $_SESSION['study2']['urls'];
+            $this->redirect($urls[$task_seq]);
+        }
+  }
+
+  public function pretestAction() {
+    $this->_helper->db->setDefaultModelName('Item');
+    $pretest_doc = $_SESSION['study2']['pretest_doc'];
+    $this->view->document_metadata = $this->_helper->db->find($pretest_doc);
+    $newestTranscription = getFirstTranscription($pretest_doc);
+    $this->view->transcription_id = $newestTranscription['id'];
+    $this->view->transcription = $newestTranscription['transcription'];
+        if ($this->getRequest()->isPost()) {
+            /*
+            $name   = $_POST['name'];
+            $class   = $_POST['class'];
+            $age    = $_POST['age'];
+            $gender = $_POST['gender'];
+            $majors = $_POST['majors'];
+
+            //Save demographics
+            $db = DB_Connect::connectDB();
+            $stmt = $db->prepare("UPDATE study2 SET name = ?, class= ?, age = ?, gender = ?, majors = ?, time1_start = NOW() WHERE id = ?");
+            $stmt->bind_param("ssissi", $name, $class, $age, $gender, $majors, $_SESSION['study2']['id']);
+            $stmt->execute();
+            $stmt->close();
+            $db->close();
+            */
+
+            //All set. Move to next task!
+            $_SESSION['study2']['task_seq']++;
+            $task_seq = $_SESSION['study2']['task_seq'];
+            $urls = $_SESSION['study2']['urls'];
+            $this->redirect($urls[$task_seq]);
+        }
+  }
+
+  public function posttestAction() {
+    $this->_helper->db->setDefaultModelName('Item');
+    $pretest_doc = $_SESSION['study2']['posttest_doc'];
+    $this->view->document_metadata = $this->_helper->db->find($pretest_doc);
+    $newestTranscription = getFirstTranscription($pretest_doc);
+    $this->view->transcription_id = $newestTranscription['id'];
+    $this->view->transcription = $newestTranscription['transcription'];
+        if ($this->getRequest()->isPost()) {
+            /*
+            $name   = $_POST['name'];
+            $class   = $_POST['class'];
+            $age    = $_POST['age'];
+            $gender = $_POST['gender'];
+            $majors = $_POST['majors'];
+
+            //Save demographics
+            $db = DB_Connect::connectDB();
+            $stmt = $db->prepare("UPDATE study2 SET name = ?, class= ?, age = ?, gender = ?, majors = ?, time1_start = NOW() WHERE id = ?");
+            $stmt->bind_param("ssissi", $name, $class, $age, $gender, $majors, $_SESSION['study2']['id']);
+            $stmt->execute();
+            $stmt->close();
+            $db->close();
+            */
 
             //All set. Move to next task!
             $_SESSION['study2']['task_seq']++;
