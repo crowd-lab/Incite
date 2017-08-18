@@ -14,9 +14,6 @@
     </script>
 </head>
 <body>
-    <?php
-        include(dirname(__FILE__) . '/../common/task_header.php');
-    ?>
     <div class="container-fluid">
         <div class="container-fluid" style="padding: 0px;">
 
@@ -65,16 +62,6 @@
                         <button type="button" id="submit-selection-btn" class="btn btn-primary pull-right">Submit</button>
                     </form>
                 </div>
-
-                <?php
-                    include(dirname(__FILE__) . '/../common/revision_history_for_task_id_pages.php');
-                ?>
-
-                <hr size=2 class="discussion-seperation-line">
-
-                <?php
-                    include(dirname(__FILE__) . '/../common/task_comments_section.php');
-                ?>
             </div>
         </div>
     </div>

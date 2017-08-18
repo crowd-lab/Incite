@@ -1,46 +1,4 @@
-<?php
 
-function question_generator($question) {
-    if ($question['type'] == 'r') {
-        radio_question_generator($question);
-    } else { // true or false
-        tf_question_generator($question);
-    }
-}
-
-function tf_question_generator($question) {
-        $options = $question['options'];
-        shuffle($options);
-
-        echo '<div class="form-group">';
-        echo '    <label for="exampleSelect1">'.$question['q'].'</label>';
-        echo '<table class="table">';
-        foreach($options as $option) {
-            //echo ' <div><div class="radio" style="display: inline;"><label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="1">Yes</label>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="q'.$question['num']."".$option['val'].'" value="0">No</label></div><span style="margin-left: 5px;"><b>:</b></span><span style="margin-left: 15px; width: 100px;">'.$option['label'].'</span></div>';
-            echo ' <tr><td><span><input type="radio" name="q'.$question['num']."".$option['val'].'" value="1">Yes</span></td><td><span><input type="radio" name="q'.$question['num']."".$option['val'].'" value="-1">No</span></td><td style="width: 80%;">'.$option['label'].'</td></tr>';
-        }
-        echo '</table>';
-        echo '</div>';
-
-}
-
-function radio_question_generator($question) {
-
-        $options = $question['options'];
-        shuffle($options);
-
-        echo '<div class="form-group">';
-        echo '    <label for="exampleSelect1">'.$question['q'].'</label>';
-        foreach($options as $option) {
-            echo '    <div class="radio"><label><input type="radio" name="q'.$question['num'].'" value="'.$option['val'].'">'.$option['label'].'</label></div>';
-        }
-        echo '</div>';
-    
-}
-
-
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <?php
@@ -64,38 +22,15 @@ include(dirname(__FILE__).'/../common/header.php');
     content: "\e080";
   }
 
-.incomplete-question {
-    border: 2px solid red;
-}
-
 </style>
 
 <script>
 
-
 function check_input () {
-    var questions_names = {};
-    $('input:radio').each(function (idx) { 
-        questions_names[this.name]=true;
-    })
-
-    var questions = Object.keys(questions_names);
-    for (var i = 0; i < questions.length; i++) {
-        var q = $('#demo-form input:radio[name='+questions[i]+']:checked');
-        if (q.length === 0) {
-            var elem_to_highlight = $($('#demo-form input:radio[name='+questions[i]+']')[0]).parent().parent().parent();
-            elem_to_highlight.addClass('incomplete-question');
-            $('body').animate({
-                scrollTop: elem_to_highlight.offset().top-75
-            }, 500);
-
-            notif({
-                msg: "You haven't answered this questions yet!",
-                type: "error",
-                position: "right",
-                timeout: 2000
-            });
-
+    var controls = $('#demo-form .form-control');
+    for (var i = 0; i < controls.length; i++) {
+        if ($(controls[i]).val() === "") {
+            alert('The "'+controls[i].name.substring(0,1).toUpperCase()+controls[i].name.substring(1)+'" is not specified yet');
             return false;
         }
     }
@@ -103,16 +38,11 @@ function check_input () {
 }
 
 $( function () {
-    setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time--)); timeIsUpCheck();}, 1000);
     $('#submit-demo').on('click', function (e) {
         if (check_input()) {
             window.onbeforeunload = "";
             $('#demo-form').submit();
         }
-    });
-
-    $('#demo-form input:radio').on('change', function (e) {
-            $(this).parent().parent().parent().removeClass('incomplete-question');
     });
 });
 
@@ -120,22 +50,56 @@ $( function () {
 
 </head>
 
-
 <body>
-    <form action="" method="post" id="demo-form">
-        <?php 
-            if (isset($_SESSION['study2']['qa-set'])) {
-                switch ($_SESSION['study2']['qa-set']) {
-                    case 1: include('postsurvey1.php'); break; //Bobby Murray
-                    case 2: include('postsurvey2.php'); break; //Washington
-                    case 3: include('postsurvey3.php'); break; //Civil War
-                    default: include('postsurvey_error.php');
-                }
-            } else {
-                include('postsurvey_error.php');
-            }
-        ?>
-    </form>
+
+    <div style="margin-top: 20px;" class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Post-task Survey</h3>
+            </div>
+            <form action="" method="post" id="demo-form">
+                <div style="padding: 15px;">
+                    <div class="form-group row">
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Name</label>
+                      <div class="col-xs-10">
+                        <input name="name" class="form-control" type="text" value="" id="name" placeholder="Your name that will be reported to your class for extra credit">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Class</label>
+                      <div class="col-xs-10">
+                        <input name="class" class="form-control" type="text" value="" id="class" placeholder="Your class info. E.g. HIST 1001">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Age</label>
+                      <div class="col-xs-10">
+                        <input name="age" class="form-control" type="text" placeholder="Your age (please round to the closest whole number)" id="age">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Gender</label>
+                      <div class="col-xs-10">
+                        <select name="gender" class="form-control" id="gender">
+                            <option value="" selected></option>
+                            <option value="m">Male</option>
+                            <option value="f">Female</option>
+                            <option value="o">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Major(s)</label>
+                      <div class="col-xs-10">
+                        <input name="majors" class="form-control" type="text" placeholder="Full name of your major(s) and please use semicolon to separate multiple majors." id="majors">
+                      </div>
+                    </div>
+                    <div class="row" style="margin: 10px;"><button type="button" id="submit-demo" class="btn btn-primary pull-right">Submit</button></div>
+                </div>
+            </form>
+            <div style="clearfix"></div>
+        </div> 
+    </div>
 </body>
 
 </html>

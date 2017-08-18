@@ -115,8 +115,8 @@
         
         <div id="tabs-and-legend-container">
             <ul class="nav nav-tabs document-display-type-tabs">
-                <li role="presentation" class="active" id="hide"><a href="#">Transcription</a></li>
-                <li role="presentation" id="show"><a href="#">Document</a></li>
+                <li role="presentation" class="active" id="hide"><a>Transcription</a></li>
+                <!-- <li role="presentation" id="show"><a href="#">Document</a></li> -->
             </ul>
 
             <div id="legend-container">

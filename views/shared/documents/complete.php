@@ -7,7 +7,7 @@ include(dirname(__FILE__).'/../common/header.php');
 
 
 
-<h2>You have completed the study. Your participation information will be sent to your instructor soon. Thank you for your participation.</h2>
+<h2>You have completed the study. Thank you for your participation.</h2>
 
 <script>
 $(function() {

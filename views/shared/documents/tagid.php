@@ -16,10 +16,6 @@
     </head>
 
     <body> <!-- Page Content -->
-        <?php
-            include(dirname(__FILE__) . '/../common/task_header.php');
-        ?>
-
         <div class="container-fluid">
             <div class="col-md-5" id="work-zone">
                 <?php
@@ -184,14 +180,6 @@
 
                 </div>
                 <hr size=2 class="discussion-seperation-line">
-
-                <?php
-                    include(dirname(__FILE__) . '/../common/revision_history_for_task_id_pages.php');
-                ?>
-
-                <?php
-                    include(dirname(__FILE__) . '/../common/task_comments_section.php');
-                ?>
             </div>
         </div>
     <!-- End work container -->
