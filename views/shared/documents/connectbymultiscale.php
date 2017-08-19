@@ -78,6 +78,7 @@
                         <input type="hidden" name="connection_type" value="multiscale">
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                         <input id="links" type="hidden" value="" name="link"> </input>
+                        <br>
                         <button type="button" id="submit-continue-connect" class="btn btn-primary">Submit & Continue Connect</button>
                         <button type="button" id="submit-selection-btn" class="btn btn-primary">Submit & Transcribe</button>
                     </form>
@@ -123,11 +124,6 @@
 
         function addButtonAndCheckboxListeners() {
             $("#submit-selection-btn").click(function() {
-              /*  if ($('input[type="checkbox"]:checked').length == 0) {
-                    notifyOfErrorInForm("At least one category must be selected")
-                    return;
-                }
-*/
                 //from progress_indicator.php
                 styleProgressIndicatorForCompletion();
                 $("#links").val('1');

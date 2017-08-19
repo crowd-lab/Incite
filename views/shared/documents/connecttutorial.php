@@ -245,11 +245,7 @@
         function addButtonAndCheckboxListeners() {
             $("#submit-selection-btn").click(function() {
                 //from progress_indicator.php
-                //styleProgressIndicatorForCompletion();
-                  window.location = '<?php echo getFullInciteUrl().'/documents/connect/'.$this->doc_id; ?>';
-                  //location.reload();
-                 //alert('Redirecting to assessment document!');
-                //$("#subject-form").submit();
+                window.location = '<?php echo getFullInciteUrl().'/documents/connect/'.$this->doc_id; ?>';
             });
             $(".subject-checkbox").on('click', function(e) {
                 $(".none-checkbox").prop('checked', false);
