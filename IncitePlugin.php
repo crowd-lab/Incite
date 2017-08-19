@@ -371,6 +371,26 @@ SQL
      * remove the database tables
      */
     public function hookUninstall() {
+        //clear all the options created during last installation
+        delete_option('delete_sponsor1');
+        delete_option('delete_sponsor2');
+        delete_option('delete_sponsor3');
+        delete_option('delete_sponsor4');
+        delete_option('sponsorlink1');
+        delete_option('sponsorlink2');
+        delete_option('sponsorlink3');
+        delete_option('sponsorlink4');
+        delete_option('title');
+        delete_option('intro');
+        delete_option('logo_set');
+        delete_option('active');
+        delete_option('encoded_concept');
+        delete_option('encoded_def');
+        delete_option('twitter_timeline');
+        delete_option('twitter_button');
+        delete_option('fb');
+
+
                 $db = get_db();
         $db->query(<<<SQL
         DROP TABLE IF EXISTS {$this->_db->prefix}incite_category_table
