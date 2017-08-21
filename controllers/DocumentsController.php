@@ -317,10 +317,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 return;
             }
             $trial = getNextTrial($assignment_id, $worker_id);
-            //testing with a particular technique
-            $trial = array('trial_id' => 1, 'technique' => 'scim');
+            //testing with a particular technique: baseline, scim, shepherd, review
+            $trial = array('trial_id' => 1, 'technique' => 'shepherd');
             if ($trial != null) {
                 //Initialization
+
                 //Docs
                 $_SESSION['study2']['pretest_doc'] = 1125;
                 $_SESSION['study2']['work_doc'] = 1126;
@@ -407,6 +408,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->view->error_reason = 'working doc not found';
                 $this->_helper->viewRenderer('error');
             }
+            $this->_helper->viewRenderer('summarytone'.$_SESSION['study2']['technique']);
         }
 
         public function tagAction() {
@@ -478,7 +480,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $newestTranscription = getFirstTranscription($work_doc);
             $this->view->transcription_id = $newestTranscription['id'];
             $this->view->transcription = $newestTranscription['transcription'];
-            $this->_helper->viewRenderer('tagid');
+            $this->_helper->viewRenderer('tag'.$_SESSION['study2']['technique']);
             $categories = getAllCategories();
             $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red', 'TIME' => 'purple');
 
@@ -628,7 +630,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $this->_helper->viewRenderer('error');
                     return;
                 }
-                $this->_helper->viewRenderer('connectbymultiscale');
+                $this->_helper->viewRenderer('connect'.$_SESSION['study2']['technique']);
             }
 
 
