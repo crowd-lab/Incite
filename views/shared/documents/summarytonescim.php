@@ -241,13 +241,13 @@
             $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
             $('#sq1').prop('disabled', true);
-            $('#sq1').css('color', '#aaa');
+            $('#sq1').css('color', '#999');
             $('#sq2').prop('disabled', true);
-            $('#sq2').css('color', '#aaa');
+            $('#sq2').css('color', '#999');
             $('#sq3').prop('disabled', true);
-            $('#sq3').css('color', '#aaa');
+            $('#sq3').css('color', '#999');
             $('#sq4').prop('disabled', true);
-            $('#sq4').css('color', '#aaa');
+            $('#sq4').css('color', '#999');
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;

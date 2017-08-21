@@ -562,6 +562,14 @@
             $('#phase2-button').hide();
             $('#reventity-table').replaceWith($('#entity-table'));
             $('#revuser-entity-table').replaceWith($('#user-entity-table'));
+            $('#cq1').prop('disabled', true);
+            $('#cq1').css('color', '#999');
+            $('#cq2').prop('disabled', true);
+            $('#cq2').css('color', '#999');
+            $('#cq3').prop('disabled', true);
+            $('#cq3').css('color', '#999');
+            $('#cq4').prop('disabled', true);
+            $('#cq4').css('color', '#999');
             
             /*
             $('#revsummary').val($('#summary').val());
