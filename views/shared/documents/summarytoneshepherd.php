@@ -322,10 +322,10 @@
             $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
             $('input[type=checkbox]').prop('disabled', true)
-            $('label:has(input[type=checkbox][disabled])').css('color', '#aaa')
+            $('label:has(input[type=checkbox][disabled])').css('color', '#999')
             $('select').prop('disabled', true);
             $('#feedback').prop('disabled', true);
-            $('#feedback').css('color', '#aaa');
+            $('#feedback').css('color', '#999');
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;
