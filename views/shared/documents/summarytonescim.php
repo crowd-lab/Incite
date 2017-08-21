@@ -110,13 +110,13 @@
                                         <p class="header-step"><i>Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></i></p>
                                         <p class="header-step"><i>Historical Thinking: To think like a historian, the first step is to <u>summarize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</i></p>
                                         <p class="header-step"><i>Q1: What type of historical document is the source? (E.g., speech, letter, newspaper, ...)</i></p>
-                                        <textarea style="width:100%;" name="sq1" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="sq1" rows="3" id="sq1"></textarea>
                                         <p class="header-step"><i>Q2: What specific information, details and/or perspectives does the source provide?</i></p>
-                                        <textarea style="width:100%;" name="sq2" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="sq2" rows="3" id="sq2"></textarea>
                                         <p class="header-step"><i>Q3: What is the subject and/or purpose of the source?</i></p>
-                                        <textarea style="width:100%;" name="sq3" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="sq3" rows="3" id="sq3"></textarea>
                                         <p class="header-step"><i>Q4: Who was the author and/or audience of the source?</i></p>
-                                        <textarea style="width:100%;" name="sq4" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="sq4" rows="3" id="sq4"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
                                 </div>
@@ -240,6 +240,14 @@
             $('input[name="revtone4"][value='+$('input[name="tone4"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
+            $('#sq1').prop('disabled', true);
+            $('#sq1').css('color', '#aaa');
+            $('#sq2').prop('disabled', true);
+            $('#sq2').css('color', '#aaa');
+            $('#sq3').prop('disabled', true);
+            $('#sq3').css('color', '#aaa');
+            $('#sq4').prop('disabled', true);
+            $('#sq4').css('color', '#aaa');
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;
