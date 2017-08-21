@@ -36,7 +36,6 @@
     <div class="inputs five columns omega">
         <p class="explanation"><?php echo __('Write Your Homepage Introduction Here'); ?>.</p>
         <div class="input-block">
-        <!--<input type="text" class="textinput"  name="intro" value="<?php echo get_option('intro'); ?>" id="intro" /> -->
         <?php if (empty(get_option('intro'))): ?>
         <textarea placeholder=""rows="15" cols="50" name="intro" id="intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla maximus velit sed felis gravida, et pellentesque libero posuere. Nullam augue mi, lacinia eu mauris iaculis, suscipit hendrerit elit. Ut consectetur nunc eget lorem venenatis, et vehicula nisl vestibulum. Vivamus vel aliquam lectus. Aliquam pulvinar dictum tellus a feugiat. Praesent a eros sed velit suscipit semper eu et orci. Donec elementum tempor sagittis. Duis orci nisl, semper ut erat ac, aliquet commodo purus. Morbi erat massa, dictum quis eleifend at, ornare vitae risus. </textarea>
         <?php else: ?>
@@ -54,18 +53,12 @@
         <div id="twitter_feeds">
             <p class="explanation"><?php echo __('<strong>Twitter (Settings and privacy -> Widgets -> Create new)</strong>'); ?></p>
             <label style="clear: both;margin-right:-45px;">Timeline:</label>
-            <!--<input style="width: auto;" type="text" class="textinput"  name="twitter_timeline" value='<?php echo get_option('twitter_timeline'); ?>' />
-            -->
             <?php if (empty(get_option('twitter_timeline'))): ?>
             <textarea placeholder=""rows="10" cols="50" name="twitter_timeline"><?php echo '&lt;a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar"&gt;Tweets by July4CivilWar&lt;/a&gt; &lt;script async src="//platform.twitter.com/widget    s.js" charset="utf-8"&gt;&lt;/script&gt'; ?> </textarea>
             <?php else: ?>
             <textarea placeholder=""rows="10" cols="50" name="twitter_timeline"><?php echo get_option('twitter_timeline'); ?></textarea>
             <?php endif; ?>
-            <!--<a href="#" data-toggle="popover" title="Popover Header" data-trigger="focus" data-content='&lt;a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar"&gt;Tweets by July4CivilWar&lt;/a&gt; &lt;script async src="//platform.twitter.com/widget    s.js" charset="utf-8"&gt;&lt;/script&gt'>Example</a> -->
             <label style="clear: both;margin-right:-45px;">Buttons:</label>
-            <!--<input style="width: auto;" type="text" class="textinput"  name="twitter_button" value='<?php echo get_option('twitter_button'); ?>' />
-            <a href="#" data-toggle="popover" title="Popover Header" data-trigger="focus" data-content='&lt;a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false"&gt;Follow @July4CivilWar&lt;/a&gt;&lt;script async src="//platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt'>Example</a>
-            -->
             <?php if (empty(get_option('twitter_button'))): ?>
             <textarea placeholder=""rows="10" cols="50" name="twitter_button"><?php echo '&lt;a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false"&gt;Follow @July4CivilWar&lt;/a&gt;&lt;script async src="//platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt'; ?> </textarea>
             <?php else: ?>
@@ -75,9 +68,6 @@
         <div id="fb_feeds">
             <p class="explanation"><?php echo __('<strong>FaceBook (you can go to <a target="_blank" href="https://developers.facebook.com/docs/plugins">here</a> for help)</strong>'); ?></p>
             <label style="clear: both;margin-right:-45px;">Facebook :</label>
-            <!--<input style="width: auto;" type="text" class="textinput"  name="fb" value='<?php echo get_option('fb'); ?>'/>
-            <a href="#" data-toggle="popover" title="Popover Header" data-trigger="focus" data-content='&lt;div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"&gt;&lt;blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"&gt;&lt;a href="https://www.facebook.com/July4CivilWar/"&gt;Mapping the Fourth of July: Exploring Independence in the Civil War Era&lt;/a&gt;&lt;/blockquote>&lt;/div&gt'>Example</a>
-            -->
             <?php if (empty(get_option('fb'))): ?>
             <textarea placeholder=""rows="12" cols="50" name="fb"><?php echo '&lt;div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"&gt;&lt;blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"&gt;&lt;a href="https://www.facebook.com/July4CivilWar/"&gt;Mapping the Fourth of July: Exploring Independence in the Civil War Era&lt;/a&gt;&lt;/blockquote>&lt;/div&gt'; ?> </textarea>
             <?php else: ?>
@@ -103,7 +93,7 @@
     </div>
     <div class="inputs five columns omega">
         <div id="connect">
-            <p class="explanation"><?php echo __('We need at least one theme to make sure the connect task working'); ?>.</p>
+            <p class="explanation"><?php echo __('We need at least <b>one</b> theme to make sure the connect task working'); ?>.</p>
             <label style="clear: both;margin-right:-45px;">Concept :</label>
             <input style="width: auto;" type="text" class="textinput"  name="concept_place" />
             <label style="clear: both;margin-right:-45px;">Definition :</label>
@@ -228,9 +218,9 @@ var def_arr = [];
     $("#encoded_def").val(JSON.stringify(def_arr));
 <?php endif; ?>
 $(document ).ready(function() {
-    $('[data-toggle="popover"]').popover(); 
     activeCheck();
     getConcept();
+    $('[data-toggle="popover"]').popover(); 
     $("#install_plugin").click(function(event){
         if ($("#sponsor1").val() != "") {
             $("#delete_sponsor1").val('no');
@@ -249,7 +239,7 @@ $(document ).ready(function() {
             num_of_delete += (($(this).val() == "undo") ? 1 : 0);
         });
         if ($("#title").val() != "" && $("#intro").val() != "" && ($("#c_table td").length != 0 && num_of_delete < $("#c_table tr").length - 1) && ($("#logo").val() != "" || <?php echo json_encode(get_option('logo_set')); ?> == "true")) {
-            //$("#install_plugin").removeAttr('disabled');
+            //submit button working fine
         }
         else {
             event.preventDefault();
@@ -267,7 +257,7 @@ $(document ).ready(function() {
                 error_message += "*Theme table is empty</br>";
                 $("#theme_label").css("color", "red");
             }
-            if ($("#logo").val() == "" && <?php echo json_encode(get_option('logo_set')); ?> == "false") {
+            if ($("#logo").val() == "" && (<?php echo json_encode(get_option('logo_set')); ?> == "false" || <?php echo json_encode(get_option('logo_set')); ?> == null)) {
                 error_message += "*Logo is empty</br>";
                 $("#logo_label").css("color", "red");
             }
@@ -306,7 +296,6 @@ $(document ).ready(function() {
             $("#add_button").prop("disabled",true);
         }
     });
-    
     $("#add_button" ).click(function() {
         var concept = $("input[name = 'concept_place']").val();
         var def = $("input[name = 'def_place']").val();
@@ -317,10 +306,12 @@ $(document ).ready(function() {
         var concept_element = "<input type='hidden' value='" + concept + "' name='concept[]' />";
         var def_element = "<input type='hidden' value='" + def + "' name='def[]' />";
         var trash_button = '<td><input type="button" class="delete_button" value="delete" /></td>';
-        $("#c_table table").append("<tr><td>" + concept + "<span class='defs' style='display: none'> " + def + "</span>" + concept_element + def_element + trash_button + "</tr>");
+        var popover = '<td><a tabindex="0" data-toggle="popover" data-trigger="focus" data-placement="left" title="Defination" data-content="' + def + '">' + concept + '</a>'
+        $("#c_table table").append("<tr>" + popover + concept_element + def_element + "</td>" + trash_button + "</tr>");
         $("#encoded_concept").val(JSON.stringify(concept_arr));
         $("#encoded_def").val(JSON.stringify(def_arr));
         $("#add_button").prop("disabled",true);
+        $('[data-toggle="popover"]').popover(); 
     });
     $("#c_table").on("mouseover", "td", function(){
         $($(this).find(".defs")).css("display", "inline");
@@ -380,7 +371,9 @@ function getConcept() {
     for (var i = 0; i < con_arr.length; i++) {
         if (con_arr[i] != null) {
             var trash_button = '<td><input type="button" class="delete_button" value="delete" /></td>';
-            $("#c_table table").append("<tr><td>" + con_arr[i] + "<span class='defs' style='display: none'> " + def_arr[i] + "</span></td>" + trash_button + "</tr>");
+            var popover = '<td><a tabindex="0" data-toggle="popover" title="Defination" data-trigger="focus" data-placement="left"  data-content="' + def_arr[i] + '">' + con_arr[i] + '</a></td>'
+            $("#c_table table").append("<tr>" + popover + trash_button + "</tr>");
+        
         }
     }
     <?php endif; ?>
