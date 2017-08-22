@@ -195,9 +195,6 @@
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="correctcategory" name="correctcategory">I provided correct categorical information for all tags.</label>
                                         </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" value="" id="spelling" name="spelling">I did not have spelling and grammar mistakes.</label>
-                                        </div>
                                         <p><b>How effective are the tags?</b></p>
                                         <select class="form-control">
                                             <option></option>
