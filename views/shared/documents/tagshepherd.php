@@ -177,9 +177,16 @@
                                     <div class="panel-body">
                                         <p class="header-step"><i>In this phase, read your own work and provide the following assessment:</i></p>
                                         <p><b>Tags: </b></p>
-                                        <ul id="taglist">
-                                        </ul>
+                                        <table id="taglist" class="table table-striped table-condensed">
+                                        <tr><th>Tag</th><th>Category</th><th>Subcategories</th></tr>
+                                        </table>
                                         <p><b>Assessment: </b></p>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="" id="removal" name="removal">I removed all inappropriate existing tags.</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="" id="correcting" name="correcting">I corrected all existing tags with correct categorical information.</label>
+                                        </div>
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="coverage1" name="coverage1">I tagged all required types of tags.</label>
                                         </div>
@@ -253,19 +260,6 @@
                             </div>
                         </div>
                     </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <hr size=2 class="discussion-seperation-line">
             </div>
         </div>
@@ -591,41 +585,40 @@
             //Add to taglist
             $('#entity-table tr').each(function (idx) {
                 if (idx != 0) {
-                    var row = "<li>";
+                    var row = "<tr><td>";
                     var children = $(this).children('td');
                     row += $(children[0]).text();
-                    row += "  --  ";
+                    row += "</td><td>";
                     row += $(children[1]).find('option:selected').text();
-                    row += "  --  ";
+                    row += "</td><td>";
                     var subcats = $(children[2]).find('option:selected');
                     subcats.each(function(idx) {
-                        row += $(this).text()+",";
+                        row += $(this).text()+", ";
                     });
                     if (subcats.length > 0) {
-                        row = row.substring(0, row.length-1);
+                        row = row.substring(0, row.length-2);
                     }
-                    row += "</li>";
+                    row += "</td></tr>";
                     $("#taglist").append(row);
                 }
             });
             $('#user-entity-table tr').each(function (idx) {
                 if (idx != 0) {
-                    var row = "<li>";
+                    var row = "<tr><td>";
                     var children = $(this).children('td');
                     row += $(children[0]).text();
-                    row += "  --  ";
+                    row += "</td><td>";
                     row += $(children[1]).find('option:selected').text();
-                    row += "  --  ";
+                    row += "</td><td>";
                     var subcats = $(children[2]).find('option:selected');
                     subcats.each(function(idx) {
-                        row += $(this).text()+",";
+                        row += $(this).text()+", ";
                     });
                     if (subcats.length > 0) {
-                        row = row.substring(0, row.length-1);
+                        row = row.substring(0, row.length-2);
                     }
-                    row += "</li>";
+                    row += "</td></tr>";
                     $("#taglist").append(row);
-    
                 }
 
             });
