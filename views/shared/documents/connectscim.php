@@ -88,13 +88,13 @@
                                         <p class="header-step"><i>Q4: What inferences may be drawn from absences or omissions in the source?</i></p>
                                         <textarea style="width:100%;" name="iq4" rows="3"></textarea>
                                         <p class="header-step"><i>Q5: What additional evidence beyond the source is necessary to answer the historical question?</i></p>
-                                        <textarea style="width:100%;" name="iq1" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="mq1" rows="3"></textarea>
                                         <p class="header-step"><i>Q6: What ideas, images, or terms need further defining from the source?</i></p>
-                                        <textarea style="width:100%;" name="iq2" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="mq2" rows="3"></textarea>
                                         <p class="header-step"><i>Q7: How useful or siginficant is the source for its intended purpose in answering the historical question?</i></p>
-                                        <textarea style="width:100%;" name="iq3" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="mq3" rows="3"></textarea>
                                         <p class="header-step"><i>Q8: What questions from the previous stages need to be revisited in order to analyze the source satisfactorily?</i></p>
-                                        <textarea style="width:100%;" name="iq4" rows="3"></textarea>
+                                        <textarea style="width:100%;" name="mq4" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
                                 </div>
@@ -237,6 +237,22 @@
                 <?php foreach ((array)$this->subjects as $subject): ?>
                     $('input[name="revsubject<?php echo $subject['id']; ?>"][value='+$('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()+']').prop('checked', true)
                 <?php endforeach; ?>
+                $('#iq1').prop('disabled', true);
+                $('#iq1').css('color', '#999');
+                $('#iq2').prop('disabled', true);
+                $('#iq2').css('color', '#999');
+                $('#iq3').prop('disabled', true);
+                $('#iq3').css('color', '#999');
+                $('#iq4').prop('disabled', true);
+                $('#iq4').css('color', '#999');
+                $('#mq1').prop('disabled', true);
+                $('#mq1').css('color', '#999');
+                $('#mq2').prop('disabled', true);
+                $('#mq2').css('color', '#999');
+                $('#mq3').prop('disabled', true);
+                $('#mq3').css('color', '#999');
+                $('#mq4').prop('disabled', true);
+                $('#mq4').css('color', '#999');
             });
             $('#phase3-button').on('click', function(e) {
                 window.onbeforeunload = null;
