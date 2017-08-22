@@ -110,14 +110,14 @@
                                         <p><b>Summary: </b><span id="ori-summary"></span></p>
                                         <p><b>Tone: </b><span id="ori-summary"></span></p>
                                         <p>
-                                            <ul>
-                                                <li>Informational: <span id="ori-informational"></span></li>
-                                                <li>Anxious: <span id="ori-anxious"></span></li>
-                                                <li>Optimistic: <span id="ori-optimistic"></span></li>
-                                                <li>Sarcastic: <span id="ori-sarcastic"></span></li>
-                                                <li>Prideful: <span id="ori-prideful"></span></li>
-                                                <li>Aggressive: <span id="ori-aggressive"></span></li>
-                                            </ul>
+                                            <table class="table table-striped table-condensed">
+                                                <tr><td>Informational</td><td><span id="ori-informational"></span></td></tr>
+                                                <tr><td>Anxious</td><td><span id="ori-anxious"></span></td></tr>
+                                                <tr><td>Optimistic</td><td><span id="ori-optimistic"></span></td></tr>
+                                                <tr><td>Sarcastic</td><td><span id="ori-sarcastic"></span></td></tr>
+                                                <tr><td>Prideful</td><td><span id="ori-prideful"></span></td></tr>
+                                                <tr><td>Aggressive</td><td><span id="ori-aggressive"></span></td></tr>
+                                            </table>
                                         </p>
                                         <p><b>Tone Reasoning: </b><span id="ori-tonereasoning"></span></p>
                                         <hr>
@@ -275,10 +275,10 @@
 
     function toneValueToDescription(toneValue) {
         switch (toneValue) {
-            case "0": return "Not at all reflects";
-            case "1": return "Weekly reflects";
-            case "2": return "Moderately reflects";
-            case "3": return "Strongly reflects";
+            case "0": return "Not at all reflects author's attitude";
+            case "1": return "Weekly reflects author's attitude";
+            case "2": return "Moderately reflects author's attitude";
+            case "3": return "Strongly reflects author's attitude";
             default: return "Not selected";
         }
     }
