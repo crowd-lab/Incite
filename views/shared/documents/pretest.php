@@ -27,10 +27,11 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <p class="header-step"><i>Imagine you were a historian who is interested in the Depression and currently investigating a historical question, "<u>What was the life of a boy like during the Depression?</u>" Now, you have a related historical document. Please read the document on the left and follow the instruction below to analyze the document.</i></p>
-                    <p class="header-step"><i>Step 1 of 1: Write a historical interpretation below regarding the historical question.</i></p>
+                    <p class="header-step">Background: Imagine you were a historian who is interested in the Depression and currently investigating a historical question, "<u>What was the life of a boy like during the Depression?</u>"</p>
+                    <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
+                    <p class="header-step">Step <?php echo $task_seq; ?>b: Write your response below to the historical document and question.</p>
                     <form id="interpretation-form" method="post">
-                        <textarea style="width:100%;" name="pre_interpretation" rows="10" placeholder="Your historical interpretation here"></textarea>
+                        <textarea style="width:100%;" name="pre_interpretation" rows="10" placeholder="Your response here."></textarea>
                         <button type="button" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
                     </form>
 

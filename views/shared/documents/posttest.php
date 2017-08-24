@@ -27,8 +27,9 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <p class="header-step"><i>Again, imagine you were a historian who is interested in the Civil War and currently investigating a historian question, "<u>What was life like in the artillery during the Civil War?</u>" Now, you have a related historical document. Please read the document on the left and use what you have learned from previous tasks to analyze the document.</i></p>
-                    <p class="header-step"><i>Step 1 of 1: Write a historical interpretation below regarding the historical question.</i></p>
+                    <p class="header-step">Again, imagine you were a historian who is interested in the Civil War and currently investigating a historian question, "<u>What was life like in the artillery during the Civil War?</u>"</p>
+                    <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
+                    <p class="header-step">Step <?php echo $task_seq; ?>b: Write your response below to the historical document and question.</p>
                     <form id="interpretation-form" method="post">
                         <textarea style="width:100%;" name="post_interpretation" rows="10"></textarea>
                         <button type="button" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
