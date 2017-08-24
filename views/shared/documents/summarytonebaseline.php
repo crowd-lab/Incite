@@ -28,9 +28,11 @@
                 <div id="tagging-container">
                     <br>
                     <form id="summarytone-form" method="post">
-                                        <p class="header-step"><i>Step 1 of 3: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</p>
                                         <textarea id="summary" style="width:100%;" name="summary" rows="5" placeholder="Your shortened text here"></textarea>
-                                        <p class="header-step"><i>Step 2 of 3: Please rate how much each of the following tones reflects the author's attitude towards the subject.</i></p>
+                                        <br>
+                                        <br>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>b: Please rate how much each of the following tones reflects the author's attitude towards the subject.</p>
                                         <table class="table">
                                             <thead>
                                                 <th>Tone</th>
@@ -40,51 +42,51 @@
                                                 <th>Strongly</th>
                                             </thead>
                                             <tr>
-                                                <td><label>Informational</label></td>
+                                                <td>Informational</td>
                                                 <td><input type="radio" name="tone1" value="0"></td>
                                                 <td><input type="radio" name="tone1" value="1"></td>
                                                 <td><input type="radio" name="tone1" value="2"></td>
                                                 <td><input type="radio" name="tone1" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Anxious</label></td>
+                                                <td>Anxious</td>
                                                 <td><input type="radio" name="tone2" value="0"></td>
                                                 <td><input type="radio" name="tone2" value="1"></td>
                                                 <td><input type="radio" name="tone2" value="2"></td>
                                                 <td><input type="radio" name="tone2" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Optimistic</label></td>
+                                                <td>Optimistic</td>
                                                 <td><input type="radio" name="tone3" value="0"></td>
                                                 <td><input type="radio" name="tone3" value="1"></td>
                                                 <td><input type="radio" name="tone3" value="2"></td>
                                                 <td><input type="radio" name="tone3" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Sarcastic</label></td>
+                                                <td>Sarcastic</td>
                                                 <td><input type="radio" name="tone4" value="0"></td>
                                                 <td><input type="radio" name="tone4" value="1"></td>
                                                 <td><input type="radio" name="tone4" value="2"></td>
                                                 <td><input type="radio" name="tone4" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Prideful</label></td>
+                                                <td>Prideful</td>
                                                 <td><input type="radio" name="tone5" value="0"></td>
                                                 <td><input type="radio" name="tone5" value="1"></td>
                                                 <td><input type="radio" name="tone5" value="2"></td>
                                                 <td><input type="radio" name="tone5" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Aggressive</label></td>
+                                                <td>Aggressive</td>
                                                 <td><input type="radio" name="tone6" value="0"></td>
                                                 <td><input type="radio" name="tone6" value="1"></td>
                                                 <td><input type="radio" name="tone6" value="2"></td>
                                                 <td><input type="radio" name="tone6" value="3"></td>
                                             </tr>
                                         </table>
-                                        <p class="header-step"><i>Step 3 of 3: Please provide your reasoning for rating the tones.</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>c: Please provide your reasoning for ratings above.</i></p>
                                         <textarea id="tonereasoning" style="width:100%;" name="tonereasoning" rows="6" placeholder="Your reasoning here."></textarea>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Finish</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                     </form>
 
                 </div>

@@ -37,9 +37,11 @@
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Step 1 of 3: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</p>
                                         <textarea id="summary" style="width:100%;" name="summary" rows="5" placeholder="Your shortened text here"></textarea>
-                                        <p class="header-step"><i>Step 2 of 3: Please rate how much each of the following tones reflects the author's attitude towards the subject.</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>b: Please rate how much each of the following tones reflects the author's attitude towards the subject.</p>
+                                        <br>
+                                        <br>
                                         <table class="table">
                                             <thead>
                                                 <th>Tone</th>
@@ -49,49 +51,49 @@
                                                 <th>Strongly</th>
                                             </thead>
                                             <tr>
-                                                <td><label>Informational</label></td>
+                                                <td>Informational</td>
                                                 <td><input type="radio" name="tone1" value="0"></td>
                                                 <td><input type="radio" name="tone1" value="1"></td>
                                                 <td><input type="radio" name="tone1" value="2"></td>
                                                 <td><input type="radio" name="tone1" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Anxious</label></td>
+                                                <td>Anxious</td>
                                                 <td><input type="radio" name="tone2" value="0"></td>
                                                 <td><input type="radio" name="tone2" value="1"></td>
                                                 <td><input type="radio" name="tone2" value="2"></td>
                                                 <td><input type="radio" name="tone2" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Optimistic</label></td>
+                                                <td>Optimistic</td>
                                                 <td><input type="radio" name="tone3" value="0"></td>
                                                 <td><input type="radio" name="tone3" value="1"></td>
                                                 <td><input type="radio" name="tone3" value="2"></td>
                                                 <td><input type="radio" name="tone3" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Sarcastic</label></td>
+                                                <td>Sarcastic</td>
                                                 <td><input type="radio" name="tone4" value="0"></td>
                                                 <td><input type="radio" name="tone4" value="1"></td>
                                                 <td><input type="radio" name="tone4" value="2"></td>
                                                 <td><input type="radio" name="tone4" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Prideful</label></td>
+                                                <td>Prideful</td>
                                                 <td><input type="radio" name="tone5" value="0"></td>
                                                 <td><input type="radio" name="tone5" value="1"></td>
                                                 <td><input type="radio" name="tone5" value="2"></td>
                                                 <td><input type="radio" name="tone5" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Aggressive</label></td>
+                                                <td>Aggressive</td>
                                                 <td><input type="radio" name="tone6" value="0"></td>
                                                 <td><input type="radio" name="tone6" value="1"></td>
                                                 <td><input type="radio" name="tone6" value="2"></td>
                                                 <td><input type="radio" name="tone6" value="3"></td>
                                             </tr>
                                         </table>
-                                        <p class="header-step"><i>Step 3 of 3: Please provide your reasoning for rating the tones.</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>c: Please provide your reasoning for ratings above.</i></p>
                                         <textarea id="tonereasoning" style="width:100%;" name="tonereasoning" rows="6" placeholder="Your reasoning here."></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase1-button">Next</button>
                                     </div>
@@ -107,9 +109,11 @@
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>In this phase, read your own work and provide the following assessment:</i></p>
-                                        <p><b>Summary: </b><span id="ori-summary"></span></p>
-                                        <p><b>Tone: </b><span id="ori-summary"></span></p>
+                                        <p class="header-step">In this phase, read your own work and provide the following assessment:</p>
+                                        <p><b>Your Work: </b></p>
+                                        <p>Your summary: <div style="padding: 2px; background-color: #eee" id="ori-summary"></div></p>
+                                        <br>
+                                        <p>Your tone ratings: </p>
                                         <p>
                                             <table class="table table-striped table-condensed">
                                                 <tr><td>Informational</td><td><span id="ori-informational"></span></td></tr>
@@ -120,9 +124,10 @@
                                                 <tr><td>Aggressive</td><td><span id="ori-aggressive"></span></td></tr>
                                             </table>
                                         </p>
-                                        <p><b>Tone Reasoning: </b><span id="ori-tonereasoning"></span></p>
+                                        <p>Your tone reasoning: <div style="padding: 2px; background-color: #eee" id="ori-tonereasoning"></div></p>
                                         <hr>
-                                        <p><b>Assessment: </b></p>
+                                        <p><b>Self Assessment: </b></p>
+                                        <p>Checklist:</p>
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="originality" name="originality">I wrote an original summary. I did not plagiarize.</label>
                                         </div>
@@ -133,16 +138,10 @@
                                             <label><input type="checkbox" value="" id="neutrality" name="neutrality">I wrote a summary without adding personal opinions nor emotions.</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" value="" id="usefulness" name="usefulness">I wrote an honest and useful summary</label>
-                                        </div>
-                                        <div class="checkbox">
                                             <label><input type="checkbox" value="" id="detail" name="detail">I wrote an summary with sufficient information and details from the original document.</label>
                                         </div>
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="spelling" name="spelling">I did not have spelling and grammar mistakes.</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" value="" id="punctuation" name="punctuation">I used appropriate punctuation and capitalization.</label>
                                         </div>
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="length" name="length">I wrote the right amount (3 sentences).</label>
@@ -153,7 +152,7 @@
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="evidence" name="evidence">I provided reasoning with evidence to support my tone ratings such as keywords implying emotions or attitudes.</label>
                                         </div>
-                                        <p><b>How effective is this summary?</b></p>
+                                        <p>How effective is your summary?</p>
                                         <select class="form-control">
                                             <option></option>
                                             <option>9 Excellent</option>
@@ -166,7 +165,7 @@
                                             <option>2</option>
                                             <option>1 Poor</option>
                                         </select>
-                                        <p><b>How effective are the tone ratings?</b></p>
+                                        <p>How effective are your tone ratings?</p>
                                         <select class="form-control">
                                             <option></option>
                                             <option>9 Excellent</option>
@@ -179,7 +178,7 @@
                                             <option>2</option>
                                             <option>1 Poor</option>
                                         </select>
-                                        <p><b>How can I improve my work?</b></p>
+                                        <p>How can you improve my work?</p>
                                         <textarea style="width:100%;" rows="4" id="feedback"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
@@ -195,11 +194,12 @@
                                 </div>
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</i></p>
-                                        <p class="header-step"><i>Step 1 of 3: Please revise your summary to reflect your answers to the 4 questions in Phase 2.</i></p>
+                                        <p class="header-step">Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Please revise your summary to reflect what you learned in Phase 2.</p>
                                         <textarea id="revsummary" style="width:100%;" name="revsummary" rows="6"></textarea>
                                         <br>
-                                        <p class="header-step"><i>Step 2 of 3: Please revise the ratings of the tones to reflect your answers to the 4 questions in Phase 2.</i></p>
+                                        <br>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>b: Please revise the ratings of the tones to reflect what you learned in Phase 2.</p>
                                         <table class="table">
                                             <thead>
                                                 <th>Tone</th>
@@ -209,51 +209,51 @@
                                                 <th>Strongly</th>
                                             </thead>
                                             <tr>
-                                                <td><label>Informational</label></td>
+                                                <td>Informational</td>
                                                 <td><input type="radio" name="revtone1" value="0"></td>
                                                 <td><input type="radio" name="revtone1" value="1"></td>
                                                 <td><input type="radio" name="revtone1" value="2"></td>
                                                 <td><input type="radio" name="revtone1" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Anxious</label></td>
+                                                <td>Anxious</td>
                                                 <td><input type="radio" name="revtone2" value="0"></td>
                                                 <td><input type="radio" name="revtone2" value="1"></td>
                                                 <td><input type="radio" name="revtone2" value="2"></td>
                                                 <td><input type="radio" name="revtone2" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Optimistic</label></td>
+                                                <td>Optimistic</td>
                                                 <td><input type="radio" name="revtone3" value="0"></td>
                                                 <td><input type="radio" name="revtone3" value="1"></td>
                                                 <td><input type="radio" name="revtone3" value="2"></td>
                                                 <td><input type="radio" name="revtone3" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Sarcastic</label></td>
+                                                <td>Sarcastic</td>
                                                 <td><input type="radio" name="revtone4" value="0"></td>
                                                 <td><input type="radio" name="revtone4" value="1"></td>
                                                 <td><input type="radio" name="revtone4" value="2"></td>
                                                 <td><input type="radio" name="revtone4" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Prideful</label></td>
+                                                <td>Prideful</td>
                                                 <td><input type="radio" name="revtone5" value="0"></td>
                                                 <td><input type="radio" name="revtone5" value="1"></td>
                                                 <td><input type="radio" name="revtone5" value="2"></td>
                                                 <td><input type="radio" name="revtone5" value="3"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>Aggressive</label></td>
+                                                <td>Aggressive</td>
                                                 <td><input type="radio" name="revtone6" value="0"></td>
                                                 <td><input type="radio" name="revtone6" value="1"></td>
                                                 <td><input type="radio" name="revtone6" value="2"></td>
                                                 <td><input type="radio" name="revtone6" value="3"></td>
                                             </tr>
                                         </table>
-                                        <p class="header-step"><i>Step 3 of 3: Please revise your reasoning to reflect your answers to the 4 questions in Phase 2.</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>c: Please revise your reasoning to reflect what you learned in Phase 2.</p>
                                         <textarea id="revtonereasoning" style="width:100%;" name="revtonereasoning" rows="6"></textarea>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Finish</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                                     </div>
                                 </div>
                             </div>
