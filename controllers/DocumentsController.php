@@ -317,8 +317,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 return;
             }
             $trial = getNextTrial($assignment_id, $worker_id);
-            //testing with a particular technique: baseline, scim, shepherd, review
-            $trial = array('trial_id' => 1, 'technique' => 'shepherd');
+            //testing with a particular technique: baseline, scim, shepherd, rvd (review vs. doing)
+            $trial = array('trial_id' => 1, 'technique' => 'rvd');
+            if (isset($_GET['condition'])) {
+                $trial['technique'] = $_GET['condition'];
+            }
             if ($trial != null) {
                 //Initialization
 
@@ -333,7 +336,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['study2']['technique'] = $trial['technique'];
                 $_SESSION['study2']['task_seq'] = 0;
                 //0: presurvey, 1: pretest, 5: posttest, 6: postsurvey, 7: complete 
-                $_SESSION['study2']['urls'] = array(urlGenerator(0), urlGenerator(1), urlGenerator(2), urlGenerator(3), urlGenerator(4), urlGenerator(5), urlGenerator(6), urlGenerator(7));
+                $_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator(2), urlGenerator(3), urlGenerator(4), urlGenerator(5), urlGenerator(6), urlGenerator(7));
+                $_SESSION['study2']['num_tasks'] = count($_SESSION['study2']['urls'])-1;
 
                 //All set. Redirec the user to the first task!
                 $this->redirect($_SESSION['study2']['urls'][0]);

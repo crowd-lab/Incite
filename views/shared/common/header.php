@@ -393,6 +393,12 @@ body {
     margin-left: 45px;
     display: inline-block;
 }
+a.disabled {
+  /* Make the disabled links grayish*/
+  color: gray;
+  /* And disable the pointer events */
+  pointer-events: none;
+}
 </style>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -756,6 +762,14 @@ function year_of_full_iso_date(date) {
 </script>
 </head>
 <body>
+<?php
+$task_seq = $_SESSION['study2']['task_seq']+1;
+$num_tasks = $_SESSION['study2']['num_tasks'];
+?>
+
+<?php if (isset($task_description)): ?>
+<h1 style="text-align: center;" id="task_progress"><?php echo "Part ".$task_seq." of ".$num_tasks.": ".$task_description; ?></h1>
+<?php endif; ?>
 
 <h2 id="count_down_timer">&nbsp;</h2>
 <br>

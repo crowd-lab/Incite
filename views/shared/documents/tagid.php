@@ -26,8 +26,8 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag should be at its maximum length (e.g. <u>Jan. 1st, 1880</u> should be just one tag instead of multiple tags such as <u>Jan. 1st</u> and <u>1880</u>.) If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
-                    <p class="header-step"><i>Step 1 of 3: Verify and expand existing tags with details</i></p>
+                    <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag  is an object or event in the world like a place or person and it should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the even category for more event description). If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
+                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
@@ -98,7 +98,7 @@
                             <th>Not a tag?</th></tr>
                     </table>
                     <br>
-                    <p class="step"><i>Step 2 of 3: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                    <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
                     <table class="table" id="user-entity-table">
                         <tr>
                             <th>
@@ -149,36 +149,10 @@
                             <th>Not a tag?</th></tr>
                         <tr>
                     </table>
-                    <br>
-                    <p class="step"><i>Step 3 of 3: Based on the document on the left and its metadata, please answer the following questions.</i></p>
-                    <form id="entity-form" method="post">
-                    <table class="table" id="cont_q">
-                        <tr><th>Questions</th><th>Answers</th></tr>
-                        <tr><td>Q1: When was the document produced?</td><td><input type="text" placeholder="YYYY-MM-DD" class="form-control" value="" name="time_prod"></td></tr>
-                        <tr><td>Q2: Based on your reading of the document, what time period does this document tell you most about?</td>
-                            <td>
-                                <select name="time_cont">
-                                    <option value="">Time Periods</option>
-                                    <option value="1">American Revolution</option>
-                                    <option value="2">American Civil War</option>
-                                    <option value="3">World War One</option>
-                                    <option value="4">Depression</option>
-                                    <option value="5">World War Two</option>
-                                    <option value="6">Cold War</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr><td>Q3: Where was the document produced?</td><td><input value="" name="loc_prod" type="text" placeholder="State - County - City/Town" class="form-control"></td></tr>
-                        <tr><td>Q4: Based on your reading of the document, what location does this document tell you most about?</td><td><input value="" name="loc_cont" type="text" placeholder="location" class="form-control"></td></tr>
-                    </table>
-                    <button type="button" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
-                        <input id="entity-info" type="hidden" name="entities" />
-                        <input id="tagged-doc" type="hidden" name="tagged_doc" />
-                        <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
-                        <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
-                    </form>
-
                 </div>
+                <br>
+                <br>
+                <button type="button" class="btn btn-primary pull-right" id="finish">Finish</button>
                 <hr size=2 class="discussion-seperation-line">
             </div>
         </div>

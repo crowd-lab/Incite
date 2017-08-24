@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <?php
+            $task_description = "Pre-test";
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
 
@@ -26,7 +27,7 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <p class="header-step"><i>Imagine you were a historian who is interested in the Depression and currently investigating a historian question, "<u>What was the life of a boy like during the Depression?</u>" Now, you have a related historical document. Please read the document on the left and follow the instruction below to analyze the document.</i></p>
+                    <p class="header-step"><i>Imagine you were a historian who is interested in the Depression and currently investigating a historical question, "<u>What was the life of a boy like during the Depression?</u>" Now, you have a related historical document. Please read the document on the left and follow the instruction below to analyze the document.</i></p>
                     <p class="header-step"><i>Step 1 of 1: Write a historical interpretation below regarding the historical question.</i></p>
                     <form id="interpretation-form" method="post">
                         <textarea style="width:100%;" name="pre_interpretation" rows="10" placeholder="Your historical interpretation here"></textarea>

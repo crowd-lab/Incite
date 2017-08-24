@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <?php
+            $task_description = "Summary and Tone";
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
 
@@ -91,7 +92,7 @@
                                             </tr>
                                         </table>
                                         <p class="header-step"><i>Step 3 of 3: Please provide your reasoning for rating the tones.</i></p>
-                                        <textarea id="tonereasoning" style="width:100%;" name="tonereasoning" rows="6"></textarea>
+                                        <textarea id="tonereasoning" style="width:100%;" name="tonereasoning" rows="6" placeholder="Your reasoning here."></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase1-button">Next</button>
                                     </div>
                                 </div>
@@ -273,12 +274,6 @@
         right: 0;
         cursor: pointer;
         margin-top: -32px;
-    }
-    a.disabled {
-      /* Make the disabled links grayish*/
-      color: gray;
-      /* And disable the pointer events */
-      pointer-events: none;
     }
 
 </style>

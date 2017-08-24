@@ -33,12 +33,11 @@
                     <form id="subject-form" method="post">
                         <table class="table">
                             <thead>
-                                <td>Themes</td>
-                                <td>Not useful</td>
-                                <td>Somewhat useful</td>
-                                <td>Useful</td>
-                                <td>Very useful</td>
-                                <td>Extremely useful</td>
+                                <th>Themes</th>
+                                <th>Not at all</th>
+                                <th>Weakly</th>
+                                <th>Moderately</th>
+                                <th>Strongly</th>
                             </thead>
                         <?php foreach ((array)$this->subjects as $subject): ?>
                             <tr>
@@ -47,7 +46,6 @@
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="1"></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="2"></td>
                                 <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="3"></td>
-                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="4"></td>
                             </tr>
                         <?php endforeach; ?>
                         </table>

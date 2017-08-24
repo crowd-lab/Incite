@@ -4,6 +4,7 @@
 <?php
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min'));
 $db = get_db();
+$task_description = "Post-survey";
 
 include(dirname(__FILE__).'/../common/header.php');
 ?>

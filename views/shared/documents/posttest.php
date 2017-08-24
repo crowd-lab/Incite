@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <?php
+            $task_description = "Post-test";
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
 
