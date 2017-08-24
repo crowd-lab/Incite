@@ -289,6 +289,9 @@ a.navbar-left > img {
     height: 50px;
 }
 
+    .header-step {
+        font-size: 120%;
+    }
 
 
 
@@ -771,7 +774,7 @@ $num_tasks = $_SESSION['study2']['num_tasks'];
 <h1 style="text-align: center;" id="task_progress"><?php echo "Part ".$task_seq." of ".$num_tasks.": ".$task_description; ?></h1>
 <?php endif; ?>
 
-<h2 id="count_down_timer">&nbsp;</h2>
+<br>
 <br>
 <?php if (FALSE): ?>
     <!-- Navigation -->
