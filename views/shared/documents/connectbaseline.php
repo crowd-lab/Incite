@@ -27,34 +27,34 @@
             <div class="col-md-6" id="connecting-work-area">
                 <div id="connecting-container">
                     <form id="connect-form" method="post">
-                                        <p class="header-step">
-                                            <i>Step 1 of 2: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
-                                        </p>
-                                        <table class="table">
-                                            <thead>
-                                                <th>Themes</th>
-                                                <th>Not at all</th>
-                                                <th>Weakly</th>
-                                                <th>Moderately</th>
-                                                <th>Strongly</th>
-                                            </thead>
-                                        <?php foreach ((array)$this->subjects as $subject): ?>
-                                            <tr>
-                                                <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
-                                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="0"></td>
-                                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="1"></td>
-                                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="2"></td>
-                                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="3"></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                        </table>
-                                        <p class="header-step">
-                                            <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
-                                        </p>
-                                        <textarea id="subjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
-                                        <br>
-                                        <br>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Finish</button>
+                        <p class="header-step">
+                            Step <?php echo $task_seq; ?>a: Look through the themes and rate how useful the historical document is to each of the themes.
+                        </p>
+                        <table class="table">
+                            <thead>
+                                <th>Themes</th>
+                                <th>Not at all</th>
+                                <th>Weakly</th>
+                                <th>Moderately</th>
+                                <th>Strongly</th>
+                            </thead>
+                        <?php foreach ((array)$this->subjects as $subject): ?>
+                            <tr>
+                                <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="0"></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="1"></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="2"></td>
+                                <td><input type="radio" name="subject<?php echo $subject['id']; ?>" value="3"></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </table>
+                        <p class="header-step">
+                            Step <?php echo $task_seq; ?>b: Please provide your reasoning for your above choices.
+                        </p>
+                        <textarea id="subjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
+                        <br>
+                        <br>
+                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                     </form>
 
                 </div>

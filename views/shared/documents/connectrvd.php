@@ -31,13 +31,13 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                         <a data-toggle="collapse" href="#phase1-panel" id="phase1-link">Phase 1: Connect</a>
+                                         <a data-toggle="collapse" href="#phase1-panel" id="phase1-link">Phase 1: Theme</a>
                                     </h4>
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <p class="header-step">
-                                            <i>Step 1 of 2: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
+                                            Step <?php echo $task_seq; ?>.1a: Look through the themes and rate how useful the historical document is to each of the themes.
                                         </p>
                                         <table class="table">
                                             <thead>
@@ -58,7 +58,7 @@
                                         <?php endforeach; ?>
                                         </table>
                                         <p class="header-step">
-                                            <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
+                                            Step <?php echo $task_seq; ?>.1b: Please provide your reasoning for your above choices.</i>
                                         </p>
                                         <textarea id="subjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                                         <br>
@@ -72,13 +72,14 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Infer and Monitor</a>
+                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Evaluate</a>
                                     </h4>
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>In this phase, read another worker's work and provide the following assessment:</i></p>
-                                        <p><b>Connections: </b></p>
+                                        <p class="header-step">In this phase, read another worker's work and provide the following assessment:</p>
+                                        <p><b>The Worker's Work: </b></p>
+                                        <p>The worker's theme ratings: </p>
                                         <p>
                                             <table class="table table-condensed table-striped">
                                                 <?php foreach ((array)$this->subjects as $subject): ?>
@@ -86,18 +87,29 @@
                                                 <?php endforeach; ?>
                                             </table>
                                         </p>
-                                        <p><b>Connection Reasoning: </b><span id="ori-subjectreasoning"></span></p>
-                                        <p><b>Assessment: </b></p>
+                                        <p>The worker's theme reasoning: <div style="padding: 2px; background-color: #eee;"  id="ori-subjectreasoning"></div></p>
+                                        <hr>
+                                        <p><b>Your Assessment for the Worker: </b></p>
+                                        <p>Checklist:</p>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" value="" id="understanding" name="understanding">The worker read and understood the definition of each theme. (as implied from the connections and reasoning)</label>
+                                            <label><input type="checkbox" value="" id="understanding" name="understanding">The worker read and understood the definition of each theme. (as implied from the ratings and reasoning)</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" value="" id="usefulness" name="usefulness">The worker made ratings/connections based on how useful the document on the left could help a historian research the themes.</label>
+                                            <label><input type="checkbox" value="" id="usefulness" name="usefulness">The worker made ratings based on how useful the document on the left could help a historian research the themes.</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" value="" id="reasoning" name="reasoning">The worker provided convincing reasons and evidence from the document why or why not the document is useful for research the themes.</label>
+                                            <label><input type="checkbox" value="" id="reasoning" name="reasoning">The worker provided convincing reasons why the document is useful for research some of the themes if any.</label>
                                         </div>
-                                        <p><b>How effective are the connections?</b></p>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="" id="reasoningdegree" name="reasoningdegree">The worker provided convincing reasons why the document is useful with the specified degrees for research some of the themes if any.</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="" id="evidence" name="evidence">The worker provided concrete evidence from the document why the document is useful for research some of the themes if any.</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="" id="reasoningnot" name="reasoningnot">The worker provided convincing reasons why the document is NOT useful for research some of the themes if any.</label>
+                                        </div>
+                                        <p>How effective are the worker's theme ratings?</p>
                                         <select class="form-control">
                                             <option></option>
                                             <option>9 Excellent</option>
@@ -110,7 +122,7 @@
                                             <option>2</option>
                                             <option>1 Poor</option>
                                         </select>
-                                        <p><b>How can the worker improve his or her work?</b></p>
+                                        <p>How can the worker improve his or her work?</p>
                                         <textarea style="width:100%;" rows="4" id="feedback"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
@@ -126,9 +138,9 @@
                                 </div>
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</i></p>
+                                        <p class="header-step">Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</p>
                                         <p class="header-step">
-                                            <i>Step 1 of 2: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
+                                            Step <?php echo $task_seq; ?>.3a: Look through the themes and rate how useful the historical document is to each of the themes.
                                         </p>
                                         <table class="table">
                                             <thead>
@@ -149,12 +161,12 @@
                                         <?php endforeach; ?>
                                         </table>
                                         <p class="header-step">
-                                            <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
+                                            Step <?php echo $task_seq; ?>.3b: Please provide your reasoning for your above choices.</i>
                                         </p>
                                         <textarea id="revsubjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                                         <br>
                                         <br>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Finish</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                                     </div>
                                 </div>
                             </div>

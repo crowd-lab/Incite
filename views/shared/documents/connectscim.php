@@ -37,7 +37,7 @@
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <p class="header-step">
-                                            <i>Step 1 of 2: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
+                                            Step <?php echo $task_seq; ?>.1a: Look through the themes and rate how useful the historical document is to each of the themes.
                                         </p>
                                         <table class="table">
                                             <thead>
@@ -58,7 +58,7 @@
                                         <?php endforeach; ?>
                                         </table>
                                         <p class="header-step">
-                                            <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
+                                            Step <?php echo $task_seq; ?>.1b: Please provide your reasoning for your above choices.</i>
                                         </p>
                                         <textarea id="subjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                                         <br>
@@ -72,30 +72,22 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Infer and Monitor</a>
+                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Learn Historical Thinking</a>
                                     </h4>
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</i></p>
-                                        <p class="header-step"><i>Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></i></p>
-                                        <p class="header-step"><i>Historical Thinking: To think like a historian, the third and fourth steps are to <u>infer</u> and <u>monitor</u> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</i></p>
-                                        <p class="header-step"><i>Q1: What is suggested by the source?</i></p>
-                                        <textarea style="width:100%;" name="iq1" rows="3"></textarea>
-                                        <p class="header-step"><i>Q2: What interpretations may be drawn from the source?</i></p>
+                                        <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
+                                        <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
+                                        <p class="header-step">Historical Thinking: To think like a historian, the third and fourth steps are to <u>infer</u> and <u>monitor</u> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</p>
+                                        <p class="header-step">What interpretations, inferences, perspectives or points of view may be drawn from or indicated by the source?</p>
                                         <textarea style="width:100%;" name="iq2" rows="3"></textarea>
-                                        <p class="header-step"><i>Q3: What perspectives or points of view are indicated in the source?</i></p>
-                                        <textarea style="width:100%;" name="iq3" rows="3"></textarea>
-                                        <p class="header-step"><i>Q4: What inferences may be drawn from absences or omissions in the source?</i></p>
-                                        <textarea style="width:100%;" name="iq4" rows="3"></textarea>
-                                        <p class="header-step"><i>Q5: What additional evidence beyond the source is necessary to answer the historical question?</i></p>
+                                        <p class="header-step">What additional evidence beyond the source is necessary to answer the historical question?</p>
                                         <textarea style="width:100%;" name="mq1" rows="3"></textarea>
-                                        <p class="header-step"><i>Q6: What ideas, images, or terms need further defining from the source?</i></p>
+                                        <p class="header-step">What ideas, images, or terms need further defining from the source?</p>
                                         <textarea style="width:100%;" name="mq2" rows="3"></textarea>
-                                        <p class="header-step"><i>Q7: How useful or siginficant is the source for its intended purpose in answering the historical question?</i></p>
+                                        <p class="header-step">How useful or siginficant is the source for its intended purpose in answering the historical question?</p>
                                         <textarea style="width:100%;" name="mq3" rows="3"></textarea>
-                                        <p class="header-step"><i>Q8: What questions from the previous stages need to be revisited in order to analyze the source satisfactorily?</i></p>
-                                        <textarea style="width:100%;" name="mq4" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
                                 </div>
@@ -112,7 +104,7 @@
                                     <div class="panel-body">
                                         <p class="header-step"><i>Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</i></p>
                                         <p class="header-step">
-                                            <i>Step 1 of 2: What themes in the following could this document help a historian research/investigate? Please rate based on usefulness.</i>
+                                            Step <?php echo $task_seq; ?>.3a: Look through the themes and rate how useful the historical document is to each of the themes.
                                         </p>
                                         <table class="table">
                                             <thead>
@@ -133,12 +125,12 @@
                                         <?php endforeach; ?>
                                         </table>
                                         <p class="header-step">
-                                            <i>Step 2 of 2: Please provide your reasoning for your above choices.</i>
+                                            Step <?php echo $task_seq; ?>.3b: Please provide your reasoning for your above choices.</i>
                                         </p>
                                         <textarea id="revsubjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                                         <br>
                                         <br>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Finish</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                                     </div>
                                 </div>
                             </div>
