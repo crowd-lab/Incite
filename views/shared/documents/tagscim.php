@@ -37,8 +37,8 @@
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag  is an object or event in the world like a place or person and it should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
-                                        <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
+                                        <p class="header-step">Instruction: Please find all tags for different categories. A tag is an object or event in the world like a place or person. It should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, you can mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> to get more information.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.1a: Verify tags. Add subcategories and details if they are missing. If it's not a tag, delete it.</p>
                                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                                         <table class="table" id="entity-table">
                                             <tr>
@@ -109,7 +109,7 @@
                                                 <th>Not a tag?</th></tr>
                                         </table>
                                         <br>
-                                        <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.1b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
                                         <table class="table" id="user-entity-table">
                                             <tr>
                                                 <th>
@@ -172,21 +172,21 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Contextualize</a>
+                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Learn Historical Thinking</a>
                                     </h4>
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</i></p>
-                                        <p class="header-step"><i>Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></i></p>
-                                        <p class="header-step"><i>Historical Thinking: To think like a historian, the second step is to <u>contextualize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</i></p>
-                                        <p class="header-step"><i>Q1: When and where was the source produced?</i></p>
+                                        <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
+                                        <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
+                                        <p class="header-step">Historical Thinking: To think like a historian, the second step is to <u>contextualize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
+                                        <p class="header-step">When and where was the source produced?</p>
                                         <textarea style="width:100%;" name="cq1" rows="3"></textarea>
-                                        <p class="header-step"><i>Q2: Why was the source produced?</i></p>
+                                        <p class="header-step">Why was the source produced?</p>
                                         <textarea style="width:100%;" name="cq2" rows="3"></textarea>
-                                        <p class="header-step"><i>Q3: What was happening within the immediate and broader context at the time the source was produced?</i></p>
+                                        <p class="header-step">What was happening within the immediate and broader context at the time the source was produced?</p>
                                         <textarea style="width:100%;" name="cq3" rows="3"></textarea>
-                                        <p class="header-step"><i>Q4: What summarizing information can place the source in time and place?</i></p>
+                                        <p class="header-step">What summarizing information can place the source in time and place?</p>
                                         <textarea style="width:100%;" name="cq4" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
@@ -202,17 +202,17 @@
                                 </div>
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</i></p>
-                                        <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag  is an object or event in the world like a place or person and it should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
-                                        <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
+                                        <p class="header-step">Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</p>
+                                        <p class="header-step">Instruction: Please find all tags for different categories. A tag is an object or event in the world like a place or person. It should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, you can mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> to get more information.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.3a: Verify tags. Add subcategories and details if they are missing. If it's not a tag, delete it.</p>
                                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                                         <table class="table" id="reventity-table">
                                         </table>
                                         <br>
-                                        <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.3b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
                                         <table class="table" id="revuser-entity-table">
                                         </table>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Finish</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                                     </div>
                                 </div>
                             </div>

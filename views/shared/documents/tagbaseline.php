@@ -28,8 +28,8 @@
                 <div id="tagging-container">
                     <br>
                     <form id="tag-form" method="post">
-                        <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag  is an object or event in the world like a place or person and it should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
-                        <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
+                        <p class="header-step">Instruction: Please find all tags for different categories. A tag is an object or event in the world like a place or person. It should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, you can mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> to get more information.</p>
+                        <p class="header-step">Step <?php echo $task_seq; ?>.1a: Verify tags. Add subcategories and details if they are missing. If it's not a tag, delete it.</p>
                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                         <table class="table" id="entity-table">
                             <tr>
@@ -100,7 +100,7 @@
                                 <th>Not a tag?</th></tr>
                         </table>
                         <br>
-                        <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                        <p class="step">Step <?php echo $task_seq; ?>.1b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
                         <table class="table" id="user-entity-table">
                             <tr>
                                 <th>
@@ -154,7 +154,7 @@
                     </div>
                     <br>
                     <br>
-                    <button type="button" class="btn btn-primary pull-right" id="finish">Finish</button>
+                    <button type="button" class="btn btn-primary pull-right" id="finish">Submit</button>
                 </form>
                 <hr size=2 class="discussion-seperation-line">
             </div>

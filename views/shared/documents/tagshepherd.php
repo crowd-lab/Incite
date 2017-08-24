@@ -37,8 +37,8 @@
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag  is an object or event in the world like a place or person and it should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
-                                        <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
+                                        <p class="header-step">Instruction: Please find all tags for different categories. A tag is an object or event in the world like a place or person. It should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, you can mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> to get more information.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.1a: Verify tags. Add subcategories and details if they are missing. If it's not a tag, delete it.</p>
                                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                                         <table class="table" id="entity-table">
                                             <tr>
@@ -109,7 +109,7 @@
                                                 <th>Not a tag?</th></tr>
                                         </table>
                                         <br>
-                                        <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.1b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
                                         <table class="table" id="user-entity-table">
                                             <tr>
                                                 <th>
@@ -176,12 +176,13 @@
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>In this phase, read your own work and provide the following assessment:</i></p>
-                                        <p><b>Tags: </b></p>
+                                        <p class="header-step">In this phase, read your own work and provide the following assessment:</p>
+                                        <p><b>Your Work: </b></p>
+                                        <p>Your tags: </p>
                                         <table id="taglist" class="table table-striped table-condensed">
                                         <tr><th>Tag</th><th>Category</th><th>Subcategories</th></tr>
                                         </table>
-                                        <p><b>Assessment: </b></p>
+                                        <p><b>Self Assessment: </b></p>
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="removal" name="removal">I removed all inappropriate existing tags.</label>
                                         </div>
@@ -203,7 +204,7 @@
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="correctcategory" name="correctcategory">I provided correct categorical information for all tags.</label>
                                         </div>
-                                        <p><b>How effective are the tags?</b></p>
+                                        <p>How effective are your tags?</p>
                                         <select class="form-control">
                                             <option></option>
                                             <option>9 Excellent</option>
@@ -216,7 +217,7 @@
                                             <option>2</option>
                                             <option>1 Poor</option>
                                         </select>
-                                        <p><b>How effective are the categorical information?</b></p>
+                                        <p>How effective are your categorical information?</p>
                                         <select class="form-control">
                                             <option></option>
                                             <option>9 Excellent</option>
@@ -229,7 +230,7 @@
                                             <option>2</option>
                                             <option>1 Poor</option>
                                         </select>
-                                        <p><b>How can I improve my work?</b></p>
+                                        <p>How can you improve your work?</p>
                                         <textarea style="width:100%;" rows="4" id="feedback"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
@@ -245,17 +246,17 @@
                                 </div>
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</i></p>
-                                        <p class="header-step"><i>Instruction: Please make sure to find all tags for different categories. A tag  is an object or event in the world like a place or person and it should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, please don't forget to mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> sign to get more information.</i></p>
-                                        <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags with details</i></p>
+                                        <p class="header-step">Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</p>
+                                        <p class="header-step">Instruction: Please find all tags for different categories. A tag is an object or event in the world like a place or person. It should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, you can mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> to get more information.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.3a: Verify tags. Add subcategories and details if they are missing. If it's not a tag, delete it.</p>
                                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                                         <table class="table" id="reventity-table">
                                         </table>
                                         <br>
-                                        <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.3b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
                                         <table class="table" id="revuser-entity-table">
                                         </table>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Finish</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                                     </div>
                                 </div>
                             </div>
