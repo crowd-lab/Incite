@@ -36,6 +36,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Assessment_Table.php");
 
   }
+
   /**
   * Ajax function to check if a username and password does exist in the database and if they are valid.
   * A cookie is created when the login is valid
@@ -67,45 +68,12 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
       }
     }
   }
-  public function loginoldAction() {
-    if ($this->getRequest()->isPost()) {
-      $username = $_POST['username'];
-      $password = $_POST['password'];
-      $isGuest = false;
-      $guestID = -1;
-      if (isset($_SESSION['Incite']) && isset($_SESSION['Incite']['USER_DATA']) && strpos($_SESSION['Incite']['USER_DATA'][1], "guest") !== false)
-      {
-        //link guest and user accounts
-        $isGuest = true;
-        $guestID = $_SESSION['Incite']['USER_DATA'][0];
-      }
-      if (verifyUser($username, $password))
-      {
-        if (!isset($_SESSION))
-        {
-          session_start();
-        }
-        $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
-        $_SESSION['Incite']['USER_DATA'] = getUserData($username);
-        if ($isGuest)
-        {
-          mapAccounts($guestID, $_SESSION['Incite']['USER_DATA'][0]);
-        }
-        echo json_encode(true);
-      }
-      else
-      {
-        echo json_encode(false);
-      }
-    }
-  }
 
   /**
   * This method edits user's information. Calls editAccount in
   * Incite_Users_Table class and updates username, password, First name,
   * and the Last name.
   */
-
   public function editaccountAction() {
     if ($this->getRequest()->isPost()) {
       $id = $_SESSION['Incite']['USER_DATA']['id'];
@@ -126,7 +94,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 
     }
   }
-
 
   /**
   * Ajax function that creates accounts. This can be invoked in 2 ways
@@ -168,8 +135,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
       }
     }
   }
-
-
 
   /**
   * Ajax function that sends emails to the user.
@@ -225,15 +190,9 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     }
   }
 
-  public function getcurrpageAction(){
-    if ($this->getRequest()->isGet()) {
-      $page = getCurrentPage();
-      echo $page;
-    }
-    else{
-      echo 'false';
-    }
-  }
+/**
+* Ajax function that collect the search options and find out all the files available.
+*/
 public function getallavailabledocsAction(){
   if ($this->getRequest()->isGet()) {
     $current_page = $_GET['current_page'];
@@ -285,6 +244,9 @@ public function getallavailabledocsAction(){
   }
 }
 
+  /**
+  * Ajax function that collect the search options and find out all the files which is ready to be transcribed.
+  */
   public function getdocsfortranscribeAction(){
 
     if ($this->getRequest()->isGet()) {
@@ -338,6 +300,9 @@ public function getallavailabledocsAction(){
     }
   }
 
+  /**
+  * Ajax function that collect the search options and find out all the files which is ready to be tagged.
+  */
   public function getdocsfortagAction(){
     if ($this->getRequest()->isGet()) {
       $current_page = $_GET['current_page'];
@@ -387,6 +352,9 @@ public function getallavailabledocsAction(){
     }
   }
 
+  /**
+  * Ajax function that collect the search options and find out all the files which is ready to be connected.
+  */
   public function getdocsforconnectAction(){
 
     if ($this->getRequest()->isGet()) {
@@ -438,6 +406,7 @@ public function getallavailabledocsAction(){
 
     }
   }
+
   /**
   * Ajax function that creates a new group, returns the new group's ID
   */
@@ -456,8 +425,10 @@ public function getallavailabledocsAction(){
       }
     }
   }
+
   /**
   * Marks group instructions as seen by a user
+  *
   */
   public function addseeninstructionsAction() {
     if ($this->getRequest()->isPost()) {
@@ -469,10 +440,11 @@ public function getallavailabledocsAction(){
       return true;
     }
   }
+
   /**
   * Ajax function that searchs for groups with names similiar to the search term
   *
-  * Returns a list of group ids
+  * @return a list of group ids
   */
   public function searchgroupsAction() {
     if ($this->getRequest()->isPost()) {
@@ -483,10 +455,11 @@ public function getallavailabledocsAction(){
       echo json_encode($groups);
     }
   }
+
   /**
   * Ajax function sets a user's working group
   *
-  * Returns output of setWorkingGroup
+  * @return output of setWorkingGroup
   */
   public function setworkinggroupAction() {
     if ($this->getRequest()->isPost()) {
@@ -503,11 +476,12 @@ public function getallavailabledocsAction(){
       }
     }
   }
+
   /**
   * Ajax function that adds the currently logged in user to a group with the privilege specified
   * in the ajax request
   *
-  * Returns output of addGroupMember
+  * @return output of addGroupMember
   */
   public function addgroupmemberAction() {
     if ($this->getRequest()->isPost()) {
@@ -518,11 +492,12 @@ public function getallavailabledocsAction(){
       echo json_encode(addGroupMember($userId, $groupId, $privilege));
     }
   }
+
   /**
   * Ajax function that adds the currently logged in user to a group with the privilege specified
   * in the ajax request
   *
-  * Returns output of addGroupMember
+  * @return output of addGroupMember
   */
   public function removememberfromgroupAction() {
     if ($this->getRequest()->isPost()) {
@@ -540,10 +515,10 @@ public function getallavailabledocsAction(){
     }
   }
 
-/**
+  /**
   * Ajax function that remove the selected group
   *
-  * Returns true/false
+  * @return true/false
   */
   public function removeselectedgroupAction() {
     if ($this->getRequest()->isPost()) {
@@ -562,7 +537,7 @@ public function getallavailabledocsAction(){
   /**
   * Ajax function that updates the privilege of a member of a group
   *
-  * Returns output of changeGroupMemberPrivilege
+  * @return output of changeGroupMemberPrivilege
   */
   public function changegroupmemberprivilegeAction() {
     if ($this->getRequest()->isPost()) {
@@ -583,7 +558,7 @@ public function getallavailabledocsAction(){
   /**
   * Ajax function that sets the instructions for a group
   *
-  * Returns output of setGroupInstructions
+  * @return output of setGroupInstructions
   */
   public function setgroupinstructionsAction() {
     if ($this->getRequest()->isPost()) {
@@ -603,7 +578,7 @@ public function getallavailabledocsAction(){
   /**
   * Ajax function that gets the privilege of a group member
   *
-  * Returns output of getGroupMemberPrivilege
+  * @return output of getGroupMemberPrivilege
   */
   public function getgroupmemberprivilegeAction() {
     if ($this->getRequest()->isPost()) {
@@ -692,6 +667,10 @@ public function getallavailabledocsAction(){
       return true;
     }
   }
+
+  /**
+  * This saves comments to database
+  */
   public function postreplyAction()
   {
     if ($this->getRequest()->isPost())
@@ -703,6 +682,10 @@ public function getallavailabledocsAction(){
       return true;
     }
   }
+
+  /**
+  * This checks whether this is the first time that the user post
+  */
   public function cmp($a, $b)
   {
     $firstime = strtotime($a['question_timestamp']);
@@ -713,6 +696,7 @@ public function getallavailabledocsAction(){
     }
     return ($firstime < $secondtime) ? -1 : 1;
   }
+
   /**
   * This returns comments of a document
   */
@@ -746,6 +730,10 @@ public function getallavailabledocsAction(){
       echo json_encode($text);
     }
   }
+
+  /**
+  * This checks whether the user has signed
+  */
   public function issignedinAction()
   {
     $array = array();
@@ -759,6 +747,9 @@ public function getallavailabledocsAction(){
     echo json_encode($array);
   }
 
+  /**
+  * Ajax function that search the files with the specified keyword.
+  */
   public function searchkeyword2Action()
   {
     //$documentID is item id
@@ -776,91 +767,4 @@ public function getallavailabledocsAction(){
     }
     echo json_encode($urlData);
   }
-  public function searchkeyword22Action()
-  {
-    //$documentID is item id
-    $urlData = array();
-    $x = getAllDocumentsContainKeyword($_POST['keyword']);
-    $docs_w_trans = getDocumentsWithApprovedTranscription();
-    $documentID = array_values(array_intersect(array_values(array_unique($x)), $docs_w_trans));
-    for ($i = 0; $i < count($documentID); $i++)
-    {
-      $record = get_record_by_id('item', $documentID[$i]);
-      $file = $record->getFile();
-      if ($file != null)
-      {
-        $urlData[] = array('uri' => $file->getProperty('uri'), 'id' => $documentID[$i], 'description' => metadata($record, array('Dublin Core', 'Description')), 'title' => metadata($record, array('Dublin Core', 'Title')));
-      }
-    }
-    echo json_encode($urlData);
-  }
-  public function finddiffAction()
-  {
-    if ($this->getRequest()->isPost()) {
-      $FROM = $_POST['userTranscription'];
-      $TO = "THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:
-The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.";
-      $diff = new FineDiff($FROM, $TO, FineDiff::$wordGranularity);
-      $htmlDiff = $diff->renderDiffToHTML();
-      $htmlDiff = html_entity_decode($htmlDiff, ENT_QUOTES, 'UTF-8');
-      echo $htmlDiff;
-    }
-  }
-  /**
-  * Ajax function that uploads the assessment transcription in transcribe task
-  *
-  * No Return
-  */
-  public function savetransAction() {
-    $workingGroupId = $this->getWorkingGroupID();
-    if ($this->getRequest()->isPost()) {
-      $assessID = 731;
-      $userID = $_SESSION['Incite']['USER_DATA']['id'];
-      createTrans($assessID, $userID, $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
-    }
-  }
-
-  /**
-  * Ajax function that uploads the assessment tags in tag task
-  *
-  * No Return
-  */
-  public function uploadtagsAction() {
-    if ($this->getRequest()->isPost()) {
-      $entities = $_POST['entities'];
-      $question_arr = $_POST['questions'];
-      $assessID = 731;
-      $workingGroupId = getWorkingGroupID();
-      $index = findTranscriptionId($assessID, $_SESSION['Incite']['USER_DATA']['id']);
-      $taggedID = saveTaggedTranscription($assessID, $index, $_SESSION['Incite']['USER_DATA']['id'], 0, $_POST['tagged_doc']);
-      for ($i = 0; $i < sizeof($entities); $i++) {
-        createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $assessID, $taggedID, 3);
-      }
-      
-      for ($i = 0; $i < sizeof($question_arr); $i++) {
-        saveQuestions($taggedID, $i + 1, $question_arr[$i + 1], 3);
-      }
-    }
-  }
-
-
- /**
-  * Ajax function that uploads the assessment themes rating in connect task
-  *
-  * No Return
-  */
-  public function uploadratingsAction() {
-    if ($this->getRequest()->isPost()) {
-      $ratings = $_POST['ratings'];
-      $assessID = 731;
-      $tagged_tran_id = findTaggedTransIDFromGoldStandard($assessID);
-      $workingGroupId = getWorkingGroupID();
-      for ($i = 0; $i < sizeof($ratings); $i++) {
-        addConnectRating($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $ratings[$i]['concept_id'], $ratings[$i]['rank'], $assessID, 3, $tagged_tran_id);
-      }
-
-      
-    }
-  }
-
 }

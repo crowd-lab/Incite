@@ -16,7 +16,6 @@
                     success: function(data)
                     {
                         $("#search_results").empty();
-                        //console.log(data);
                         var parsedData = JSON.parse(data);
                         $('#result_info').text(" ("+parsedData.length+" document(s) found)");
                         $.each(parsedData, function (idx) {
