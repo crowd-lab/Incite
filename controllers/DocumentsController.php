@@ -111,7 +111,7 @@ function migrateTaggedDocumentFromV1toV2($text) {
 function isAnyTrialAvailable()
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT `id` FROM `study2` WHERE `is_completed` = 0");
+    $stmt = $db->prepare("SELECT `id` FROM `study22` WHERE `is_completed` = 0");
     $stmt->bind_result($trial_id);
     $stmt->execute();
     $result = $stmt->fetch();
@@ -127,7 +127,7 @@ function isAnyTrialAvailable()
 function hasParticipated($worker_id)
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM `study2` WHERE `worker_id` = ?");
+    $stmt = $db->prepare("SELECT COUNT(*) FROM `study22` WHERE `worker_id` = ?");
     $stmt->bind_param('s', $worker_id);
     $stmt->bind_result($count);
     $stmt->execute();
@@ -144,37 +144,49 @@ function hasParticipated($worker_id)
 function getNextTrial($assignment_id, $worker_id)
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT `id`, `workflow`, `doc1`, `task1`, `doc2`, `task2`, `doc3`, `task3` FROM `study2` WHERE `is_completed` = 0");
-    $stmt->bind_result($trial_id, $workflow, $doc1, $task1, $doc2, $task2, $doc3, $task3);
+    $stmt = $db->prepare("SELECT `id`, `technique` FROM `study22` WHERE `is_completed` = 0 LIMIT 1");
+    $stmt->bind_result($trial_id, $technique);
     $stmt->execute();
     $result = $stmt->fetch();
     $stmt->close();
     $db->close();
     if ($result != null) {
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("UPDATE `study2` SET is_completed = ?, assignment_id = ?, worker_id = ?, time0_start = NOW(), attempts = attempts + 1 WHERE `id` = ?");
+        $stmt = $db->prepare("UPDATE `study22` SET is_completed = ?, assignment_id = ?, worker_id = ?, attempts = attempts + 1 WHERE `id` = ?");
         $is_completed = 1; //job taken=>working
         $stmt->bind_param("issi", $is_completed, $assignment_id, $worker_id, $trial_id);
         $stmt->execute();
         $stmt->close();
         $db->close();
-        return array('trial_id' => $trial_id, 'workflow' => $workflow, 'doc1' => $doc1, 'task1' => $task1, 'doc2' => $doc2, 'task2' => $task2, 'doc3' => $doc3, 'task3' => $task3);
+        return array('trial_id' => $trial_id, 'technique' => $technique);
     } else {
         return null;
     }
 }
 
-function completeTask($id, $task_seq, $worker_id, $submission_id, $user_id)
-{
+function completeTasks($id, $task_type, $content) {
     $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("UPDATE study22 SET ".$task_type."_start = ?, ".$task_type."_baseline = ?, ".$task_type."_condition = ?, ".$task_type."_revised = ?, ".$task_type."_end = ?  WHERE id = ?");
 
-    if ($task_seq < 3) {
-        $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, incite_user_id = ?, time".$task_seq."_end = NOW(), time".($task_seq+1)."_start = NOW(), submission".$task_seq." = ? WHERE id = ?");
-    } else {
-        $stmt = $db->prepare("UPDATE study2 SET is_completed = ?, worker_id = ?, incite_user_id = ?, time3_end = NOW(), submission3 = ? WHERE id = ?");
-    }
+    $stmt->bind_param("sssssi", $content['start'], $content['baseline'], $content['condition'], $content['revised'], $content['end'], $id);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+}
 
-    $stmt->bind_param("isiii", $task_seq, $worker_id, $user_id, $submission_id, $id);
+function completeTests($id, $test_type, $content) {
+/*
+    echo '<pre>';
+    echo $id."\n";
+    echo $test_type."\n";
+    print_r($content);
+    echo '</pre>';
+    die();
+*/
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("UPDATE study22 SET ".$test_type."_start = ?, ".$test_type."_response = ?, ".$test_type."_end = ?  WHERE id = ?");
+
+    $stmt->bind_param("sssi", $content['start'], $content['response'], $content['end'], $id);
     $stmt->execute();
     $stmt->close();
     $db->close();
@@ -318,13 +330,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
             $trial = getNextTrial($assignment_id, $worker_id);
             //testing with a particular technique: baseline, scim, shepherd, rvd (review vs. doing)
-            $trial = array('trial_id' => 1, 'technique' => 'rvd');
+            $trial = array('trial_id' => 0, 'technique' => 'rvd');
             if (isset($_GET['condition'])) {
                 $trial['technique'] = $_GET['condition'];
             }
             if ($trial != null) {
                 //Initialization
-
                 //Docs
                 $_SESSION['study2']['pretest_doc'] = 1125;
                 $_SESSION['study2']['work_doc'] = 1126;
@@ -386,10 +397,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $workingGroupId = $this->getWorkingGroupID();
 
             //Save results of current task
-            $trans_id = createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
-
-            //Update the status of the task 
-            completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
+            $content = array();
+            $content['start'] = $_POST['start'];
+            $content['baseline'] = $_POST['baseline'];
+            $content['condition'] = $_POST['condition'];
+            $content['revised'] = $_POST['revised'];
+            $content['end'] = $_POST['end'];
+            completeTasks($_SESSION['study2']['id'], "summarytone", $content);
 
             //All set. Move to next task!
             $_SESSION['study2']['task_seq']++;
@@ -439,20 +453,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
 
         public function saveTags() {
-            $entities = json_decode($_POST["entities"], true);
-            removeAllTagsFromDocument($this->_getParam('id'));
-
-            $workingGroupId = $this->getWorkingGroupID();
-
-            for ($i = 0; $i < sizeof($entities); $i++) {
-                createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'));
-            }
-
-            $trans_id = createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc'], $_POST['time_prod'], $_POST['loc_prod'], $_POST['time_cont'], $_POST['loc_cont']);
-
-
-            //Update the status of the task 
-            completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], $trans_id, $_SESSION['Incite']['USER_DATA']['id']);
+            $content = array();
+            $content['start'] = $_POST['start'];
+            $content['baseline'] = $_POST['baseline'];
+            $content['condition'] = $_POST['condition'];
+            $content['revised'] = $_POST['revised'];
+            $content['end'] = $_POST['end'];
+            completeTasks($_SESSION['study2']['id'], "tag", $content);
 
             //All set. Move to next task!
             $_SESSION['study2']['task_seq']++;
@@ -574,27 +581,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         public function saveConnections() {
             $all_subject_ids = getAllSubjectConceptIds();
-            $workingGroupId = $this->getWorkingGroupID();
+            $content = array();
+            $content['start'] = $_POST['start'];
+            $content['baseline'] = $_POST['baseline'];
+            $content['condition'] = $_POST['condition'];
+            $content['revised'] = $_POST['revised'];
+            $content['end'] = $_POST['end'];
+            completeTasks($_SESSION['study2']['id'], "connect", $content);
 
-            //connect by multiscale
-            if (isset($_POST['connection_type'])) {
-                foreach ((array) $all_subject_ids as $subject_id) {
-                    //if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array()))) {
-                    if (isset($_POST['subject'.$subject_id])) {
-                        addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id], $_POST['reasoning']);
-                    } else {
-                        addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), $_POST['subject'.$subject_id], $_POST['reasoning']);
-                    }
-                }
-                } else { //connect by tags
-                    if (isset($_POST['subject']) && $_POST['connection'] == 'true')
-                        addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 1);
-                    else if (isset($_POST['subject']) && $_POST['connection'] == 'false')
-                        addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, getLatestTaggedTranscriptionID($this->_getParam('id')), 0);
-                }
-
-                //Update the status of the task 
-                completeTask($_SESSION['study2']['id'], $_SESSION['study2']['task_seq'], $_SESSION['study2']['worker_id'], 0, $_SESSION['Incite']['USER_DATA']['id']);
 
                 //All set. Move to next task!
                 $_SESSION['study2']['task_seq']++;
@@ -657,19 +651,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             public function presurveyAction() {
                 if ($this->getRequest()->isPost()) {
-                    $name   = $_POST['name'];
-                    $class   = $_POST['class'];
-                    $age    = $_POST['age'];
-                    $gender = $_POST['gender'];
-                    $majors = $_POST['majors'];
-
-                    //Save demographics
-                    $db = DB_Connect::connectDB();
-                    $stmt = $db->prepare("UPDATE study2 SET name = ?, class= ?, age = ?, gender = ?, majors = ?, time1_start = NOW() WHERE id = ?");
-                    $stmt->bind_param("ssissi", $name, $class, $age, $gender, $majors, $_SESSION['study2']['id']);
-                    $stmt->execute();
-                    $stmt->close();
-                    $db->close();
 
                     //All set. Move to next task!
                     $_SESSION['study2']['task_seq']++;
@@ -702,6 +683,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $stmt->close();
                     $db->close();
                      */
+                    $content = array();
+                    $content['start'] = $_POST['start'];
+                    $content['response'] = $_POST['response'];
+                    $content['end'] = $_POST['end'];
+                    completeTests($_SESSION['study2']['id'], "pretest", $content);
 
                     //All set. Move to next task!
                     $_SESSION['study2']['task_seq']++;
@@ -734,6 +720,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $stmt->close();
                     $db->close();
                      */
+                    $content = array();
+                    $content['start'] = $_POST['start'];
+                    $content['response'] = $_POST['response'];
+                    $content['end'] = $_POST['end'];
+                    completeTests($_SESSION['study2']['id'], "posttest", $content);
 
                     //All set. Move to next task!
                     $_SESSION['study2']['task_seq']++;
@@ -746,13 +737,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             public function postsurveyAction() {
                 if ($this->getRequest()->isPost()) {
 
-                    //Save 
-                    $db = DB_Connect::connectDB();
-                    $stmt = $db->prepare("UPDATE study2 SET q1 = ?, q2 = ?, q3 = ?, q4 = ?, q5 = ?, q6 = ?, q71 = ?, q72 = ?, q73 = ?, q74 = ?, q81 = ?, q82 = ?, q83 = ?, q84 = ?, tlx_men = ?, tlx_phy = ?, tlx_tem = ?, tlx_per = ?, tlx_eff = ?, tlx_fru = ?, tlx_int = ?, user_feedback = ? WHERE id = ?");
-                    $stmt->bind_param("iiiiiiiiiiiiiiiiiiiiisi", $_POST['q1'], $_POST['q2'], $_POST['q3'], $_POST['q4'], $_POST['q5'], $_POST['q6'], $_POST['q71'], $_POST['q72'], $_POST['q73'], $_POST['q74'], $_POST['q81'], $_POST['q82'], $_POST['q83'], $_POST['q84'], $_POST['tlx_men'], $_POST['tlx_phy'], $_POST['tlx_tem'], $_POST['tlx_per'], $_POST['tlx_eff'], $_POST['tlx_fru'], $_POST['tlx_int'], $_POST['user_feedback'], $_SESSION['study2']['id']);
-                    $stmt->execute();
-                    $stmt->close();
-                    $db->close();
+                    $content = array();
+                    $content['start'] = $_POST['start'];
+                    $content['response'] = $_POST['response'];
+                    $content['end'] = $_POST['end'];
+                    completeTests($_SESSION['study2']['id'], "postsurvey", $content);
 
                     //All set. Move to next task!
                     $_SESSION['study2']['task_seq']++;
