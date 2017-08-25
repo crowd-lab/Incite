@@ -27,7 +27,6 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <form id="summarytone-form" method="post">
                         <div class="panel-group" id="phase1-panel-group">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -153,30 +152,30 @@
                                             <label><input type="checkbox" value="" id="evidence" name="evidence">I provided reasoning with evidence to support my tone ratings such as keywords implying emotions or attitudes.</label>
                                         </div>
                                         <p>How effective is your summary?</p>
-                                        <select class="form-control">
-                                            <option></option>
-                                            <option>9 Excellent</option>
-                                            <option>8</option>
-                                            <option>7 Very Good</option>
-                                            <option>6</option>
-                                            <option>5 Acceptable</option>
-                                            <option>4</option>
-                                            <option>3 Borderline</option>
-                                            <option>2</option>
-                                            <option>1 Poor</option>
+                                        <select id="eff_summary" class="form-control">
+                                            <option value="0"></option>
+                                            <option value="9">9 Excellent</option>
+                                            <option value="8">8</option>
+                                            <option value="7">7 Very Good</option>
+                                            <option value="6">6</option>
+                                            <option value="5">5 Acceptable</option>
+                                            <option value="4">4</option>
+                                            <option value="3">3 Borderline</option>
+                                            <option value="2">2</option>
+                                            <option value="1">1 Poor</option>
                                         </select>
                                         <p>How effective are your tone ratings?</p>
-                                        <select class="form-control">
-                                            <option></option>
-                                            <option>9 Excellent</option>
-                                            <option>8</option>
-                                            <option>7 Very Good</option>
-                                            <option>6</option>
-                                            <option>5 Acceptable</option>
-                                            <option>4</option>
-                                            <option>3 Borderline</option>
-                                            <option>2</option>
-                                            <option>1 Poor</option>
+                                        <select id="eff_tone" class="form-control">
+                                            <option value="0"></option>
+                                            <option value="9">9 Excellent</option>
+                                            <option value="8">8</option>
+                                            <option value="7">7 Very Good</option>
+                                            <option value="6">6</option>
+                                            <option value="5">5 Acceptable</option>
+                                            <option value="4">4</option>
+                                            <option value="3">3 Borderline</option>
+                                            <option value="2">2</option>
+                                            <option value="1">1 Poor</option>
                                         </select>
                                         <p>How can you improve my work?</p>
                                         <textarea style="width:100%;" rows="4" id="feedback"></textarea>
@@ -253,12 +252,18 @@
                                         </table>
                                         <p class="header-step">Step <?php echo $task_seq; ?>c: Please revise your reasoning to reflect what you learned in Phase 2.</p>
                                         <textarea id="revtonereasoning" style="width:100%;" name="revtonereasoning" rows="6"></textarea>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    <form id="summarytone-form" method="post">
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="baseline" name="baseline" value="">
+                        <input type="hidden" id="condition" name="condition" value="">
+                        <input type="hidden" id="revised" name="revised" value="">
+                        <input type="hidden" id="end" name="end" value="">
+                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
 
                 </div>
                 <hr size=2 class="discussion-seperation-line">
@@ -287,6 +292,7 @@
 
 
     $(document).ready(function () {
+        $('#start').val(getNow());
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
         $('#phase1-button').on('click', function(e) {
             //window.onbeforeunload = null;
@@ -307,6 +313,13 @@
             $('#ori-tonereasoning').text($('#tonereasoning').val());
             $('#phase2-panel').collapse('show');
             $("html, body").animate({ scrollTop: 0 }, "slow");
+            var baseline = {};
+            baseline["summary"] = $('#summary').val();
+            for (var i = 1; i <= 6; i++) {
+                baseline["tone"+i] = $('input[name=tone'+i+']:checked').val();
+            }
+            baseline["tonereasoning"] = $('#tonereasoning').val();
+            $('#baseline').val(JSON.stringify(baseline));
         });
         $('#phase2-button').on('click', function(e) {
             $('#phase2-panel').collapse('hide');
@@ -322,6 +335,19 @@
             $('input[name="revtone4"][value='+$('input[name="tone4"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
+            var condition = {};
+            condition['checklist'] = {};
+            $('input[type=checkbox]').each(function (idx) {
+                if (this.checked) {
+                    condition['checklist'][this.name] = 1;
+                } else {
+                    condition['checklist'][this.name] = 0;
+                }
+            });
+            condition['eff_summary'] = $('#eff_summary').val();
+            condition['eff_tone'] = $('#eff_tone').val();
+            condition['feedback'] = $('#feedback').val();
+            $('#condition').val(JSON.stringify(condition));
             $('input[type=checkbox]').prop('disabled', true)
             $('label:has(input[type=checkbox][disabled])').css('color', '#999')
             $('select').prop('disabled', true);
@@ -330,6 +356,15 @@
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;
+            $(this).prop('disabled', true);
+            $('#end').val(getNow());
+            var revised = {};
+            revised["summary"] = $('#revsummary').val();
+            for (var i = 1; i <= 6; i++) {
+                revised["tone"+i] = $('input[name=revtone'+i+']:checked').val();
+            }
+            revised["revtonereasoning"] = $('#revtonereasoning').val();
+            $('#revised').val(JSON.stringify(revised));
             $('#summarytone-form').submit();
         });
         $('#phase1-panel').collapse('show');

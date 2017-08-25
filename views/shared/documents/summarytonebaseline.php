@@ -27,7 +27,6 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <form id="summarytone-form" method="post">
                                         <p class="header-step">Step <?php echo $task_seq; ?>a: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</p>
                                         <textarea id="summary" style="width:100%;" name="summary" rows="5" placeholder="Your shortened text here"></textarea>
                                         <br>
@@ -86,7 +85,13 @@
                                         </table>
                                         <p class="header-step">Step <?php echo $task_seq; ?>c: Please provide your reasoning for ratings above.</i></p>
                                         <textarea id="tonereasoning" style="width:100%;" name="tonereasoning" rows="6" placeholder="Your reasoning here."></textarea>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    <form id="summarytone-form" method="post">
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="baseline" name="baseline" value="">
+                        <input type="hidden" id="condition" name="condition" value="na">
+                        <input type="hidden" id="revised" name="revised" value="na">
+                        <input type="hidden" id="end" name="end" value="">
+                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                     </form>
 
                 </div>
@@ -106,6 +111,7 @@
 
 
     $(document).ready(function () {
+        $('#start').val(getNow());
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
         $('#phase1-button').on('click', function(e) {
             //window.onbeforeunload = null;
@@ -136,6 +142,15 @@
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;
+            $(this).prop('disabled', true);
+            $('#end').val(getNow());
+            var baseline = {};
+            baseline["summary"] = $('#summary').val();
+            for (var i = 1; i <= 6; i++) {
+                baseline["tone"+i] = $('input[name=tone'+i+']:checked').val();
+            }
+            baseline["tonereasoning"] = $('#tonereasoning').val();
+            $('#baseline').val(JSON.stringify(baseline));
             $('#summarytone-form').submit();
         });
         $('#phase1-panel').collapse('show');

@@ -27,7 +27,6 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <form id="summarytone-form" method="post">
                         <div class="panel-group" id="phase1-panel-group">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -193,12 +192,18 @@
                                         </table>
                                         <p class="header-step">Step <?php echo $task_seq; ?>c: Please revise your reasoning to reflect your answers to the 4 questions in Phase 2.</i></p>
                                         <textarea id="revtonereasoning" style="width:100%;" name="revtonereasoning" rows="6"></textarea>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    <form id="summarytone-form" method="post">
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="baseline" name="baseline" value="">
+                        <input type="hidden" id="condition" name="condition" value="">
+                        <input type="hidden" id="revised" name="revised" value="">
+                        <input type="hidden" id="end" name="end" value="">
+                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
 
                 </div>
                 <hr size=2 class="discussion-seperation-line">
@@ -217,6 +222,7 @@
 
 
     $(document).ready(function () {
+        $('#start').val(getNow());
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
         $('#phase1-button').on('click', function(e) {
             //window.onbeforeunload = null;
@@ -229,6 +235,13 @@
             $('#phase2-panel-group').show();
             $('#phase2-panel').collapse('show');
             $("html, body").animate({ scrollTop: 0 }, "slow");
+            var baseline = {};
+            baseline["summary"] = $('#summary').val();
+            for (var i = 1; i <= 6; i++) {
+                baseline["tone"+i] = $('input[name=tone'+i+']:checked').val();
+            }
+            baseline["tonereasoning"] = $('#tonereasoning').val();
+            $('#baseline').val(JSON.stringify(baseline));
         });
         $('#phase2-button').on('click', function(e) {
             $('#phase2-panel').collapse('hide');
@@ -244,6 +257,12 @@
             $('input[name="revtone4"][value='+$('input[name="tone4"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
+            var condition = {};
+            condition['question1'] = $('#sq1').val();
+            condition['question2'] = $('#sq2').val();
+            condition['question3'] = $('#sq3').val();
+            condition['question4'] = $('#sq4').val();
+            $('#condition').val(JSON.stringify(condition));
             $('#sq1').prop('disabled', true);
             $('#sq1').css('color', '#999');
             $('#sq2').prop('disabled', true);
@@ -255,6 +274,15 @@
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;
+            $(this).prop('disabled', true);
+            $('#end').val(getNow());
+            var revised = {};
+            revised["summary"] = $('#revsummary').val();
+            for (var i = 1; i <= 6; i++) {
+                revised["tone"+i] = $('input[name=revtone'+i+']:checked').val();
+            }
+            revised["revtonereasoning"] = $('#revtonereasoning').val();
+            $('#revised').val(JSON.stringify(revised));
             $('#summarytone-form').submit();
         });
         $('#phase1-panel').collapse('show');
