@@ -418,6 +418,13 @@ window.addEventListener('popstate', function () {
     alert('Please do not use back button because your work may be lost!');
     history.pushState(null, null, document.URL);
 });
+function getNow() {
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    return dateTime;
+}
 
 var msgbox;
 var fullInciteUrl = "<?php echo getFullInciteUrl(); ?>";
