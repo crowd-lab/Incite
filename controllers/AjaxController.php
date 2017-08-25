@@ -189,7 +189,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         system_log('failed to send email');
         echo 'false';
       }
-
     }
   }
 
@@ -230,13 +229,10 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     if ($this->getRequest()->isGet()) {
       $page = getCurrentPage();
       echo $page;
-
-
     }
     else{
       echo 'false';
     }
-
   }
 public function getallavailabledocsAction(){
   if ($this->getRequest()->isGet()) {
@@ -281,15 +277,11 @@ public function getallavailabledocsAction(){
 
         }
       }
-
       $data['records'] = $records;
       echo json_encode($data);
-
     }else{
-
       echo 'false';
     }
-
   }
 }
 
@@ -333,16 +325,13 @@ public function getallavailabledocsAction(){
                 'src' => metadata($record, array('Dublin Core', 'Rights')),
                 'url'=> get_image_url_for_item($record, true),
                 'lat_long' => loc_to_lat_long(metadata($record, array('Item Type Metadata', 'Location'))));
-
                 }
            }
         }
-
         $data['records'] = $records;
         echo json_encode($data);
 
       }else{
-
         echo 'false';
       }
 
@@ -362,7 +351,6 @@ public function getallavailabledocsAction(){
       if(isset($_GET['keywords'])){
         $keywords = $_GET['keywords'];
       }
-
       $records = array();
       $item_ids = Incite_DocumentsController::populateTagSearchResults();
 
@@ -391,15 +379,11 @@ public function getallavailabledocsAction(){
 
           }
         }
-
         $data['records'] = $records;
         echo json_encode($data);
-
       }else{
-
         echo 'false';
       }
-
     }
   }
 
@@ -443,15 +427,12 @@ public function getallavailabledocsAction(){
             'src' => metadata($record, array('Dublin Core', 'Rights')),
             'url'=> get_image_url_for_item($record, true),
             'lat_long' => loc_to_lat_long(metadata($record, array('Item Type Metadata', 'Location'))));
-
           }
         }
 
         $data['records'] = $records;
         echo json_encode($data);
-
       }else{
-
         echo 'false';
       }
 
@@ -555,12 +536,9 @@ public function getallavailabledocsAction(){
       }
       else {
         echo "false";
-      }
-
-      
+      } 
     }
   }
-
 
 /**
   * Ajax function that remove the selected group
@@ -578,15 +556,8 @@ public function getallavailabledocsAction(){
       else {
         echo "false";
       }
-
-      
     }
   }
-
-
-
-
-
 
   /**
   * Ajax function that updates the privilege of a member of a group
@@ -828,12 +799,10 @@ public function getallavailabledocsAction(){
     if ($this->getRequest()->isPost()) {
       $FROM = $_POST['userTranscription'];
       $TO = "THE FOURTH OF JULY AT SHREVEPORT – We learn from the Southwestern that it is the purpose of the military companies there to celebrate the Fourth of July by a general review, grand parade and dinner. It says:
-The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.
-";
+The Yankees have robbed us of too much already. We have no idea of giving up the national anniversary—not a bit of it. The Fourth of July is ours. The declaration of independence declared and reiterated the doctrine for which we are to-day fighting. It was drafted by a southern man and advocated by Washington and a host of other southern heroes. The Shreveport Sentinels have appointed a committee to consult with similar committees to be appointed by the artillery company—the Summer Grove cavalry and the Keachi company, for the purpose of carrying out this laudable purpose. Long live the Confederacy, and huzza for the old Fourth of July.";
       $diff = new FineDiff($FROM, $TO, FineDiff::$wordGranularity);
       $htmlDiff = $diff->renderDiffToHTML();
       $htmlDiff = html_entity_decode($htmlDiff, ENT_QUOTES, 'UTF-8');
-      
       echo $htmlDiff;
     }
   }

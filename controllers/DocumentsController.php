@@ -189,9 +189,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       $db->close();
     }
     
-    
-    
-
     if ($_POST['link'] == 1) {
       if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
         $this->redirect('/incite/documents/tag/'.$this->_getParam('id').'?'.$_POST['query_str']);

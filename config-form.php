@@ -6,7 +6,7 @@
         <label id="logo_label" for="per_page"><?php echo __('Logo*'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Upload Your Logo Here (We only accept .png format images)'); ?>.</p>
+        <p class="explanation"><?php echo __('Upload your logo here (We only accept .png format images)'); ?>.</p>
         <p class="explanation"><?php echo __('Your current logo'); ?>.</p>
         <img src="<?php echo getFullOmekaUrl(); ?>../plugins/Incite/views/shared/images/customized_logo.png" height="100" width="400">
         <br>
@@ -17,15 +17,15 @@
     </div>
 
     <div class="two columns alpha">
-        <label id="title_label" for="per_page"><?php echo __('Homepage Title*'); ?></label>
+        <label id="title_label" for="per_page"><?php echo __('Homepage Tagline*'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Write Your Homepage Title Here'); ?>.</p>
+        <p class="explanation"><?php echo __('Write your homepage tagline here'); ?>.</p>
         <div class="input-block">
         <?php if (empty(get_option('title'))): ?>
-        <input type="text" class="textinput"  name="title" value="Your project title/description here" id="title" />
+        <input style="width: 358px;" type="text" class="textinput"  name="title" value="Your project title/description here" id="title" />
         <?php else: ?>
-        <input type="text" class="textinput"  name="title" value="<?php echo get_option('title'); ?>" id="title" />
+        <input style="width: 358px;" type="text" class="textinput"  name="title" value="<?php echo get_option('title'); ?>" id="title" />
         <?php endif; ?>
         </div>
     </div>
@@ -34,7 +34,7 @@
         <label id="intro_label" for="per_page"><?php echo __('HomePage Introduction*'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Write Your Homepage Introduction Here'); ?>.</p>
+        <p class="explanation"><?php echo __('Write your homepage introduction here'); ?>.</p>
         <div class="input-block">
         <?php if (empty(get_option('intro'))): ?>
         <textarea placeholder=""rows="15" cols="50" name="intro" id="intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla maximus velit sed felis gravida, et pellentesque libero posuere. Nullam augue mi, lacinia eu mauris iaculis, suscipit hendrerit elit. Ut consectetur nunc eget lorem venenatis, et vehicula nisl vestibulum. Vivamus vel aliquam lectus. Aliquam pulvinar dictum tellus a feugiat. Praesent a eros sed velit suscipit semper eu et orci. Donec elementum tempor sagittis. Duis orci nisl, semper ut erat ac, aliquet commodo purus. Morbi erat massa, dictum quis eleifend at, ornare vitae risus. </textarea>
@@ -48,16 +48,17 @@
         <label for="per_page"><?php echo __('Social Feeds'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Provide Your Social Feeds Here'); ?>.</p>
+        <p class="explanation"><?php echo __('Provide your social feeds here'); ?>.</p>
         <div class="input-block">
         <div id="twitter_feeds">
-            <p class="explanation"><?php echo __('<strong>Twitter (Settings and privacy -> Widgets -> Create new)</strong>'); ?></p>
+            <p class="explanation"><?php echo __('<strong>Twitter (You can go to <a target="_blank" href="https://twitter.com/login?lang=en">here</a> -> Settings and privacy -> Widgets -> Create new)</strong>'); ?></p>
             <label style="clear: both;margin-right:-45px;">Timeline:</label>
             <?php if (empty(get_option('twitter_timeline'))): ?>
             <textarea placeholder=""rows="10" cols="50" name="twitter_timeline"><?php echo '&lt;a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar"&gt;Tweets by July4CivilWar&lt;/a&gt; &lt;script async src="//platform.twitter.com/widget    s.js" charset="utf-8"&gt;&lt;/script&gt'; ?> </textarea>
             <?php else: ?>
             <textarea placeholder=""rows="10" cols="50" name="twitter_timeline"><?php echo get_option('twitter_timeline'); ?></textarea>
             <?php endif; ?>
+            <br>
             <label style="clear: both;margin-right:-45px;">Buttons:</label>
             <?php if (empty(get_option('twitter_button'))): ?>
             <textarea placeholder=""rows="10" cols="50" name="twitter_button"><?php echo '&lt;a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false"&gt;Follow @July4CivilWar&lt;/a&gt;&lt;script async src="//platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt'; ?> </textarea>
@@ -66,8 +67,9 @@
             <?php endif; ?>
         </div>
         <div id="fb_feeds">
-            <p class="explanation"><?php echo __('<strong>FaceBook (you can go to <a target="_blank" href="https://developers.facebook.com/docs/plugins">here</a> for help)</strong>'); ?></p>
-            <label style="clear: both;margin-right:-45px;">Facebook :</label>
+        <br>
+            <p class="explanation"><?php echo __('<strong>FaceBook (You can go to <a target="_blank" href="https://developers.facebook.com/docs/plugins">here</a> for help)</strong>'); ?></p>
+            <label style="clear: both;margin-right:-45px;">Facebook:</label>
             <?php if (empty(get_option('fb'))): ?>
             <textarea placeholder=""rows="12" cols="50" name="fb"><?php echo '&lt;div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"&gt;&lt;blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"&gt;&lt;a href="https://www.facebook.com/July4CivilWar/"&gt;Mapping the Fourth of July: Exploring Independence in the Civil War Era&lt;/a&gt;&lt;/blockquote>&lt;/div&gt'; ?> </textarea>
             <?php else: ?>
@@ -102,7 +104,9 @@
             <input type="hidden"  name="encoded_concept" id="encoded_concept"/>
             <input type="hidden"  name="encoded_def" id="encoded_def"/>
         </div>
+        <br>
         <div id="c_table">
+        <?php if(!empty(get_option('encoded_concept'))): ?>
             <table style="width:300px">
                 <tr>
                     <th>Concepts</th>
@@ -110,6 +114,7 @@
                 </tr>
                 
             </table>
+        <?php endif; ?>
         </div>
     </div>
 
@@ -118,7 +123,7 @@
         <label for="per_page"><?php echo __('Sponsor1'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Upload Your Sponsor Here (Please use the full url including http)'); ?>.</p>
+        <p class="explanation"><?php echo __('Upload your sponsor here (Please use the full url including http)'); ?>.</p>
         <?php if (empty(get_option('delete_sponsor1')) || get_option('delete_sponsor1') == "no"): ?>
         <div id="spon1">
         <p class="explanation"><?php echo __('Your current sponsor 1'); ?>.</p>
@@ -140,7 +145,7 @@
         <label for="per_page"><?php echo __('Sponsor2'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Upload Your Sponsor Here (Please use the full url including http)'); ?>.</p>
+        <p class="explanation"><?php echo __('Upload your sponsor here (Please use the full url including http)'); ?>.</p>
         <?php if (empty(get_option('delete_sponsor2')) || get_option('delete_sponsor2') == "no"): ?>
         <div id="spon2">
         <p class="explanation"><?php echo __('Your current sponsor 2'); ?>.</p>
@@ -162,7 +167,7 @@
         <label for="per_page"><?php echo __('Sponsor3'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Upload Your Sponsor Here (Please use the full url including http)'); ?>.</p>
+        <p class="explanation"><?php echo __('Upload your sponsor here (Please use the full url including http)'); ?>.</p>
         <?php if (empty(get_option('delete_sponsor3')) || get_option('delete_sponsor3') == "no"): ?>
         <div id="spon3">
         <p class="explanation"><?php echo __('Your current sponsor 3'); ?>.</p>
@@ -184,7 +189,7 @@
         <label for="per_page"><?php echo __('Sponsor4'); ?></label>
     </div>
     <div class="inputs five columns omega">
-        <p class="explanation"><?php echo __('Upload Your Sponsor Here (Please use the full url including http)'); ?>.</p>
+        <p class="explanation"><?php echo __('Upload your sponsor here (Please use the full url including http)'); ?>.</p>
         <?php if (empty(get_option('delete_sponsor4')) || get_option('delete_sponsor4') == "no"): ?>
         <div id="spon4">
         <p class="explanation"><?php echo __('Your current sponsor 4'); ?>.</p>
@@ -218,6 +223,8 @@ var def_arr = [];
     $("#encoded_def").val(JSON.stringify(def_arr));
 <?php endif; ?>
 $(document ).ready(function() {
+    //set up the input length
+    $("input[type = 'text']").width($("textarea").width());
     activeCheck();
     getConcept();
     $('[data-toggle="popover"]').popover(); 
@@ -244,23 +251,26 @@ $(document ).ready(function() {
         else {
             event.preventDefault();
             var error_message = "";
+            if ($("#logo").val() == "" && (<?php echo json_encode(get_option('logo_set')); ?> == "false" || <?php echo json_encode(get_option('logo_set')); ?> == null)) {
+                error_message += "*You have not set the logo</br>";
+                $("#logo_label").css("color", "red");
+            }
+
             if ($("#title").val() == "") {
-                error_message += "*Title is empty </br>";
+                error_message += "*Tagline cannot empty </br>";
                 $("#title_label").css("color", "red");
             }
+
             if ($("#intro").val() == "") {
-                error_message += "*Introduction is empty</br>";
+                error_message += "*Introduction cannot be empty</br>";
                 $("#intro_label").css("color", "red");
             }
             
             if ($("#c_table td").length == 0 || num_of_delete == $("#c_table tr").length - 1) {
-                error_message += "*Theme table is empty</br>";
+                error_message += "*We need at least one theme</br>";
                 $("#theme_label").css("color", "red");
             }
-            if ($("#logo").val() == "" && (<?php echo json_encode(get_option('logo_set')); ?> == "false" || <?php echo json_encode(get_option('logo_set')); ?> == null)) {
-                error_message += "*Logo is empty</br>";
-                $("#logo_label").css("color", "red");
-            }
+            
             if ($("#alert").length == 0)
                 $("#alertbox").append('<p id="alert" style = "border-style: solid; color: red;">' + error_message + '</div>');
             else {
@@ -297,6 +307,9 @@ $(document ).ready(function() {
         }
     });
     $("#add_button" ).click(function() {
+        if ($("#c_table table").length == 0) {
+            $("#c_table").append('<table style="width:300px"><tr><th>Concepts</th><th></th></tr></table>');
+        }
         var concept = $("input[name = 'concept_place']").val();
         var def = $("input[name = 'def_place']").val();
         concept_arr.push(concept);
@@ -433,5 +446,3 @@ table tr td {
     padding: 5px 5px;
 }
 </style>
-
-

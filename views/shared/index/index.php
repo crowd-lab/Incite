@@ -133,7 +133,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <div id="homepage-details" style="margin-top: 30px;">
         <?php if (gettype(get_option('twitter_timeline')) == "NULL" || !empty(get_option('twitter_timeline')) || gettype(get_option('fb')) == "NULL" || !empty(get_option('fb'))): ?>
             <div id="twitter-tweets" style="float: right; width:20%; margin-bottom: -250px;">
-            <h3 style="color: #8BB7C8; margin-top: 0px;">Social Feeds below</h3>
+            <h3 style="color: #8BB7C8; margin-top: 0px;">Social Feeds</h3>
             <?php if (gettype(get_option('twitter_timeline')) == "NULL"): ?>
                 <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @July4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
@@ -179,7 +179,9 @@ include(dirname(__FILE__).'/../common/header.php');
                         </ul>
                     </p>
                 </div>
-                <div style="max-width: 120px; float: left; margin-left: -140px;background-color: #000"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;"></div>
+                <div style="max-width: 120px; float: left; margin-left: -140px;margin-top: 20px;">
+                    <img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;vertical-align: middle;">
+                </div>
                 <div style="clear:both"></div>
             </div>
         </div>   <!-- homepage-introduction -->
