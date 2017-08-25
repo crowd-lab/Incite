@@ -31,7 +31,9 @@
                     <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
                     <p class="header-step">Step <?php echo $task_seq; ?>b: Write your response below to the historical document and question.</p>
                     <form id="interpretation-form" method="post">
-                        <textarea style="width:100%;" name="pre_interpretation" rows="10" placeholder="Your response here."></textarea>
+                        <textarea style="width:100%;" name="response" rows="10" placeholder="Your response here."></textarea>
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="end" name="end" value="">
                         <button type="button" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
                     </form>
 
@@ -53,8 +55,11 @@
 
     $(document).ready(function () {
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
+        $('#start').val(getNow());
         $('#confirm-button').on('click', function(e) {
+            $(this).prop('disabled', true);
             window.onbeforeunload = null;
+            $('#end').val(getNow());
             $('#interpretation-form').submit();
         });
     });
