@@ -28,21 +28,75 @@ include(dirname(__FILE__).'/../common/header.php');
 <script>
 
 function check_input () {
-    var controls = $('#demo-form .form-control');
+    var controls = $('#demographics-form .form-control');
     for (var i = 0; i < controls.length; i++) {
         if ($(controls[i]).val() === "") {
-            alert('The "'+controls[i].name.substring(0,1).toUpperCase()+controls[i].name.substring(1)+'" is not specified yet');
+            notif({
+              msg: "<b>Error: </b> "+'The "'+controls[i].name.substring(0,1).toUpperCase()+controls[i].name.substring(1)+'" is not specified yet',
+              type: "error"
+            });
             return false;
         }
+    }
+    controls = $('#learning-form .form-control');
+    for (var i = 0; i < controls.length; i++) {
+        if ($(controls[i]).val() === "") {
+            notif({
+              msg: '<b>Error: </b> "'+$(controls[i]).parent().parent().find('label').text().substring(0,2)+'" is not answered yet',
+              type: "error"
+            });
+            return false;
+        }
+    }
+    controls = [$('input[name=tlx_men]:checked'), $('input[name=tlx_phy]:checked'), $('input[name=tlx_tem]:checked'), $('input[name=tlx_per]:checked'), $('input[name=tlx_eff]:checked'), $('input[name=tlx_fru]:checked')];
+    for (var i = 0; i < controls.length; i++) {
+        if (controls[i].length == 0) {
+            notif({
+              msg: '<b>Error: </b> "T'+(i+1)+'" is not specified yet',
+              type: "error"
+            });
+            return false;
+        }
+    }
+    if ($('#feedback').val() == "") {
+        notif({
+          msg: "<b>Error: </b> You haven't provided any feedback or comments yet!",
+          type: "error"
+        });
+        return false;
     }
     return true;
 }
 
+function generate_response() {
+    //assume check_input has been done
+    var reponse = {};
+    response['demographics'] = {};
+    response['learning'] = {};
+    response['tlx'] = {};
+    response['feedback'] = {};
+
+    $('#demographics-form .form-control').each(function(idx) {
+        response['demographics'][this.name] = $(this).val();
+    });
+    $('#learning-form .form-control').each(function(idx) {
+        response['learning'][this.name] = $(this).val();
+    });
+    $('#tlx-form input[type=radio]:checked').each(function(idx) {
+        response['tlx'][this.name] = $(this).val();
+    });
+    response['feedback'] = $('#feedback').val();
+    return JSON.stringify(response);
+}
+
 $( function () {
-    $('#submit-demo').on('click', function (e) {
+    $('#start').val(getNow());
+    $('#submit-form').on('click', function (e) {
         if (check_input()) {
             window.onbeforeunload = "";
-            $('#demo-form').submit();
+            $('#end').val(getNow());
+            $('#response').val(generate_response());
+            $('#postsurvey-form').submit();
         }
     });
 });
@@ -58,20 +112,8 @@ $( function () {
             <div class="panel-heading">
                 <h3 class="panel-title">Post-task Survey</h3>
             </div>
-            <form action="" method="post" id="demo-form">
+            <div id="demographics-form">
                 <div style="padding: 15px;">
-                    <div class="form-group row">
-                      <label for="example-text-input" class="col-xs-2 col-form-label">Name</label>
-                      <div class="col-xs-10">
-                        <input name="name" class="form-control" type="text" value="" id="name" placeholder="Your name that will be reported to your class for extra credit">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label for="example-text-input" class="col-xs-2 col-form-label">Class</label>
-                      <div class="col-xs-10">
-                        <input name="class" class="form-control" type="text" value="" id="class" placeholder="Your class info. E.g. HIST 1001">
-                      </div>
-                    </div>
                     <div class="form-group row">
                       <label for="example-text-input" class="col-xs-2 col-form-label">Age</label>
                       <div class="col-xs-10">
@@ -90,14 +132,163 @@ $( function () {
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label for="example-text-input" class="col-xs-2 col-form-label">Major(s)</label>
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Education</label>
                       <div class="col-xs-10">
-                        <input name="majors" class="form-control" type="text" placeholder="Full name of your major(s) and please use semicolon to separate multiple majors." id="majors">
+                        <select name="education" class="form-control" id="education">
+                            <option value="" selected>Choose highest degree</option>
+                            <option value="h">High School</option>
+                            <option value="a">Associate</option>
+                            <option value="b">Bachelor</option>
+                            <option value="m">Master</option>
+                            <option value="p">PhD</option>
+                            <option value="o">Other</option>
+                        </select>
                       </div>
                     </div>
-                    <div class="row" style="margin: 10px;"><button type="button" id="submit-demo" class="btn btn-primary pull-right">Submit</button></div>
+                    <div class="form-group row">
+                      <label for="example-text-input" class="col-xs-2 col-form-label">Occupation</label>
+                      <div class="col-xs-10">
+                        <input name="occupation" class="form-control" type="text" placeholder="" id="occupation">
+                      </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+            <hr>
+            <div id="learning-form">
+                <div style="padding: 15px;">
+                    <div class="form-group">
+                      <label for="example-text-input" class="col-form-label">L1: How much do you think the process help guide you analyze the historical document?</label>
+                      <div class="col-xs-10">
+                        <select name="amountlearned" class="form-control" id="amountlearned">
+                            <option value="" selected></option>
+                            <option value="4">Strongly</option>
+                            <option value="3">Moderately</option>
+                            <option value="2">Weakly</option>
+                            <option value="1">Not at all</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="example-text-input" class="col-form-label">L2: Please specify what you learned through the HIT if any.</label>
+                      <div class="col-xs-10">
+                        <textarea name="learned" class="form-control" id="learned" rows="4"></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="example-text-input" class="col-form-label">L3: How fun or interesting do you think about the HIT?</label>
+                      <div class="col-xs-10">
+                        <select name="fun" class="form-control" id="fun">
+                            <option value="" selected></option>
+                            <option value="4">Strongly</option>
+                            <option value="3">Moderately</option>
+                            <option value="2">Weakly</option>
+                            <option value="1">Not at all</option>
+                        </select>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <hr>
+            <div id="tlx-form">
+                <div style="padding: 15px;">
+                    <div class="form-group">
+                        <div>
+                            <div><label>T1: How mentally demanding was the task?</label></div>
+                            <label class="radio-inline"><input type="radio" name="tlx_men" value="1">1 (very low)</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_men" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_men" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_men" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_men" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_men" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_men" value="7">7 (very high)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <div><label>T2: How physically demanding was the task?</label></div>
+                            <label class="radio-inline"><input type="radio" name="tlx_phy" value="1">1 (very low)</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_phy" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_phy" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_phy" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_phy" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_phy" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_phy" value="7">7 (very high)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <div><label>T3: How hurried or rushed was the pace of the task?</label></div>
+                            <label class="radio-inline"><input type="radio" name="tlx_tem" value="1">1 (very low)</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_tem" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_tem" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_tem" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_tem" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_tem" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_tem" value="7">7 (very high)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <div><label>T4: How successful were you in accomplishing what you were asked to do?</label></div>
+                            <label class="radio-inline"><input type="radio" name="tlx_per" value="1">1 (very low)</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_per" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_per" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_per" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_per" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_per" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_per" value="7">7 (very high)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <div><label>T5: How hard did you have to work to accomplish your level of performance?</label></div>
+                            <label class="radio-inline"><input class="form-check-input" type="radio" name="tlx_eff" value="1">1 (very low)</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_eff" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_eff" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_eff" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_eff" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_eff" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_eff" value="7">7 (very high)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <div><label>T6: How insecure, discouraged, irritated, stressed, and annoyed were you?</label></div>
+                            <label class="radio-inline"><input type="radio" name="tlx_fru" value="1">1 (very low)</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_fru" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_fru" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_fru" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_fru" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_fru" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="tlx_fru" value="7">7 (very high)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div id="feedback-form">
+                <div style="padding: 15px;">
+                    <div class="form-group">
+                      <label for="example-text-input" class="col-form-label">We would like to know what you think about this study. Are there any confusions? Any improvements we can make? Or other thoughts? Please provide your feedback and comments below.</label>
+                      <div class="col-xs-10">
+                        <textarea name="feedback" class="form-control" id="feedback" rows="6"></textarea>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+                    <div class="row" style="margin: 10px;">
+                        <form action="" method="post" id="postsurvey-form">
+                            <input type="hidden" id="start" name="start" value="">
+                            <input type="hidden" id="response" name="response" value="">
+                            <input type="hidden" id="end" name="end" value="">
+                            <button type="button" id="submit-form" class="btn btn-primary pull-right">Submit</button>
+                        </form>
+                    </div>
             <div style="clearfix"></div>
         </div> 
     </div>
