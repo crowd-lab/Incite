@@ -379,7 +379,7 @@
             for (var i = 1; i <= 6; i++) {
                 revised['response']["tone"+i] = $('input[name=revtone'+i+']:checked').val();
             }
-            revised['response']["revtonereasoning"] = $('#revtonereasoning').val();
+            revised['response']["tonereasoning"] = $('#revtonereasoning').val();
             revised['phase2events'] = phase2events;
             revised['end'] = getNow();
             $('#revised').val(JSON.stringify(revised));
