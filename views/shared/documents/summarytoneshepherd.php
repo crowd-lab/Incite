@@ -289,14 +289,27 @@
         }
     }
 
+    var phase2events = [];
+    var baseline = {};
+    var condition = {};
+    var revised = {};
 
 
     $(document).ready(function () {
         $('#start').val(getNow());
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
+        baseline['start'] = getNow();
+        $('#phase2-link').on('click', function(e) {
+            if ($('#phase2-link').hasClass('collapsed')) { //event will be the opposite
+                phase2events.push(['expand', getNow()]);
+            } else {
+                phase2events.push(['collapse', getNow()]);
+            }
+        });
         $('#phase1-button').on('click', function(e) {
             //window.onbeforeunload = null;
             //$('#interpretation-form').submit();
+            baseline['end'] = getNow();
             $('#phase1-panel').collapse('hide');
             $('#phase1-panel').on('show.bs.collapse', function(e) {
                 e.preventDefault();
@@ -313,15 +326,17 @@
             $('#ori-tonereasoning').text($('#tonereasoning').val());
             $('#phase2-panel').collapse('show');
             $("html, body").animate({ scrollTop: 0 }, "slow");
-            var baseline = {};
-            baseline["summary"] = $('#summary').val();
+            baseline['response'] = {};
+            baseline['response']["summary"] = $('#summary').val();
             for (var i = 1; i <= 6; i++) {
-                baseline["tone"+i] = $('input[name=tone'+i+']:checked').val();
+                baseline['response']["tone"+i] = $('input[name=tone'+i+']:checked').val();
             }
-            baseline["tonereasoning"] = $('#tonereasoning').val();
+            baseline['response']["tonereasoning"] = $('#tonereasoning').val();
             $('#baseline').val(JSON.stringify(baseline));
+            condition['start'] = getNow();
         });
         $('#phase2-button').on('click', function(e) {
+            condition['end'] = getNow();
             $('#phase2-panel').collapse('hide');
             $('#phase3-panel-group').show();
             $('#phase3-panel').collapse('show');
@@ -335,35 +350,38 @@
             $('input[name="revtone4"][value='+$('input[name="tone4"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
             $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
-            var condition = {};
-            condition['checklist'] = {};
+            condition['response'] = {};
+            condition['response']['checklist'] = {};
             $('input[type=checkbox]').each(function (idx) {
                 if (this.checked) {
-                    condition['checklist'][this.name] = 1;
+                    condition['response']['checklist'][this.name] = 1;
                 } else {
-                    condition['checklist'][this.name] = 0;
+                    condition['response']['checklist'][this.name] = 0;
                 }
             });
-            condition['eff_summary'] = $('#eff_summary').val();
-            condition['eff_tone'] = $('#eff_tone').val();
-            condition['feedback'] = $('#feedback').val();
+            condition['response']['eff_summary'] = $('#eff_summary').val();
+            condition['response']['eff_tone'] = $('#eff_tone').val();
+            condition['response']['feedback'] = $('#feedback').val();
             $('#condition').val(JSON.stringify(condition));
             $('input[type=checkbox]').prop('disabled', true)
             $('label:has(input[type=checkbox][disabled])').css('color', '#999')
             $('select').prop('disabled', true);
             $('#feedback').prop('disabled', true);
             $('#feedback').css('color', '#999');
+            revised['start'] = getNow();
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;
             $(this).prop('disabled', true);
             $('#end').val(getNow());
-            var revised = {};
-            revised["summary"] = $('#revsummary').val();
+            revised['response'] = {};
+            revised['response']["summary"] = $('#revsummary').val();
             for (var i = 1; i <= 6; i++) {
-                revised["tone"+i] = $('input[name=revtone'+i+']:checked').val();
+                revised['response']["tone"+i] = $('input[name=revtone'+i+']:checked').val();
             }
-            revised["revtonereasoning"] = $('#revtonereasoning').val();
+            revised['response']["revtonereasoning"] = $('#revtonereasoning').val();
+            revised['phase2events'] = phase2events;
+            revised['end'] = getNow();
             $('#revised').val(JSON.stringify(revised));
             $('#summarytone-form').submit();
         });
