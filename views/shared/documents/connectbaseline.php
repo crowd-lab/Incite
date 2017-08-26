@@ -26,7 +26,6 @@
 
             <div class="col-md-6" id="connecting-work-area">
                 <div id="connecting-container">
-                    <form id="connect-form" method="post">
                         <p class="header-step">
                             Step <?php echo $task_seq; ?>a: Look through the themes and rate how useful the historical document is to each of the themes.
                         </p>
@@ -54,6 +53,12 @@
                         <textarea id="subjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                         <br>
                         <br>
+                    <form id="connect-form" method="post">
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="baseline" name="baseline" value="">
+                        <input type="hidden" id="condition" name="condition" value="na">
+                        <input type="hidden" id="revised" name="revised" value="na">
+                        <input type="hidden" id="end" name="end" value="">
                         <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
                     </form>
 
@@ -68,6 +73,7 @@
     <!-- Bootstrap Core JavaScript -->
     <script>
         $(document).ready(function() {
+        $('#start').val(getNow());
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -153,6 +159,13 @@
             });
             $('#phase3-button').on('click', function(e) {
                 window.onbeforeunload = null;
+                $('#end').val(getNow());
+                var baseline = {};
+                <?php foreach ((array)$this->subjects as $subject): ?>
+                baseline["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
+                <?php endforeach; ?>
+                baseline["subjectreasoning"] = $('#subjectreasoning').val();
+                $('#baseline').val(JSON.stringify(baseline));
                 $('#connect-form').submit();
             });
             $('#phase1-panel').collapse('show');

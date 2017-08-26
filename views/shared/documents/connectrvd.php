@@ -26,7 +26,6 @@
 
             <div class="col-md-6" id="connecting-work-area">
                 <div id="connecting-container">
-                    <form id="connect-form" method="post">
                         <div class="panel-group" id="phase1-panel-group">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -110,17 +109,17 @@
                                             <label><input type="checkbox" value="" id="reasoningnot" name="reasoningnot">The worker provided convincing reasons why the document is NOT useful for research some of the themes if any.</label>
                                         </div>
                                         <p>How effective are the worker's theme ratings?</p>
-                                        <select class="form-control">
-                                            <option></option>
-                                            <option>9 Excellent</option>
-                                            <option>8</option>
-                                            <option>7 Very Good</option>
-                                            <option>6</option>
-                                            <option>5 Acceptable</option>
-                                            <option>4</option>
-                                            <option>3 Borderline</option>
-                                            <option>2</option>
-                                            <option>1 Poor</option>
+                                        <select id="eff_theme" class="form-control">
+                                            <option value="0"></option>
+                                            <option value="9">9 Excellent</option>
+                                            <option value="8">8</option>
+                                            <option value="7">7 Very Good</option>
+                                            <option value="6">6</option>
+                                            <option value="5">5 Acceptable</option>
+                                            <option value="4">4</option>
+                                            <option value="3">3 Borderline</option>
+                                            <option value="2">2</option>
+                                            <option value="1">1 Poor</option>
                                         </select>
                                         <p>How can the worker improve his or her work?</p>
                                         <textarea style="width:100%;" rows="4" id="feedback"></textarea>
@@ -166,12 +165,18 @@
                                         <textarea id="revsubjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                                         <br>
                                         <br>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    <form id="connect-form" method="post">
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="baseline" name="baseline" value="">
+                        <input type="hidden" id="condition" name="condition" value="">
+                        <input type="hidden" id="revised" name="revised" value="">
+                        <input type="hidden" id="end" name="end" value="">
+                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
 
                 </div>
             </div>
@@ -183,6 +188,10 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script>
+    var phase2events = [];
+    var baseline = {};
+    var condition = {};
+    var revised = {};
     function valueToDescription(value) {
         switch (value) {
             case "0": return "Not at all useful";
@@ -193,6 +202,15 @@
         }
     }
         $(document).ready(function() {
+        $('#start').val(getNow());
+        baseline['start'] = getNow();
+        $('#phase2-link').on('click', function(e) {
+            if ($('#phase2-link').hasClass('collapsed')) { //event will be the opposite
+                phase2events.push(['expand', getNow()]);
+            } else {
+                phase2events.push(['collapse', getNow()]);
+            }
+        });
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -255,6 +273,7 @@
             $('#phase1-button').on('click', function(e) {
                 //window.onbeforeunload = null;
                 //$('#interpretation-form').submit();
+                baseline['end'] = getNow();
                 $('#phase1-panel').collapse('hide');
                 $('#phase1-panel').on('show.bs.collapse', function(e) {
                     e.preventDefault();
@@ -278,8 +297,16 @@
                 $('#ori-subject14').text(valueToDescription("0")); //american civil war
                 $('#ori-subjectreasoning').text("Among all the themes, the document should only be useful for American revolutionary war because this was a letter from Washington specifically about commands and information to Benjamin who seemed to conduct spying tasks close to Bedford. Since USA was technically not established during the war, most of the themes won't apply here such as american as a global beacon or american civil war.");
                 $("html, body").animate({ scrollTop: 0 }, "slow");
+                baseline['response'] = {};
+                <?php foreach ((array)$this->subjects as $subject): ?>
+                    baseline['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
+                <?php endforeach; ?>
+                baseline['response']["subjectreasoning"] = $('#subjectreasoning').val();
+                $('#baseline').val(JSON.stringify(baseline));
+                condition['start'] = getNow();
             });
             $('#phase2-button').on('click', function(e) {
+                condition['end'] = getNow();
                 $('#phase2-panel').collapse('hide');
                 $('#phase3-panel-group').show();
                 $('#phase3-panel').collapse('show');
@@ -290,14 +317,36 @@
                 <?php foreach ((array)$this->subjects as $subject): ?>
                     $('input[name="revsubject<?php echo $subject['id']; ?>"][value='+$('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()+']').prop('checked', true)
                 <?php endforeach; ?>
+                condition['response'] = {};
+                condition['response']['checklist'] = {};
+                $('input[type=checkbox]').each(function (idx) {
+                    if (this.checked) {
+                        condition['response']['checklist'][this.name] = 1;
+                    } else {
+                        condition['response']['checklist'][this.name] = 0;
+                    }
+                });
+                condition['response']['eff_theme'] = $('#eff_theme').val();
+                condition['response']['feedback'] = $('#feedback').val();
+                $('#condition').val(JSON.stringify(condition));
                 $('input[type=checkbox]').prop('disabled', true)
                 $('label:has(input[type=checkbox][disabled])').css('color', '#999')
                 $('select').prop('disabled', true);
                 $('#feedback').prop('disabled', true);
                 $('#feedback').css('color', '#999');
+                revised['start'] = getNow();
             });
             $('#phase3-button').on('click', function(e) {
                 window.onbeforeunload = null;
+                $('#end').val(getNow());
+                revised['response'] = {};
+                <?php foreach ((array)$this->subjects as $subject): ?>
+                revised['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=revsubject<?php echo $subject['id']; ?>]:checked').val();
+                <?php endforeach; ?>
+                revised['response']["subjectreasoning"] = $('#revsubjectreasoning').val();
+                revised['phase2events'] = phase2events;
+                revised['end'] = getNow();
+                $('#revised').val(JSON.stringify(revised));
                 $('#connect-form').submit();
             });
             $('#phase1-panel').collapse('show');

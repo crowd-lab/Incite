@@ -26,7 +26,6 @@
 
             <div class="col-md-6" id="connecting-work-area">
                 <div id="connecting-container">
-                    <form id="connect-form" method="post">
                         <div class="panel-group" id="phase1-panel-group">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -81,13 +80,13 @@
                                         <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the third and fourth steps are to <u>infer</u> and <u>monitor</u> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">What interpretations, inferences, perspectives or points of view may be drawn from or indicated by the source?</p>
-                                        <textarea style="width:100%;" name="iq2" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="iq2" name="iq2" rows="3"></textarea>
                                         <p class="header-step">What additional evidence beyond the source is necessary to answer the historical question?</p>
-                                        <textarea style="width:100%;" name="mq1" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="mq1" name="mq1" rows="3"></textarea>
                                         <p class="header-step">What ideas, images, or terms need further defining from the source?</p>
-                                        <textarea style="width:100%;" name="mq2" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="mq2" name="mq2" rows="3"></textarea>
                                         <p class="header-step">How useful or siginficant is the source for its intended purpose in answering the historical question?</p>
-                                        <textarea style="width:100%;" name="mq3" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="mq3" name="mq3" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
                                 </div>
@@ -130,12 +129,18 @@
                                         <textarea id="revsubjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                                         <br>
                                         <br>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    <form id="connect-form" method="post">
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="baseline" name="baseline" value="">
+                        <input type="hidden" id="condition" name="condition" value="">
+                        <input type="hidden" id="revised" name="revised" value="">
+                        <input type="hidden" id="end" name="end" value="">
+                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
 
                 </div>
             </div>
@@ -147,7 +152,20 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script>
+    var phase2events = [];
+    var baseline = {};
+    var condition = {};
+    var revised = {};
         $(document).ready(function() {
+        $('#start').val(getNow());
+        baseline['start'] = getNow();
+        $('#phase2-link').on('click', function(e) {
+            if ($('#phase2-link').hasClass('collapsed')) { //event will be the opposite
+                phase2events.push(['expand', getNow()]);
+            } else {
+                phase2events.push(['collapse', getNow()]);
+            }
+        });
             <?php
                 if (isset($_SESSION['incite']['message'])) {
                     echo "notifyOfSuccessfulActionNoTimeout('" . $_SESSION["incite"]["message"] . "');";
@@ -210,6 +228,7 @@
             $('#phase1-button').on('click', function(e) {
                 //window.onbeforeunload = null;
                 //$('#interpretation-form').submit();
+                baseline['end'] = getNow();
                 $('#phase1-panel').collapse('hide');
                 $('#phase1-panel').on('show.bs.collapse', function(e) {
                     e.preventDefault();
@@ -218,8 +237,16 @@
                 $('#phase2-panel-group').show();
                 $('#phase2-panel').collapse('show');
                 $("html, body").animate({ scrollTop: 0 }, "slow");
+                baseline['response'] = {};
+                <?php foreach ((array)$this->subjects as $subject): ?>
+                    baseline['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
+                <?php endforeach; ?>
+                baseline['response']["subjectreasoning"] = $('#subjectreasoning').val();
+                $('#baseline').val(JSON.stringify(baseline));
+                condition['start'] = getNow();
             });
             $('#phase2-button').on('click', function(e) {
+                condition['end'] = getNow();
                 $('#phase2-panel').collapse('hide');
                 $('#phase3-panel-group').show();
                 $('#phase3-panel').collapse('show');
@@ -230,6 +257,12 @@
                 <?php foreach ((array)$this->subjects as $subject): ?>
                     $('input[name="revsubject<?php echo $subject['id']; ?>"][value='+$('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()+']').prop('checked', true)
                 <?php endforeach; ?>
+                condition['response'] = {};
+                condition['response']['question1'] = $('#iq2').val();
+                condition['response']['question2'] = $('#mq1').val();
+                condition['response']['question3'] = $('#mq2').val();
+                condition['response']['question4'] = $('#mq3').val();
+                $('#condition').val(JSON.stringify(condition));
                 $('#iq1').prop('disabled', true);
                 $('#iq1').css('color', '#999');
                 $('#iq2').prop('disabled', true);
@@ -246,9 +279,19 @@
                 $('#mq3').css('color', '#999');
                 $('#mq4').prop('disabled', true);
                 $('#mq4').css('color', '#999');
+                revised['start'] = getNow();
             });
             $('#phase3-button').on('click', function(e) {
                 window.onbeforeunload = null;
+                $('#end').val(getNow());
+                revised['response'] = {};
+                <?php foreach ((array)$this->subjects as $subject): ?>
+                revised['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=revsubject<?php echo $subject['id']; ?>]:checked').val();
+                <?php endforeach; ?>
+                revised['response']["subjectreasoning"] = $('#revsubjectreasoning').val();
+                revised['phase2events'] = phase2events;
+                revised['end'] = getNow();
+                $('#revised').val(JSON.stringify(revised));
                 $('#connect-form').submit();
             });
             $('#phase1-panel').collapse('show');
