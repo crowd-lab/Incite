@@ -27,7 +27,6 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <form id="tag-form" method="post">
                         <div class="panel-group" id="phase1-panel-group">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -181,13 +180,13 @@
                                         <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the second step is to <u>contextualize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">When and where was the source produced?</p>
-                                        <textarea style="width:100%;" name="cq1" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="cq1" name="cq1" rows="3"></textarea>
                                         <p class="header-step">Why was the source produced?</p>
-                                        <textarea style="width:100%;" name="cq2" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="cq2" name="cq2" rows="3"></textarea>
                                         <p class="header-step">What was happening within the immediate and broader context at the time the source was produced?</p>
-                                        <textarea style="width:100%;" name="cq3" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="cq3" name="cq3" rows="3"></textarea>
                                         <p class="header-step">What summarizing information can place the source in time and place?</p>
-                                        <textarea style="width:100%;" name="cq4" rows="3"></textarea>
+                                        <textarea style="width:100%;" id="cq4" name="cq4" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
                                 </div>
@@ -212,25 +211,18 @@
                                         <p class="header-step">Step <?php echo $task_seq; ?>.3b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
                                         <table class="table" id="revuser-entity-table">
                                         </table>
-                                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    <form id="tag-form" method="post">
+                        <input type="hidden" id="start" name="start" value="">
+                        <input type="hidden" id="baseline" name="baseline" value="">
+                        <input type="hidden" id="condition" name="condition" value="na">
+                        <input type="hidden" id="revised" name="revised" value="na">
+                        <input type="hidden" id="end" name="end" value="">
+                        <button type="button" class="btn btn-primary pull-right" id="phase3-button">Submit</button>
+                    </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <hr size=2 class="discussion-seperation-line">
             </div>
         </div>
@@ -242,6 +234,10 @@
     // alert(categories[2]['subcategory'].length);
     var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
+    var phase2events = [];
+    var baseline = {};
+    var condition = {};
+    var revised = {};
 
     function set_tag_id_counter() {
         var max_id = 0;
@@ -337,16 +333,60 @@
         });
     }
 
+    function getTagJSONString() {
+        var entities = [];
+        var rows = $('#entity-table tr').has("td");
+        rows.each(function (idx) {
+            //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+            var name = $(this).find('.entity-name');
+            var details = $(this).find('.entity-details');
+            var category = $(this).find('.category-select option:selected');
+            var subcategories = $(this).find('.subcategory-select option:selected');
+            var subcategories_array = [];
+            subcategories.each( function (idx) {
+                subcategories_array.push($(this).val());
+            });
+            entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+            $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+            $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
+        });
+        rows = $('#user-entity-table tr').has("td");
+        rows.each(function (idx) {
+            //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+            var name = $(this).find('.entity-name');
+            var details = $(this).find('.entity-details');
+            var category = $(this).find('.category-select option:selected');
+            var subcategories = $(this).find('.subcategory-select option:selected');
+            var subcategories_array = [];
+            subcategories.each( function (idx) {
+                subcategories_array.push($(this).val());
+            });
+            entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+            $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+            $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
+        });
+        return JSON.stringify(entities);
+    }
+
 
     $(document).ready(function () {
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
+        $('#start').val(getNow());
+        baseline['start'] = getNow();
 
         <?php if ($this->is_being_edited): ?>
             styleForEditing();
         <?php endif; ?>
+        $('#phase2-link').on('click', function(e) {
+            if ($('#phase2-link').hasClass('collapsed')) { //event will be the opposite
+                phase2events.push(['expand', getNow()]);
+            } else {
+                phase2events.push(['collapse', getNow()]);
+            }
+        });
 
         $('#user-entity-table').on('click', '.remove-entity-button', function (e) {
             $(this).parent().parent().remove();
@@ -396,66 +436,6 @@
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass( selected_category + " tagged-text");
         });
 
-        $('#entity-form').submit(function (e) {
-            var entities = [];
-            var rows = $('#entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
-                });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            rows = $('#user-entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
-                });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            //data, that is, JSON.stringify(entities) are ready to be submitted for processing
-            $('#entity-info').val(JSON.stringify(entities));
-            $('#tagged-doc').val($('#transcribe_copy').html());
-        });
-        $('#confirm-button').on('click', function (e) {
-            if ($('.category-select option:selected[value=0]').length > 0) {
-                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
-                return;
-            }
-            if ($('input[name=time_prod]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q1 yet!');
-                return;
-            }
-            if ($('select[name=time_cont]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q2 yet!');
-                return;
-            }
-            if ($('input[name=loc_prod]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q3 yet!');
-                return;
-            }
-            if ($('input[name=loc_cont]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q4 yet!');
-                return;
-            }
-            window.onbeforeunload = "";
-            $('#entity-form').submit();
-        });
 
         $('.subcategory-select').each(function (idx) {
             $(this).multiselect({
@@ -546,6 +526,8 @@
         $('#phase1-button').on('click', function(e) {
             //window.onbeforeunload = null;
             //$('#interpretation-form').submit();
+            baseline['end'] = getNow();
+            baseline['response'] = getTagJSONString();
             $('#phase1-panel').collapse('hide');
             $('#phase1-panel').on('show.bs.collapse', function(e) {
                 e.preventDefault();
@@ -554,8 +536,11 @@
             $('#phase2-panel-group').show();
             $('#phase2-panel').collapse('show');
             $("html, body").animate({ scrollTop: 0 }, "slow");
+            $('#baseline').val(JSON.stringify(baseline));
+            condition['start'] = getNow();
         });
         $('#phase2-button').on('click', function(e) {
+            condition['end'] = getNow();
             $('#phase2-panel').collapse('hide');
             $('#phase3-panel-group').show();
             $('#phase3-panel').collapse('show');
@@ -563,6 +548,12 @@
             $('#phase2-button').hide();
             $('#reventity-table').replaceWith($('#entity-table'));
             $('#revuser-entity-table').replaceWith($('#user-entity-table'));
+            condition['response'] = {};
+            condition['response']['question1'] = $('#cq1').val();
+            condition['response']['question2'] = $('#cq2').val();
+            condition['response']['question3'] = $('#cq3').val();
+            condition['response']['question4'] = $('#cq4').val();
+            $('#condition').val(JSON.stringify(condition));
             $('#cq1').prop('disabled', true);
             $('#cq1').css('color', '#999');
             $('#cq2').prop('disabled', true);
@@ -571,20 +562,15 @@
             $('#cq3').css('color', '#999');
             $('#cq4').prop('disabled', true);
             $('#cq4').css('color', '#999');
-            
-            /*
-            $('#revsummary').val($('#summary').val());
-            $('#revtonereasoning').val($('#tonereasoning').val());
-            $('input[name="revtone1"][value='+$('input[name="tone1"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone2"][value='+$('input[name="tone2"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone3"][value='+$('input[name="tone3"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone4"][value='+$('input[name="tone4"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
-            */
+            revised['start'] = getNow();
         });
         $('#phase3-button').on('click', function(e) {
             window.onbeforeunload = null;
+            $('#end').val(getNow());
+            revised['response'] = getTagJSONString();
+            revised['phase2events'] = phase2events;
+            revised['end'] = getNow();
+            $('#revised').val(JSON.stringify(revised));
             $('#tag-form').submit();
         });
         $('#phase1-panel').collapse('show');

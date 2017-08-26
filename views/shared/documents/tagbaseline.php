@@ -27,7 +27,6 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <form id="tag-form" method="post">
                         <p class="header-step">Instruction: Please find all tags for different categories. A tag is an object or event in the world like a place or person. It should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Opra), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, you can mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> to get more information.</p>
                         <p class="header-step">Step <?php echo $task_seq; ?>.1a: Verify tags. Add subcategories and details if they are missing. If it's not a tag, delete it.</p>
                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
@@ -154,6 +153,12 @@
                     </div>
                     <br>
                     <br>
+                <form id="tag-form" method="post">
+                    <input type="hidden" id="start" name="start" value="">
+                    <input type="hidden" id="baseline" name="baseline" value="">
+                    <input type="hidden" id="condition" name="condition" value="na">
+                    <input type="hidden" id="revised" name="revised" value="na">
+                    <input type="hidden" id="end" name="end" value="">
                     <button type="button" class="btn btn-primary pull-right" id="finish">Submit</button>
                 </form>
                 <hr size=2 class="discussion-seperation-line">
@@ -267,6 +272,7 @@
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
+        $('#start').val(getNow());
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
 
         <?php if ($this->is_being_edited): ?>
@@ -321,7 +327,16 @@
             $('#tag_id_'+$(this).parent().parent().attr('data-tagid')).addClass( selected_category + " tagged-text");
         });
 
-        $('#entity-form').submit(function (e) {
+        $('#confirm-button').on('click', function (e) {
+            if ($('.category-select option:selected[value=0]').length > 0) {
+                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
+                return;
+            }
+            window.onbeforeunload = "";
+            $('#entity-form').submit();
+        });
+        $('#finish').on('click', function(e) {
+            window.onbeforeunload = null;
             var entities = [];
             var rows = $('#entity-table tr').has("td");
             rows.each(function (idx) {
@@ -353,36 +368,8 @@
                 $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
                 $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
             });
-            //data, that is, JSON.stringify(entities) are ready to be submitted for processing
-            $('#entity-info').val(JSON.stringify(entities));
-            $('#tagged-doc').val($('#transcribe_copy').html());
-        });
-        $('#confirm-button').on('click', function (e) {
-            if ($('.category-select option:selected[value=0]').length > 0) {
-                notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
-                return;
-            }
-            if ($('input[name=time_prod]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q1 yet!');
-                return;
-            }
-            if ($('select[name=time_cont]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q2 yet!');
-                return;
-            }
-            if ($('input[name=loc_prod]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q3 yet!');
-                return;
-            }
-            if ($('input[name=loc_cont]').val() == "") {
-                notifyOfErrorInForm('You have not answered Q4 yet!');
-                return;
-            }
-            window.onbeforeunload = "";
-            $('#entity-form').submit();
-        });
-        $('#finish').on('click', function(e) {
-            window.onbeforeunload = null;
+            $('#baseline').val(JSON.stringify(entities));
+            $('#end').val(getNow());
             $('#tag-form').submit();
         });
 
