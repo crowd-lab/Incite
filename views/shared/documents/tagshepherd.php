@@ -282,6 +282,54 @@
     var baseline = {};
     var condition = {};
     var revised = {};
+    function check_input_baseline() {
+        if ($('.category-select option:selected[value=0]').length > 0) {
+            notif({
+              msg: '<b>Error: </b> Tag category cannot be empty!',
+              type: "error"
+            });
+            return false;
+        }
+        return true;
+    }
+    function check_input_condition() {
+        if ($('#eff_tag').val() == 0) {
+            notif({
+              msg: '<b>Error: </b> You need to answer Q1.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#eff_category').val() == 0) {
+            notif({
+              msg: '<b>Error: </b> You need to answer Q2.',
+              type: "error"
+            });
+            return false;
+            
+        }
+
+        if ($('#feedback').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your feedback is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_revised() {
+        if ($('.category-select option:selected[value=0]').length > 0) {
+            notif({
+              msg: '<b>Error: </b> Tag category cannot be empty!',
+              type: "error"
+            });
+            return false;
+        }
+        return true;
+    }
 
     function set_tag_id_counter() {
         var max_id = 0;
@@ -567,98 +615,104 @@
         });
 
         $('#phase1-button').on('click', function(e) {
-            //window.onbeforeunload = null;
-            //$('#interpretation-form').submit();
-            baseline['end'] = getNow();
-            baseline['response'] = getTagJSONString();
-            $('#phase1-panel').collapse('hide');
-            $('#phase1-panel').on('show.bs.collapse', function(e) {
-                e.preventDefault();
-            });
-            $('#phase1-link').addClass('disabled');
-            $('#phase2-panel-group').show();
-            $('#phase2-panel').collapse('show');
-            $('#baseline').val(JSON.stringify(baseline));
-            condition['start'] = getNow();
-            //Add to taglist
-            $('#entity-table tr').each(function (idx) {
-                if (idx != 0) {
-                    var row = "<tr><td>";
-                    var children = $(this).children('td');
-                    row += $(children[0]).text();
-                    row += "</td><td>";
-                    row += $(children[1]).find('option:selected').text();
-                    row += "</td><td>";
-                    var subcats = $(children[2]).find('option:selected');
-                    subcats.each(function(idx) {
-                        row += $(this).text()+", ";
-                    });
-                    if (subcats.length > 0) {
-                        row = row.substring(0, row.length-2);
+            if (check_input_baseline()) {
+                //window.onbeforeunload = null;
+                //$('#interpretation-form').submit();
+                baseline['end'] = getNow();
+                baseline['response'] = getTagJSONString();
+                $('#phase1-panel').collapse('hide');
+                $('#phase1-panel').on('show.bs.collapse', function(e) {
+                    e.preventDefault();
+                });
+                $('#phase1-link').addClass('disabled');
+                $('#phase2-panel-group').show();
+                $('#phase2-panel').collapse('show');
+                $('#baseline').val(JSON.stringify(baseline));
+                condition['start'] = getNow();
+                //Add to taglist
+                $('#entity-table tr').each(function (idx) {
+                    if (idx != 0) {
+                        var row = "<tr><td>";
+                        var children = $(this).children('td');
+                        row += $(children[0]).text();
+                        row += "</td><td>";
+                        row += $(children[1]).find('option:selected').text();
+                        row += "</td><td>";
+                        var subcats = $(children[2]).find('option:selected');
+                        subcats.each(function(idx) {
+                            row += $(this).text()+", ";
+                        });
+                        if (subcats.length > 0) {
+                            row = row.substring(0, row.length-2);
+                        }
+                        row += "</td></tr>";
+                        $("#taglist").append(row);
                     }
-                    row += "</td></tr>";
-                    $("#taglist").append(row);
-                }
-            });
-            $('#user-entity-table tr').each(function (idx) {
-                if (idx != 0) {
-                    var row = "<tr><td>";
-                    var children = $(this).children('td');
-                    row += $(children[0]).text();
-                    row += "</td><td>";
-                    row += $(children[1]).find('option:selected').text();
-                    row += "</td><td>";
-                    var subcats = $(children[2]).find('option:selected');
-                    subcats.each(function(idx) {
-                        row += $(this).text()+", ";
-                    });
-                    if (subcats.length > 0) {
-                        row = row.substring(0, row.length-2);
+                });
+                $('#user-entity-table tr').each(function (idx) {
+                    if (idx != 0) {
+                        var row = "<tr><td>";
+                        var children = $(this).children('td');
+                        row += $(children[0]).text();
+                        row += "</td><td>";
+                        row += $(children[1]).find('option:selected').text();
+                        row += "</td><td>";
+                        var subcats = $(children[2]).find('option:selected');
+                        subcats.each(function(idx) {
+                            row += $(this).text()+", ";
+                        });
+                        if (subcats.length > 0) {
+                            row = row.substring(0, row.length-2);
+                        }
+                        row += "</td></tr>";
+                        $("#taglist").append(row);
                     }
-                    row += "</td></tr>";
-                    $("#taglist").append(row);
-                }
 
-            });
-            $("html, body").animate({ scrollTop: 0 }, "slow");
+                });
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+            }
         });
         $('#phase2-button').on('click', function(e) {
-            condition['end'] = getNow();
-            $('#phase2-panel').collapse('hide');
-            $('#phase3-panel-group').show();
-            $('#phase3-panel').collapse('show');
-            $("html, body").animate({ scrollTop: 0 }, "slow");
-            $('#phase2-button').hide();
-            $('#reventity-table').replaceWith($('#entity-table'));
-            $('#revuser-entity-table').replaceWith($('#user-entity-table'));
-            $('input[type=checkbox]').prop('disabled', true)
-            $('label:has(input[type=checkbox][disabled])').css('color', '#999')
-            $('#phase2-panel select').prop('disabled', true);
-            $('#feedback').prop('disabled', true);
-            $('#feedback').css('color', '#999');
-            condition['response'] = {};
-            condition['response']['checklist'] = {};
-            $('input[type=checkbox]').each(function (idx) {
-                if (this.checked) {
-                    condition['response']['checklist'][this.name] = 1;
-                } else {
-                    condition['response']['checklist'][this.name] = 0;
-                }
-            });
-            condition['response']['eff_tag'] = $('#eff_tag').val();
-            condition['response']['eff_category'] = $('#eff_category').val();
-            condition['response']['feedback'] = $('#feedback').val();
-            $('#condition').val(JSON.stringify(condition));
-            revised['start'] = getNow();
+            if (check_input_condition()) {
+                condition['end'] = getNow();
+                $('#phase2-panel').collapse('hide');
+                $('#phase3-panel-group').show();
+                $('#phase3-panel').collapse('show');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $('#phase2-button').hide();
+                $('#reventity-table').replaceWith($('#entity-table'));
+                $('#revuser-entity-table').replaceWith($('#user-entity-table'));
+                $('input[type=checkbox]').prop('disabled', true)
+                $('label:has(input[type=checkbox][disabled])').css('color', '#999')
+                $('#phase2-panel select').prop('disabled', true);
+                $('#feedback').prop('disabled', true);
+                $('#feedback').css('color', '#999');
+                condition['response'] = {};
+                condition['response']['checklist'] = {};
+                $('input[type=checkbox]').each(function (idx) {
+                    if (this.checked) {
+                        condition['response']['checklist'][this.name] = 1;
+                    } else {
+                        condition['response']['checklist'][this.name] = 0;
+                    }
+                });
+                condition['response']['eff_tag'] = $('#eff_tag').val();
+                condition['response']['eff_category'] = $('#eff_category').val();
+                condition['response']['feedback'] = $('#feedback').val();
+                $('#condition').val(JSON.stringify(condition));
+                revised['start'] = getNow();
+            }
         });
         $('#phase3-button').on('click', function(e) {
-            window.onbeforeunload = null;
-            $('#end').val(getNow());
-            revised['response'] = getTagJSONString();
-            revised['phase2events'] = phase2events;
-            revised['end'] = getNow();
-            $('#revised').val(JSON.stringify(revised));
-            $('#tag-form').submit();
+            if (check_input_revised()) {
+                window.onbeforeunload = null;
+                $('#end').val(getNow());
+                revised['response'] = getTagJSONString();
+                revised['phase2events'] = phase2events;
+                revised['end'] = getNow();
+                $('#revised').val(JSON.stringify(revised));
+                $('#tag-form').submit();
+            }
         });
         $('#phase1-panel').collapse('show');
 

@@ -172,6 +172,16 @@
     // alert(categories[2]['subcategory'].length);
     var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
+    function check_input_baseline() {
+        if ($('.category-select option:selected[value=0]').length > 0) {
+            notif({
+              msg: '<b>Error: </b> Tag category cannot be empty!',
+              type: "error"
+            });
+            return false;
+        }
+        return true;
+    }
 
     function set_tag_id_counter() {
         var max_id = 0;
@@ -336,41 +346,43 @@
             $('#entity-form').submit();
         });
         $('#finish').on('click', function(e) {
-            window.onbeforeunload = null;
-            var entities = [];
-            var rows = $('#entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
+            if (check_input_baseline()) {
+                window.onbeforeunload = null;
+                var entities = [];
+                var rows = $('#entity-table tr').has("td");
+                rows.each(function (idx) {
+                    //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+                    var name = $(this).find('.entity-name');
+                    var details = $(this).find('.entity-details');
+                    var category = $(this).find('.category-select option:selected');
+                    var subcategories = $(this).find('.subcategory-select option:selected');
+                    var subcategories_array = [];
+                    subcategories.each( function (idx) {
+                        subcategories_array.push($(this).val());
+                    });
+                    entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+                    $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+                    $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
                 });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            rows = $('#user-entity-table tr').has("td");
-            rows.each(function (idx) {
-                //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
-                var name = $(this).find('.entity-name');
-                var details = $(this).find('.entity-details');
-                var category = $(this).find('.category-select option:selected');
-                var subcategories = $(this).find('.subcategory-select option:selected');
-                var subcategories_array = [];
-                subcategories.each( function (idx) {
-                    subcategories_array.push($(this).val());
+                rows = $('#user-entity-table tr').has("td");
+                rows.each(function (idx) {
+                    //handle each field of an entity: should be 4 fields (name, cat, subcat, details); the 5th field is a button for deletion
+                    var name = $(this).find('.entity-name');
+                    var details = $(this).find('.entity-details');
+                    var category = $(this).find('.category-select option:selected');
+                    var subcategories = $(this).find('.subcategory-select option:selected');
+                    var subcategories_array = [];
+                    subcategories.each( function (idx) {
+                        subcategories_array.push($(this).val());
+                    });
+                    entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
+                    $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
+                    $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
                 });
-                entities.push({entity: $(name).text(), category: $(category).val(), subcategory: subcategories_array, details: $(details).val()});
-                $('#'+(""+this.id).replace('_table', '')).attr('data-subs', subcategories_array.toString());
-                $('#'+(""+this.id).replace('_table', '')).attr('data-details', $(details).val());
-            });
-            $('#baseline').val(JSON.stringify(entities));
-            $('#end').val(getNow());
-            $('#tag-form').submit();
+                $('#baseline').val(JSON.stringify(entities));
+                $('#end').val(getNow());
+                $('#tag-form').submit();
+            }
         });
 
         $('.subcategory-select').each(function (idx) {

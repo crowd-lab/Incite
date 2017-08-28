@@ -179,13 +179,13 @@
                                         <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
                                         <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the second step is to <u>contextualize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
-                                        <p class="header-step">When and where was the source produced?</p>
+                                        <p class="header-step">Q1: When and where was the source produced?</p>
                                         <textarea style="width:100%;" id="cq1" name="cq1" rows="3"></textarea>
-                                        <p class="header-step">Why was the source produced?</p>
+                                        <p class="header-step">Q2: Why was the source produced?</p>
                                         <textarea style="width:100%;" id="cq2" name="cq2" rows="3"></textarea>
-                                        <p class="header-step">What was happening within the immediate and broader context at the time the source was produced?</p>
+                                        <p class="header-step">Q3: What was happening within the immediate and broader context at the time the source was produced?</p>
                                         <textarea style="width:100%;" id="cq3" name="cq3" rows="3"></textarea>
-                                        <p class="header-step">What summarizing information can place the source in time and place?</p>
+                                        <p class="header-step">Q4: What summarizing information can place the source in time and place?</p>
                                         <textarea style="width:100%;" id="cq4" name="cq4" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
@@ -238,6 +238,61 @@
     var baseline = {};
     var condition = {};
     var revised = {};
+    function check_input_baseline() {
+        if ($('.category-select option:selected[value=0]').length > 0) {
+            notif({
+              msg: '<b>Error: </b> Tag category cannot be empty!',
+              type: "error"
+            });
+            return false;
+        }
+        return true;
+    }
+    function check_input_condition() {
+        if ($('#cq1').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q1 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#cq2').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q2 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#cq3').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q3 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#cq4').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q4 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_revised() {
+        if ($('.category-select option:selected[value=0]').length > 0) {
+            notif({
+              msg: '<b>Error: </b> Tag category cannot be empty!',
+              type: "error"
+            });
+            return false;
+        }
+        return true;
+    }
 
     function set_tag_id_counter() {
         var max_id = 0;
@@ -524,54 +579,60 @@
         });
 
         $('#phase1-button').on('click', function(e) {
-            //window.onbeforeunload = null;
-            //$('#interpretation-form').submit();
-            baseline['end'] = getNow();
-            baseline['response'] = getTagJSONString();
-            $('#phase1-panel').collapse('hide');
-            $('#phase1-panel').on('show.bs.collapse', function(e) {
-                e.preventDefault();
-            });
-            $('#phase1-link').addClass('disabled');
-            $('#phase2-panel-group').show();
-            $('#phase2-panel').collapse('show');
-            $("html, body").animate({ scrollTop: 0 }, "slow");
-            $('#baseline').val(JSON.stringify(baseline));
-            condition['start'] = getNow();
+            if (check_input_baseline()) {
+                //window.onbeforeunload = null;
+                //$('#interpretation-form').submit();
+                baseline['end'] = getNow();
+                baseline['response'] = getTagJSONString();
+                $('#phase1-panel').collapse('hide');
+                $('#phase1-panel').on('show.bs.collapse', function(e) {
+                    e.preventDefault();
+                });
+                $('#phase1-link').addClass('disabled');
+                $('#phase2-panel-group').show();
+                $('#phase2-panel').collapse('show');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $('#baseline').val(JSON.stringify(baseline));
+                condition['start'] = getNow();
+            }
         });
         $('#phase2-button').on('click', function(e) {
-            condition['end'] = getNow();
-            $('#phase2-panel').collapse('hide');
-            $('#phase3-panel-group').show();
-            $('#phase3-panel').collapse('show');
-            $("html, body").animate({ scrollTop: 0 }, "slow");
-            $('#phase2-button').hide();
-            $('#reventity-table').replaceWith($('#entity-table'));
-            $('#revuser-entity-table').replaceWith($('#user-entity-table'));
-            condition['response'] = {};
-            condition['response']['question1'] = $('#cq1').val();
-            condition['response']['question2'] = $('#cq2').val();
-            condition['response']['question3'] = $('#cq3').val();
-            condition['response']['question4'] = $('#cq4').val();
-            $('#condition').val(JSON.stringify(condition));
-            $('#cq1').prop('disabled', true);
-            $('#cq1').css('color', '#999');
-            $('#cq2').prop('disabled', true);
-            $('#cq2').css('color', '#999');
-            $('#cq3').prop('disabled', true);
-            $('#cq3').css('color', '#999');
-            $('#cq4').prop('disabled', true);
-            $('#cq4').css('color', '#999');
-            revised['start'] = getNow();
+            if (check_input_condition()) {
+                condition['end'] = getNow();
+                $('#phase2-panel').collapse('hide');
+                $('#phase3-panel-group').show();
+                $('#phase3-panel').collapse('show');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $('#phase2-button').hide();
+                $('#reventity-table').replaceWith($('#entity-table'));
+                $('#revuser-entity-table').replaceWith($('#user-entity-table'));
+                condition['response'] = {};
+                condition['response']['question1'] = $('#cq1').val();
+                condition['response']['question2'] = $('#cq2').val();
+                condition['response']['question3'] = $('#cq3').val();
+                condition['response']['question4'] = $('#cq4').val();
+                $('#condition').val(JSON.stringify(condition));
+                $('#cq1').prop('disabled', true);
+                $('#cq1').css('color', '#999');
+                $('#cq2').prop('disabled', true);
+                $('#cq2').css('color', '#999');
+                $('#cq3').prop('disabled', true);
+                $('#cq3').css('color', '#999');
+                $('#cq4').prop('disabled', true);
+                $('#cq4').css('color', '#999');
+                revised['start'] = getNow();
+            }
         });
         $('#phase3-button').on('click', function(e) {
-            window.onbeforeunload = null;
-            $('#end').val(getNow());
-            revised['response'] = getTagJSONString();
-            revised['phase2events'] = phase2events;
-            revised['end'] = getNow();
-            $('#revised').val(JSON.stringify(revised));
-            $('#tag-form').submit();
+            if (check_input_revised()) {
+                window.onbeforeunload = null;
+                $('#end').val(getNow());
+                revised['response'] = getTagJSONString();
+                revised['phase2events'] = phase2events;
+                revised['end'] = getNow();
+                $('#revised').val(JSON.stringify(revised));
+                $('#tag-form').submit();
+            }
         });
         $('#phase1-panel').collapse('show');
 
