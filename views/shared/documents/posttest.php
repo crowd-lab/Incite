@@ -68,7 +68,7 @@
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
         $('#start').val(getNow());
         $('#confirm-button').on('click', function(e) {
-            if (check_intpu()) {
+            if (check_input()) {
                 window.onbeforeunload = null;
                 $(this).prop('disabled', true);
                 $('#end').val(getNow());
