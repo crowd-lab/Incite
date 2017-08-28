@@ -31,7 +31,7 @@
                     <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
                     <p class="header-step">Step <?php echo $task_seq; ?>b: Write your response below to the historical document and question.</p>
                     <form id="interpretation-form" method="post">
-                        <textarea style="width:100%;" name="response" rows="10"></textarea>
+                        <textarea id="response" style="width:100%;" name="response" rows="10"></textarea>
                         <input type="hidden" id="start" name="start" value="">
                         <input type="hidden" id="end" name="end" value="">
                         <button type="button" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
@@ -51,16 +51,29 @@
     var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
+    function check_input() {
+        if ($('#response').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your response is too short!',
+              type: "error"
+            });
+            return false;
+        }
+        return true;
+            
+    }
 
 
     $(document).ready(function () {
         setInterval(function() {$('#count_down_timer').text("Time left: "+numToTime(allowed_time >= 0 ? allowed_time-- : 0)); timeIsUpCheck();}, 1000);
         $('#start').val(getNow());
         $('#confirm-button').on('click', function(e) {
-            window.onbeforeunload = null;
-            $(this).prop('disabled', true);
-            $('#end').val(getNow());
-            $('#interpretation-form').submit();
+            if (check_intpu()) {
+                window.onbeforeunload = null;
+                $(this).prop('disabled', true);
+                $('#end').val(getNow());
+                $('#interpretation-form').submit();
+            }
         });
     });
 
