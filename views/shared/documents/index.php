@@ -8,11 +8,13 @@ include(dirname(__FILE__).'/../common/header.php');
 
     <!-- Page Content -->
     <div class="container-fluid" style="margin-left: 100px; margin-right: 100px;">
+            <h2 style="text-align: center; color: red;">Please do not accept the HIT if you have participated!</h2>
+            <h2 style="text-align: center; color: red;">This is a long HIT so please be prepared to work for about 60 mins.</h2>
             <h2 style="text-align: center;">Investigation of Crowdsourced Connections between Historical Documents and High-Level Concepts</h2>
             <h4>Purpose of this Research Project</h4>
             <p>You are being asked to participate in a research study. We are studying the effects of different work conditions on historical learning/thinking. We will use these results to inform and improve the design of an online text analysis system. In addition, the results may have implications for designing future digital archival systems as well as online educational systems. The results of this study may be published in academic conferences or journals or included in student theses and dissertations.</p>
             <h4>Procedures</h4>
-            <p>If you agree to participate, you will be asked to 1) take a pre-task survey about demographic information (&lt; 1 minute) , 2) do three tasks each of which may take maximum 10 minutes and 3) complete a survey about your experience of the tasks (&lt; 10 minutes).</p>
+            <p>If you agree to participate, you will be asked to 1) take a pre-task test about a historical document , 2) do three tasks each of which may take maximum 10 minutes, 3) take a post-task test about another historical document, and 4) complete a post-task survey about your experience of the tasks (&lt; 10 minutes).</p>
             <h4>Risks</h4>
             <p>The risks of the study are minimal and are similar to what you would encounter doing everyday computer tasks like browsing the Internet, writing a document, or checking email.</p>
             <h4>Benefits</h4>
