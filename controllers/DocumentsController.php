@@ -303,7 +303,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         //Check if there is task available. If not, redirect to a page to notify the user.
         $isAnyTrialAvailable = isAnyTrialAvailable();
         //testing so we assuming there is trial available
-        $isAnyTrialAvailable = true;
+        //$isAnyTrialAvailable = true;
         if (!$isAnyTrialAvailable)  {
             $this->_helper->viewRenderer('taskless');
             return;
@@ -313,7 +313,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $is_hit_accepted = !(!isset($_GET['assignmentId']) || (isset($_GET['assignmentId']) && $_GET['assignmentId'] == "ASSIGNMENT_ID_NOT_AVAILABLE"));
 
         //testing so we can assume hit is accepted
-        $is_hit_accepted = true;
+        //$is_hit_accepted = true;
         if ($is_hit_accepted) {
             $this->_helper->viewRenderer('taskless');
             $worker_id = '';
@@ -330,10 +330,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
             $trial = getNextTrial($assignment_id, $worker_id);
             //testing with a particular technique: baseline, scim, shepherd, rvd (review vs. doing)
-            $trial = array('trial_id' => 0, 'technique' => 'rvd');
-            if (isset($_GET['condition'])) {
-                $trial['technique'] = $_GET['condition'];
-            }
+            //$trial = array('trial_id' => 0, 'technique' => 'rvd');
+            //if (isset($_GET['condition'])) {
+                //$trial['technique'] = $_GET['condition'];
+            //}
             if ($trial != null) {
                 //Initialization
                 //Docs
