@@ -72,6 +72,28 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script>
+    function check_input_baseline() {
+        <?php foreach ((array)$this->subjects as $subject): ?>
+            if ($('input[name=subject'+<?php echo $subject['id']; ?>+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate theme "'+$($('input[name=subject'+<?php echo $subject['id']; ?>+']')[0]).parent().parent().children().first().children().first().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        <?php endforeach; ?>
+
+        if ($('#subjectreasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
         $(document).ready(function() {
         $('#start').val(getNow());
             <?php
@@ -158,15 +180,18 @@
                 <?php endforeach; ?>
             });
             $('#phase3-button').on('click', function(e) {
-                window.onbeforeunload = null;
-                $('#end').val(getNow());
-                var baseline = {};
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                baseline["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
-                <?php endforeach; ?>
-                baseline["subjectreasoning"] = $('#subjectreasoning').val();
-                $('#baseline').val(JSON.stringify(baseline));
-                $('#connect-form').submit();
+                if (check_input_baseline()) {
+                    window.onbeforeunload = null;
+                    $('#end').val(getNow());
+                    $(this).prop('disabled', true);
+                    var baseline = {};
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                    baseline["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
+                    <?php endforeach; ?>
+                    baseline["subjectreasoning"] = $('#subjectreasoning').val();
+                    $('#baseline').val(JSON.stringify(baseline));
+                    $('#connect-form').submit();
+                }
             });
             $('#phase1-panel').collapse('show');
         }

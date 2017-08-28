@@ -108,7 +108,7 @@
                                         <div class="checkbox">
                                             <label><input type="checkbox" value="" id="reasoningnot" name="reasoningnot">I provided convincing reasons why the document is NOT useful for research some of the themes if any.</label>
                                         </div>
-                                        <p>How effective are your theme ratings?</p>
+                                        <p>Q1: How effective are your theme ratings?</p>
                                         <select id="eff_theme" class="form-control">
                                             <option value="0"></option>
                                             <option value="9">9 Excellent</option>
@@ -192,6 +192,70 @@
     var baseline = {};
     var condition = {};
     var revised = {};
+    function check_input_baseline() {
+        <?php foreach ((array)$this->subjects as $subject): ?>
+            if ($('input[name=subject'+<?php echo $subject['id']; ?>+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate theme "'+$($('input[name=subject'+<?php echo $subject['id']; ?>+']')[0]).parent().parent().children().first().children().first().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        <?php endforeach; ?>
+
+        if ($('#subjectreasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_condition() {
+        if ($('#eff_theme').val() == 0) {
+            notif({
+              msg: '<b>Error: </b> You need to answer Q1.',
+              type: "error"
+            });
+            return false;
+            
+        }
+
+        if ($('#feedback').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your feedback is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_revised() {
+        <?php foreach ((array)$this->subjects as $subject): ?>
+            if ($('input[name=revsubject'+<?php echo $subject['id']; ?>+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate theme "'+$($('input[name=revsubject'+<?php echo $subject['id']; ?>+']')[0]).parent().parent().children().first().children().first().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        <?php endforeach; ?>
+
+        if ($('#revsubjectreasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
     function valueToDescription(value) {
         switch (value) {
             case "0": return "Not at all useful";
@@ -273,70 +337,76 @@
             $('#phase1-button').on('click', function(e) {
                 //window.onbeforeunload = null;
                 //$('#interpretation-form').submit();
-                baseline['end'] = getNow();
-                $('#phase1-panel').collapse('hide');
-                $('#phase1-panel').on('show.bs.collapse', function(e) {
-                    e.preventDefault();
-                });
-                $('#phase1-link').addClass('disabled');
-                $('#phase2-panel-group').show();
-                $('#phase2-panel').collapse('show');
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                $('#ori-subject<?php echo strtolower($subject['id']); ?>').text(valueToDescription($('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()));
-                <?php endforeach; ?>
-                $('#ori-subjectreasoning').text($('#subjectreasoning').val());
-                $("html, body").animate({ scrollTop: 0 }, "slow");
-                baseline['response'] = {};
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                    baseline['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
-                <?php endforeach; ?>
-                baseline['response']["subjectreasoning"] = $('#subjectreasoning').val();
-                $('#baseline').val(JSON.stringify(baseline));
-                condition['start'] = getNow();
+                if (check_input_baseline()) {
+                    baseline['end'] = getNow();
+                    $('#phase1-panel').collapse('hide');
+                    $('#phase1-panel').on('show.bs.collapse', function(e) {
+                        e.preventDefault();
+                    });
+                    $('#phase1-link').addClass('disabled');
+                    $('#phase2-panel-group').show();
+                    $('#phase2-panel').collapse('show');
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                    $('#ori-subject<?php echo strtolower($subject['id']); ?>').text(valueToDescription($('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()));
+                    <?php endforeach; ?>
+                    $('#ori-subjectreasoning').text($('#subjectreasoning').val());
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    baseline['response'] = {};
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                        baseline['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
+                    <?php endforeach; ?>
+                    baseline['response']["subjectreasoning"] = $('#subjectreasoning').val();
+                    $('#baseline').val(JSON.stringify(baseline));
+                    condition['start'] = getNow();
+                }
             });
             $('#phase2-button').on('click', function(e) {
-                condition['end'] = getNow();
-                $('#phase2-panel').collapse('hide');
-                $('#phase3-panel-group').show();
-                $('#phase3-panel').collapse('show');
-                $("html, body").animate({ scrollTop: 0 }, "slow");
-                $('#phase2-button').hide();
-                $('#revsummary').val($('#summary').val());
-                $('#revsubjectreasoning').val($('#subjectreasoning').val());
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                    $('input[name="revsubject<?php echo $subject['id']; ?>"][value='+$('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()+']').prop('checked', true)
-                <?php endforeach; ?>
-                condition['response'] = {};
-                condition['response']['checklist'] = {};
-                $('input[type=checkbox]').each(function (idx) {
-                    if (this.checked) {
-                        condition['response']['checklist'][this.name] = 1;
-                    } else {
-                        condition['response']['checklist'][this.name] = 0;
-                    }
-                });
-                condition['response']['eff_theme'] = $('#eff_theme').val();
-                condition['response']['feedback'] = $('#feedback').val();
-                $('#condition').val(JSON.stringify(condition));
-                $('input[type=checkbox]').prop('disabled', true)
-                $('label:has(input[type=checkbox][disabled])').css('color', '#999')
-                $('select').prop('disabled', true);
-                $('#feedback').prop('disabled', true);
-                $('#feedback').css('color', '#999');
-                revised['start'] = getNow();
+                if (check_input_condition()) {
+                    condition['end'] = getNow();
+                    $('#phase2-panel').collapse('hide');
+                    $('#phase3-panel-group').show();
+                    $('#phase3-panel').collapse('show');
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    $('#phase2-button').hide();
+                    $('#revsummary').val($('#summary').val());
+                    $('#revsubjectreasoning').val($('#subjectreasoning').val());
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                        $('input[name="revsubject<?php echo $subject['id']; ?>"][value='+$('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()+']').prop('checked', true)
+                    <?php endforeach; ?>
+                    condition['response'] = {};
+                    condition['response']['checklist'] = {};
+                    $('input[type=checkbox]').each(function (idx) {
+                        if (this.checked) {
+                            condition['response']['checklist'][this.name] = 1;
+                        } else {
+                            condition['response']['checklist'][this.name] = 0;
+                        }
+                    });
+                    condition['response']['eff_theme'] = $('#eff_theme').val();
+                    condition['response']['feedback'] = $('#feedback').val();
+                    $('#condition').val(JSON.stringify(condition));
+                    $('input[type=checkbox]').prop('disabled', true)
+                    $('label:has(input[type=checkbox][disabled])').css('color', '#999')
+                    $('select').prop('disabled', true);
+                    $('#feedback').prop('disabled', true);
+                    $('#feedback').css('color', '#999');
+                    revised['start'] = getNow();
+                }
             });
             $('#phase3-button').on('click', function(e) {
-                window.onbeforeunload = null;
-                $('#end').val(getNow());
-                revised['response'] = {};
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                revised['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=revsubject<?php echo $subject['id']; ?>]:checked').val();
-                <?php endforeach; ?>
-                revised['response']["subjectreasoning"] = $('#revsubjectreasoning').val();
-                revised['phase2events'] = phase2events;
-                revised['end'] = getNow();
-                $('#revised').val(JSON.stringify(revised));
-                $('#connect-form').submit();
+                if (check_input_revised()) {
+                    window.onbeforeunload = null;
+                    $('#end').val(getNow());
+                    revised['response'] = {};
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                    revised['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=revsubject<?php echo $subject['id']; ?>]:checked').val();
+                    <?php endforeach; ?>
+                    revised['response']["subjectreasoning"] = $('#revsubjectreasoning').val();
+                    revised['phase2events'] = phase2events;
+                    revised['end'] = getNow();
+                    $('#revised').val(JSON.stringify(revised));
+                    $('#connect-form').submit();
+                }
             });
             $('#phase1-panel').collapse('show');
         }

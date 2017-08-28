@@ -79,13 +79,13 @@
                                         <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
                                         <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the third and fourth steps are to <u>infer</u> and <u>monitor</u> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</p>
-                                        <p class="header-step">What interpretations, inferences, perspectives or points of view may be drawn from or indicated by the source?</p>
+                                        <p class="header-step">Q1: What interpretations, inferences, perspectives or points of view may be drawn from or indicated by the source?</p>
                                         <textarea style="width:100%;" id="iq2" name="iq2" rows="3"></textarea>
-                                        <p class="header-step">What additional evidence beyond the source is necessary to answer the historical question?</p>
+                                        <p class="header-step">Q2: What additional evidence beyond the source is necessary to answer the historical question?</p>
                                         <textarea style="width:100%;" id="mq1" name="mq1" rows="3"></textarea>
-                                        <p class="header-step">What ideas, images, or terms need further defining from the source?</p>
+                                        <p class="header-step">Q3: What ideas, images, or terms need further defining from the source?</p>
                                         <textarea style="width:100%;" id="mq2" name="mq2" rows="3"></textarea>
-                                        <p class="header-step">How useful or siginficant is the source for its intended purpose in answering the historical question?</p>
+                                        <p class="header-step">Q4: How useful or siginficant is the source for its intended purpose in answering the historical question?</p>
                                         <textarea style="width:100%;" id="mq3" name="mq3" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
@@ -156,6 +156,85 @@
     var baseline = {};
     var condition = {};
     var revised = {};
+    function check_input_baseline() {
+        <?php foreach ((array)$this->subjects as $subject): ?>
+            if ($('input[name=subject'+<?php echo $subject['id']; ?>+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate theme "'+$($('input[name=subject'+<?php echo $subject['id']; ?>+']')[0]).parent().parent().children().first().children().first().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        <?php endforeach; ?>
+
+        if ($('#subjectreasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_condition() {
+        if ($('#iq2').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q1 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#mq1').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q2 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#mq2').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q3 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#mq3').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q4 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_revised() {
+        <?php foreach ((array)$this->subjects as $subject): ?>
+            if ($('input[name=revsubject'+<?php echo $subject['id']; ?>+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate theme "'+$($('input[name=revsubject'+<?php echo $subject['id']; ?>+']')[0]).parent().parent().children().first().children().first().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        <?php endforeach; ?>
+
+        if ($('#revsubjectreasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
         $(document).ready(function() {
         $('#start').val(getNow());
         baseline['start'] = getNow();
@@ -228,71 +307,77 @@
             $('#phase1-button').on('click', function(e) {
                 //window.onbeforeunload = null;
                 //$('#interpretation-form').submit();
-                baseline['end'] = getNow();
-                $('#phase1-panel').collapse('hide');
-                $('#phase1-panel').on('show.bs.collapse', function(e) {
-                    e.preventDefault();
-                });
-                $('#phase1-link').addClass('disabled');
-                $('#phase2-panel-group').show();
-                $('#phase2-panel').collapse('show');
-                $("html, body").animate({ scrollTop: 0 }, "slow");
-                baseline['response'] = {};
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                    baseline['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
-                <?php endforeach; ?>
-                baseline['response']["subjectreasoning"] = $('#subjectreasoning').val();
-                $('#baseline').val(JSON.stringify(baseline));
-                condition['start'] = getNow();
+                if (check_input_baseline()) {
+                    baseline['end'] = getNow();
+                    $('#phase1-panel').collapse('hide');
+                    $('#phase1-panel').on('show.bs.collapse', function(e) {
+                        e.preventDefault();
+                    });
+                    $('#phase1-link').addClass('disabled');
+                    $('#phase2-panel-group').show();
+                    $('#phase2-panel').collapse('show');
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    baseline['response'] = {};
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                        baseline['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=subject<?php echo $subject['id']; ?>]:checked').val();
+                    <?php endforeach; ?>
+                    baseline['response']["subjectreasoning"] = $('#subjectreasoning').val();
+                    $('#baseline').val(JSON.stringify(baseline));
+                    condition['start'] = getNow();
+                }
             });
             $('#phase2-button').on('click', function(e) {
-                condition['end'] = getNow();
-                $('#phase2-panel').collapse('hide');
-                $('#phase3-panel-group').show();
-                $('#phase3-panel').collapse('show');
-                $("html, body").animate({ scrollTop: 0 }, "slow");
-                $('#phase2-button').hide();
-                $('#revsummary').val($('#summary').val());
-                $('#revsubjectreasoning').val($('#subjectreasoning').val());
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                    $('input[name="revsubject<?php echo $subject['id']; ?>"][value='+$('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()+']').prop('checked', true)
-                <?php endforeach; ?>
-                condition['response'] = {};
-                condition['response']['question1'] = $('#iq2').val();
-                condition['response']['question2'] = $('#mq1').val();
-                condition['response']['question3'] = $('#mq2').val();
-                condition['response']['question4'] = $('#mq3').val();
-                $('#condition').val(JSON.stringify(condition));
-                $('#iq1').prop('disabled', true);
-                $('#iq1').css('color', '#999');
-                $('#iq2').prop('disabled', true);
-                $('#iq2').css('color', '#999');
-                $('#iq3').prop('disabled', true);
-                $('#iq3').css('color', '#999');
-                $('#iq4').prop('disabled', true);
-                $('#iq4').css('color', '#999');
-                $('#mq1').prop('disabled', true);
-                $('#mq1').css('color', '#999');
-                $('#mq2').prop('disabled', true);
-                $('#mq2').css('color', '#999');
-                $('#mq3').prop('disabled', true);
-                $('#mq3').css('color', '#999');
-                $('#mq4').prop('disabled', true);
-                $('#mq4').css('color', '#999');
-                revised['start'] = getNow();
+                if (check_input_condition()) {
+                    condition['end'] = getNow();
+                    $('#phase2-panel').collapse('hide');
+                    $('#phase3-panel-group').show();
+                    $('#phase3-panel').collapse('show');
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    $('#phase2-button').hide();
+                    $('#revsummary').val($('#summary').val());
+                    $('#revsubjectreasoning').val($('#subjectreasoning').val());
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                        $('input[name="revsubject<?php echo $subject['id']; ?>"][value='+$('input[name="subject<?php echo $subject['id']; ?>"]:checked').val()+']').prop('checked', true)
+                    <?php endforeach; ?>
+                    condition['response'] = {};
+                    condition['response']['question1'] = $('#iq2').val();
+                    condition['response']['question2'] = $('#mq1').val();
+                    condition['response']['question3'] = $('#mq2').val();
+                    condition['response']['question4'] = $('#mq3').val();
+                    $('#condition').val(JSON.stringify(condition));
+                    $('#iq1').prop('disabled', true);
+                    $('#iq1').css('color', '#999');
+                    $('#iq2').prop('disabled', true);
+                    $('#iq2').css('color', '#999');
+                    $('#iq3').prop('disabled', true);
+                    $('#iq3').css('color', '#999');
+                    $('#iq4').prop('disabled', true);
+                    $('#iq4').css('color', '#999');
+                    $('#mq1').prop('disabled', true);
+                    $('#mq1').css('color', '#999');
+                    $('#mq2').prop('disabled', true);
+                    $('#mq2').css('color', '#999');
+                    $('#mq3').prop('disabled', true);
+                    $('#mq3').css('color', '#999');
+                    $('#mq4').prop('disabled', true);
+                    $('#mq4').css('color', '#999');
+                    revised['start'] = getNow();
+                }
             });
             $('#phase3-button').on('click', function(e) {
-                window.onbeforeunload = null;
-                $('#end').val(getNow());
-                revised['response'] = {};
-                <?php foreach ((array)$this->subjects as $subject): ?>
-                revised['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=revsubject<?php echo $subject['id']; ?>]:checked').val();
-                <?php endforeach; ?>
-                revised['response']["subjectreasoning"] = $('#revsubjectreasoning').val();
-                revised['phase2events'] = phase2events;
-                revised['end'] = getNow();
-                $('#revised').val(JSON.stringify(revised));
-                $('#connect-form').submit();
+                if (check_input_revised()) {
+                    window.onbeforeunload = null;
+                    $('#end').val(getNow());
+                    revised['response'] = {};
+                    <?php foreach ((array)$this->subjects as $subject): ?>
+                    revised['response']["subject<?php echo $subject['id']; ?>"] = $('input[name=revsubject<?php echo $subject['id']; ?>]:checked').val();
+                    <?php endforeach; ?>
+                    revised['response']["subjectreasoning"] = $('#revsubjectreasoning').val();
+                    revised['phase2events'] = phase2events;
+                    revised['end'] = getNow();
+                    $('#revised').val(JSON.stringify(revised));
+                    $('#connect-form').submit();
+                }
             });
             $('#phase1-panel').collapse('show');
         }
