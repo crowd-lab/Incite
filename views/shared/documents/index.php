@@ -32,7 +32,14 @@ include(dirname(__FILE__).'/../common/header.php');
             <h4>Subject's Consent</h4>
             <p style="color: red;">If you are 18 years of age or older, understand the statements above, and freely consent to participate in the study, please click on the "Accept" button below to begin your participation.</p>
             <br>
+<?php 
+        $is_hit_accepted = !(!isset($_GET['assignmentId']) || (isset($_GET['assignmentId']) && $_GET['assignmentId'] == "ASSIGNMENT_ID_NOT_AVAILABLE"));
+?>
+        <?php if ($is_hit_accepted): ?>
             <div style="text-align: center; margin-bottom: 30px;"><button id="accept_btn" style="width: 150px; font-size:200%;">Accept</button></div>
+        <?php else: ?>
+            <div style="text-align: center; margin-bottom: 30px;">You need to accept HIT to prodeed.</div>
+        <?php endif; ?>
 
         </div>
     <!-- /.container -->
@@ -48,7 +55,7 @@ $(document).ready(function(){
 
     $('#accept_btn').on('click', function(e) {
         window.onbeforeunload = "";
-        window.location = '<?php echo getFullInciteUrl(); ?>/documents/show';
+        window.location = '<?php echo getFullInciteUrl(); ?>/documents/show?<?php echo $_SERVER['QUERY_STRING']; ?>';
     });
 
     window.onbeforeunload = "";
