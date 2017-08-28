@@ -111,13 +111,13 @@
                                         <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
                                         <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the first step is to <u>summarize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
-                                        <p class="header-step">What type of historical document is the source? (E.g., speech, letter, newspaper, ...)</p>
+                                        <p class="header-step">Q1: What type of historical document is the source? (E.g., speech, letter, newspaper, ...)</p>
                                         <textarea style="width:100%;" name="sq1" rows="3" id="sq1"></textarea>
-                                        <p class="header-step">What specific information, details and/or perspectives does the source provide?</p>
+                                        <p class="header-step">Q2: What specific information, details and/or perspectives does the source provide?</p>
                                         <textarea style="width:100%;" name="sq2" rows="3" id="sq2"></textarea>
-                                        <p class="header-step">What is the subject and/or purpose of the source?</p>
+                                        <p class="header-step">Q3: What is the subject and/or purpose of the source?</p>
                                         <textarea style="width:100%;" name="sq3" rows="3" id="sq3"></textarea>
-                                        <p class="header-step">Who was the author and/or audience of the source?</p>
+                                        <p class="header-step">Q4: Who was the author and/or audience of the source?</p>
                                         <textarea style="width:100%;" name="sq4" rows="3" id="sq4"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>
                                     </div>
@@ -223,6 +223,101 @@
     var baseline = {};
     var condition = {};
     var revised = {};
+    function check_input_baseline() {
+        if ($('#summary').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your summary is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+
+        for (var i = 1; i <= 6; i++) {
+            if ($('input[name=tone'+i+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate tone "'+$($('input[name=tone'+i+']')[0]).parent().parent().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        }
+        if ($('#tonereasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_condition() {
+        if ($('#sq1').val().length < 5) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q1 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#sq2').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q2 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#sq3').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q3 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        if ($('#sq4').val().length < 25) {
+            notif({
+              msg: '<b>Error: </b> Your response to Q4 is too short.',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+    function check_input_revised() {
+        if ($('#revsummary').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your summary is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+
+        for (var i = 1; i <= 6; i++) {
+            if ($('input[name=revtone'+i+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate tone "'+$($('input[name=tone'+i+']')[0]).parent().parent().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        }
+        if ($('#revtonereasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
 
 
     $(document).ready(function () {
@@ -239,69 +334,75 @@
         $('#phase1-button').on('click', function(e) {
             //window.onbeforeunload = null;
             //$('#interpretation-form').submit();
-            baseline['end'] = getNow();
-            $('#phase1-panel').collapse('hide');
-            $('#phase1-panel').on('show.bs.collapse', function(e) {
-                e.preventDefault();
-            });
-            $('#phase1-link').addClass('disabled');
-            $('#phase2-panel-group').show();
-            $('#phase2-panel').collapse('show');
-            $("html, body").animate({ scrollTop: 0 }, "slow");
-            baseline['response'] = {};
-            baseline['response']["summary"] = $('#summary').val();
-            for (var i = 1; i <= 6; i++) {
-                baseline['response']["tone"+i] = $('input[name=tone'+i+']:checked').val();
+            if (check_input_baseline()) {
+                baseline['end'] = getNow();
+                $('#phase1-panel').collapse('hide');
+                $('#phase1-panel').on('show.bs.collapse', function(e) {
+                    e.preventDefault();
+                });
+                $('#phase1-link').addClass('disabled');
+                $('#phase2-panel-group').show();
+                $('#phase2-panel').collapse('show');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                baseline['response'] = {};
+                baseline['response']["summary"] = $('#summary').val();
+                for (var i = 1; i <= 6; i++) {
+                    baseline['response']["tone"+i] = $('input[name=tone'+i+']:checked').val();
+                }
+                baseline['response']["tonereasoning"] = $('#tonereasoning').val();
+                $('#baseline').val(JSON.stringify(baseline));
+                condition['start'] = getNow();
             }
-            baseline['response']["tonereasoning"] = $('#tonereasoning').val();
-            $('#baseline').val(JSON.stringify(baseline));
-            condition['start'] = getNow();
         });
         $('#phase2-button').on('click', function(e) {
-            condition['end'] = getNow();
-            $('#phase2-panel').collapse('hide');
-            $('#phase3-panel-group').show();
-            $('#phase3-panel').collapse('show');
-            $("html, body").animate({ scrollTop: 0 }, "slow");
-            $('#phase2-button').hide();
-            $('#revsummary').val($('#summary').val());
-            $('#revtonereasoning').val($('#tonereasoning').val());
-            $('input[name="revtone1"][value='+$('input[name="tone1"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone2"][value='+$('input[name="tone2"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone3"][value='+$('input[name="tone3"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone4"][value='+$('input[name="tone4"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
-            $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
-            condition['response'] = {};
-            condition['response']['question1'] = $('#sq1').val();
-            condition['response']['question2'] = $('#sq2').val();
-            condition['response']['question3'] = $('#sq3').val();
-            condition['response']['question4'] = $('#sq4').val();
-            $('#condition').val(JSON.stringify(condition));
-            $('#sq1').prop('disabled', true);
-            $('#sq1').css('color', '#999');
-            $('#sq2').prop('disabled', true);
-            $('#sq2').css('color', '#999');
-            $('#sq3').prop('disabled', true);
-            $('#sq3').css('color', '#999');
-            $('#sq4').prop('disabled', true);
-            $('#sq4').css('color', '#999');
-            revised['start'] = getNow();
+            if (check_input_condition()) {
+                condition['end'] = getNow()
+                $('#phase2-panel').collapse('hide');
+                $('#phase3-panel-group').show();
+                $('#phase3-panel').collapse('show');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $('#phase2-button').hide();
+                $('#revsummary').val($('#summary').val());
+                $('#revtonereasoning').val($('#tonereasoning').val());
+                $('input[name="revtone1"][value='+$('input[name="tone1"]:checked').val()+']').prop('checked', true)
+                $('input[name="revtone2"][value='+$('input[name="tone2"]:checked').val()+']').prop('checked', true)
+                $('input[name="revtone3"][value='+$('input[name="tone3"]:checked').val()+']').prop('checked', true)
+                $('input[name="revtone4"][value='+$('input[name="tone4"]:checked').val()+']').prop('checked', true)
+                $('input[name="revtone5"][value='+$('input[name="tone5"]:checked').val()+']').prop('checked', true)
+                $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
+                condition['response'] = {};
+                condition['response']['question1'] = $('#sq1').val();
+                condition['response']['question2'] = $('#sq2').val();
+                condition['response']['question3'] = $('#sq3').val();
+                condition['response']['question4'] = $('#sq4').val();
+                $('#condition').val(JSON.stringify(condition));
+                $('#sq1').prop('disabled', true);
+                $('#sq1').css('color', '#999');
+                $('#sq2').prop('disabled', true);
+                $('#sq2').css('color', '#999');
+                $('#sq3').prop('disabled', true);
+                $('#sq3').css('color', '#999');
+                $('#sq4').prop('disabled', true);
+                $('#sq4').css('color', '#999');
+                revised['start'] = getNow();
+            }
         });
         $('#phase3-button').on('click', function(e) {
-            window.onbeforeunload = null;
-            $(this).prop('disabled', true);
-            $('#end').val(getNow());
-            revised['response'] = {};
-            revised['response']["summary"] = $('#revsummary').val();
-            for (var i = 1; i <= 6; i++) {
-                revised['response']["tone"+i] = $('input[name=revtone'+i+']:checked').val();
+            if (check_input_revised()) {
+                window.onbeforeunload = null;
+                $(this).prop('disabled', true);
+                $('#end').val(getNow());
+                revised['response'] = {};
+                revised['response']["summary"] = $('#revsummary').val();
+                for (var i = 1; i <= 6; i++) {
+                    revised['response']["tone"+i] = $('input[name=revtone'+i+']:checked').val();
+                }
+                revised['response']["tonereasoning"] = $('#revtonereasoning').val();
+                revised['phase2events'] = phase2events;
+                revised['end'] = getNow();
+                $('#revised').val(JSON.stringify(revised));
+                $('#summarytone-form').submit();
             }
-            revised['response']["tonereasoning"] = $('#revtonereasoning').val();
-            revised['phase2events'] = phase2events;
-            revised['end'] = getNow();
-            $('#revised').val(JSON.stringify(revised));
-            $('#summarytone-form').submit();
         });
         $('#phase1-panel').collapse('show');
     });

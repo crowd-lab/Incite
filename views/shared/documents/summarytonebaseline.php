@@ -108,6 +108,37 @@
     var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
+    function check_input() {
+        if ($('#summary').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your summary is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+
+        for (var i = 1; i <= 6; i++) {
+            if ($('input[name=tone'+i+']:checked').length == 0) {
+                ;
+                notif({
+                  msg: '<b>Error: </b> Please rate tone "'+$($('input[name=tone'+i+']')[0]).parent().parent().children().first().text()+'"!',
+                  type: "error"
+                });
+                return false;
+            }
+        }
+        if ($('#tonereasoning').val().length < 50) {
+            notif({
+              msg: '<b>Error: </b> Your reasoning is too short!',
+              type: "error"
+            });
+            return false;
+            
+        }
+        return true;
+    }
+
 
 
     $(document).ready(function () {
@@ -141,17 +172,19 @@
             $('input[name="revtone6"][value='+$('input[name="tone6"]:checked').val()+']').prop('checked', true)
         });
         $('#phase3-button').on('click', function(e) {
-            window.onbeforeunload = null;
-            $(this).prop('disabled', true);
-            $('#end').val(getNow());
-            var baseline = {};
-            baseline["summary"] = $('#summary').val();
-            for (var i = 1; i <= 6; i++) {
-                baseline["tone"+i] = $('input[name=tone'+i+']:checked').val();
+            if (check_input()) {
+                window.onbeforeunload = null;
+                $(this).prop('disabled', true);
+                $('#end').val(getNow());
+                var baseline = {};
+                baseline["summary"] = $('#summary').val();
+                for (var i = 1; i <= 6; i++) {
+                    baseline["tone"+i] = $('input[name=tone'+i+']:checked').val();
+                }
+                baseline["tonereasoning"] = $('#tonereasoning').val();
+                $('#baseline').val(JSON.stringify(baseline));
+                $('#summarytone-form').submit();
             }
-            baseline["tonereasoning"] = $('#tonereasoning').val();
-            $('#baseline').val(JSON.stringify(baseline));
-            $('#summarytone-form').submit();
         });
         $('#phase1-panel').collapse('show');
     });
