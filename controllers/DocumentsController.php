@@ -61,7 +61,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     require_once("Incite_Session.php");
     require_once("Incite_Env_Setting.php");
     require_once('Incite_Helpers.php');
-    require_once('Incite_Assessment_Table.php');
 
     setup_session();
   }

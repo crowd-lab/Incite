@@ -32,8 +32,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
     require_once("Incite_Env_Setting.php");
     require_once("DB_Connect.php");
     require_once("Email.php");
-    require_once('finediff.php');
-    require_once("Incite_Assessment_Table.php");
 
   }
 
