@@ -329,7 +329,7 @@
         }
         if ($('#eff_tone').val() == 0) {
             notif({
-              msg: '<b>Error: </b> You need to Q2.',
+              msg: '<b>Error: </b> You need to answer Q2.',
               type: "error"
             });
             return false;
