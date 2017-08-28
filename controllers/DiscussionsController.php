@@ -28,7 +28,11 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
         $this->forward('discuss');
 
     }
-
+    
+    /**
+    * Create discussion
+    *
+    */
     public function createAction()
     {
         if ($this->getRequest()->isPost()) {
@@ -45,22 +49,15 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
                 $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, explode(',', $_POST['references']), 4);
 
             replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA']['id'], $discussionID, array());
-            $_SESSION['incite']['redirect'] = array(
-                    'status' => 'complete_create_discussion', 
-                    'message' => 'Congratulations! You just created a new discussion! You will be redirected to your discussion', 
-                    'url' => getFullInciteUrl().'/discussions/discuss/'.$this->_getParam('id'),
-                    'time' => '5');
-            $this->redirect('incite/discussions/discuss/'.$discussionID);
-            /*
-            $discussionID = createQuestion($_POST['title'], $_SESSION['Incite']['USER_DATA'][0], explode(',', $POST['references']), 4);
-            replyToQuestion($_POST['content'], $_SESSION['Incite']['USER_DATA'][0], $discussionID, array());
-            //*/
-            //process and store posted data about discussion
         } else {
             //show create discussion page
         }
     }
 
+    /**
+    * form the metadata of the discuss page
+    *
+    */
 	public function discussAction()
     {
         if ($this->getRequest()->isPost()) {
@@ -106,7 +103,6 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
             }
         } else {
             //Get all discussions and list them!
-            //$this->view->Discussions = ???
             $current_page = 1;
             if (isset($_GET['page']))
                 $current_page = $_GET['page'];

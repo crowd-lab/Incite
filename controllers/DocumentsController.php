@@ -38,10 +38,6 @@ function classifyTextWithinTagWithId($string, $tagname, $id) {
   return $result;
 }
 
-function sort_strlen($str1, $str2) {
-  return strlen($str2) - strlen($str1);
-}
-
 /**
 * Upgrade V1 (using span) to V2 (using em)
 */
@@ -126,6 +122,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
   }
 
+  /**
+  * Form the transcribe page matadata and recieve the posted data form the view
+  */
   public function transcribeAction() {
       $this->_helper->db->setDefaultModelName('Item');
       $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
@@ -148,6 +147,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
   }
 
+  /**
+  * Save the posted transcription to the database
+  */
   public function saveTranscription() {
     $workingGroupId = getWorkingGroupID();
 
@@ -202,6 +204,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
   }
 
+  /**
+  * Populate the data for the transcribe task
+  * Get the metadata according to the id
+  * Get the lastes transcription 
+  */
   public function populateDataForTranscribeTask() {
     $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
 
@@ -230,6 +237,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
   }
 
+  /**
+  * Get all the transcribe documents according to the posted query
+  */
   public function populateTranscribeSearchResults() {
     if (isSearchQuerySpecifiedViaGet()) {
       $searched_item_ids = getSearchResultsViaGetQuery();
@@ -246,7 +256,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       return $item_ids;
   }
 
-
+  /**
+  * Form the tag matadata and recieve the posted data form the view
+  */
   public function tagAction() {
       $this->_helper->db->setDefaultModelName('Item');
       $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
@@ -306,8 +318,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
   }
 
-  
-
+  /**
+  * Save the posted tags to the database
+  */
   public function saveTags() {
     $entities = json_decode($_POST["entities"], true);
     $workingGroupId = getWorkingGroupID();
@@ -349,6 +362,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
   }
 
+  /**
+  * Populate the data for the tag task
+  * Get the transcription of this document
+  * Generate the tags 
+  */
   public function populateDataForTagTask() {
     $tag_id_counter = 0;
     $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
@@ -443,6 +461,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
   }
 
+  /**
+  * Find the document for the tag task according to the specified query
+  */
   public function populateTagSearchResults() {
     if (isSearchQuerySpecifiedViaGet()) {
       $searched_item_ids = getSearchResultsViaGetQuery();
@@ -455,6 +476,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     return $item_ids;
   }
 
+  /**
+  * Form the connect page matadata and recieve the posted data form the view
+  */
   public function connectAction() {
       $this->_helper->db->setDefaultModelName('Item');
       $this->view->category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
@@ -475,6 +499,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
   }
 
+  /**
+  * Save the ratings in the connect task to the database
+  */
   public function saveConnections() {
     $all_subject_ids = getAllSubjectConceptIds();
     $workingGroupId = getWorkingGroupID();
@@ -528,6 +555,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     
   }
 
+  /**
+  * Populate the data for the connect task
+  * Get the latest transcription of this document
+  * Get the latest tagged transcription of this document
+  */
   public function populateDataForConnectTask() {
     $is_connectable_by_tags = true;
     $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
@@ -556,7 +588,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
       }
 
-      
       //Gets the latest tagged transcription and the most recently marked subjects, if they exist
       if (hasTaggedTranscriptionForNewestTranscription($this->_getParam('id'))) {
         $transcriptions = getAllTaggedTranscriptions($this->_getParam('id'));
@@ -589,6 +620,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
   }
 
+  /**
+  * Get all document of connect task accorging to the specified query
+  */
   public function populateConnectSearchResults() {
     $connectable_documents = getDocumentsWithoutConnectionsForLatestTaggedTranscription();
     $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
@@ -604,24 +638,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
     return $item_ids;
   }
-
-  public function discussAction() {
-    //testing controller
-  }
-
-  public function redirectAction() {
-    if (isset($_SESSION['incite']['redirect'])) {
-      $this->view->redirect = $_SESSION['incite']['redirect'];
-      unset($_SESSION['incite']['redirect']);
-    } else {
-      //unknown error occur so we set default message
-      $this->view->redirect = array('status' => 'error',
-      'message' => 'The server could not complete the request. You will be redirected to homepage',
-      'url' => '/m4j/incite',
-      'time' => '5');
-    }
-  }
-
+  /**
+  * Display the overall status
+  */
   public function viewAction() {
     $this->_helper->db->setDefaultModelName('Item');
 
