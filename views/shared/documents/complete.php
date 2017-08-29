@@ -25,6 +25,8 @@ else
 <br>
 
 <form method="post" action="<?php echo $mturk_url; ?>">
+<input id="assignment-form" type="hidden" name="assignmentId" value="<?php echo $_SESSION['study2']['assignment_id']; ?>" />
+<input type="hidden" name="dummy" value="completed" />
 <div style="text-align: center"><button style="width: 100px;" class="btn btn-primary">Finish</button></div>
 </form>
 
