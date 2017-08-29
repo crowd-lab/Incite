@@ -38,6 +38,13 @@ function check_input () {
             return false;
         }
     }
+    if ($('#age').val() < 18 || $('#age').val() >= 120) {
+            notif({
+              msg: "<b>Error: </b> Please enter a reasonable age (18-120)",
+              type: "error"
+            });
+            return false;
+    } 
     controls = $('#learning-form .form-control');
     for (var i = 0; i < controls.length; i++) {
         if ($(controls[i]).val() === "") {
