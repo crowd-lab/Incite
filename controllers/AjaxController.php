@@ -800,4 +800,20 @@ public function getallavailabledocsAction(){
     }
     echo json_encode($urlData);
   }
+    public function updateamtAction() 
+    {
+        if ($this->getRequest()->isPost()) { 
+            $db = DB_Connect::connectDB();
+            $stmt = $db->prepare("INSERT INTO `amt_assignments` (assignment_id, last_seen) VALUES (?, NOW()) ON DUPLICATE KEY UPDATE last_seen = NOW()");
+
+            $stmt->bind_param("s", $_POST['asgn_id']);
+            $stmt->execute();
+            $stmt->close();
+            $db->close();
+            echo "true";
+        } else {
+            echo "false";
+        }
+        
+    }
 }

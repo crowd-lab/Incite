@@ -534,11 +534,17 @@ if (isset($_GET['time'])) {
             if (allowed_time < 0 && !time_up_submitted) {
                 time_up_submitted = true;
                 window.onbeforeunload = "";
-                $('form').submit();
+                //$('form').submit();
             }
         }
+        function updateAMT() {
+            $.post( "https://crowd.cs.vt.edu/m4jexp/wfexp/incite/ajax/updateamt", { asgn_id: "<?php echo $_SESSION['study2']['assignment_id']; ?>" } );
+        }
+        
     
 $(document).ready(function () {
+
+    setInterval(updateAMT, 10000);
 
     window.onbeforeunload = function() {
         return "If you leave the page now, your work may be lost!";
@@ -773,8 +779,10 @@ function year_of_full_iso_date(date) {
 </head>
 <body>
 <?php
+if (isset($_SESSION['study2'])) {
 $task_seq = $_SESSION['study2']['task_seq']+1;
 $num_tasks = $_SESSION['study2']['num_tasks'];
+}
 ?>
 
 <?php if (isset($task_description)): ?>
