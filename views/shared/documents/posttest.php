@@ -29,7 +29,7 @@
                     <br>
                     <p class="header-step">Again, imagine you were a historian who is interested in the Civil War and currently investigating a historian question, "<u>What was life like in the artillery during the Civil War?</u>"</p>
                     <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
-                    <p class="header-step">Step <?php echo $task_seq; ?>b: Write your response below to the historical document and question.</p>
+                    <p class="header-step">Step <?php echo $task_seq; ?>b: By thinking like a historian, write your response below to the historical document and question.</p>
                     <form id="interpretation-form" method="post">
                         <textarea id="response" style="width:100%;" name="response" rows="10"></textarea>
                         <input type="hidden" id="start" name="start" value="">

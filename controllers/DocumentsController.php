@@ -192,6 +192,18 @@ function completeTests($id, $test_type, $content) {
     $db->close();
 }
 
+function completeStudy($id) {
+    $is_completed = 2; //done
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("UPDATE study22 SET is_completed = ?  WHERE id = ?");
+
+    $stmt->bind_param("ii", $is_completed, $id);
+
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+}
+
 function urlGenerator($task_type)
 {
     $action = '';
@@ -342,6 +354,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['study2']['posttest_doc'] = 1127;
 
                 //AMT stuff
+                $_SESSION['study2']['assignment_id'] = $assignment_id;
                 $_SESSION['study2']['worker_id'] = $worker_id;
                 $_SESSION['study2']['id'] = $trial['trial_id'];
                 $_SESSION['study2']['technique'] = $trial['technique'];
@@ -742,6 +755,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $content['response'] = $_POST['response'];
                     $content['end'] = $_POST['end'];
                     completeTests($_SESSION['study2']['id'], "postsurvey", $content);
+                    completeStudy($_SESSION['study2']['id']);
 
                     //All set. Move to next task!
                     $_SESSION['study2']['task_seq']++;
@@ -752,6 +766,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             public function completeAction() {
+            }
+            public function complete2Action() {
             }
             public function errorAction() {
                 echo 'Something went wrong!';

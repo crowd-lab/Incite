@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-$task = "transcribe";
-include(dirname(__FILE__).'/../common/header.php');
-
 $mturk_url = "";
-$endpoint = "production";
-//$endpoint = "sandbox";
+//$endpoint = "production";
+$endpoint = "sandbox";
 if ($endpoint == "production")
     $mturk_url = "https://www.mturk.com/mturk/externalSubmit";
 else
@@ -14,7 +11,7 @@ else
 
 
 ?>
-
+<body>
 
 <div style="text-align: center">
 <h2>You have completed the study.</h2>
@@ -23,15 +20,13 @@ else
 </div>
 <br>
 <br>
-
+<?php echo $_GET['assignmentId']; ?>
 <form method="post" action="<?php echo $mturk_url; ?>">
-<input id="assignment-form" type="hidden" name="assignmentId" value="<?php echo $_SESSION['study2']['assignment_id']; ?>" />
-<input type="hidden" name="dummy" value="completed" />
-<div style="text-align: center"><button style="width: 100px;" class="btn btn-primary">Finish</button></div>
+<input style="width:300px;" type="text" name="assignmentId" value="" />
+<input type="hidden" name="test" value="mytest" />
+<input type="hidden" name="test2" value="mytest2" />
+<input type="submit" value="submit" />
 </form>
+</body>
 
-<script>
-$(function() {
-    window.onbeforeunload = "";
-});
-</script>
+</html>

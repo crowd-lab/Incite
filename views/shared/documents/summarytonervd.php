@@ -131,6 +131,9 @@
                                             <label><input type="checkbox" value="" id="originality" name="originality">The worker wrote an original summary. The worker did not plagiarize.</label>
                                         </div>
                                         <div class="checkbox">
+                                            <label><input type="checkbox" value="" id="significance" name="significance">The worker wrote a summary that contains all important inforamtion in the document.</label>
+                                        </div>
+                                        <div class="checkbox">
                                             <label><input type="checkbox" value="" id="coverage" name="coverage">The worker wrote a summary that has balanced coverage. The summary does not focus on some specific parts of the original document.</label>
                                         </div>
                                         <div class="checkbox">
@@ -149,7 +152,7 @@
                                             <label><input type="checkbox" value="" id="subject" name="subject">The worker correctly identified the subject of the document (as implied in summary and tone reasoning).</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" value="" id="evidence" name="evidence">The worker provided reasoning with evidence to support my tone ratings such as keywords implying emotions or attitudes.</label>
+                                            <label><input type="checkbox" value="" id="evidence" name="evidence">The worker provided reasoning with evidence to support his/her tone ratings such as keywords implying emotions or attitudes.</label>
                                         </div>
                                         <p>Q1: How effective is the worker's summary?</p>
                                         <select id="eff_summary" class="form-control">

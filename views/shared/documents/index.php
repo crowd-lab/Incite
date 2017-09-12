@@ -9,7 +9,7 @@ include(dirname(__FILE__).'/../common/header.php');
     <!-- Page Content -->
     <div class="container-fluid" style="margin-left: 100px; margin-right: 100px;">
             <h2 style="text-align: center; color: red;">Please do not accept the HIT if you have participated!</h2>
-            <h2 style="text-align: center; color: red;">This is a long HIT so please be prepared to work for about 60 mins.</h2>
+            <h2 style="text-align: center; color: red;">This is a long HIT so please be prepared to work for about 40 mins.</h2>
             <h2 style="text-align: center;">Investigation of Crowdsourced Connections between Historical Documents and High-Level Concepts</h2>
             <h4>Purpose of this Research Project</h4>
             <p>You are being asked to participate in a research study. We are studying the effects of different work conditions on historical learning/thinking. We will use these results to inform and improve the design of an online text analysis system. In addition, the results may have implications for designing future digital archival systems as well as online educational systems. The results of this study may be published in academic conferences or journals or included in student theses and dissertations.</p>

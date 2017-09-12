@@ -131,6 +131,9 @@
                                             <label><input type="checkbox" value="" id="originality" name="originality">I wrote an original summary. I did not plagiarize.</label>
                                         </div>
                                         <div class="checkbox">
+                                            <label><input type="checkbox" value="" id="significance" name="significance">The worker wrote a summary that contains all important inforamtion in the document.</label>
+                                        </div>
+                                        <div class="checkbox">
                                             <label><input type="checkbox" value="" id="coverage" name="coverage">I wrote a summary that has balanced coverage. The summary does not focus on some specific parts of the original document.</label>
                                         </div>
                                         <div class="checkbox">
