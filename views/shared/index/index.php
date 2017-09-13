@@ -131,34 +131,38 @@ include(dirname(__FILE__).'/../common/header.php');
         </a>
     </div> <!-- homepage-carousel -->
     <div id="homepage-details" style="margin-top: 30px;">
-        <?php if (gettype(get_option('twitter_timeline')) == "NULL" || !empty(get_option('twitter_timeline')) || gettype(get_option('fb')) == "NULL" || !empty(get_option('fb'))): ?>
+        <?php $tmptw = get_option('twitter_timeline'); ?>
+        <?php $tmptwb = get_option('twitter_button'); ?>
+        <?php $tmpfb = get_option('fb'); ?>
+        <?php if (gettype($tmptw) == "NULL" || !empty($tmptw) || gettype($tmpfb) == "NULL" || !empty($tmpfb)): ?>
             <div id="twitter-tweets" style="float: right; width:20%; margin-bottom: -250px;">
             <h3 style="color: #8BB7C8; margin-top: 0px;">Social Feeds</h3>
-            <?php if (gettype(get_option('twitter_timeline')) == "NULL"): ?>
+            <?php if (gettype($tmptw) == "NULL"): ?>
                 <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @July4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <a class="twitter-timeline" data-width="100%" data-height="220" data-theme="light" data-link-color="#2B7BB9    " href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widget    s.js" charset="utf-8"></script>
-            <?php elseif (!empty(get_option('twitter_timeline'))): ?>
+            <?php elseif (!empty($tmptw)): ?>
                 <?php echo get_option("twitter_button"); ?>
                 <?php echo get_option("twitter_timeline"); ?>
             <?php endif; ?>
         
-            <?php if (gettype(get_option('fb')) == "NULL"): ?>
+            <?php if (gettype($tmpfb) == "NULL"): ?>
                 <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
                 <div class="fb-page" data-href="https://www.facebook.com/July4CivilWar/" data-tabs="timeline" data-width="500" data-height="220" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/July4CivilWar/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/July4CivilWar/">Mapping the Fourth of July: Exploring Independence in the Civil War Era</a></blockquote></div>
-            <?php elseif (!empty(get_option('fb'))): ?>
+            <?php elseif (!empty($tmpfb)): ?>
                 <div style="border: 2px solid #dddddd; margin-bottom: 7px;"></div>
                 <?php echo get_option("fb"); ?>
             <?php endif; ?>
             </div>
             <?php endif; ?>
-        <?php if (gettype(get_option('twitter_timeline')) == "NULL" || !empty(get_option('twitter_timeline')) || gettype(get_option('fb')) == "NULL" || !empty(get_option('fb'))): ?>
+        <?php if (gettype($tmptw) == "NULL" || !empty($tmptw) || gettype($tmpfb) == "NULL" || !empty($tmpfb)): ?>
         <div id="homepage-introduction" style="width: 78%;">
         <?php else: ?>
         <div id="homepage-introduction" >
         <?php endif; ?>
             <h3 style="color: #8BB7C8;">Introduction</h3>
             <div>
-                <?php if (!empty(get_option('intro'))): ?>
+                <?php $tmp = get_option('intro'); ?>
+                <?php if (!empty($tmp)): ?>
                     <div ><p  style="word-wrap: break-word;"><?php echo get_option('intro') ?></p></div>
                 <?php else: ?>
                     <div ><p  style="word-wrap: break-word;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla maximus velit sed felis gravida, et pellentesque libero posuere. Nullam augue mi, lacinia eu mauris iaculis, suscipit hendrerit elit. Ut consectetur nunc eget lorem venenatis, et vehicula nisl vestibulum. Vivamus vel aliquam lectus. Aliquam pulvinar dictum tellus a feugiat. Praesent a eros sed velit suscipit semper eu et orci. Donec elementum tempor sagittis. Duis orci nisl, semper ut erat ac, aliquet commodo purus. Morbi erat massa, dictum quis eleifend at, ornare vitae risus. </p></div>
