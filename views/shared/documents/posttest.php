@@ -27,7 +27,7 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <p class="header-step">Again, imagine you were a historian who is interested in the Civil War and currently investigating a historian question, "<u>What was life like in the artillery during the Civil War?</u>"</p>
+                    <p class="header-step">Again, imagine you were a historian who is interested in the Civil War and currently investigating a historian question, "<u><?php echo $_SESSION['study2']['posttest_q']; ?></u>"</p>
                     <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
                     <p class="header-step">Step <?php echo $task_seq; ?>b: By thinking like a historian, write your response below to the historical document and question.</p>
                     <form id="interpretation-form" method="post">

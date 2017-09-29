@@ -315,7 +315,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         //Check if there is task available. If not, redirect to a page to notify the user.
         $isAnyTrialAvailable = isAnyTrialAvailable();
         //testing so we assuming there is trial available
-        //$isAnyTrialAvailable = true;
+        $isAnyTrialAvailable = true;
         if (!$isAnyTrialAvailable)  {
             $this->_helper->viewRenderer('taskless');
             return;
@@ -325,7 +325,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $is_hit_accepted = !(!isset($_GET['assignmentId']) || (isset($_GET['assignmentId']) && $_GET['assignmentId'] == "ASSIGNMENT_ID_NOT_AVAILABLE"));
 
         //testing so we can assume hit is accepted
-        //$is_hit_accepted = true;
+        if (isset($_GET['crowdtesting'])) {
+            $is_hit_accepted = true;
+        }
         if ($is_hit_accepted) {
             $this->_helper->viewRenderer('taskless');
             $worker_id = '';
@@ -341,18 +343,45 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 return;
             }
             $trial = getNextTrial($assignment_id, $worker_id);
+            $test_seq = array(0,1,2,3,4);
+            $test_docs = array(1125, 1126, 1127, 1128, 1129);
+            $test_questions = array(1125=>"What was the life of a child like during the Depression?",
+                                    1126=>"What was the role of spies during the American Revolutionary War",
+                                    1127=>"What was life like in the artillery during the Civil War?",
+                                    1128=>"What were the conditions of life in farming communities on the great plains during the early 20th century?",
+                                    1129=>"What were nineteenth century's views on women's rights?");
+            shuffle($test_seq);
             //testing with a particular technique: baseline, scim, shepherd, rvd (review vs. doing)
-            //$trial = array('trial_id' => 0, 'technique' => 'rvd');
-            //if (isset($_GET['condition'])) {
-                //$trial['technique'] = $_GET['condition'];
-            //}
+            if (isset($_GET['crowdtesting'])) {
+                $trial = array('trial_id' => 1, 'technique' => 'baseline');
+                if (isset($_GET['condition'])) {
+                    $trial['technique'] = $_GET['condition'];
+                }
+                if (isset($_GET['pretestdoc'])) {
+                    $_SESSION['study2']['pretest_doc'] = $_GET['pretestdoc'];
+                    $_SESSION['study2']['pretest_q'] = $test_questions[$_GET['pretestdoc']];
+                }
+                if (isset($_GET['workdoc'])) {
+                    $_SESSION['study2']['work_doc'] = $_GET['workdoc'];
+                    $_SESSION['study2']['work_q'] = $test_questions[$_GET['workdoc']];
+                }
+                if (isset($_GET['posttestdoc'])) {
+                    $_SESSION['study2']['posttest_doc'] = $_GET['posttestdoc'];
+                    $_SESSION['study2']['posttest_q'] = $test_questions[$_GET['posttestdoc']];
+                }
+            }
             if ($trial != null) {
                 //Initialization
                 //Docs
-                $_SESSION['study2']['pretest_doc'] = 1125;
-                $_SESSION['study2']['work_doc'] = 1126;
-                $_SESSION['study2']['posttest_doc'] = 1127;
 
+                if (!isset($_GET['crowdtesting'])) {
+                    $_SESSION['study2']['pretest_doc'] = $test_docs[$test_seq[0]];
+                    $_SESSION['study2']['pretest_q'] = $test_questions[$test_docs[$test_seq[0]]];
+                    $_SESSION['study2']['work_doc'] = $test_docs[$test_seq[1]];
+                    $_SESSION['study2']['work_q'] = $test_questions[$test_docs[$test_seq[1]]];
+                    $_SESSION['study2']['posttest_doc'] = $test_docs[$test_seq[2]];
+                    $_SESSION['study2']['posttest_q'] = $test_questions[$test_docs[$test_seq[2]]];
+                }
                 //AMT stuff
                 $_SESSION['study2']['assignment_id'] = $assignment_id;
                 $_SESSION['study2']['worker_id'] = $worker_id;

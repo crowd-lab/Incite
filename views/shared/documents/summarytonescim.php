@@ -109,7 +109,7 @@
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
-                                        <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
+                                        <p class="header-step">Historical Question: <u><?php echo $_SESSION['study2']['work_q']; ?></u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the first step is to <u>summarize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">Q1: What type of historical document is the source? (E.g., speech, letter, newspaper, ...)</p>
                                         <textarea style="width:100%;" name="sq1" rows="3" id="sq1"></textarea>

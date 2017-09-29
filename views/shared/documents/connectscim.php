@@ -77,7 +77,7 @@
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
-                                        <p class="header-step">Historical Question: <u>What was the role of spies during the American Revolutionary War?</u></p>
+                                        <p class="header-step">Historical Question: <u><?php echo $_SESSION['study2']['work_q']; ?></u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the third and fourth steps are to <u>infer</u> and <u>monitor</u> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">Q1: What interpretations, inferences, perspectives or points of view may be drawn from or indicated by the source?</p>
                                         <textarea style="width:100%;" id="iq2" name="iq2" rows="3"></textarea>
