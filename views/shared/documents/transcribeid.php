@@ -169,9 +169,9 @@
         }
 
         function populateWithLatestTranscriptionData() {
-            $('#transcription-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription['transcription']) ? $this->latest_transcription['transcription'] : 'nothing'); ?>.value);
-            $('#summary-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription['summary']) ? $this->latest_transcription['summary'] : 'nothing'); ?>.value);
-            $('#tone-selector').val('<?php echo isset($this->latest_transcription["tone"]) ? $this->latest_transcription["tone"] : "nothing"; ?>');
+            $('#transcription-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription->transcribed_text) ? $this->latest_transcription->transcribed_text : 'nothing'); ?>.value);
+            $('#summary-textarea').html(<?php echo sanitizeStringInput(isset($this->latest_transcription->summarized_text) ? $this->latest_transcription->summarized_text : 'nothing'); ?>.value);
+            $('#tone-selector').val('<?php echo isset($this->latest_transcription->tone) ? $this->latest_transcription->tone : "nothing"; ?>');
         }
 
         function addRevisionHistoryListeners() {

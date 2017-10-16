@@ -188,20 +188,20 @@ SQL
         );
 
         $db->query(<<<SQL
-   CREATE TABLE IF NOT EXISTS {$db->prefix}incite_transcriptions (
+   CREATE TABLE IF NOT EXISTS {$db->InciteTranscription} (
         `id`                    int(11) NOT NULL AUTO_INCREMENT,
-        `item_id`           int(11) NOT NULL,
+        `item_id`               int(11) NOT NULL,
         `user_id`               int(11) NOT NULL,
         `working_group_id`      int(11) NOT NULL,
         `transcribed_text`      varchar(200000) NOT NULL,
         `summarized_text`       varchar(1000) NOT NULL,
         `tone`                  varchar(50) NOT NULL,
-        `type`           int(11) NOT NULL,
+        `type`                  int(11) NOT NULL,
         `timestamp_approval`    timestamp NULL DEFAULT NULL,
         `timestamp_creation`    timestamp NOT NULL,
         
         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 SQL
         );
 

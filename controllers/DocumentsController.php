@@ -152,7 +152,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
   public function saveTranscription() {
     $workingGroupId = getWorkingGroupID();
 
-    createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
+    $trans = new InciteTranscription;
+    $trans->item_id = $this->_getParam('id');
+    $trans->user_id = $_SESSION['Incite']['USER_DATA']['id'];
+    $trans->working_group_id = $workingGroupId;
+    $trans->transcribed_text = $_POST['transcription'];
+    $trans->summarized_text = $_POST['summary'];
+    $trans->tone = $_POST['tone'];
+    $trans->type = 1; //1: default user input
+    $trans->save();
+
+    //createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
     $_SESSION['Incite']['previous_task'] = 'transcribe';
 
     if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
@@ -217,7 +227,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
 
       $this->_helper->viewRenderer('transcribeid');
-      $this->view->latest_transcription = getNewestTranscription($this->_getParam('id'));
+      $trans = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($this->_getParam('id'));
+      $this->view->latest_transcription = $trans;
       $this->view->is_being_edited = !empty($this->view->latest_transcription);
 
       if ($this->view->is_being_edited) {
@@ -376,10 +387,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
       }
 
       //Get the transcription for the document
-      $newestTranscription = getNewestTranscription($this->_getParam('id'));
+      $newestTranscription = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($this->_getParam('id'));
       if (!empty($newestTranscription)) {
-        $this->view->transcription_id = $newestTranscription['id'];
-        $this->view->transcription = $newestTranscription['transcription'];
+        $this->view->transcription_id = $newestTranscription->id;
+        $this->view->transcription = $newestTranscription->transcribed_text;
       } else {
         $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe this document first. Or if you want to find another document to tag, please click <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
 
@@ -666,13 +677,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
 
     //find the transcription for the document
-    $transcription = getNewestTranscription($item_id);
+    $transcription = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($item_id);
     $this->view->hasTranscription = false;
 
     if (!empty($transcription)) {
       $this->view->hasTranscription = true;
-      $this->view->transcription_id = $transcription['id'];
-      $this->view->transcription = $transcription['transcription'];
+      $this->view->transcription_id = $transcription->id;
+      $this->view->transcription = $transcription->transcribed_text;
     }
 
     //find the tagged transcription of the document
@@ -744,4 +755,5 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     }
     $this->view->task_type = $task;
   }
+
 }
