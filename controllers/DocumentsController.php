@@ -220,6 +220,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      */
     public function populateDataForTranscribeTask() {
         $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
+        $item_id = $this->_getParam('id');
 
         if ($this->view->document_metadata != null) {
             if ($this->view->document_metadata->getFile() == null) {
@@ -227,12 +228,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             $this->_helper->viewRenderer('transcribeid');
-            $trans = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($this->_getParam('id'));
+            $trans = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($item_id);
             $this->view->latest_transcription = $trans;
             $this->view->is_being_edited = !empty($this->view->latest_transcription);
 
             if ($this->view->is_being_edited) {
-                $this->view->revision_history = getTranscriptionRevisionHistory($this->_getParam('id'));
+                $this->view->revision_history = $this->_helper->db->getTable('InciteTranscription')->findKNewestWithUserEmailByItemId($item_id);
             }
 
             $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
@@ -769,5 +770,4 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
         $this->view->task_type = $task;
     }
-
 }
