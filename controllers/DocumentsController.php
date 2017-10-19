@@ -162,7 +162,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $trans->type = 1; //1: default user input
         $trans->save();
 
-        //createTranscription($this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['transcription'], $_POST['summary'], $_POST['tone']);
         $_SESSION['Incite']['previous_task'] = 'transcribe';
 
         if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
@@ -233,7 +232,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $this->view->is_being_edited = !empty($this->view->latest_transcription);
 
             if ($this->view->is_being_edited) {
-                $this->view->revision_history = $this->_helper->db->getTable('InciteTranscription')->findKNewestWithUserEmailByItemId($item_id);
+                $this->view->revision_history = $this->_helper->db->getTable('InciteTranscription')->findKNewestWithUserInfoByItemId($item_id);
             }
 
             $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
@@ -252,13 +251,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      * Get all the transcribe documents according to the posted query
      */
     public function populateTranscribeSearchResults() {
+        $item_wo_trans_ids = $this->_helper->db->getTable('InciteTranscription')->findFirstKItemIdsWithoutTranscriptions();
+
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $item_ids = array_slice(array_intersect(array_values(getDocumentsWithoutTranscription()), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice(array_intersect(array_values($item_wo_trans_ids), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
         } else {
-            $item_ids = array_slice(array_values(getDocumentsWithoutTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice(array_values($item_wo_trans_ids), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
 
         }
@@ -335,9 +336,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function saveTags() {
         $entities = json_decode($_POST["entities"], true);
         $workingGroupId = getWorkingGroupID();
+        $item_id = $this->_getParam('id');
 
         $trans = new InciteTaggedTranscription;
-        $trans->item_id = $this->_getParam('id');
+        $trans->item_id = $item_id;
         $trans->transcription_id = $_POST['transcription_id'];
         $trans->user_id = $_SESSION['Incite']['USER_DATA']['id'];
         $trans->working_group_id = $workingGroupId;
@@ -348,7 +350,30 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         //$tagged_trans_id = createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
 
         for ($i = 0; $i < sizeof($entities); $i++) {
-            createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), $tagged_trans_id, 1);
+            //createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), $trans->id, 1);
+
+            //$userID, $groupID, $tag_text, $category, $subcategory, $description, $itemID, $taggedTransID, $type
+            $tag = new InciteTag;
+            $tag->item_id = $item_id;
+            $tag->user_id = $_SESSION['Incite']['USER_DATA']['id'];
+            $tag->working_group_id = $workingGroupId;
+            $tag->tag_text = $entities[$i]['entity'];
+            $tag->category_id = $entities[$i]['category'];
+            $tag->description = $entities[$i]['details'];
+            $tag->tagged_trans_id = $trans->id;
+            $tag->type = 1; //default type
+            $tag->save();
+
+            $item_tag = new InciteItemsTags;
+            $item_tag->item_id = $item_id;
+            $item_tag->tag_id = $tag->id;
+            $item_tag->save();
+            for ($j = 0; $j < count($entities[$i]['subcategory']); $j++) {
+                $tag_tagsubcategory = new InciteTagsTagsubcategory;
+                $tag_tagsubcategory->tag_id = $tag->id;
+                $tag_tagsubcategory->subcategory_id = $entities[$i]['subcategory'][$j];
+                $tag_tagsubcategory->save();
+            }
         }
         $question_arr = json_decode($_POST["questions"], true);
         for ($i = 0; $i < sizeof($question_arr); $i++) {
