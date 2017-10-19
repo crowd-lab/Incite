@@ -18,7 +18,7 @@ class Table_InciteTranscription extends Omeka_Db_Table
         $select->limit($k);
         return $this->fetchObjects($select);
     }
-    public function findKNewestWithUserEmailByItemId($id, $k = 20)
+    public function findKNewestWithUserInfoByItemId($id, $k = 20)
     {
         $db = get_db();
         $select = $this->getSelect();
@@ -27,6 +27,28 @@ class Table_InciteTranscription extends Omeka_Db_Table
         $select->order("timestamp_creation DESC");
         $select->limit($k);
         return $this->fetchObjects($select);
+    }
+
+
+    public function findFirstKItemIdsWithoutTranscriptions($k = 0)
+    {
+        $db = get_db();
+        $trans_select = new Omeka_Db_Select;
+        $trans_select->from(array('trans' => $db->InciteTranscription), array('item_id'));
+
+        $item_select = new Omeka_Db_Select;
+        $item_select->from(array('items' => $db->Item), array('id'));
+        $item_select->where('id NOT IN ('. $trans_select->__toString() .')');
+        $item_select->order("id ASC");
+        if ($k > 0) {
+            $item_select->limit($k);
+        }
+        $objects = $this->fetchObjects($item_select);
+        $ids = array();
+        foreach ($objects as $object) {
+            $ids[] = $object->id;
+        }
+        return $ids;
     }
 }
 
