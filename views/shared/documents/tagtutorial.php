@@ -5,8 +5,6 @@
             $_SESSION['Incite']['tutorial_tag'] = true;
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
-            $category_object = getAllCategories();
-            $category_id_name_table = getSubcategoryIdAndNames();
         ?>
 
         <script type="text/javascript">
@@ -137,7 +135,7 @@
 
             <div id="legend-container" >
                 <span><b>Legend: </b></span>
-                <?php $all_categories = getAllCategories(); ?>
+                <?php $all_categories = $this->categories; ?>
                 <?php foreach ((array)$all_categories as $category): ?>
                     <em class="<?php echo strtolower($category['name']); ?> legend-item"><?php echo ucfirst(strtolower($category['name'])); ?></em>
                 <?php endforeach; ?>
@@ -349,8 +347,8 @@
 
 <script type="text/javascript">
     //Global variable to store categories/counters
-    var categories = <?php echo json_encode($category_object).";\n"; ?>
-    var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
+    var categories = <?php echo json_encode($this->categories).";\n"; ?>
+    var category_id_to_name_table = <?php echo json_encode($this->category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
     function set_tag_id_counter() {
         var max_id = 0;
