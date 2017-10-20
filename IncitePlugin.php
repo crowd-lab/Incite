@@ -142,8 +142,8 @@ SQL
         $db->query(<<<SQL
                 CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_replies_conjunction (
                     `id`                int(11) NOT NULL AUTO_INCREMENT,
-                    `item_id`       int(11) NOT NULL,
-                    `reply_id`           int(11) NOT NULL,
+                    `item_id`           int(11) NOT NULL,
+                    `reply_id`          int(11) NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -152,10 +152,11 @@ SQL
 
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_subject_concepts (
-                    `id`            int(11) NOT NULL AUTO_INCREMENT,
-                    `name`          varchar(60) NOT NULL,
-                    `definition`    varchar(500) NOT NULL,
+                CREATE TABLE IF NOT EXISTS {$db->InciteSubject} (
+                    `id`                    int(11) NOT NULL AUTO_INCREMENT,
+                    `name`                  varchar(60) NOT NULL,
+                    `definition`            varchar(500) NOT NULL,
+                    `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;  
@@ -428,7 +429,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_subject_concepts
+                DROP TABLE IF EXISTS {$db->InciteSubject}
 SQL
                 );
         $db->query(<<<SQL
@@ -465,7 +466,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_subject_conjunction
+                DROP TABLE IF EXISTS {$db->InciteSubject}
 SQL
                 );
         $db->query(<<<SQL
@@ -518,9 +519,9 @@ SQL
         }
         //delete the chosen themes
         if (isset($_POST['del_concept'])) {
-            $removed_concept = $_POST['del_concept'];
-            for ($i = 0; $i < count($removed_concept); $i++) {
-                $this->removeConcept($removed_concept[$i]);
+            $removed_subject = $_POST['del_concept'];
+            for ($i = 0; $i < count($removed_subject); $i++) {
+                $this->removeSubject($removed_subject[$i]);
             }
         }
         set_option('title', trim($_POST['title']));
@@ -588,41 +589,17 @@ SQL
     }
 
     public function addConcept($concept, $def) {
-        $ini_array = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . getOmekaPath(). '/../db.ini');
-        $dbhost = $ini_array["host"];
-        $dbuser = $ini_array["username"];
-        $dbpass = $ini_array["password"];
-        $dbname = $ini_array["dbname"];
-        $db = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-        if (mysqli_connect_errno()) 
-        {
-            printf("Connection to database has failed: %s\n", $db_conn->connect_error);
-            exit();
-        }
-        $stmt = $db->prepare("INSERT INTO omeka_incite_subject_concepts VALUES (NULL, ?, ?)");
-        $stmt->bind_param("ss", $concept, $def);
-        $stmt->execute();
-        $stmt->close();
-        $db->close();
+        $subject = new InciteSubject;
+        $subject->name = $concept;
+        $subject->definition = $def;
+        $subject->save();
     }
 
-    public function removeConcept($concept) {
-        $ini_array = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . getOmekaPath(). '/../db.ini');
-        $dbhost = $ini_array["host"];
-        $dbuser = $ini_array["username"];
-        $dbpass = $ini_array["password"];
-        $dbname = $ini_array["dbname"];
-        $db = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-        if (mysqli_connect_errno()) 
-        {
-            printf("Connection to database has failed: %s\n", $db_conn->connect_error);
-            exit();
-        }
-        $stmt = $db->prepare("DELETE FROM `omeka_incite_subject_concepts` WHERE `name` = ?");
-        $stmt->bind_param("s", $concept);
-        $stmt->execute();
-        $stmt->close();
-        $db->close();
+    public function removeSubject($concept) {
+        $db = get_db();
+        $table = $db->getTable('InciteSubject');
+        $subject = $table->findSubjectByName($concept);
+        $subject->delete();
     }
 
     /**

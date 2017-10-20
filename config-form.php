@@ -352,34 +352,24 @@ $(document ).ready(function() {
     });
     $(document).on("click", ".delete_button", function(){
         if ($(this).val() == "delete") {
-            var first_td = $($($($($(this).parent()).parent()).children().first())[0]).html();
-            var con_and_def = $($($($($(this).parent()).parent()).children().first())[0]).text();
-            var index_of_concept = first_td.indexOf("<span");
-            var concept = first_td.substring(0, index_of_concept);
-            removeConcept(concept);
-            var def = con_and_def.substring(concept.length + 1, con_and_def.length);
-            var delete_concept_element = "<input type='hidden' value='" + concept + "' name='del_concept[]' />";
-            var delete_def_element = "<input type='hidden' value='" + def + "' name='del_def[]' />";
-            var strike = "<strike>" + first_td + "</strike>" + delete_concept_element + delete_def_element;
-            $($($($($(this).parent()).parent()).children().first())[0]).html(strike);
+            var first_td = $($($($($(this).parent()).parent()).children().first())[0]);
+            var subject = first_td.text();
+            var definition = first_td.find('a').attr('data-content');
+            removeConcept(subject);
+            var delete_subject_element = "<input type='hidden' value='" + subject + "' name='del_concept[]' />";
+            var delete_definition_element = "<input type='hidden' value='" + definition + "' name='del_def[]' />";
+            first_td.find('a').wrap("<strike></strike>");
+            first_td.append(delete_subject_element).append(delete_definition_element);
             $(this).val("undo");
         }
         else {
-            var first_td = $($($($($(this).parent()).parent()).children().first())[0]).html();
-            //select the concept
-            var con_and_def = $($($($($(this).parent()).parent()).children().first())[0]).text();
-            var index_of_concept = first_td.indexOf("<span");
-            var concept = first_td.substring(0, index_of_concept);
-            concept = concept.replace('<strike>','');
-            var def = con_and_def.substring(concept.length + 1, con_and_def.length);
-            concept_arr.push(concept);
-            def_arr.push(def);
-            //cut the strike tag
-            var strike = first_td.replace('<strike>','');
-            strike = strike.replace('</strike>','');
-            var index_of_hidden_input = first_td.indexOf("<input");
-            strike = strike.substring(0, index_of_hidden_input);
-            $($($($($(this).parent()).parent()).children().first())[0]).html(strike);
+            var first_td = $($($($($(this).parent()).parent()).children().first())[0]);
+            var subject = first_td.text();
+            var definition = first_td.find('a').attr('data-content');
+            concept_arr.push(subject);
+            def_arr.push(definition);
+            first_td.find('a').unwrap();
+            first_td.find('input').remove();
             $(this).val("delete");
         }
         $("#encoded_concept").val(JSON.stringify(concept_arr));
@@ -403,7 +393,7 @@ function getConcept() {
     for (var i = 0; i < con_arr.length; i++) {
         if (con_arr[i] != null) {
             var trash_button = '<td><input type="button" class="delete_button" value="delete" /></td>';
-            var popover = '<td><a tabindex="0" data-toggle="popover" title="Defination" data-trigger="focus" data-placement="left"  data-content="' + def_arr[i] + '">' + con_arr[i] + '</a></td>'
+            var popover = '<td><a tabindex="0" data-toggle="popover" title="Definition" data-trigger="focus" data-placement="left"  data-content="' + def_arr[i] + '">' + con_arr[i] + '</a></td>'
             $("#c_table table").append("<tr>" + popover + trash_button + "</tr>");
         
         }
