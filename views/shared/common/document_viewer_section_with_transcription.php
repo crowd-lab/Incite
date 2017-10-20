@@ -123,7 +123,7 @@
 
             <div id="legend-container">
                 <span><b>Legend: </b></span>
-                <?php $all_categories = getAllCategories(); ?>
+                <?php $all_categories = $this->categories; ?>
                 <?php foreach ((array)$all_categories as $category): ?>
                     <em class="<?php echo strtolower($category['name']); ?> legend-item"><?php echo ucfirst(strtolower($category['name'])); ?></em>
                 <?php endforeach; ?>

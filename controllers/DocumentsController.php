@@ -273,13 +273,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      */
     public function tagAction() {
         $this->_helper->db->setDefaultModelName('Item');
+        $tagcategory_table = $this->_helper->db->getTable('InciteTagcategory');
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
         if ($this->_hasParam('id')) {
             $this->view->doc_id = $this->_getParam('id');
             if (!isset($_SESSION['Incite']['tutorial_tag'])) {
                 //NER
-                $categories = getAllCategories();
+                //$categories = getAllCategories();
+                $categories = $tagcategory_table->findAllCategoriesWithSubcategories();
                 $ner_entity_table = array();
                 $tag_id_counter = 0;
 
@@ -414,6 +416,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      */
     public function populateDataForTagTask() {
         $tag_id_counter = 0;
+        $tagcategory_table = $this->_helper->db->getTable('InciteTagcategory');
         $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
 
         $item_id = $this->_getParam('id');
@@ -440,7 +443,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             $this->_helper->viewRenderer('tagid');
             $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
-            $categories = getAllCategories();
+            //$categories = getAllCategories();
+            $categories = $tagcategory_table->findAllCategoriesWithSubcategories();
+            $this->view->categories = $categories;
+            $this->view->category_id_name_table = $tagcategory_table->getCategoryIdToNameMap();
+            $this->view->category_name_it_table = $tagcategory_table->getCategoryNameToIdMap();
             $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
 
             //Do we already have tags or do we need to generate them via NER

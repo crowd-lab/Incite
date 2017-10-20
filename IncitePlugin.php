@@ -54,7 +54,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_tags_conjunction (
+                CREATE TABLE IF NOT EXISTS {$db->InciteItemsTags} (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `item_id` int(11) NOT NULL,
                     `tag_id` int(11) NOT NULL,
@@ -177,7 +177,7 @@ SQL
                     `user_id`               int(11) NOT NULL,
                     `working_group_id`      int(11) NOT NULL,
                     `tag_text`              varchar(30) NOT NULL,
-                    `created_timestamp`     timestamp NOT NULL,
+                    `timestamp_creation`    timestamp NOT NULL,
                     `category_id`           int(11) NOT NULL,
                     `description`           varchar(300) NOT NULL,
                     `type`                  int(8) NOT NULL,
@@ -301,7 +301,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                INSERT INTO {$db->prefix}incite_tags_subcategory (`id`, `name`, `category_id`, `timestamp`) VALUES (NULL, 'Country', 1, NULL), (NULL, 'State', 1, NULL), (NULL, 'City', 1, NULL), (NULL, 'Town', 1, NULL), (NULL, 'Building', 1, NULL), (NULL, 'Oration', 2, NULL), (NULL, 'Banquet', 2, NULL), (NULL, 'Fireworks', 2, NULL), (NULL, 'Parade', 2, NULL), (NULL, 'Reading of Declaration', 2, NULL), (NULL, 'Prayer', 2, NULL), (NULL, 'Excursion', 2, NULL), (NULL, 'Music', 2, NULL), (NULL, 'White Southerners', 3, NULL), (NULL, 'White Northerners', 3, NULL), (NULL, 'African Americans', 3, NULL), (NULL, 'Women', 3, NULL), (NULL, 'Immigrants',3, NULL), (NULL, 'Whigs', 3, NULL), (NULL, 'Democrats', 3, NULL), (NULL, 'Republicans', 3, NULL), (NULL, 'Military', 4, NULL), (NULL, 'Social', 4, NULL), (NULL, 'Charity', 4, NULL), (NULL, 'Business', 4, NULL), (NULL, 'Religious', 4, NULL), (NULL, 'Political', 4, NULL);
+                INSERT INTO {$db->InciteTagsubcategory} (`id`, `name`, `category_id`, `timestamp_creation`) VALUES (NULL, 'Country', 1, NULL), (NULL, 'State', 1, NULL), (NULL, 'City', 1, NULL), (NULL, 'Town', 1, NULL), (NULL, 'Building', 1, NULL), (NULL, 'Oration', 2, NULL), (NULL, 'Banquet', 2, NULL), (NULL, 'Fireworks', 2, NULL), (NULL, 'Parade', 2, NULL), (NULL, 'Reading of Declaration', 2, NULL), (NULL, 'Prayer', 2, NULL), (NULL, 'Excursion', 2, NULL), (NULL, 'Music', 2, NULL), (NULL, 'White Southerners', 3, NULL), (NULL, 'White Northerners', 3, NULL), (NULL, 'African Americans', 3, NULL), (NULL, 'Women', 3, NULL), (NULL, 'Immigrants',3, NULL), (NULL, 'Whigs', 3, NULL), (NULL, 'Democrats', 3, NULL), (NULL, 'Republicans', 3, NULL), (NULL, 'Military', 4, NULL), (NULL, 'Social', 4, NULL), (NULL, 'Charity', 4, NULL), (NULL, 'Business', 4, NULL), (NULL, 'Religious', 4, NULL), (NULL, 'Political', 4, NULL);
 
 SQL
                 );
@@ -318,6 +318,11 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
+                INSERT INTO {$db->InciteTagcategory} (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization'), (NULL, 'Other');
+
+SQL
+                );
+        $db->query(<<<SQL
                 CREATE TABLE IF NOT EXISTS {$db->prefix}incite_trans_reason (
                     `id`            int(11) NOT NULL AUTO_INCREMENT,
                     `item_id`       int(11) NOT NULL,
@@ -325,11 +330,6 @@ SQL
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
-SQL
-                );
-        $db->query(<<<SQL
-                INSERT INTO {$db->prefix}incite_tags_category (`id`, `name`) VALUES (NULL, 'Location'), (NULL, 'Event'), (NULL, 'Person'), (NULL, 'Organization'), (NULL, 'Other');
-
 SQL
                 );
         $db->query(<<<SQL
@@ -341,7 +341,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->InciteTagTagsubcategory} (
+                CREATE TABLE IF NOT EXISTS {$db->InciteTagsTagsubcategory} (
                     `id`                int(11) NOT NULL AUTO_INCREMENT,
                     `tag_id`            int(11) NOT NULL,
                     `subcategory_id`    int(11) NOT NULL,
@@ -378,7 +378,7 @@ SQL
         delete_option('fb');
 
 
-        $db = $db;
+        $db = get_db();
         $db->query(<<<SQL
                 DROP TABLE IF EXISTS {$this->_db->prefix}incite_category_table
 SQL
@@ -449,7 +449,7 @@ SQL
                 );
 
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_tags_conjunction
+                DROP TABLE IF EXISTS {$db->InciteItemsTags}
 SQL
                 );
         $db->query(<<<SQL
@@ -461,7 +461,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$db->InciteTagTagsubcategory}
+                DROP TABLE IF EXISTS {$db->InciteTagsTagsubcategory}
 SQL
                 );
         $db->query(<<<SQL
