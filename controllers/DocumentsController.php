@@ -349,12 +349,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $trans->type = 1; //1: default user input
         $trans->save();
 
-        //$tagged_trans_id = createTaggedTranscription($this->_getParam('id'), $_POST['transcription_id'], $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $_POST['tagged_doc']);
 
         for ($i = 0; $i < sizeof($entities); $i++) {
-            //createTag($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $entities[$i]['entity'], $entities[$i]['category'], $entities[$i]['subcategory'], $entities[$i]['details'], $this->_getParam('id'), $trans->id, 1);
-
-            //$userID, $groupID, $tag_text, $category, $subcategory, $description, $itemID, $taggedTransID, $type
             $tag = new InciteTag;
             $tag->item_id = $item_id;
             $tag->user_id = $_SESSION['Incite']['USER_DATA']['id'];
@@ -443,18 +439,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
             $this->_helper->viewRenderer('tagid');
             $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
-            //$categories = getAllCategories();
             $categories = $tagcategory_table->findAllCategoriesWithSubcategories();
             $this->view->categories = $categories;
             $this->view->category_id_name_table = $tagcategory_table->getCategoryIdToNameMap();
             $this->view->category_name_it_table = $tagcategory_table->getCategoryNameToIdMap();
             $category_colors = array('ORGANIZATION' => 'blue', 'PERSON' => 'orange', 'LOCATION' => 'yellow', 'EVENT' => 'green', 'UNKNOWN' => 'red');
 
-            //Do we already have tags or do we need to generate them via NER
-            $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByTranscriptionId($newestTranscription->id);
+            $tagged_trans_table = $this->_helper->db->getTable('InciteTaggedTranscription');
+            $newest_tagged_trans = $tagged_trans_table->findNewestByTranscriptionId($newestTranscription->id);
             if (isset($newest_tagged_trans)) {
                 $this->view->is_being_edited = true;
-                $this->view->revision_history = getTaggedTranscriptionRevisionHistory($this->_getParam('id'));
+                $this->view->revision_history = $tagged_trans_table->findKNewestWithUserInfoByItemId($item_id);
                 $this->view->transcription = migrateTaggedDocumentFromV1toV2($newest_tagged_trans->tagged_transcription);
             } else {
                 $this->view->is_being_edited = false;
@@ -540,8 +535,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->document_metadata = $this->_helper->db->find($this->_getParam('id'));
         if ($this->_hasParam('id')) {
             $this->view->doc_id = $this->_getParam('id');
+            $table = $this->_helper->db->getTable('InciteSubject');
+            $this->view->subjects = $table->findAllSubjects();
             if (!isset($_SESSION['Incite']['tutorial_conn'])) {
-                $this->view->subjects = getAllSubjectConcepts();
                 $this->view->transcription = 'The Fourth of July was celebrated in <em id="tag_id_0" class="location tagged-text">Berlin</em>, by a German Methodist Sunday school. Two or three hundred children marched from the the <em id="tag_id_1" class="location tagged-text">Methodist Chapel</em> to the house of our Minister, <em id="tag_id_0" class="person tagged-text">Mr. Wright</em>, who joined the procession and accompanied it to the public garden, where the scholars amused themselves as our Sunday school do here on similar occasions.';
                 $this->_helper->viewRenderer('connecttutorial');
                 $this->view->doc_id = $this->_getParam('id');
@@ -558,36 +554,31 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      * Save the ratings in the connect task to the database
      */
     public function saveConnections() {
-        $item_id = $this->_getParam('id');
-        $all_subject_ids = getAllSubjectConceptIds();
+        $itemId = $this->_getParam('id');
+        $userId = $_SESSION['Incite']['USER_DATA']['id'];
+        $table = $this->_helper->db->getTable('InciteSubject');
+        $allSubjects = $table->findAllSubjects();
         $workingGroupId = getWorkingGroupID();
-        $subject = "subject";
-        $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByTranscriptionId($item_id);
-        for($i = 1; $i < 10; $i++) {
-            $sub = $subject.$i;
-            addConnectRating($_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $i, $_POST[$sub], $item_id, 1, $newest_tagged_trans->id);
+
+        $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByTranscriptionId($itemId);
+            echo '<pre>';
+        foreach ((array) $allSubjects as $subject) {
+            $sub = "subject".$subject->id;
+            $connection = new InciteItemsSubjects;
+            $connection->item_id = $itemId;
+            $connection->tagged_trans_id = $newest_tagged_trans->id;
+            $connection->subject_id = $subject->id;
+            $connection->rating = $_POST[$sub];
+            $connection->user_id = $userId;
+            $connection->working_group_id = $workingGroupId;
+            $connection->type = 1; //default value
+            $connection->save();
         }
         $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("DELETE FROM `omeka_incite_available_list` WHERE `item_id` = $item_id");
+        $stmt = $db->prepare("DELETE FROM `omeka_incite_available_list` WHERE `item_id` = $itemId");
         $stmt->execute();
         $stmt->close();
         $db->close();
-        //connect by multiselection
-        if (isset($_POST['subjects']) || isset($_POST['no_subjects'])) {
-            foreach ((array) $all_subject_ids as $subject_id) {
-
-                if (in_array($subject_id, (isset($_POST['subjects']) ? $_POST['subjects'] : array())))
-                    addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $newest_tagged_trans->id, 1);
-                else
-                    addConceptToDocument($subject_id, $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $newest_tagged_trans->id, 0);
-            }
-        } 
-        else { //connect by tags
-            if (isset($_POST['subject']) && $_POST['connection'] == 'true')
-                addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $newest_tagged_trans->id, 1);
-            else if (isset($_POST['subject']) && $_POST['connection'] == 'false')
-                addConceptToDocument($_POST['subject'], $this->_getParam('id'), $_SESSION['Incite']['USER_DATA']['id'], $workingGroupId, $newest_tagged_trans->id, 0);
-        }
         $_SESSION['Incite']['previous_task'] = 'connect';
 
 
@@ -631,11 +622,16 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             $this->view->image_url = get_image_url_for_item($this->view->document_metadata);
-            $this->view->subjects = getAllSubjectConcepts();
+            $table = $this->_helper->db->getTable('InciteSubject');
+            $this->view->subjects = $table->findAllSubjects();
+
+            $tagcategory_table = $this->_helper->db->getTable('InciteTagcategory');
+            $this->view->categories = $tagcategory_table->findAllCategoriesWithSubcategories();
+            $this->view->category_id_name_table = $tagcategory_table->getCategoryIdToNameMap();
+            $this->view->category_name_it_table = $tagcategory_table->getCategoryNameToIdMap();
 
             //Filter out untranscribed documents
             $newest_trans = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($item_id);
-            $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByItemId($newest_trans->id);
             if (empty($newest_trans)) {
                 if (isset($this->view->query_str) && $this->view->query_str !== "") {
                     $_SESSION['incite']['message'] = 'Unfortunately, the document has not been transcribed yet. Please help transcribe the document first before connecting. Or if you want to find another document to connect, please click <a href="'.getFullInciteUrl().'/documents/connect?'.$this->view->query_str.'">here</a>.';
@@ -646,15 +642,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 }
             }
 
-            //Gets the latest tagged transcription and the most recently marked subjects, if they exist
+            //Gets the latest tagged transcription
+            $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByItemId($newest_trans->id);
             if (isset($newest_tagged_trans)) {
                 $this->view->transcription =  migrateTaggedDocumentFromV1toV2($newest_tagged_trans->tagged_transcription);
-
-                $this->view->newest_n_subjects = getNewestSubjectsForNewestTaggedTranscription($item_id);
-                $this->view->is_being_edited = !empty($this->view->newest_n_subjects);
-
-                if ($this->view->is_being_edited) {
-                    $this->view->revision_history = getConnectionRevisionHistory($item_id);
+                $revisionHistory = $this->_helper->db->getTable('InciteItemsSubjects')->findKNewestWithUserInfoByItemId($item_id);
+                if (count($revisionHistory) > 0) {
+                    $this->view->revision_history = $revisionHistory;
+                    $this->view->is_being_edited = true;
                 }
 
                 $this->_helper->viewRenderer('connectbymultiscale');
@@ -802,4 +797,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
         $this->view->task_type = $task;
     }
+
 }
+

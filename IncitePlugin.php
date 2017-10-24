@@ -26,7 +26,7 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
         $db = get_db();
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_groups (
+                CREATE TABLE IF NOT EXISTS {$db->InciteGroup} (
                     `id`                int(11) NOT NULL AUTO_INCREMENT,
                     `name`              varchar(200) NOT NULL,
                     `creator`           int(11) NOT NULL,
@@ -39,16 +39,16 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
 SQL
                 );
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_subject_conjunction (
+                CREATE TABLE IF NOT EXISTS {$db->InciteItemsSubjects} (
                     `id`                    int(11) NOT NULL AUTO_INCREMENT,
                     `item_id`               int(11) NOT NULL,
                     `tagged_trans_id`       int(11) NOT NULL,             
-                    `subject_concept_id`    int(11) NOT NULL,
-                    `rank`                  int(5) NOT NULL,
+                    `subject_id`    int(11) NOT NULL,
+                    `rating`                  int(5) NOT NULL,
                     `user_id`               int(11) NOT NULL,
                     `working_group_id`      int(11) NOT NULL,
                     `type`                  int(8) NOT NULL,
-                    `created_time`          timestamp NOT NULL,
+                    `timestamp_creation`          timestamp NOT NULL,
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 SQL
@@ -389,7 +389,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_groups
+                DROP TABLE IF EXISTS {$db->InciteGroup}
 SQL
                 );
         $db->query(<<<SQL

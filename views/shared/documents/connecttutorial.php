@@ -5,7 +5,6 @@
         $_SESSION['Incite']['tutorial_conn'] = true;
         include(dirname(__FILE__).'/../common/header.php');
         include(dirname(__FILE__).'/../common/progress_indicator.php');
-        $category_object = getAllCategories();
     ?>
 
     <!-- Page Content -->
@@ -128,9 +127,8 @@
 
             <div id="legend-container" >
                 <span><b>Legend: </b></span>
-                <?php $all_categories = getAllCategories(); ?>
-                <?php foreach ((array)$all_categories as $category): ?>
-                    <em class="<?php echo strtolower($category['name']); ?> legend-item"><?php echo ucfirst(strtolower($category['name'])); ?></em>
+                <?php foreach ((array)$this->categories as $category): ?>
+                    <em class="<?php echo strtolower($category->name); ?> legend-item"><?php echo ucfirst(strtolower($category->name)); ?></em>
                 <?php endforeach; ?>
             </div>
         </div>

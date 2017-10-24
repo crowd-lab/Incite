@@ -7,8 +7,12 @@ class Table_InciteSubject extends Omeka_Db_Table
         $select = $this->getSelect();
         $select->where("name = ?", $name);
         $select->limit(1);
-        print_r($select->__toString());
         $result = $this->fetchObject($select);
+        return $result;
+    }
+    public function findAllSubjects() {
+        $select = $this->getSelect();
+        $result = $this->fetchObjects($select);
         return $result;
     }
 

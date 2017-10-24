@@ -20,7 +20,7 @@
                 <?php foreach ((array)$this->revision_history as $revision): ?>
                     <tr>
                         <td><a href="<?php echo getFullInciteUrl();?>/users/view/<?php echo $revision->user_id; ?>"><?php echo $revision->email; ?></a></td>
-                        <td><?php echo $revision->timestamp; ?></td>
+                        <td><?php echo $revision->timestamp_creation; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

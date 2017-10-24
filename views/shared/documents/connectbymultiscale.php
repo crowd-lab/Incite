@@ -5,7 +5,6 @@
         include(dirname(__FILE__).'/../common/header.php');
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
-        $category_object = getAllCategories();
     ?>
 
     <!-- Page Content -->
@@ -145,28 +144,7 @@
         }
 
         function styleForEditing() {
-            checkPositiveSubjects();
             addRevisionHistoryListeners();
-        }
-
-        function checkPositiveSubjects() {
-            var hasNoPositiveSubjects = true;
-
-            <?php foreach ((array)$this->newest_n_subjects as $subject): ?>
-                <?php if ($subject['is_positive']): ?>
-                    hasNoPositiveSubjects = false;
-
-                    $(".subject-checkbox").each(function() {
-                        if ($(this).val() === String(<?php echo $subject['subject_id']; ?>)) {
-                            $(this).prop('checked', true);
-                        }
-                    });
-                <?php endif; ?>
-            <?php endforeach; ?>
-
-            if (hasNoPositiveSubjects) {
-                $(".none-checkbox").prop('checked', true);
-            }
         }
 
         function addRevisionHistoryListeners() {
