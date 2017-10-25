@@ -30,7 +30,7 @@ class Table_InciteTranscription extends Omeka_Db_Table
     }
 
 
-    public function findFirstKItemIdsWithoutTranscriptions($k = 0)
+    public function findFirstKItemIdsToBeTranscribed($k = 0)
     {
         $db = get_db();
         $trans_select = new Omeka_Db_Select;

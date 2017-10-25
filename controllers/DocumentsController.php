@@ -251,15 +251,17 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      * Get all the transcribe documents according to the posted query
      */
     public function populateTranscribeSearchResults() {
-        $item_wo_trans_ids = $this->_helper->db->getTable('InciteTranscription')->findFirstKItemIdsWithoutTranscriptions();
-
+        $table = $this->_helper->db->getTable('InciteTranscription');
+        $transcribable_items = $table->findFirstKItemIdsToBeTranscribed();
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $item_ids = array_slice(array_intersect(array_values($item_wo_trans_ids), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice(array_intersect($transcribable_items, $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
         } else {
-            $item_ids = array_slice(array_values($item_wo_trans_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $table = $this->_helper->db->getTable('InciteTranscription');
+            $transcribable_items = $table->findFirstKItemIdsToBeTranscribed();
+            $item_ids = array_slice($transcribable_items, 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
 
         }
@@ -520,7 +522,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $item_ids = array_slice(getDocumentsWithTranscriptions(), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {
-            $item_ids = array_slice(array_values(getDocumentsWithoutTagsForLatestTranscription()), 0, MAXIMUM_SEARCH_RESULTS);
+            $table = $this->_helper->db->getTable('InciteTaggedTranscription');
+            $taggable_items = $table->findFirstKItemIdsToBeTagged();
+            $item_ids = array_slice($taggable_items, 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
         }
         return $item_ids;
@@ -547,6 +551,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $this->saveConnections();
             }
             $this->populateDataForConnectTask();
+        } else {
+            $this->populateConnectSearchResults();
         }
     }
 
@@ -676,15 +682,16 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      * Get all document of connect task accorging to the specified query
      */
     public function populateConnectSearchResults() {
-        $connectable_documents = getDocumentsWithoutConnectionsForLatestTaggedTranscription();
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
+        $table = $this->_helper->db->getTable('InciteItemsSubjects');
+        $connectable_items = $table->findFirstKItemIdsToBeConnected();
 
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $item_ids = array_slice(array_intersect(array_values($connectable_documents), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice(array_intersect(array_values($connectable_items), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {
-            $item_ids = array_slice(array_values($connectable_documents), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice($connectable_items, 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
         }
 
@@ -797,6 +804,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
         $this->view->task_type = $task;
     }
+
 
 }
 
