@@ -19,7 +19,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <ul class="list-group">
 <?php foreach ((array)$this->Discussions as $discussion): ?>
                     <li class="list-group-item">
-                        <a href="<?php echo getFullInciteUrl().'/discussions/discuss/'.$discussion['id']; ?>"><?php echo $discussion['title']; ?></a> - created by <a href="<?php echo getFullInciteUrl().'/users/view/'.$discussion['user_id']; ?>"><?php echo $discussion['user_first_name']; ?></a><span class='db_time'><?php echo $discussion['time']; ?></span><span class="badge">Replies: <?php echo $discussion['num_of_replies']; ?></span>
+                        <a href="<?php echo getFullInciteUrl().'/discussions/discuss/'.$discussion->id; ?>"><?php echo $discussion->discussion_text; ?></a> - created by <a href="<?php echo getFullInciteUrl().'/users/view/'.$discussion->user_id; ?>"><?php echo $discussion->user_first_name; ?></a><span class='db_time'><?php echo $discussion->timestamp_creation; ?></span><span class="badge">Comments: <?php echo $discussion->num_of_comments; ?></span>
                     </li>
 <?php endforeach; ?>
                 </ul>

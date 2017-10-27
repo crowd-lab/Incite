@@ -101,14 +101,14 @@ SQL
                 );
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_questions (
+                CREATE TABLE IF NOT EXISTS {$db->InciteDiscussion} (
                     `id`                    int(11) NOT NULL AUTO_INCREMENT,
                     `user_id`               int(11) NOT NULL,
                     `working_group_id`      int(11) NOT NULL,
-                    `question_text`         varchar(1000) NOT NULL,
+                    `discussion_text`       varchar(1000) NOT NULL,
                     `is_active`             int(11) NOT NULL,
-                    `timestamp`             timestamp NOT NULL,
-                    `question_type`         int(11) NOT NULL,
+                    `discussion_type`       int(11) NOT NULL,
+                    `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -116,13 +116,13 @@ SQL
                 );
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_replies (
-                    `id`            int(11) NOT NULL AUTO_INCREMENT,
-                    `user_id`       int(11) NOT NULL,
-                    `reply_text`    varchar(500) NOT NULL,
-                    `question_id`   int(11) NOT NULL,
-                    `is_active`     int(11) NOT NULL,
-                    `timestamp`     timestamp NOT NULL,
+                CREATE TABLE IF NOT EXISTS {$db->InciteComment} (
+                    `id`                    int(11) NOT NULL AUTO_INCREMENT,
+                    `user_id`               int(11) NOT NULL,
+                    `comment_text`          varchar(500) NOT NULL,
+                    `discussion_id`         int(11) NOT NULL,
+                    `is_active`             int(11) NOT NULL,
+                    `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -130,10 +130,10 @@ SQL
                 );
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_questions_conjunction (
-                    `id`                int(11) NOT NULL AUTO_INCREMENT,
-                    `item_id`       int(11) NOT NULL,
-                    `question_id`       int(11) NOT NULL,
+                CREATE TABLE IF NOT EXISTS {$db->InciteItemsDiscussions} (
+                    `id`                 int(11) NOT NULL AUTO_INCREMENT,
+                    `item_id`            int(11) NOT NULL,
+                    `discussion_id`      int(11) NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -143,7 +143,7 @@ SQL
                 CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_replies_conjunction (
                     `id`                int(11) NOT NULL AUTO_INCREMENT,
                     `item_id`           int(11) NOT NULL,
-                    `reply_id`          int(11) NOT NULL,
+                    `comment_id`          int(11) NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -421,11 +421,15 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_questions
+                DROP TABLE IF EXISTS {$db->InciteDiscussion}
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_replies
+                DROP TABLE IF EXISTS {$db->InciteItemsSubjects}
+SQL
+                );
+        $db->query(<<<SQL
+                DROP TABLE IF EXISTS {$db->InciteComment}
 SQL
                 );
         $db->query(<<<SQL
@@ -474,7 +478,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_questions_conjunction
+                DROP TABLE IF EXISTS {$db->InciteItemsDiscussions}
 SQL
                 );
         $db->query(<<<SQL
@@ -502,6 +506,7 @@ SQL
      * Handle the config form.
      */
     public function hookConfig() {
+        
         if (!isset($_POST['active']))
             set_option('active', "no");
         else
