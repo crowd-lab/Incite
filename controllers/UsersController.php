@@ -21,38 +21,13 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
     }
 
     public function indexAction() {
-
-        $this->_helper->viewRenderer->setNoRender(TRUE);
-        echo getDiscussionCountByUserId(3);
+        //$this->_helper->viewRenderer->setNoRender(TRUE);
     }
 
     public function viewAction() {
-        if ($this->_hasParam('id')) {
-            $this->_helper->viewRenderer('viewid');
-            $user_id = $this->_getParam('id');
-            $this->view->transcribed_docs = getTranscribedDocumentsByUserId($user_id);
-            $this->view->tagged_docs = getTaggedDocumentsByUserId($user_id);
-            $this->view->connected_docs = getConnectedDocumentsByUserId($user_id);
-            $this->view->discussions = getDiscussionsByUserId($user_id);
-            $this->view->groups = getGroupsByUserId($user_id);
-            $this->view->user = getUserDataByUserId($user_id);
-
-            //Get all activities together, add activity_type and sort them based on time
-            $tran = getTranscribedDocumentsByUserId($user_id);
-            addKeyValueToArray($tran, 'activity_type', 'Transcribe');
-            $tag = getTaggedDocumentsByUserId($user_id);
-            addKeyValueToArray($tag, 'activity_type', 'Tag');
-            $con = getConnectedDocumentsByUserId($user_id);
-            addKeyValueToArray($con, 'activity_type', 'Connect');
-            $dis = getDiscussionsByUserId($user_id);
-            addKeyValueToArray($dis, 'activity_type', 'Discuss');
-            $activities = array_merge($tran, $tag, $con, $dis);
-            usort($activities, "customizedTimeCmpFuncDESC");
-            $this->view->activities = $activities;
-        } else {
-            $this->view->users = "";
-        }
+        $this->forward('activity');
     }
+
 
     public function profileAction(){
         if ($this->_hasParam('id')) {
@@ -66,26 +41,19 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
     public function activityAction(){
         if ($this->_hasParam('id')) {
             $this->_helper->viewRenderer('activity');
-            $user_id = $this->_getParam('id');
-            $this->view->transcribed_docs = getTranscribedDocumentsByUserId($user_id);
-            $this->view->tagged_docs = getTaggedDocumentsByUserId($user_id);
-            $this->view->connected_docs = getConnectedDocumentsByUserId($user_id);
-            $this->view->discussions = getDiscussionsByUserId($user_id);
-            $this->view->groups = getGroupsByUserId($user_id);
-            $this->view->user = getUserDataByUserId($user_id);
+            $userId = $this->_getParam('id');
+            $userTable = $this->_helper->db->getTable('InciteUser');
+            $groupsUsersTable = $this->_helper->db->getTable('InciteGroupsUsers');
+
+            $this->view->transcribed_docs = $userTable->findTranscribedItemsByUserId($userId);
+            $this->view->tagged_docs = $userTable->findTaggedItemsByUserId($userId);
+            $this->view->connected_docs = $userTable->findConnectedItemsByUserId($userId);
+            $this->view->discussions = $userTable->findDiscussionsByUserId($userId);
+            $this->view->groups = $groupsUsersTable->findGroupsByUserId($userId);
+            $this->view->user = $userTable->findUserById($userId);
 
             //Get all activities together, add activity_type and sort them based on time
-            $tran = getTranscribedDocumentsByUserId($user_id);
-            addKeyValueToArray($tran, 'activity_type', 'Transcribe');
-            $tag = getTaggedDocumentsByUserId($user_id);
-            addKeyValueToArray($tag, 'activity_type', 'Tag');
-            $con = getConnectedDocumentsByUserId($user_id);
-            addKeyValueToArray($con, 'activity_type', 'Connect');
-            $dis = getDiscussionsByUserId($user_id);
-            addKeyValueToArray($dis, 'activity_type', 'Discuss');
-            $activities = array_merge($tran, $tag, $con, $dis);
-            usort($activities, "customizedTimeCmpFuncDESC");
-            $this->view->activities = $activities;
+            $this->view->activities = $userTable->findActivitiesByUserId($userId);
         } else {
             $this->view->users = "";
         }
@@ -93,9 +61,13 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
     public function groupAction(){
         if ($this->_hasParam('id')) {
             $this->_helper->viewRenderer('group');
-            $user_id = $this->_getParam('id');
-            $this->view->groups = getGroupsByUserId($user_id);
-            $this->view->user = getUserDataByUserId($user_id);
+            $userId = $this->_getParam('id');
+            $groupsUsersTable = $this->_helper->db->getTable('InciteGroupsUsers');
+            $userTable = $this->_helper->db->getTable('InciteUser');
+
+
+            $this->view->groups = $groupsUsersTable->findGroupsByUserId($userId);
+            $this->view->user = $userTable->findUserById($userId);
 
         } else {
             $this->view->users = "";

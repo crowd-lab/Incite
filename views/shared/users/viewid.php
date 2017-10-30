@@ -33,7 +33,7 @@
                     span = $('<span class="group-member-link">, </span>');
                 }
 
-                span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
+                span.append(createGroupLink(<?php echo sanitizeStringInput($group->name); ?>.value, <?php echo $group->id; ?>));
 
                 $('#groups-list').append(span);
             <?php endforeach; ?>

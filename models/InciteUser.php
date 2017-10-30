@@ -11,7 +11,7 @@ class InciteUser extends Omeka_Record_AbstractRecord
     public $privilege_level;
     public $experience_level;
     public $is_active;
-    public $working_group;
+    public $working_group_id;
     public $timestamp_creation;
     
 }
