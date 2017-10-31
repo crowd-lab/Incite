@@ -139,6 +139,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if ($this->getRequest()->isPost()) {
                 $this->saveTranscription();
             }
+            $this->populateProgress();
 
             $this->populateDataForTranscribeTask();
         } else {
@@ -327,6 +328,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if ($this->getRequest()->isPost()) {
                 $this->saveTags();
             }
+            $this->populateProgress();
 
             $this->populateDataForTagTask();
         } else {
@@ -550,6 +552,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             if ($this->getRequest()->isPost()) {
                 $this->saveConnections();
             }
+            $this->populateProgress();
             $this->populateDataForConnectTask();
         } else {
             $this->populateConnectSearchResults();
@@ -727,13 +730,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         //find the transcription for the document
         $newest_trans = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($item_id);
-        $newest_tagged_transn = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($newest_tran->id);
         $this->view->hasTranscription = false;
 
         if (!empty($newest_trans)) {
             $this->view->hasTranscription = true;
             $this->view->transcription_id = $newest_trans->id;
             $this->view->transcription = $newest_trans->transcribed_text;
+            $newest_tagged_trans = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($newest_trans->id);
         }
 
         //find the tagged transcription of the document
@@ -746,33 +749,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         //find if a document has been connected
         $this->view->hasBeenConnected = false;
-        $subjectsForDocument = getAllSubjectsOnId($item_id);
+        $subjectsStatsForItem = $this->_helper->db->getTable('InciteItemsSubjects')->findSubjectsStatsByItemId($item_id);
 
-        $pos_subs = array();
-        $neg_subs = array();
-        $distinct_subNames = array();
-        foreach ((array) $subjectsForDocument as $subject) {
-            if (!isset($distinct_subNames[$subject['subject_name']]))
-                $distinct_subNames[$subject['subject_name']] = $subject['subject_name'];
-
-            if ($subject['is_positive']) {
-                if (!isset($pos_subs[$subject['subject_name']]))
-                    $pos_subs[$subject['subject_name']] = array();
-
-                array_push($pos_subs[$subject['subject_name']], $subject['user_id']);
-            } else {
-                if (!isset($neg_subs[$subject['subject_name']]))
-                    $neg_subs[$subject['subject_name']] = array();
-
-                array_push($neg_subs[$subject['subject_name']], $subject['user_id']);
-            }
-        }
-
-        if (!empty($subjectsForDocument)) {
+        if (!empty($subjectsStatsForItem)) {
             $this->view->hasBeenConnected = true;
-            $this->view->subjectNames = $distinct_subNames;
-            $this->view->positive_subjects = $pos_subs;
-            $this->view->negative_subjects = $neg_subs;
+            $this->view->subjectsStats = $subjectsStatsForItem;
         }
     }
 
@@ -803,6 +784,19 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
         }
         $this->view->task_type = $task;
+    }
+
+    public function populateProgress() {
+        $itemId = $this->_getParam('id');
+        $newestTranscription = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($itemId);
+        $newestTaggedTranscription = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByItemId($itemId);
+        $newestSubjectRatings = $this->_helper->db->getTable('InciteItemsSubjects')->findNewestSubjectRatingsByItemId($itemId);
+        $isTrans = !empty($newestTranscription);
+        $isTagged = $isTrans && $newestTaggedTranscription && $newestTaggedTranscription->timestamp_creation > $newestTranscription->timestamp_creation;
+        $isConn = $isTagged && $newestSubjectRatings && $newestSubjectRatings->tagged_trans_id == $newestTaggedTranscription->id;
+        $this->view->isTranscribed = $isTrans;
+        $this->view->isTagged = $isTagged;
+        $this->view->isConnected = $isConn;
     }
 
 

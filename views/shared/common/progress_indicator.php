@@ -11,18 +11,16 @@
 	        <?php
 	        	$item_id = $this->document_metadata->id;
 
-	        	$newestTranscription = getNewestTranscription($item_id);
-	        	$newestSubjects = getNewestSubjectsForNewestTaggedTranscription($item_id);
 
-	        	if (!empty($newestTranscription)) {
+	        	if ($this->isTranscribed) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (hasTaggedTranscriptionForNewestTranscription($item_id)) {
+	        	if ($this->isTagged) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 
-	        	if (!empty($newestSubjects)) {
+	        	if ($this->isConnected) {
 	        		echo 'numberOfTasksCompleted++;';
 	        	}
 	        ?>
