@@ -106,6 +106,7 @@ class Table_InciteUser extends Omeka_Db_Table
         $select = new Omeka_Db_Select;
         $select->from(array('dis' => $db->InciteDiscussion));
         $select->where("dis.user_id = ?",  $id);
+        $select->where("dis.discussion_type = 4");
         $results = $this->fetchObjects($select);
         return $results;
     }

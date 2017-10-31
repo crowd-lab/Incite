@@ -1,5 +1,4 @@
 <?php
-//require_once("controllers/Incite_Env_Setting.php");
 require_once("controllers/Incite_Helpers.php");
 //require_once("controllers/Incite_Subject_Concept_Table.php");
 /**
@@ -64,19 +63,6 @@ SQL
 SQL
                 );
 
-        $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_answer_explain_list (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `item_id` int(11) NOT NULL,
-                    `question_id` int(11) NOT NULL,
-                    `answer`      varchar(500) NOT NULL,
-                    `correct`      varchar(11) NOT NULL,
-                    `explanation`      varchar(10000) NOT NULL,
-
-                    PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1 ;       
-SQL
-                );
 
         $db->query(<<<SQL
                 CREATE TABLE IF NOT EXISTS {$db->InciteGroupsUsers} (
@@ -131,16 +117,6 @@ SQL
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
-        $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_documents_replies_conjunction (
-                    `id`                int(11) NOT NULL AUTO_INCREMENT,
-                    `item_id`           int(11) NOT NULL,
-                    `comment_id`          int(11) NOT NULL,
-
-                    PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
-SQL
-                );
 
 
         $db->query(<<<SQL
@@ -154,14 +130,7 @@ SQL
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;  
 SQL
                 );
-        /*
-           $db->query(<<<SQL
 
-           INSERT INTO {$db->prefix}incite_subject_concepts (`id`, `name`, `definition`) VALUES (NULL, 'Religion', 'This document refers to religious ideas, prayers, ministers, etc.'), (NULL, 'White Supremacy', 'This document discusses the belief that white people are racially superior.'), (NULL, 'Racial Equality', 'This document discusses the belief that people of all racial backgrounds are equal.'), (NULL, 'Gender Equality/Inequality', 'This document discusses the status of men and/or women.'), (NULL, 'Human Equality', 'This document refers to the idea that all people are equal.'), (NULL, 'Self Goverment', 'This document refers to democracy, the idea that people should have a say in their own governance.'), (NULL, 'America as a Global Beacon', 'This document celebrates America''s status as an example for the rest of the world to follow.'), (NULL, 'Celebration of Revolutionary Generation', 'This document glorifies the Americans who fought the revolution.'), (NULL, 'White Southerners', 'This document discusses whether or not white southerners should celebrate July 4.');
-
-SQL
-           );
-         */
         $db->query(<<<SQL
                 CREATE TABLE IF NOT EXISTS {$db->InciteTag} (
                     `id`                    int(11) NOT NULL AUTO_INCREMENT,
@@ -199,11 +168,11 @@ SQL
                 );
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_available_list (
+                CREATE TABLE IF NOT EXISTS {$db->InciteItemTaskStatus} (
                     `id`                    int(11) NOT NULL AUTO_INCREMENT,
                     `item_id`               int(11) NOT NULL,
-                    `ready_tag`             int(8) NOT NULL,
-                    `ready_connect`         int(8) NOT NULL,
+                    `ready_to_tag`             int(8) NOT NULL,
+                    `ready_to_connect`         int(8) NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
@@ -230,40 +199,20 @@ SQL
                 );
 
 
-        $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_question_conjunction (
-                    `id`                    int(11) NOT NULL AUTO_INCREMENT,
-                    `tagged_trans_id`       int(11) NOT NULL,
-                    `question_id`           int(11) NOT NULL,
-                    `answer`                varchar(500) NOT NULL,
-                    `type`                  int(11) NOT NULL,
-
-                    PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
-SQL
-                );
-
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_subject_explain (
+                CREATE TABLE IF NOT EXISTS {$db->InciteSubjectRatingExplanation} (
                     `id`                   int(11) NOT NULL AUTO_INCREMENT,
                     `item_id`              int(11) NOT NULL,
-                    `concept_id`           int(11) NOT NULL,   
-                    `explanation`         varchar(1000) NOT NULL,
+                    `tagged_trans_id`      int(11) NOT NULL,
+                    `explanation`          varchar(3000) NOT NULL,
+                    `timestamp_creation`   timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
-        $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_tag_question_index (
-                    `id`                   int(11) NOT NULL,
-                    `question`             varchar(1000) NOT NULL,
 
-                    PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
-SQL
-                );
         $db->query(<<<SQL
                 CREATE TABLE IF NOT EXISTS {$db->InciteUser} (
                     `id`                      int(11) NOT NULL AUTO_INCREMENT,
@@ -316,20 +265,12 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_trans_reason (
+                CREATE TABLE IF NOT EXISTS {$db->InciteUsersGuests} (
                     `id`            int(11) NOT NULL AUTO_INCREMENT,
-                    `item_id`       int(11) NOT NULL,
-                    `reason`        varchar(100000) ,
+                    `user_id`       int(11) unsigned NOT NULL,
+                    `guest_id`      int(11) unsigned NOT NULL,
 
-                    PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1; 
-SQL
-                );
-        $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_users_map (
-                    `non_guest_id`  int(10) unsigned NOT NULL,
-                    `guest_id`      int(10) unsigned NOT NULL
-
+                    PRIMARY KEY (`id`) 
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;  
 SQL
                 );
@@ -397,14 +338,6 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_question_conjunction
-SQL
-                );
-        $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_tag_question_index
-SQL
-                );
-        $db->query(<<<SQL
                 DROP TABLE IF EXISTS {$this->_db->prefix}incite_trans_reason
 SQL
                 );
@@ -466,15 +399,19 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$db->prefix}incite_users_map
-SQL
-                );
-        $db->query(<<<SQL
                 DROP TABLE IF EXISTS {$db->InciteItemsDiscussions}
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_replies_conjunction
+                DROP TABLE IF EXISTS {$db->InciteSubjectRatingExplanation}
+SQL
+                );
+        $db->query(<<<SQL
+                DROP TABLE IF EXISTS {$db->InciteItemTaskStatus}
+SQL
+                );
+        $db->query(<<<SQL
+                DROP TABLE IF EXISTS {$db->InciteUsersGuests}
 SQL
                 );
     }

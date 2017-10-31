@@ -101,7 +101,7 @@
     <div class="inputs five columns omega">
         <div id="connect">
             <p class="explanation"><?php echo __('We need at least <b>one</b> theme to make sure the connect task working'); ?>.</p>
-            <label style="clear: both;margin-right:-45px;">Concept :</label>
+            <label style="clear: both;margin-right:-45px;">Subject :</label>
             <input style="width: auto;" type="text" class="textinput"  name="concept_place" />
             <label style="clear: both;margin-right:-45px;">Definition :</label>
             <input style="width: auto;" type="text" class="textinput"  name="def_place" />

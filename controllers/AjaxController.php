@@ -107,7 +107,8 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $priv = $_POST['priv'];
             $exp = $_POST['exp'];
             $isGuest = false;
-            if (userExists($username)) {
+            $user = $this->_helper->db->getTable('InciteUser')->findUserByEmail($username);
+            if (isset($user)) {
                 echo 'exists';
             } else  {
                 $user = new InciteUser;
@@ -122,11 +123,15 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
                 $user->save();
                 if (isset($user->id)) {
                     if (isset($_SESSION['Incite']['Guest']) && $_SESSION['Incite']['Guest'] == true) {
-                        $guestID = $_SESSION['Incite']['USER_DATA']->id;
+                        $guestId = $_SESSION['Incite']['USER_DATA']->id;
                         $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
                         $_SESSION['Incite']['Guest'] = false;
                         $_SESSION['Incite']['USER_DATA'] = $user;
-                        mapAccounts($guestID, $_SESSION['Incite']['USER_DATA']->id);
+
+                        $userGuest = new InciteUsersGuests;
+                        $userGuest->user_id = $_SESSION['Incite']['USER_DATA']->id;
+                        $userGuest->guest_id = $guestId;
+                        $userGuest->save();
                     } else {
                         system_log('not a guest before create account!');
                     }
@@ -430,7 +435,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $groups_users = new InciteGroupsUsers;
             $groups_users->user_id = $user->id;
             $groups_users->group_id = $group->id;
-            $groups_users->privilege = 0;
+            $groups_users->group_privilege = 0;
             $groups_users->seen_instruction = 1;
             $groups_users->save();
 
@@ -662,50 +667,6 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
 
         }
     }
-    /**
-     * Ajax function that creates accounts. This can be invoked in 2 ways
-     * 1) An action is done and the user is not logged in, an account is automatically created for said user.
-     * This account is a 'guest' account only meant for tracking any changes on the website
-     *
-     * 2) The user wants to create an account on the website that is not a guest account. If a guest account was used,
-     * it is mapped back to the new account. On completion of making a new account, the user is automatically signed in.
-     *
-     * This method will throw 'false' if an account already exists in the system
-     */
-    public function createaccountoldAction() {
-        if ($this->getRequest()->isPost()) {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $firstName = $_POST['fName'];
-            $lastName = $_POST['lName'];
-            $priv = $_POST['priv'];
-            $exp = $_POST['exp'];
-            $isGuest = false;
-            if (isset($_SESSION['Incite']) && isset($_SESSION['Incite']['USER_DATA']) && strpos($_SESSION['Incite']['USER_DATA'][1], "guest") !== false)
-            {
-                //link guest and user accounts
-                $isGuest = true;
-                $guestID = $_SESSION['Incite']['USER_DATA'][0];
-            }
-            if (createAccount($username, $password, $firstName, $lastName, $priv, $exp) != "failure") {
-                //destroy previous session and then map it to the new session ==> store in new table
-                if (!isset($_SESSION))
-                {
-                    session_start();
-                }
-                $_SESSION['Incite']['IS_LOGIN_VALID'] = true;
-                $_SESSION['Incite']['USER_DATA'] = getUserData($username);
-                if ($isGuest)
-                {
-                    mapAccounts($guestID, $_SESSION['Incite']['USER_DATA'][0]);
-                }
-                echo json_encode(true);
-            } else {
-                echo json_encode(false);
-            }
-        }
-    }
-
 
     /**
      * Logs a user out of the website. This kills the cookie
@@ -744,6 +705,11 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $discussion->discussion_type = $type;
             $discussion->is_active = 1;
             $discussion->save();
+
+            $itemDiscussion = new InciteItemsDiscussions;
+            $itemDiscussion->item_id = $documentID;
+            $itemDiscussion->discussion_id = $discussion->id;
+            $itemDiscussion->save();
 
             return true;
         }
@@ -795,7 +761,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $text = array();
             $itemId = $_POST['documentId'];
             $itemTypes = array(0, 1, 2, 3); //transcribe, tag, connect and view
-            $discussions = $this->_helper->db->getTable('InciteDiscussion')->findDiscussionsByTypes($itemTypes);
+            $discussions = $this->_helper->db->getTable('InciteDiscussion')->findDiscussionsByItemIdWithTypes($itemId, $itemTypes);
             $counter = 0;
             for ($i = count($discussions) - 1; $i >= 0; $i--)
             {

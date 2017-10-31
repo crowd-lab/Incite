@@ -13,12 +13,9 @@ class Incite_DiscussionsController extends Omeka_Controller_AbstractActionContro
 {
     public function init()
     {
-        require_once("Incite_Transcription_Table.php");
-        require_once("Incite_Users_Table.php");
-        require_once("Incite_Replies_Table.php");
-        require_once("Incite_Questions_Table.php");
         require_once("Incite_Session.php");
         require_once('Incite_Helpers.php');
+        require_once('Incite_Env_Setting.php');
         setup_session();
     }
 

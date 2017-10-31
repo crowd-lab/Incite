@@ -266,7 +266,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $tag_id_counter = 0;
 
                 $oldwd = getcwd();
-                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
+                chdir('./plugins/Incite/stanford-ner/');
                 $nered_file = fopen('../tmp/ner/tutorial_trans.ner', "r");
                 $nered_file_size = filesize('../tmp/ner/tutorial_trans.ner');
 
@@ -368,6 +368,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $ready_to_connect = 1;
         
         $status = $this->_helper->db->getTable('InciteItemTaskStatus')->findItemTaskStatusByItemId($itemId);
+        if (!isset($status)) { // the transcription is newly added
+            $status = new InciteItemTaskStatus;
+            $status->item_id = $itemId;
+        }
         $status->ready_to_tag = $ready_to_tag;
         $status->ready_to_connect = $ready_to_connect;
         $status->save();
@@ -435,7 +439,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $ner_entity_table = array();
 
                 $oldwd = getcwd();
-                chdir('./plugins/Incite/stanford-ner-2015-04-20/');
+                chdir('./plugins/Incite/stanford-ner/');
 
                 $this->view->file = 'not exist';
                 $ner_input = fopen('../tmp/ner/' . $this->_getParam('id'), "w") or die("unable to open transcription");
@@ -780,12 +784,5 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->isConnected = $isConn;
         return array('isTranscribed' => $isTrans, 'isTagged' => $isTagged, 'isConnected' => $isConn);
     }
-
-    public function testAction() {
-            $table = $this->_helper->db->getTable('InciteTaggedTranscription');
-            $taggable_items = $table->findFirstKItemIdsToBeTagged();
-    }
-
-
 }
 

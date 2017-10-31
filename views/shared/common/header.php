@@ -18,7 +18,7 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Mapping the Fourth of July | Civil War Crowdsourcing | Virginia Tech</title>
+    <title></title>
     <?php echo js_tag('jquery'); ?>
     <?php echo js_tag('listview-helpers'); ?>
     <?php echo js_tag('bootstrap.min'); ?>
@@ -679,6 +679,7 @@ function signupAjaxRequest() {
         data: {"username": $('#newUsername').val(), "password": $('#newPassword').val(), "fName": $('#firstName').val(), "lName": $('#lastName').val(), "priv": 1, "exp": 1},
         success: function (response) {
             data = response.trim();
+            console.log(data);
 
             if (data === "true") {
                 createAlertInLoginModal("Successful signup and login!", false);

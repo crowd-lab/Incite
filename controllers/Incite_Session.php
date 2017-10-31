@@ -9,7 +9,8 @@ function setup_session() {
         session_start();
 
     if (!isset($_SESSION['Incite']['USER_DATA'])) {
-        $id = generateUniqueUserId();
+        $uniqueUserId = implode(explode(" ", microtime())); 
+        $id = $uniqueUserId;
         $username = "guest".$id; //guest12345678900
         $password = "";
         $firstName = "guest";
