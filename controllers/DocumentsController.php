@@ -51,12 +51,6 @@ function migrateTaggedDocumentFromV1toV2($text) {
 class Incite_DocumentsController extends Omeka_Controller_AbstractActionController {
 
     public function init() {
-        require_once("Incite_Transcription_Table.php");
-        require_once("Incite_Tag_Table.php");
-        require_once("Incite_Subject_Concept_Table.php");
-        require_once("Incite_Users_Table.php");
-        require_once("Incite_Questions_Table.php");
-        require_once("Incite_Replies_Table.php");
         require_once("Incite_Search.php");
         require_once("Incite_Session.php");
         require_once("Incite_Env_Setting.php");
@@ -521,7 +515,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function populateTagSearchResults() {
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $item_ids = array_slice(getDocumentsWithTranscriptions(), 0, MAXIMUM_SEARCH_RESULTS);
+            $table = $this->_helper->db->getTable('InciteTaggedTranscription');
+            $taggable_items = $table->findFirstKItemIdsToBeTagged();
+            $searchedAndTaggableItems = array_intersect($searched_item_ids, $taggable_items);
+            $item_ids = array_slice($searchedAndTaggableItems, 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {
             $table = $this->_helper->db->getTable('InciteTaggedTranscription');
@@ -691,7 +688,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $item_ids = array_slice(array_intersect(array_values($connectable_items), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice(array_intersect($connectable_items, $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {
             $item_ids = array_slice($connectable_items, 0, MAXIMUM_SEARCH_RESULTS);
@@ -759,15 +756,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
 
 
     public function populateViewSearchResults() {
-        $all_doc_ids = getTranscribableDocuments();
+        $all_doc_ids = $this->_helper->db->getTable('InciteTranscription')->findFirstKItemIdsToBeTranscribed();
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
 
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $item_ids = array_slice(array_intersect(array_values($all_doc_ids), $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice(array_intersect($all_doc_ids, $searched_item_ids), 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {
-            $item_ids = array_slice(array_values($all_doc_ids), 0, MAXIMUM_SEARCH_RESULTS);
+            $item_ids = array_slice($all_doc_ids, 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
         }
         return $item_ids;
@@ -786,8 +783,10 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->task_type = $task;
     }
 
-    public function populateProgress() {
-        $itemId = $this->_getParam('id');
+    public function populateProgress($itemId = 0) {
+        if ($itemId == 0) {
+            $itemId = $this->_getParam('id');
+        }
         $newestTranscription = $this->_helper->db->getTable('InciteTranscription')->findNewestByItemId($itemId);
         $newestTaggedTranscription = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByItemId($itemId);
         $newestSubjectRatings = $this->_helper->db->getTable('InciteItemsSubjects')->findNewestSubjectRatingsByItemId($itemId);
@@ -797,6 +796,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->isTranscribed = $isTrans;
         $this->view->isTagged = $isTagged;
         $this->view->isConnected = $isConn;
+        return array('isTranscribed' => $isTrans, 'isTagged' => $isTagged, 'isConnected' => $isConn);
     }
 
 

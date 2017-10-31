@@ -131,7 +131,7 @@ var request = $.ajax({
     <?php if (isset($_GET['keywords'])) echo ', "keywords":"'.$_GET['keywords'].'"';?>},
     success: function (response)
     {
-        if(response != "false"){
+        if(response.trim() != "false"){
             var data =  $.parseJSON(response);
             total_pages = data['total_pages'];
             docs = jQuery.extend(true, [], data['records']);

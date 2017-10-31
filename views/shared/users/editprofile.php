@@ -122,11 +122,11 @@
 						<input type="text" class="form-control" id="editNewUsername" name="email" value="<?php echo $email ?>" disabled>
 					</div>
 					<div class="form-group">
-						<label for="message-text" class="control-label">Password:</label>
+						<label for="message-text" class="control-label">New Password:</label>
 						<input type="password" class="form-control" id="editNewPassword" name="password" placeholder="Enter your password to confirm any changes">
 					</div>
 					<div class="form-group">
-						<label for="message-text" class="control-label">Confirm Password:</label>
+						<label for="message-text" class="control-label">Confirm New Password:</label>
 						<input type="password" class="form-control" id="editNewConfirmPassword" name="confirmPassword" placeholder="Enter the password again for verification">
 					</div>
 					<div class="form-group">

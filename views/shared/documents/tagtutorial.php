@@ -373,7 +373,7 @@
             numberDisplayed: 1
         });
         new_entity.find('.category-select').append('<option value="0">&nbsp;</option>');
-        <?php foreach ($category_object as $id => $content) {
+        <?php foreach ($this->categories as $id => $content) {
             echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
         }?>
 

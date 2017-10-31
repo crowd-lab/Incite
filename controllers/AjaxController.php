@@ -17,20 +17,12 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
         //Since this is for ajax purpose, we don't need to render any views!
         $this->_helper->viewRenderer->setNoRender(TRUE);
         require_once('Incite_Helpers.php');
-        require_once("Incite_Users_Table.php");
-        require_once("Incite_Replies_Table.php");
-        require_once("Incite_Questions_Table.php");
         require_once("DiscoverController.php");
         require_once("DocumentsController.php");
         require_once("Incite_Search.php");
-        require_once("Incite_Tag_Table.php");
-        require_once("Incite_Transcription_Table.php");
-        require_once("Incite_Document_Table.php");
         require_once("Incite_System_Log.php");
-        require_once("Incite_Subject_Concept_Table.php");
         require_once("Incite_Session.php");
         require_once("Incite_Env_Setting.php");
-        require_once("DB_Connect.php");
         require_once("Email.php");
 
     }
@@ -80,16 +72,17 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
             $firstName = $_POST['fName'];
             $lastName = $_POST['lName'];
 
-
-            if (editAccount($id, $password, $firstName, $lastName))
-            {
-                $_SESSION['Incite']['USER_DATA']['first_name'] = $firstName;
+            $user = $this->_helper->db->getTable('InciteUser')->findUserById($id);
+            if (isset($user)) {
+                $user->password = md5($password);
+                $user->first_name = $firstName;
+                $user->last_name = $lastName;
+                $user->save();
                 echo 'true';
-            }
-            else
-            {
+            } else {
                 echo 'false';
             }
+
 
         }
     }
@@ -242,7 +235,7 @@ class Incite_AjaxController extends Omeka_Controller_AbstractActionController
                                 'rights' =>metadata($record, array('Dublin Core', 'Rights')),
                                 'src' => metadata($record, array('Dublin Core', 'Rights')),
                                 'url'=> get_image_url_for_item($record, true),
-                                'taskinfo'=>getTaskCompletionInfoFor($item_ids[$i]),
+                                'taskinfo'=>Incite_DocumentsController::populateProgress($item_ids[$i]),
                                 'lat_long' => loc_to_lat_long(metadata($record, array('Item Type Metadata', 'Location'))));
 
                     }

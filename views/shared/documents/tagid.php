@@ -315,8 +315,8 @@
 
     $(document).ready(function () {
         $("#comment-container").click(function(){
-          createQuestionArray();
-          console.log(questions_array);
+          //createQuestionArray();
+          //console.log(questions_array);
         });
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();

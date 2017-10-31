@@ -9,17 +9,10 @@
 class Incite_GroupsController extends Omeka_Controller_AbstractActionController {
 
     public function init() {
-        require_once("Incite_Transcription_Table.php");
-        require_once("Incite_Tag_Table.php");
-        require_once("Incite_Subject_Concept_Table.php");
-        require_once("Incite_Users_Table.php");
-        require_once("Incite_Questions_Table.php");
-        require_once("Incite_Replies_Table.php");
         require_once("Incite_Search.php");
         require_once("Incite_Session.php");
         require_once("Incite_Env_Setting.php");
         require_once('Incite_Helpers.php');
-        require_once('Incite_Groups_Table.php');
         setup_session();
     }
 
