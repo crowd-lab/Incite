@@ -10,7 +10,7 @@
 
     $(document).ready(function () {
         <?php
-        if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
+        if ($_SESSION['Incite']['USER_DATA']->id == $this->group->creator_id) {
             echo "isGroupOwner = true;";
         }
         ?>
@@ -28,7 +28,7 @@
 
         if ($_SESSION['Incite']['Guest']) {
             echo "styleForGuest();";
-        } else if ($_SESSION['Incite']['USER_DATA']['email'] == $this->group['creator']['email']) {
+        } else if ($_SESSION['Incite']['USER_DATA']->id == $this->group->creator_id) {
             echo "addGroupOwnerControls();";
         } else {
             $isMember = false;
@@ -36,12 +36,12 @@
             $isBanned = false;
 
             foreach((array)$this->users as $user) {
-                if ($_SESSION['Incite']['USER_DATA']['email'] == $user['email']) {
-                    if ($user['privilege'] > -1) {
+                if ($_SESSION['Incite']['USER_DATA']->id == $user->id) {
+                    if ($user->group_privilege > -1) {
                         $isMember = true;
-                    } else if ($user['privilege'] == -1) {
+                    } else if ($user->group_privilege == -1) {
                         $hasRequested = true;
-                    } else if ($user['privilege'] == -2) {
+                    } else if ($user->group_privilege == -2) {
                         $isBanned = true;
                     }
                 }
@@ -65,19 +65,21 @@
     function populateGroupMembers() {
         var span;
 
-        <?php foreach ((array)$this->acceptedUsers as $user): ?>
+        <?php foreach ((array)$this->users as $user): ?>
         if ($("#groupprofile-list-of-members span").length === 0) {
             span = $('<span class="group-member-link"></span>');
         } else {
             span = $('<span class="group-member-link">, </span>');
         }
 
-        span.append(createProfileLink(<?php echo sanitizeStringInput($user['email']); ?>.value, <?php echo $user['id']; ?>));
+        <?php if ($user->group_privilege >= 0): ?>
+        span.append(createProfileLink(<?php echo sanitizeStringInput($user->email); ?>.value, <?php echo $user->id; ?>));
         $("#groupprofile-list-of-members").append(span);
+        <?php endif; ?>
         <?php endforeach; ?>
 
         //create link for group owner
-        $('#group-owner').append(createProfileLink(<?php echo sanitizeStringInput($this->group['creator']['email']); ?>.value, <?php echo $this->group['creator']['id'] ?>));
+        $('#group-owner').append(createProfileLink(<?php echo sanitizeStringInput($this->groupOwner->email); ?>.value, <?php echo $this->group->creator_id; ?>));
     };
 
     function createProfileLink(username, userid) {
@@ -95,17 +97,19 @@
     function populateActivityFeed() {
         var table;
 
-        <?php foreach ((array)$this->acceptedUsers as $user): ?>
+        <?php foreach ((array)$this->users as $user): ?>
+        <?php if ($user->group_privilege >= 0): ?>
         if (isGroupOwner) {
-            table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), <?php echo sanitizeStringInput($user['first_name']); ?>.value, <?php echo sanitizeStringInput($user['last_name']); ?>.value, <?php echo sanitizeStringInput($user['email']); ?>.value, <?php echo $user['id']; ?>);
+            table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), <?php echo sanitizeStringInput($user->first_name); ?>.value, <?php echo sanitizeStringInput($user->last_name); ?>.value, <?php echo sanitizeStringInput($user->email); ?>.value, <?php echo $user->id; ?>);
         } else {
-            table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), null, null, <?php echo sanitizeStringInput($user['email']); ?>.value, <?php echo $user['id']; ?>);
+            table = generateAndAppendUserRow($("#groupprofile-activity-feed-table"), null, null, <?php echo sanitizeStringInput($user->email); ?>.value, <?php echo $user->id; ?>);
         }
 
-        generateAndAppendUserActivityRow(table, "Transcribed", <?php echo $user['transcribed_doc_count']; ?>);
-        generateAndAppendUserActivityRow(table, "Tagged", <?php echo $user['tagged_doc_count']; ?>);
-        generateAndAppendUserActivityRow(table, "Connected", <?php echo $user['connected_doc_count']; ?>);
+        generateAndAppendUserActivityRow(table, "Transcribed", <?php echo $user['transcribed_item_count']; ?>);
+        generateAndAppendUserActivityRow(table, "Tagged", <?php echo $user['tagged_item_count']; ?>);
+        generateAndAppendUserActivityRow(table, "Connected", <?php echo $user['connected_item_count']; ?>);
         generateAndAppendUserActivityRow(table, "Discussed", <?php echo $user['discussion_count']; ?>);
+        <?php endif; ?>
         <?php endforeach; ?>
     };
 
@@ -159,7 +163,7 @@
         generateAndAppendGroupOrManagementTabs();
 
         <?php foreach ((array)$this->users as $user): ?>
-        generateAndAppendManagementTableRows(<?php echo sanitizeStringInput($user['first_name']); ?>.value, <?php echo sanitizeStringInput($user['last_name']); ?>.value, <?php echo sanitizeStringInput($user['email']); ?>.value, "<?php echo $user['privilege']; ?>", "<?php echo $user['id']; ?>");
+        generateAndAppendManagementTableRows(<?php echo sanitizeStringInput($user['first_name']); ?>.value, <?php echo sanitizeStringInput($user['last_name']); ?>.value, <?php echo sanitizeStringInput($user['email']); ?>.value, "<?php echo $user->group_privilege; ?>", "<?php echo $user['id']; ?>");
         <?php endforeach; ?>
 
         colorEveryOtherManagementRowGrey();
@@ -241,7 +245,7 @@
         id = parseInt(id);
 
         //don't add the owner of the group to the table
-        if (id === <?php echo $this->group['creator']['id'] ?>) {
+        if (id === <?php echo $this->group->creator_id; ?>) {
             return;
         }
         var font_size = 13; //px
@@ -413,7 +417,7 @@
     function requestToJoinGroupAjaxRequest(groupId) {
         var request = $.ajax({
             type: "POST",
-            url: "<?php echo getFullInciteUrl().'/ajax/addgroupmember'; ?>",
+            url: "<?php echo getFullInciteUrl().'/ajax/requestgroupmembership'; ?>",
             data: {"groupId": <?php echo $this->group['id'] ?>, "privilege": -1},
             success: function (response) {
                 console.log(response);
@@ -603,7 +607,7 @@
             <h2 class="activity-title" id="groupprofile-overview-title">Group Overview</h2>
             <div id="groupprofile-overview-details">
                 <p id="groupprofile-list-of-members"><strong>Member(s): </strong></p>
-                <p id="groupprofile-date-created"><strong>Date Created: <?php echo $this->group['created_time']; ?></strong></p>
+                <p id="groupprofile-date-created"><strong>Date Created: <?php echo $this->group['timestamp_creation']; ?></strong></p>
             </div>
         </div>
 

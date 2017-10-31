@@ -29,11 +29,13 @@ class Incite_UsersController extends Omeka_Controller_AbstractActionController {
     }
 
 
-    public function profileAction(){
+    public function editAction(){
         if ($this->_hasParam('id')) {
-            $this->_helper->viewRenderer('profile');
-            $user_id = $this->_getParam('id');
-            $this->view->user = getUserDataByUserId($user_id);
+            $this->_helper->viewRenderer('editprofile');
+            $userId = $this->_getParam('id');
+            $userTable = $this->_helper->db->getTable('InciteUser');
+
+            $this->view->user = $userTable->findUserById($userId);
         } else {
             $this->view->users = "";
         }

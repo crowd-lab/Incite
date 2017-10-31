@@ -27,15 +27,15 @@ class IncitePlugin extends Omeka_Plugin_AbstractPlugin
 
         $db->query(<<<SQL
                 CREATE TABLE IF NOT EXISTS {$db->InciteGroup} (
-                    `id`                int(11) NOT NULL AUTO_INCREMENT,
-                    `name`              varchar(200) NOT NULL,
-                    `creator`           int(11) NOT NULL,
-                    `group_type`        int(11) NOT NULL,
-                    `instructions`      varchar(3000) NOT NULL,
-                    `timestamp`         timestamp NOT NULL,
+                    `id`                     int(11) NOT NULL AUTO_INCREMENT,
+                    `name`                   varchar(200) NOT NULL,
+                    `creator_id`             int(11) NOT NULL,
+                    `group_type`             int(11) NOT NULL,
+                    `instructions`           varchar(3000) NOT NULL,
+                    `timestamp_creation`     timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
         $db->query(<<<SQL
@@ -50,7 +50,7 @@ SQL
                     `type`                  int(8) NOT NULL,
                     `timestamp_creation`          timestamp NOT NULL,
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1 ;
 SQL
                 );
         $db->query(<<<SQL
@@ -60,7 +60,7 @@ SQL
                     `tag_id` int(11) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;       
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1 ;       
 SQL
                 );
 
@@ -74,29 +74,21 @@ SQL
                     `explanation`      varchar(10000) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;       
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1 ;       
 SQL
                 );
 
         $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_group_members (
-                    `id`            int(11) NOT NULL AUTO_INCREMENT,
-                    `user_id`       int(11) NOT NULL,
-                    `group_id`      int(11) NOT NULL,
-                    `privilege`     int(11) NOT NULL,
+                CREATE TABLE IF NOT EXISTS {$db->InciteGroupsUsers} (
+                    `id`                    int(11) NOT NULL AUTO_INCREMENT,
+                    `group_id`              int(11) NOT NULL,
+                    `user_id`               int(11) NOT NULL,
+                    `group_privilege`       int(11) NOT NULL,
+                    `seen_instruction`      int(3) NOT NULL,
+                    `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-SQL
-                );
-
-        $db->query(<<<SQL
-                CREATE TABLE IF NOT EXISTS {$db->prefix}incite_group_instructions_seen_by (
-                    `user_id`       int(11) NOT NULL,
-                    `group_id`      int(11) NOT NULL,
-
-                    PRIMARY KEY (`user_id`, `group_id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -111,7 +103,7 @@ SQL
                     `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -125,7 +117,7 @@ SQL
                     `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -136,7 +128,7 @@ SQL
                     `discussion_id`      int(11) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
         $db->query(<<<SQL
@@ -146,7 +138,7 @@ SQL
                     `comment_id`          int(11) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -159,7 +151,7 @@ SQL
                     `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;  
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;  
 SQL
                 );
         /*
@@ -184,7 +176,7 @@ SQL
                     `type`                  int(8) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -202,7 +194,7 @@ SQL
                     `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -214,7 +206,7 @@ SQL
                     `ready_connect`         int(8) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -233,7 +225,7 @@ SQL
                     `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -247,7 +239,7 @@ SQL
                     `type`                  int(11) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
 
@@ -260,7 +252,7 @@ SQL
                     `explanation`         varchar(1000) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
         $db->query(<<<SQL
@@ -269,24 +261,24 @@ SQL
                     `question`             varchar(1000) NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
         $db->query(<<<SQL
                 CREATE TABLE IF NOT EXISTS {$db->InciteUser} (
-                    `id`                int(11) NOT NULL AUTO_INCREMENT,
-                    `first_name`        varchar(15) NOT NULL,
-                    `last_name`         varchar(15) NOT NULL,
-                    `email`             varchar(50) NOT NULL,
-                    `password`          varchar(32) NOT NULL,
-                    `privilege_level`   int(11) NOT NULL,
-                    `experience_level`  int(11) NOT NULL,
-                    `is_active`         int(11) NOT NULL,
-                    `working_group_id`  int(11) NOT NULL,
-                    `timestamp`         timestamp NOT NULL,
+                    `id`                      int(11) NOT NULL AUTO_INCREMENT,
+                    `first_name`              varchar(15) NOT NULL,
+                    `last_name`               varchar(15) NOT NULL,
+                    `email`                   varchar(50) NOT NULL,
+                    `password`                varchar(32) NOT NULL,
+                    `privilege_level`         int(11) NOT NULL,
+                    `experience_level`        int(11) NOT NULL,
+                    `is_active`               int(11) NOT NULL,
+                    `working_group_id`        int(11) NOT NULL,
+                    `timestamp_creation`      timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
         $db->query(<<<SQL
@@ -298,7 +290,7 @@ SQL
                     `timestamp_creation`         timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 SQL
                 );
         $db->query(<<<SQL
@@ -315,7 +307,7 @@ SQL
                     `timestamp_creation`    timestamp NOT NULL,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1; 
 SQL
                 );
         $db->query(<<<SQL
@@ -330,7 +322,7 @@ SQL
                     `reason`        varchar(100000) ,
 
                     PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; 
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1; 
 SQL
                 );
         $db->query(<<<SQL
@@ -338,7 +330,7 @@ SQL
                     `non_guest_id`  int(10) unsigned NOT NULL,
                     `guest_id`      int(10) unsigned NOT NULL
 
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;  
 SQL
                 );
         $db->query(<<<SQL
@@ -348,7 +340,7 @@ SQL
                     `subcategory_id`    int(11) NOT NULL,
 
                     PRIMARY KEY (`id`) 
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;    
 
 SQL
                 );  
@@ -417,7 +409,7 @@ SQL
 SQL
                 );
         $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_group_members
+                DROP TABLE IF EXISTS {$db->InciteGroupsUsers}
 SQL
                 );
         $db->query(<<<SQL
@@ -483,14 +475,6 @@ SQL
                 );
         $db->query(<<<SQL
                 DROP TABLE IF EXISTS {$this->_db->prefix}incite_documents_replies_conjunction
-SQL
-                );
-        $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_group_instructions_seen_by
-SQL
-                );
-        $db->query(<<<SQL
-                DROP TABLE IF EXISTS {$this->_db->prefix}incite_group
 SQL
                 );
     }

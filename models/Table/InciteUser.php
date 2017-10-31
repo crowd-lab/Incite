@@ -57,6 +57,14 @@ class Table_InciteUser extends Omeka_Db_Table
         $result = $this->fetchOne($select);
         return $result;
     }
+    public function findDiscussionCountByUserId($id) {
+        $db = get_db();
+        $select = new Omeka_Db_Select;
+        $select->from(array('dis' => $db->InciteDiscussion), array('COUNT(*)'));
+        $select->where("dis.user_id = ?",  $id);
+        $result = $this->fetchOne($select);
+        return $result;
+    }
     public function findTranscribedItemsByUserId($id) {
         $db = get_db();
         $elementIdForTitle = 50;
