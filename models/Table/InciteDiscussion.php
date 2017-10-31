@@ -9,6 +9,18 @@ class Table_InciteDiscussion extends Omeka_Db_Table
         $result = $this->fetchObject($select);
         return $result;
     }
+    public function findDiscussionsByType($type) {
+        $select = $this->getSelect();
+        $select->where("discussion_type = ?", $type);
+        $results = $this->fetchObjects($select);
+        return $results;
+    }
+    public function findDiscussionsByTypes($types) {
+        $select = $this->getSelect();
+        $select->where("discussion_type IN (".implode(",", $types).")");
+        $results = $this->fetchObjects($select);
+        return $results;
+    }
     public function findAllDiscussionsWithUserAndCommentInfo() {
         $db = get_db();
         $select = new Omeka_Db_Select;
