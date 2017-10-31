@@ -43,7 +43,14 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 
     <?php
     function loadWorkingGroupInstructions() {
-        $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+        $db = get_db();
+        $groupsUsersTable = $db->getTable('InciteGroupsUsers');
+        $userId = $_SESSION['Incite']['USER_DATA']['id'];
+        $groupsWhoseInstructionsHaveBeenSeenByUser = $groupsUsersTable->findSeenGroupInstructionsByUserId($userId);
+        $groupIdsWhoseInstructionsHaveBeenSeenByUser = array();
+        foreach ((array) $groupsWhoseInstructionsHaveBeenSeenByUser as $group) {
+            $groupIdsWhoseInstructionsHaveBeenSeenByUser[] = $group->group_id;
+        }
 
         $workingGroupId = 0;
         $workingGroupHasInstructions = false;
@@ -51,14 +58,14 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
             $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
         }
 
-        foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-            if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
+        foreach((array)$groupsUsersTable->findGroupsByUserId($userId) as $group) {
+            if ($group->instructions != '' && $workingGroupId == $group->id) {
                 $workingGroupHasInstructions = true;
 
-                if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
-                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
+                if (in_array($group->id, $groupIdsWhoseInstructionsHaveBeenSeenByUser)) {
+                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group->name) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
                 } else {
-                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group->name) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
                     echo 'changeWorkingGroupInfoIcon(true);';
                 }
             }
@@ -840,7 +847,7 @@ function year_of_full_iso_date(date) {
             </button>
             <ul class="dropdown-menu" id="user-dropdown-menu">
                 <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
-                    <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
+                    <li><a href="<?php echo getFullInciteUrl() . '/users/edit/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
                     <li><a href="<?php echo getFullInciteUrl() . '/users/group/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Group</a></li>
                     <li><a href="<?php echo getFullInciteUrl() . '/users/activity/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Activity</a></li>
                 <?php else: ?>

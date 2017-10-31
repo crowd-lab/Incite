@@ -1,20 +1,27 @@
 <head>
     <?php
         function populateWorkingGroupInstructions() {
-            $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+            $db = get_db();
+            $groupsUsersTable = $db->getTable('InciteGroupsUsers');
+            $user = $_SESSION['Incite']['USER_DATA'];
+            $groupsWhoseInstructionsHaveBeenSeenByUserArr = array();
+            $groupsWhoseInstructionsHaveBeenSeenByUser = $groupsUsersTable->findSeenGroupInstructionsByUserId($user->id);
+            foreach ((array)$groupsWhoseInstructionsHaveBeenSeenByUser as $group) {
+                $groupsWhoseInstructionsHaveBeenSeenByUserArr[] = $group->id;
+            }
 
             $workingGroupId = 0;
             $workingGroupHasInstructions = false;
-            if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
-                $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
+            if (isset($user->working_group_id)) {
+                $workingGroupId = $user->working_group_id;
             }
 
-            foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-                if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
+            foreach((array)$groupsUsersTable->findGroupsByUserId($user->id) as $group) {
+                if ($group->instructions != '' && $workingGroupId == $group->id) {
                     $workingGroupHasInstructions = true;
-                    echo 'addGroupInstruction(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value);';
+                    echo 'addGroupInstruction(' . sanitizeStringInput($group->name) . '.value, ' . sanitizeStringInput($group->instructions) . '.value);';
             
-                    if (!in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
+                    if (!in_array($group->id, $groupsWhoseInstructionsHaveBeenSeenByUserArr)) {
                         echo 'addNewIconToSection();';
                     }
                 }
