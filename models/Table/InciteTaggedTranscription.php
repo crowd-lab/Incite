@@ -39,7 +39,7 @@ class Table_InciteTaggedTranscription extends Omeka_Db_Table
         $select = $this->getSelect();
         $select->joinInner(array('users' => $db->InciteUser), $this->_name.'.user_id = users.id');
         $select->where("item_id = ?", $id);
-        $select->order("timestamp_creation DESC");
+        $select->order("incite_tagged_transcriptions.timestamp_creation DESC");
         $select->limit($k);
         return $this->fetchObjects($select);
     }

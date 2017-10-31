@@ -46,5 +46,27 @@ class Table_InciteItemsSubjects extends Omeka_Db_Table
         return $ids;
     }
 
+    
+    public function findSubjectsStatsByItemId($id) {
+        $db = get_db();
+        $select = new Omeka_Db_Select;
+        $select->from(array('items_subs' => $db->InciteItemsSubjects), array('*', 'rating_num'=>'COUNT(subject_id)', 'rating_sum'=>'SUM(rating)'));
+        $select->where('item_id = ?', $id);
+        $select->group('subject_id');
+        $results = $this->fetchObject($select);
+        return $results;
+        
+    }
+    public function findNewestSubjectRatingsByItemId($id) {
+        $select = $this->getSelect();
+        $select->where('item_id = ?', $id);
+        $select->order('timestamp_creation DESC');
+        $select->group('tagged_trans_id');
+        $select->limit(1);
+        $result = $this->fetchObject($select);
+        return $result;
+        
+    }
+
 
 }
