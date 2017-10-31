@@ -26,12 +26,17 @@ If you just want to take a taste, the minimum you can do is to upload a logo and
 ### Where the crowdsource platform is
 After configuration, your collections on Omeka are ready to be crowdsourced! You should be able to visit the site at "http://your_server.domain/omeka_directory/incite". Give it a try and see how you might want to customize the site with your materials. You can always go back to the Omkea plugin list to configure and customize Incite like the previous step.
 
+### Named Entity Recognition (NER)
+Incite uses [Standford's NER tool](https://nlp.stanford.edu/software/CRF-NER.shtml) automated part of the Tag task. Please download the tool and extract the files to be under "/path/to/Omeka/plugins/Incite/stanford-ner/". Incite has worked well with version 3.5.2 (2015-04-20) and expects to work with other verions (especially new ones) as long as the interface remains the same.
 
 
 ## Troubleshooting
 
 ### Customized logos not shown
 This is usually caused by the server's lacking permission to upload your customized images into corresponding folders. Incite stores all the customized images (logos for your site and sponsors) in "/path/to/Omeka/plugins/Incite/views/shared/images/". Please make sure your server daemon has the permission to write files into those folders.
+
+### Tag task not shown properly
+This is also usually caused by the permission issue. Please make sure your server daemon has the permission to write files into "/path/to/Omeka/plugins/Incite/tmp/" and "/path/to/Omeka/plugins/Incite/tmp/ner" because temporary ouput from the Stanford NER tool is stored there and Incite needs the output to work properly.
 
 
 
