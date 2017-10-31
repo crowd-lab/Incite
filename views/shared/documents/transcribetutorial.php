@@ -201,20 +201,7 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#submit_transcription').on('click', function(e) {
-								/*
-                if ($('#transcription-textarea').val() === "") {
-                    notifyOfErrorInForm('Please provide a transcription of the document');
-                    return;
-                }
-                if ($('#summary-textarea').val() === "") {
-                    notifyOfErrorInForm('Please provide a summary of the document');
-                    return;
-                }
-  							*/
-								window.location = '<?php echo getFullInciteUrl().'/documents/transcribe/'.$this->doc_id; ?>';
-								//location.reload();
-                //$('#transcribe-form').submit();
-                //alert('This will redirect you to assessment document');
+				window.location = '<?php echo getFullInciteUrl().'/documents/transcribe/'.$this->doc_id; ?>';
             });
 						$('#summary-textarea').keyup(function() {
 							var text_length = $('#summary-textarea').val().length;
@@ -259,7 +246,6 @@
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><nav class='popover-navigation'><div class='btn-group'><button class='btn btn-default' data-role='prev'>« Prev</button><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default btn-end' data-role='end'>End Tour</button></nav></div>",
         steps: [
             {
-								//element: '#viewer2',
 								element: "#work-view",
                 title: "Welcome!",
                 content: "It looks like you haven’t transcribed a document before. We have a short tutorial to guide you through the process. <br><br> If you already know this information, press End Tour now, and press the submit button when you want to leave the tutorial.",
@@ -275,7 +261,6 @@
 								}
             },
             {
-							  //element: '#viewer2',
 								element: "#work-view",
                 title: "Welcome! (continued)",
                 content: 'This is a historical document from the Civil War era. Right now this document is just an image, but we want to make this image searchable by transcribing it. This means you will type what the image says.',
@@ -297,8 +282,6 @@
                 placement: "right",
 								onShow: function() {
 									$("#document-header").css("z-index", "3");
-									//$("#viewer2").css("z-index", "3");
-									//$("#work-view").css("z-index", "3");
 									$('html, body').css({overflow: 'auto',height: 'auto'}); //restore scrolling
 								},
                 onShown: function(){
@@ -381,7 +364,6 @@
             },
 						//Summary part
 						{
-                //element: "#summary-textarea",
 								element: "#sum-div",
                 title: "Summarize",
                 content: 'Provide a brief summary of the document.<br>',
@@ -478,15 +460,9 @@
     <style>
 		#work-view {
 				position: relative;
-				/*margin-top: -39px;*/
 				margin-top: -30px;
 			}
-			#viewer2 {
-				/*position: absolute;*/
-			}
-
 			.viewer {
-				/*width: 100%;*/
 				border: 1px solid black;
 				position: relative;
 			}
@@ -494,7 +470,6 @@
 			.wrapper {
 				overflow: hidden;
 				margin-top: 7px;
-				/*width: 70%;*/
 			}
 
 			.document-title {
@@ -557,11 +532,6 @@
 				#document-header {
 					margin-left: 10px;
 				}
-
-        .tour-backdrop,
-    .tour-step-background {
-        /*z-index: 3;*/
-    }
 
     </style>
 </body>

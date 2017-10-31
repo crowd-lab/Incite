@@ -141,8 +141,8 @@ include(dirname(__FILE__).'/../common/header.php');
                 <h3><?php echo $this->title; ?></h3>
 <?php if (count($this->discussions) > 0 ): // else it's an error!?>
                 <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
-                    <b><a href="<?php echo getFullInciteUrl().'/users/view/'.$this->discussions[0]['user_id']; ?>"><?php echo $this->discussions[0]['first_name']; ?></a> commented on <span class="raw-date"><?php echo $this->discussions[0]['time']; ?></span>:</b><br>
-                    <p><?php echo $this->discussions[0]['content']; ?></p>
+                    <b><a href="<?php echo getFullInciteUrl().'/users/view/'.$this->discussions[0]->user_id; ?>"><?php echo $this->discussions[0]->first_name; ?></a> commented on <span class="raw-date"><?php echo $this->discussions[0]->timestamp_creation; ?></span>:</b><br>
+                    <p><?php echo $this->discussions[0]->comment_text; ?></p>
                 </div>
 
 <?php endif; ?>
@@ -160,10 +160,13 @@ include(dirname(__FILE__).'/../common/header.php');
 <?php endforeach; ?>
                     <div class="clearfix"></div>
                 </div>
+<?php if (count($this->discussions) > 1): ?>
+                <h4>Follow-up comments: </h4>
+<?php endif; ?>
 <?php for ($i = 1; $i < count($this->discussions); $i++): ?>
                 <div style="margin: 10px; background-color: #FFFFFF; padding: 10px;">
-                    <b><a href="<?php echo getFullInciteUrl().'/users/view/'.$this->discussions[$i]['user_id']; ?>"><?php echo $this->discussions[$i]['first_name']; ?></a> commented on <span class="raw-date"><?php echo $this->discussions[$i]['time']; ?></span>:</b><br>
-                    <p><?php echo $this->discussions[$i]['content']; ?></p>
+                    <b><a href="<?php echo getFullInciteUrl().'/users/view/'.$this->discussions[$i]->user_id; ?>"><?php echo $this->discussions[$i]->first_name; ?></a> commented on <span class="raw-date"><?php echo $this->discussions[$i]->timestamp_creation; ?></span>:</b><br>
+                    <p><?php echo $this->discussions[$i]->comment_text; ?></p>
                 </div>
 
 <?php endfor; ?>

@@ -5,8 +5,6 @@
             $_SESSION['Incite']['tutorial_tag'] = true;
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
-            $category_object = getAllCategories();
-            $category_id_name_table = getSubcategoryIdAndNames();
         ?>
 
         <script type="text/javascript">
@@ -137,7 +135,7 @@
 
             <div id="legend-container" >
                 <span><b>Legend: </b></span>
-                <?php $all_categories = getAllCategories(); ?>
+                <?php $all_categories = $this->categories; ?>
                 <?php foreach ((array)$all_categories as $category): ?>
                     <em class="<?php echo strtolower($category['name']); ?> legend-item"><?php echo ucfirst(strtolower($category['name'])); ?></em>
                 <?php endforeach; ?>
@@ -154,72 +152,7 @@
     </div>
 </body>
 
-<style>
-	#work-view {
-        position: fixed;
-        margin-top: -30px;
-    }
-	.document-header {
-    width: 100%;
-    margin-left: 20px;
-    }
-	.document-title {
-        font-size: 25px;
-        position: relative;
-        top: -5px;
-        overflow: hidden;
-        display: inline-block;
-        max-width: 90%;
-        height: 32px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-     #document-info-glphicon {
-        color: #337AB7;
-        font-size: 20px;
-        top: -8px;
-    }
-    .popover {
-    	max-width: 100%;
-    }
-    #legend-container {
-        display: inline-block;
-        position: relative;
-        top: 10px;
-        text-align: right;
-        width: 60%;
-    }
-    .viewer {
-        width: 100%;
-        border: 1px solid black;
-        position: relative;
-    }
-    .wrapper {
-        overflow: hidden;
-    }
-    .legend-item {
-        border-radius: 6px;
-        padding: 2px;
-        font-size: 13px;
-        box-sizing: border-box;
-        box-shadow: 2px 2px 2px #888;
-    }
-    #tabs-and-legend-container {
-        overflow: hidden;
-        height: 42px;
-    }
-    .document-display-type-tabs {
-        display: inline-block;
-        vertical-align: top;
-        font-size: 12px;
-        position: relative;
-        top: 5px;
-    }
-    .tour-backdrop,
-.tour-step-background {
-    /*z-index: 3;*/
-}
-</style>
+
             </div>
 
             <div class="col-md-7">
@@ -408,52 +341,14 @@
         <ul id="comments" class="comments-list"></ul>
     </div>
 </body>
-
-<style>
-	.submit-reply {
-        float: right;
-    }
-
-    .reply-box {
-        margin-bottom: 10px;
-        width: 100%;
-        height: 80px;
-    }
-
-    .reply-container {
-        width: 50%;
-        margin-bottom: 30px;
-    }
-
-    .comment-textarea {
-        width: 100%;
-        height: 80px;
-        margin-bottom: 10px;
-    }
-
-    .submit-comment-btn {
-        float: right;
-    }
-
-    .comments-list {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    .reply-comment {
-    	margin-bottom: 15px;
-    }
-
-</style>
             </div>
         </div>
     <!-- End work container -->
 
 <script type="text/javascript">
     //Global variable to store categories/counters
-    var categories = <?php echo json_encode($category_object).";\n"; ?>
-    // alert(categories[2]['subcategory'].length);
-    var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
+    var categories = <?php echo json_encode($this->categories).";\n"; ?>
+    var category_id_to_name_table = <?php echo json_encode($this->category_id_name_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
     function set_tag_id_counter() {
         var max_id = 0;
@@ -478,7 +373,7 @@
             numberDisplayed: 1
         });
         new_entity.find('.category-select').append('<option value="0">&nbsp;</option>');
-        <?php foreach ($category_object as $id => $content) {
+        <?php foreach ($this->categories as $id => $content) {
             echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
         }?>
 
@@ -778,7 +673,6 @@
                 placement: "right",
                 onShow: function() {
                   $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
-                  //$("#work-view").css("z-index", "1101");
                 },
                 onShown: function() {
                   //$('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
@@ -951,7 +845,6 @@
                 },
                 onShown: function() {
                   $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
-                    //$("#document-info-glphicon").popover('hide');
                 }
             },
             {
@@ -1002,6 +895,101 @@
         right: 0;
         cursor: pointer;
         margin-top: -32px;
+    }
+
+	#work-view {
+        position: fixed;
+        margin-top: -30px;
+    }
+	.document-header {
+        width: 100%;
+        margin-left: 20px;
+    }
+	.document-title {
+        font-size: 25px;
+        position: relative;
+        top: -5px;
+        overflow: hidden;
+        display: inline-block;
+        max-width: 90%;
+        height: 32px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+     #document-info-glphicon {
+        color: #337AB7;
+        font-size: 20px;
+        top: -8px;
+     }
+    .popover {
+    	max-width: 100%;
+    }
+    #legend-container {
+        display: inline-block;
+        position: relative;
+        top: 10px;
+        text-align: right;
+        width: 60%;
+    }
+    .viewer {
+        width: 100%;
+        border: 1px solid black;
+        position: relative;
+    }
+    .wrapper {
+        overflow: hidden;
+    }
+    .legend-item {
+        border-radius: 6px;
+        padding: 2px;
+        font-size: 13px;
+        box-sizing: border-box;
+        box-shadow: 2px 2px 2px #888;
+    }
+    #tabs-and-legend-container {
+        overflow: hidden;
+        height: 42px;
+    }
+    .document-display-type-tabs {
+        display: inline-block;
+        vertical-align: top;
+        font-size: 12px;
+        position: relative;
+        top: 5px;
+    }
+
+	.submit-reply {
+        float: right;
+    }
+
+    .reply-box {
+        margin-bottom: 10px;
+        width: 100%;
+        height: 80px;
+    }
+
+    .reply-container {
+        width: 50%;
+        margin-bottom: 30px;
+    }
+
+    .comment-textarea {
+        width: 100%;
+        height: 80px;
+        margin-bottom: 10px;
+    }
+
+    .submit-comment-btn {
+        float: right;
+    }
+
+    .comments-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .reply-comment {
+    	margin-bottom: 15px;
     }
 
 </style>

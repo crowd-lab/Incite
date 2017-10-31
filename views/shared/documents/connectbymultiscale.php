@@ -5,7 +5,6 @@
         include(dirname(__FILE__).'/../common/header.php');
         include(dirname(__FILE__).'/../common/progress_indicator.php');
 
-        $category_object = getAllCategories();
     ?>
 
     <!-- Page Content -->
@@ -42,6 +41,7 @@
                     </p>
 
                     <form id="subject-form" method="post">
+                        <?php if(!empty($this->subjects)): ?>
                         <table class="table">
                             <thead>
                                 <td>Themes</td>
@@ -51,6 +51,11 @@
                                 <td>Very useful</td>
                                 <td>Extremely useful</td>
                             </thead>
+                        <?php else: ?>
+                        <p><strong>Currently, there is no themes to be connected yet. Please contact the project host to add themes</strong></p>
+                        </br>
+                        </br>
+                        <?php endif; ?>
                         <?php foreach ((array)$this->subjects as $subject): ?>
                             <tr>
                                 <td><label><a data-toggle="popover" data-trigger="hover" data-title="Definition" data-content="<?php echo $subject['definition']; ?>"><?php echo $subject['name']; ?></a></label></td>
@@ -72,6 +77,7 @@
                         <input type="hidden" name="connection_type" value="multiscale">
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                         <input id="links" type="hidden" value="" name="link"> </input>
+                        <br>
                         <button type="button" id="submit-continue-connect" class="btn btn-primary">Submit & Continue Connect</button>
                         <button type="button" id="submit-selection-btn" class="btn btn-primary">Submit & Transcribe</button>
                     </form>
@@ -117,11 +123,6 @@
 
         function addButtonAndCheckboxListeners() {
             $("#submit-selection-btn").click(function() {
-              /*  if ($('input[type="checkbox"]:checked').length == 0) {
-                    notifyOfErrorInForm("At least one category must be selected")
-                    return;
-                }
-*/
                 //from progress_indicator.php
                 styleProgressIndicatorForCompletion();
                 $("#links").val('1');
@@ -143,28 +144,7 @@
         }
 
         function styleForEditing() {
-            checkPositiveSubjects();
             addRevisionHistoryListeners();
-        }
-
-        function checkPositiveSubjects() {
-            var hasNoPositiveSubjects = true;
-
-            <?php foreach ((array)$this->newest_n_subjects as $subject): ?>
-                <?php if ($subject['is_positive']): ?>
-                    hasNoPositiveSubjects = false;
-
-                    $(".subject-checkbox").each(function() {
-                        if ($(this).val() === String(<?php echo $subject['subject_id']; ?>)) {
-                            $(this).prop('checked', true);
-                        }
-                    });
-                <?php endif; ?>
-            <?php endforeach; ?>
-
-            if (hasNoPositiveSubjects) {
-                $(".none-checkbox").prop('checked', true);
-            }
         }
 
         function addRevisionHistoryListeners() {

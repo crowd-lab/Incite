@@ -200,9 +200,6 @@ function debug_to_console( $data ) {
     echo $output;
 }
 
-function getPositiveSubjects($subjects) {
-
-}
 function getWorkingGroupID() {
     if (isset($_SESSION['Incite']['USER_DATA']['working_group']['id'])) {
       return $_SESSION['Incite']['USER_DATA']['working_group']['id'];
@@ -210,4 +207,129 @@ function getWorkingGroupID() {
       return 0;
     }
   }
+function loc_to_lat_long($loc_str)
+{
+    $states = array(
+            'Alabama'=>'AL',
+            'Alaska'=>'AK',
+            'Arizona'=>'AZ',
+            'Arkansas'=>'AR',
+            'California'=>'CA',
+            'Colorado'=>'CO',
+            'Connecticut'=>'CT',
+            'Delaware'=>'DE',
+            'Florida'=>'FL',
+            'Georgia'=>'GA',
+            'Hawaii'=>'HI',
+            'Idaho'=>'ID',
+            'Illinois'=>'IL',
+            'Indiana'=>'IN',
+            'Iowa'=>'IA',
+            'Kansas'=>'KS',
+            'Kentucky'=>'KY',
+            'Louisiana'=>'LA',
+            'Maine'=>'ME',
+            'Maryland'=>'MD',
+            'Massachusetts'=>'MA',
+            'Michigan'=>'MI',
+            'Minnesota'=>'MN',
+            'Mississippi'=>'MS',
+            'Missouri'=>'MO',
+            'Montana'=>'MT',
+            'Nebraska'=>'NE',
+            'Nevada'=>'NV',
+            'New Hampshire'=>'NH',
+            'New Jersey'=>'NJ',
+            'New Mexico'=>'NM',
+            'New York'=>'NY',
+            'North Carolina'=>'NC',
+            'North Dakota'=>'ND',
+            'Ohio'=>'OH',
+            'Oklahoma'=>'OK',
+            'Oregon'=>'OR',
+            'Pennsylvania'=>'PA',
+            'Rhode Island'=>'RI',
+            'South Carolina'=>'SC',
+            'South Dakota'=>'SD',
+            'Tennessee'=>'TN',
+            'Texas'=>'TX',
+            'Utah'=>'UT',
+            'Vermont'=>'VT',
+            'Virginia'=>'VA',
+            'Washington'=>'WA',
+            'West Virginia'=>'WV',
+            'Wisconsin'=>'WI',
+            'Wyoming'=>'WY',
+        'District of Columbia' => 'DC');
+    //mostly only use state and city but in case of no such city, we use county instead
+    $elem  = explode("-", $loc_str);
+    $state = "";
+    $city  = "";
+    $county = "";
+    //Parse state and city names
+    if (count($elem) >= 3) { //currently ignore extra info about location. Item 11 is an exception here!
+        $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
+        if (!array_key_exists($state_index, $states)) {
+            //default blacksburg:
+            //return array('lat' => '37.23', 'long' => '-80.4178');
+            return array();
+        }
+        $state  = $states[$state_index];
+        $city   = trim($elem[2]);
+        $county = trim(str_replace('County', '', $elem[1]));
+    } else if (count($elem) == 2) {
+        $state_index = trim(str_replace('State', '', str_replace('state', '', $elem[0])));
+        if (!array_key_exists($state_index, $states)) {
+            return array();
+        } else {
+            $state = $states[$state_index];
+            $city  = strstr(trim($elem[1]), ' Indep.', true);
+            if ($city == "")
+                $city = trim($elem[1]);
+        }
+    } else {
+        //Should send to log and to alert new format of location!
+    }
+    //Convert state and city to lat and long
+    $result = array();
+    $latlong_file = fopen('./plugins/Incite/zip_codes_states.csv', 'r') or die('no zip file!');
+    while (($row = fgetcsv($latlong_file)) != FALSE) {
+        //Just use the last result as our county guess
+        if ($county == $row[5] && $state == $row[4]) {
+            $result['lat']  = $row[1];
+            $result['long'] = $row[2];
+        }
+        //Just use the first result as our final result!
+        if ($city == $row[3] && $state == $row[4]) {
+            $result['lat']  = $row[1];
+            $result['long'] = $row[2];
+            break;
+        }
+    }
+    fclose($latlong_file);
+    return $result;
+}
+function location_to_city_state_str($location_str)
+{
+    $elements = explode('-', $location_str);
+    if (count($elements) < 2)
+        $elements = explode(',', $location_str);
+    if (count($elements) < 2)
+        return $location_str; //I guess this is better than returning unknown places
+    $state = trim(str_replace('State', '', str_replace('state', '', $elements[0])));
+    $city = strstr(trim($elements[count($elements)-1]), ' Indep.', true);
+    if (strlen($city) == 0)
+        $city = trim($elements[count($elements)-1]);
+    return $city.', '.$state;
+}
+function year_of_full_iso_date ($full_iso_date)
+{
+    $elements = explode('-', $full_iso_date);
+    if (count($elements) != 3)
+        return '???';
+    return $elements[0];
+}
+
+
+
 ?>

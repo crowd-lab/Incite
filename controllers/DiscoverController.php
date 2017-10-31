@@ -14,12 +14,20 @@ require_once("DB_Connect.php");
 
 class Incite_DiscoverController extends Omeka_Controller_AbstractActionController
 {
+    /**
+    * Init function of this class
+    *
+    */
     public function init()
     {
         require_once("Incite_Helpers.php");
         require_once("Incite_Search.php");
     }
 
+    /**
+    * Index page 
+    *
+    */
     public function indexAction()
     {
 		if ($this->getRequest()->isGet()) {

@@ -13,13 +13,17 @@ class Incite_IndexController extends Omeka_Controller_AbstractActionController
 {
     public function init()
     {
+      require_once("DB_Connect.php");
+      require_once("Incite_Env_Setting.php");
+      require_once("Incite_Helpers.php");
     }
 
     public function indexAction()
-    {
-		//Nothing to do right now. The view is enough to handle output.
+    { 
+      
     }
-    public function aboutAction(){
+    public function aboutAction()
+    {
         
     }
 

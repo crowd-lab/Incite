@@ -58,20 +58,24 @@
             var span;
             <?php foreach ((array)$this->groups as $group): ?>
               span = $('<span 2class="group-member-link"></span>');
-              span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
-              var remove_id = <?php echo $group['id']; ?> + "_remove";
+              span.append(createGroupLink(<?php echo sanitizeStringInput($group->name); ?>.value, <?php echo $group->id; ?>));
+              var remove_id = <?php echo $group->id; ?> + "_remove";
               var status;
               var op;
-              <?php if ($_SESSION['Incite']['USER_DATA']['id'] == $group['creator']['id']): ?>
+              <?php if ($_SESSION['Incite']['USER_DATA']['id'] == $group->creator_id): ?>
                 status = "Creator";
-                op = $('<span><a id="' + remove_id + '" onClick = "alert_remove(<?php echo $group['id']; ?>)">Delete</a></span>');
+                op = $('<span><a id="' + remove_id + '" onClick = "alert_remove(<?php echo $group->id; ?>)">Delete</a></span>');
+              <?php elseif ($group->group_privilege == -2): ?>
+                status = "Banned";
+                op = $('<span></span>');
+              <?php elseif ($group->group_privilege == -1): ?>
+                status = "Requested";
+                op = $('<span><a id="' + remove_id + '"onClick = "alert_quit(<?php echo $group->id; ?>)">Withdraw</a></span>');
               <?php else: ?>
                 status = "Member";
-                op = $('<span><a id="' + remove_id + '"onClick = "alert_quit(<?php echo $group['id']; ?>)">Quit</a></span>');
-              <?php endif ?>
+                op = $('<span><a id="' + remove_id + '"onClick = "alert_quit(<?php echo $group->id; ?>)">Quit</a></span>');
+              <?php endif; ?>
               
-              //$("#manage-group-group-table").append("<tr><td>" + "<?php echo $group['name']; ?>" + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
-              //$("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>"+ status + "</td><td>" + "<a onClick = 'alert_remove()'><i class='glyphicon glyphicon-trash' id =" + remove_id + "></i></a></td></tr>");
               $("#manage-group-group-table").append("<tr><td>" + span.html() + "</td><td>"+ status + "</td><td>" + op.html() + "</td></tr>");
               i++;
             <?php endforeach; ?>
@@ -80,7 +84,7 @@
         function removeUserFromGroupAjaxRequest(groupId) {
             var request = $.ajax({
                 type: "POST",
-                url: "<?php echo getFullInciteUrl().'/ajax/removememberfromgroup'; ?>",
+                url: "<?php echo getFullInciteUrl().'/ajax/removeuserfromgroup'; ?>",
                 data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
                 success: function (response) {
                     console.log(response);
@@ -197,6 +201,7 @@
             var span;
 
             <?php foreach ((array) $this->groups as $group): ?>
+            <?php if ($group->group_privilege >= 0): ?>
 
                 if ($("#groups-list span").length === 0) {
                     span = $('<span class="group-member-link"></span>');
@@ -204,9 +209,10 @@
                     span = $('<span class="group-member-link">, </span>');
                 }
 
-                span.append(createGroupLink(<?php echo sanitizeStringInput($group['name']); ?>.value, <?php echo $group['id']; ?>));
+                span.append(createGroupLink(<?php echo sanitizeStringInput($group->name); ?>.value, <?php echo $group->id; ?>));
 
                 $('#groups-list').append(span);
+            <?php endif; ?>
             <?php endforeach; ?>
         };
 
@@ -232,11 +238,11 @@
         function populateActivityFeed() {
             <?php foreach ((array)$this->activities as $activity): ?>
                 generateAndAppendRow($("#userprofile-activity-feed-table"),
-                    "<?php echo $activity['activity_type']; ?>",
-                    <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ?
-                        $activity['discussion_title'] : $activity['document_title']); ?>.value,
-                    <?php echo (($activity['activity_type'] === 'Discuss') ?
-                        $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>"
+                    "<?php echo $activity->activity_type; ?>",
+                    <?php echo sanitizeStringInput(($activity->activity_type === 'Discuss') ?
+                        $activity->item_title : $activity->item_title); ?>.value,
+                    <?php echo (($activity->activity_type === 'Discuss') ?
+                        $activity->discussion_id : $activity->item_id); ?>, "<?php echo $activity->timestamp_creation; ?>"
                 );
             <?php endforeach; ?>
         };
@@ -315,6 +321,7 @@
                 url: "<?php echo getFullInciteUrl().'/ajax/creategroup'; ?>",
                 data: {"groupName": $('#group-name-input').val(), "groupType": 0},
                 success: function (response) {
+                    console.log(response);
                     var groupId = response.trim();
                     redirectToGroupPage(groupId);
                 }
@@ -358,7 +365,7 @@
             var emptyRow = $('<tr>' +
                     '<td><a class="group-name-data" href="<?php echo getFullInciteUrl(); ?>' +
                     '/groups/view/' + groupId + '">' + groupName + '</a></td>' +
-                    '<td><button class="btn btn-primary request-join-btn">Request!</button></td>' +
+                    '<td><button class="btn btn-primary request-join-btn">Request</button></td>' +
                 '</tr>');
 
             var button = emptyRow.find('button');
@@ -389,7 +396,7 @@
                         button.click(function() {
                             requestToJoinGroupAjaxRequest(groupId);
                             button.prop('disabled', true);
-                            button.html("Join request pending..");
+                            button.html("Request");
                         });
                     }
                 }
@@ -399,7 +406,7 @@
         function requestToJoinGroupAjaxRequest(groupId) {
             var request = $.ajax({
                 type: "POST",
-                url: "<?php echo getFullInciteUrl().'/ajax/addgroupmember'; ?>",
+                url: "<?php echo getFullInciteUrl().'/ajax/requestgroupmembership'; ?>",
                 data: {"groupId": groupId, "privilege": -1},
                 success: function (response) {
                     console.log(response);
@@ -435,9 +442,9 @@
             var Discuss = 0;
 
             <?php foreach ((array)$this->activities as $activity): ?>
-                if (parseInt(groupId) === <?php echo $activity['working_group_id']; ?>) {
-                    <?php echo $activity['activity_type']; ?>++;
-                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>");
+                if (parseInt(groupId) === <?php echo $activity->working_group_id; ?>) {
+                    <?php echo $activity->activity_type; ?>
+                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity->activity_type; ?>", <?php echo sanitizeStringInput(($activity->activity_type === 'Discuss') ? $activity->discussion_title : $activity->item_title); ?>.value, <?php echo (($activity->activity_type === 'Discuss') ? $activity->discussion_id : $activity->item_id); ?>, "<?php echo $activity->timestamp_creation; ?>");
                 }
             <?php endforeach; ?>
 

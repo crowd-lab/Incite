@@ -21,7 +21,7 @@
 	*/
 	function redirectToProfilePage(){
 		$('#cancel-btn').click(function(event){
-			var url = "<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>";
+			var url = "<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']->id; ?>";
 			window.location.href = url;
 		});
 	};
@@ -102,7 +102,7 @@
 </head>
 
 <body>
-	<?php if($this->user['id'] != $_SESSION['Incite']['USER_DATA']['id']){
+	<?php if(isset($this->user) && $this->user->id != $_SESSION['Incite']['USER_DATA']->id){
 		echo 'You are not allowed access this page.';
 	} else { ?>
 
@@ -110,9 +110,9 @@
 
 			<div class="contents">
 				<?php
-				$email = $this->user['email'];
-				$first = $this->user['first_name'];
-				$last = $this->user['last_name'];
+				$email = $this->user->email;
+				$first = $this->user->first_name;
+				$last = $this->user->last_name;
 				?>
 
 				<h2>Edit Your Profile</h2><br>
@@ -122,11 +122,11 @@
 						<input type="text" class="form-control" id="editNewUsername" name="email" value="<?php echo $email ?>" disabled>
 					</div>
 					<div class="form-group">
-						<label for="message-text" class="control-label">Password:</label>
+						<label for="message-text" class="control-label">New Password:</label>
 						<input type="password" class="form-control" id="editNewPassword" name="password" placeholder="Enter your password to confirm any changes">
 					</div>
 					<div class="form-group">
-						<label for="message-text" class="control-label">Confirm Password:</label>
+						<label for="message-text" class="control-label">Confirm New Password:</label>
 						<input type="password" class="form-control" id="editNewConfirmPassword" name="confirmPassword" placeholder="Enter the password again for verification">
 					</div>
 					<div class="form-group">

@@ -91,7 +91,7 @@
             success: function (response) {
                 //response will be true or false depending of if group is set or not
 
-                if (response === "true") {
+                if (response.trim() === "true") {
                     notifyOfSuccessfulActionWithTimeout("Working group successfully changed/unset!");
 
                     //reloading is easiest way to get new instructions for group
@@ -138,17 +138,20 @@
             <option  data-name="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?>" value="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['id']; ?>" class="option-for-current-working-group" selected ><?php echo (strlen($_SESSION['Incite']['USER_DATA']['working_group']['name']) > 23) ? substr($_SESSION['Incite']['USER_DATA']['working_group']['name'],0,20).'...' : $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?></option>
         <?php endif; ?>
         -->
-        <?php foreach ((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group): ?>
+        <?php
+        $groupsUsersTable = $db->getTable('InciteGroupsUsers');
+        ?>
+        <?php foreach ((array)$groupsUsersTable->findGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group): ?>
             <!-- IF THE GROUP IS SPECIFIED -->
-            <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] > 0): ?>
-                <?php if ($group['id'] != $_SESSION['Incite']['USER_DATA']['working_group']['id']): ?>
-                    <option  data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 23) ? substr($group['name'],0,20).'...' : $group['name']; ?></option>
+            <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] > 0 && $group->group_privilege > 0): ?>
+                <?php if ($group->id != $_SESSION['Incite']['USER_DATA']['working_group']['id']): ?>
+                    <option  data-name="<?php echo $group->name; ?>" value="<?php echo $group->id; ?>"><?php echo (strlen($group->name) > 23) ? substr($group->name,0,20).'...' : $group->name; ?></option>
                 <?php else: ?>
                     <option  data-name="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?>" value="<?php echo $_SESSION['Incite']['USER_DATA']['working_group']['id']; ?>" class="option-for-current-working-group" selected ><?php echo (strlen($_SESSION['Incite']['USER_DATA']['working_group']['name']) > 23) ? substr($_SESSION['Incite']['USER_DATA']['working_group']['name'],0,20).'...' : $_SESSION['Incite']['USER_DATA']['working_group']['name']; ?></option>
                 <?php endif; ?>
             <!-- IF THE GROUP IS NOT SPECIFIED -->
-            <?php else: ?>
-                <option  data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 23) ? substr($group['name'],0,20).'...' : $group['name']; ?></option>
+            <?php elseif ($group->group_privilege >= 0): ?>
+                <option  data-name="<?php echo $group->name; ?>" value="<?php echo $group->id; ?>"><?php echo (strlen($group->name) > 23) ? substr($group->name,0,20).'...' : $group->name; ?></option>
             <?php endif; ?>
         <?php endforeach; ?>
         <?php if ($_SESSION['Incite']['USER_DATA']['working_group']['id'] > 0): ?>

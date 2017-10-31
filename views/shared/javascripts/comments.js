@@ -11,22 +11,27 @@ function getNewComments(docId)
         type: "POST",
         url: fullInciteUrl+"/ajax/getcommentsdoc",
         data: {documentId: documentId},
+        error: function (response) {
+            console.log('getcomment failed');
+        },
         success: function (data)
         {
-            var commentsArray = JSON.parse(data);
-
-            for (var i = 0; i < commentsArray.length; i++)
-            {
-                var databaseDate = new Date(commentsArray[i]['question_timestamp']);
-                var format = compareDates(databaseDate);
-                var commentsArrayObject = {commentsArray};
-                var isSignedIn = $.ajax({
-                    type: 'POST',
-                    url: fullInciteUrl+"/ajax/issignedin",
-                    async: false,
-                    data: {loopVar: i, commentArray: commentsArray, format: format},
-                    success: appendNewComment
-                });
+            var discussionsArray = JSON.parse(data);
+            var isSignedIn = false;
+            $.ajax({
+                type: 'get',
+                url: fullInciteUrl+"/ajax/issignedin",
+                async: false,
+                success: function (response) {
+                    if (response.trim() == 'true') {
+                        isSignedIn = true;
+                    } else {
+                        isSignedIn = false;
+                    }
+                }
+            });
+            for (var i = 0; i < discussionsArray.length; i++) {
+                appendNewDiscussion(discussionsArray[i], isSignedIn);
             }
         }
     });
@@ -44,20 +49,12 @@ function commentTypeToTypeName(type)
     else
         return "Unknown";
 }
-function appendNewComment(dataArray)
+function appendNewDiscussion(discussion, isSignedIn)
 {
-    var parsedData = JSON.parse(dataArray);
-    var commentsArray = parsedData[2];
-    var format = parsedData[3];
-    var i = parseInt(parsedData[1]);
-    var boolean = parsedData[0];
+        var commentType = discussion['discussion_type'];
+        var databaseDate = new Date(discussion['discussion_timestamp']);
+        var format = compareDates(databaseDate);
 
-    var commentsArrayReplies = commentsArray[i]['question_replies'];
-    var commentsArrayRepliesTimestamp = commentsArray[i]['question_replies_timestamp'];
-    var commentsArrayRepliesUserData = commentsArray[i]['question_replies_user_data'];
-    var commentType = commentsArray[i]['question_type'];
-    if (boolean)
-    {
         var dynamicLi = document.createElement('li');
         dynamicLi.className = "cmmnt";
         var dynamicDiv = document.createElement('div');
@@ -73,52 +70,27 @@ function appendNewComment(dataArray)
             label_color = 'view-color';
         else
             label_color = 'gray';
-        dynamicDiv.innerHTML = '<header><a href="'+fullInciteUrl+'/users/view/'+commentsArray[i]['user_info'][5]+'" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span class="comment-type label label-primary label-pill '+label_color+'" data-commenttype="'+commentType+'">'+commentTypeToTypeName(commentType)+'</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
+        dynamicDiv.innerHTML = '<header><a href="'+fullInciteUrl+'/users/view/'+discussion['user_info'][5]+'" class="userlink">' + discussion['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span> while <span class="comment-type label label-primary label-pill '+label_color+'" data-commenttype="'+discussion['discussion_type']+'">'+commentTypeToTypeName(discussion['discussion_type'])+'</span></header><p>' + discussion['discussion_text'] + '</p>';
 
-        if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
+        var string = ""
+        for (var j = 0; j < discussion['discussion_comments'].length; j++)
         {
-            for (var j = 0; j < commentsArrayReplies.length; j++)
+            string += "<ul style='list-style: none;'><li><header><a href='"+fullInciteUrl+"/users/view/"+discussion['discussion_comment_users'][j][5]+"' class='userlink'>";
+            var databaseDate = new Date(discussion['discussion_comment_timestamps'][j]);
+            string += discussion['discussion_comment_users'][j][0] + '</a> - <span class="pubdate">commented ' + compareDates(databaseDate) + '</span></header><p>' + discussion['discussion_comments'][j] + "</p></li>";
+            if (j != discussion['discussion_comments'].length - 1)
             {
-                var string = "<ul style='list-style: none;'><li><header><a href='"+fullInciteUrl+"/users/view/"+commentsArrayRepliesUserData[j][5]+"' class='userlink'>";
-                var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
-                string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">commented ' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
-                if (j != commentsArrayReplies.length - 1)
-                {
-                    string += "<li><header><a href='javascript:void(0);' class='userlink'>";
-                }
+                string += "<li><header><a href='javascript:void(0);' class='userlink'>";
             }
             string += "</ul>"
-            dynamicDiv.innerHTML += (string + '<button type="button" name="reply" class="btn btn-default reply-comment" id="reply' + i + '" value="' + commentsArray[i]['question_id'] + '">Reply</button>');
-        } else {
-            dynamicDiv.innerHTML += '<button type="button" name="reply" class="btn btn-default reply-comment" id="reply' + i + '" value="' + commentsArray[i]['question_id'] + '">Reply</button>';
         }
+        if (isSignedIn) {
+            string += '<button type="button" name="reply" class="btn btn-default reply-comment" id="reply'+discussion['discussion_id']+'" value="' + discussion['discussion_id'] + '">Reply</button>';
+        }
+        dynamicDiv.innerHTML += (string);
 
         dynamicLi.appendChild(dynamicDiv);
         document.getElementById("comments").appendChild(dynamicLi);
-    } else {
-        var dynamicLi = document.createElement('li');
-        dynamicLi.className = "cmmnt";
-        var dynamicDiv = document.createElement('div');
-        dynamicDiv.className = "cmmnt-content";
-        dynamicDiv.innerHTML = '<header><a href="javascript:void(0);" class="userlink">' + commentsArray[i]['user_info'][0] + '</a> - <span class="pubdate">' + format + '</span></header><p>' + commentsArray[i]['question_text'] + '</p>';
-        if (commentsArrayReplies != null && commentsArrayReplies.length > 0)
-        {
-            var string = "<ul style='list-style: outside none none;'><li><header><a href='javascript:void(0);' class='userlink'>";
-            for (var j = 0; j < commentsArrayReplies.length; j++)
-            {
-                var databaseDate = new Date(commentsArrayRepliesTimestamp[j]);
-                string += commentsArrayRepliesUserData[j][0] + '</a> - <span class="pubdate">commented ' + compareDates(databaseDate) + '</span></header><p>' + commentsArrayReplies[j] + "</p></li>";
-                if (j != commentsArrayReplies.length - 1)
-                {
-                    string += "<li><header><a href='javascript:void(0);' class='userlink'>";
-                }
-            }
-            string += "</ul>"
-            dynamicDiv.innerHTML += string;
-        }
-        dynamicLi.appendChild(dynamicDiv);
-        document.getElementById("comments").appendChild(dynamicLi);
-    }
 }
 function compareDates(databaseDate)
 {
@@ -210,6 +182,10 @@ function submitComment(documentId)
         type: "POST",
         url: fullInciteUrl+"/ajax/postcomment",
         data: {documentId: documentId, commentText: commentText, type: comment_type},
+        error: function (response) {
+            console.log('postcomment failed');
+            console.log(response);
+        },
         success: function ()
         {
             $("#comments").empty();

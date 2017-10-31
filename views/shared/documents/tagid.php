@@ -5,9 +5,6 @@
             include(dirname(__FILE__) . '/../common/header.php');
             include(dirname(__FILE__) . '/../common/progress_indicator.php');
 
-            $category_object = getAllCategories();
-            $category_id_name_table = getSubcategoryIdAndNames();
-            $category_name_id_table = getCategoryNameAndId();
         ?>
 
         <script type="text/javascript">
@@ -217,10 +214,9 @@
 
 <script type="text/javascript">
     //Global variable to store categories/counters
-    var categories = <?php echo json_encode($category_object).";\n"; ?>
-    // alert(categories[2]['subcategory'].length);
-    var category_id_to_name_table = <?php echo json_encode($category_id_name_table).";\n"; ?>
-    var category_name_to_id_table = <?php echo json_encode($category_name_id_table).";\n"; ?>
+    var categories = <?php echo json_encode($this->categories).";\n"; ?>
+    var category_id_to_name_table = <?php echo json_encode($this->category_id_name_table).";\n"; ?>
+    var category_name_to_id_table = <?php echo json_encode($this->category_name_id_table).";\n"; ?>
     var tagid_id_counter = <?php echo (isset($this->tag_id_counter) ? $this->tag_id_counter : "0"); ?>;
 
     function set_tag_id_counter() {
@@ -248,7 +244,7 @@
         });
         new_entity.find('.category-select').append('<option value="0">&nbsp;</option>');
 
-        <?php foreach ($category_object as $id => $content) {
+        <?php foreach ($this->categories as $id => $content) {
             echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
         }?>
 
@@ -274,7 +270,7 @@
                 numberDisplayed: 1
             });
 
-            <?php foreach ($category_object as $id => $content) {
+            <?php foreach ($this->categories as $id => $content) {
                 echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
                 }
             ?>
@@ -319,8 +315,8 @@
 
     $(document).ready(function () {
         $("#comment-container").click(function(){
-          createQuestionArray();
-          console.log(questions_array);
+          //createQuestionArray();
+          //console.log(questions_array);
         });
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
@@ -569,27 +565,21 @@
       var date = $('#date-detail').val();
       if (date == "")
         date = "You did not answer this question";
-      //questions_array.push({'1': date});
       var location = $('#place-detail').val();
       if (location == "")
         location = "You did not answer this question";
-      //questions_array.push({'2': location});
       var pointed_location = $('#location-detail').val();
       if (pointed_location == "")
         pointed_location = "You did not answer this question";
-      //questions_array.push({'3': pointed_location});
       var period = $('#period-selector').val();
       if (period == "What period?")
         period = "You did not answer this question";
-      //questions_array.push({'4': period});
       var social = $('#social_selector').val();
       if (social == "What social group?")
         social = "You did not answer this question";
-      //questions_array.push({'5': social});
       var gender = $('#gender-selector').val();
       if (gender == "What gender?")
         gender = "You did not answer this question";
-      //questions_array.push({'6': gender});
       questions_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':social, '6': gender};
     }
 

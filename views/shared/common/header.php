@@ -3,7 +3,6 @@ require_once(dirname(__FILE__) . '/../../../controllers/Incite_Helpers.php');
 queue_css_file(array('bootstrap', 'style', 'bootstrap.min', 'jquery.iviewer', 'bootstrap-multiselect', 'leaflet', 'jquery.jqtimeline', 'daterangepicker', 'notifIt', 'image-picker', 'bootstrap-dialog.min', 'task_styles', 'bootstrap-tour.min'));
 $db = get_db();
 
-require_once(dirname(__FILE__) . '/../../../controllers/Incite_Users_Table.php');
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Env_Setting.php');
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Session.php');
 require_once(dirname(__FILE__) . '/../../../controllers/Incite_Search.php');
@@ -43,7 +42,14 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
 
     <?php
     function loadWorkingGroupInstructions() {
-        $groupsWhosInstructionsHaveBeenSeenByUser = getGroupInstructionsSeenByUserId($_SESSION['Incite']['USER_DATA']['id']);
+        $db = get_db();
+        $groupsUsersTable = $db->getTable('InciteGroupsUsers');
+        $userId = $_SESSION['Incite']['USER_DATA']['id'];
+        $groupsWhoseInstructionsHaveBeenSeenByUser = $groupsUsersTable->findSeenGroupInstructionsByUserId($userId);
+        $groupIdsWhoseInstructionsHaveBeenSeenByUser = array();
+        foreach ((array) $groupsWhoseInstructionsHaveBeenSeenByUser as $group) {
+            $groupIdsWhoseInstructionsHaveBeenSeenByUser[] = $group->group_id;
+        }
 
         $workingGroupId = 0;
         $workingGroupHasInstructions = false;
@@ -51,14 +57,14 @@ $previous_search_results = getSearchQuerySpecifiedViaGetAsArray();
             $workingGroupId = $_SESSION['Incite']['USER_DATA']['working_group']['id'];
         }
 
-        foreach((array)getGroupsByUserId($_SESSION['Incite']['USER_DATA']['id']) as $group) {
-            if ($group['instructions'] != '' && $workingGroupId == $group['id']) {
+        foreach((array)$groupsUsersTable->findGroupsByUserId($userId) as $group) {
+            if ($group->instructions != '' && $workingGroupId == $group->id) {
                 $workingGroupHasInstructions = true;
 
-                if (in_array($group['id'], $groupsWhosInstructionsHaveBeenSeenByUser)) {
-                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
+                if (in_array($group->id, $groupIdsWhoseInstructionsHaveBeenSeenByUser)) {
+                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group->name) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, false);';
                 } else {
-                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group['name']) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
+                    echo 'addGroupInstructionSection(' . sanitizeStringInput($group->name) . '.value, ' . sanitizeStringInput($group['instructions']) . '.value, true);';
                     echo 'changeWorkingGroupInfoIcon(true);';
                 }
             }
@@ -473,16 +479,7 @@ if (isset($_GET['time'])) {
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-80290674-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
 
     <script>
         var msgbox;
@@ -492,6 +489,12 @@ if (isset($_GET['time'])) {
             msgbox.close();
         }
 $(document).ready(function () {
+    var active = "<?php echo get_option('active'); ?>";
+    if (active == "no")
+        $("#aboutlist").empty();
+    else if (active == "yes") {
+        $("#aboutlist").append('<a id="activeAbout" class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>');
+    }
     var url = window.location.href;
     var id = <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>;
     var n = url.lastIndexOf("/") + 1;
@@ -759,11 +762,11 @@ function year_of_full_iso_date(date) {
             <span class = "icon-bar"></span>
 
         </button>
-        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
+        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_logo.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
     </div> -->
 
     <div class="navbar-header">
-        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
+        <a href="<?php echo getFullInciteUrl(); ?>" class="navbar-left" style=""><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/customized_logo.png" style="max-height: 65px; margin-right: 5px; margin-top: 2px;"></a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -773,11 +776,10 @@ function year_of_full_iso_date(date) {
             <!--
             <li class="">
             <a style="font-size: 125%; color: #8BB7C8;">Browse</a></li>-->
-            <li >
-                <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
-            </li>
-            <li >
-                <a class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/teachers" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">Teaching</a>
+            <li id="aboutlist">
+                <!--
+                <a id="activeAbout" class="navbar-links" href="<?php echo getFullInciteUrl(); ?>/help/about" style="font-size: 110%; padding-left: 10px; padding-right: 10px; padding-top: 20px;">About</a>
+                -->
             </li>
             <li>
                 <a href="<?php echo getFullInciteUrl();?>/documents/contribute" style="font-size: 150%; padding-left: 10px; padding-right: 10px;"><button style="margin-top: -3px;" class="btn btn-danger">Contribute</button></a>
@@ -844,7 +846,7 @@ function year_of_full_iso_date(date) {
             </button>
             <ul class="dropdown-menu" id="user-dropdown-menu">
                 <?php if (isset($_SESSION['Incite']['USER_DATA']['id'])): ?>
-                    <li><a href="<?php echo getFullInciteUrl() . '/users/view/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
+                    <li><a href="<?php echo getFullInciteUrl() . '/users/edit/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Profile</a></li>
                     <li><a href="<?php echo getFullInciteUrl() . '/users/group/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Group</a></li>
                     <li><a href="<?php echo getFullInciteUrl() . '/users/activity/' . $_SESSION['Incite']['USER_DATA']['id']; ?>">Activity</a></li>
                 <?php else: ?>

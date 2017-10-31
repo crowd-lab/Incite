@@ -15,7 +15,7 @@
                     unset($_SESSION['incite']['message']);
                 }
 
-                if ($this->user['id'] != $_SESSION['Incite']['USER_DATA']['id']) {
+                if (isset($this->user) &&$this->user->id != $_SESSION['Incite']['USER_DATA']->id) {
                     echo "$('#group-creation-and-join-container').hide();";
                 }
             ?>
@@ -123,11 +123,9 @@
         function populateActivityFeed() {
             <?php foreach ((array)$this->activities as $activity): ?>
                 generateAndAppendRow($("#userprofile-activity-feed-table"),
-                    "<?php echo $activity['activity_type']; ?>",
-                    <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ?
-                        $activity['discussion_title'] : $activity['document_title']); ?>.value,
-                    <?php echo (($activity['activity_type'] === 'Discuss') ?
-                        $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>"
+                    "<?php echo $activity->activity_type; ?>",
+                    <?php echo sanitizeStringInput($activity->item_title); ?>.value,
+                    <?php echo $activity->item_id; ?>, "<?php echo $activity->timestamp_creation; ?>"
                 );
             <?php endforeach; ?>
         };
@@ -254,7 +252,7 @@
             var request = $.ajax({
                 type: "POST",
                 url: "<?php echo getFullInciteUrl().'/ajax/getgroupmemberprivilege'; ?>",
-                data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']['id'] ?>},
+                data: {"groupId": groupId, "userId": <?php echo $_SESSION['Incite']['USER_DATA']->id ?>},
                 success: function (response) {
                     var privilege = JSON.parse(response);
 
@@ -317,9 +315,9 @@
             var Discuss = 0;
 
             <?php foreach ((array)$this->activities as $activity): ?>
-                if (parseInt(groupId) === <?php echo $activity['working_group_id']; ?>) {
-                    <?php echo $activity['activity_type']; ?>++;
-                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity['activity_type']; ?>", <?php echo sanitizeStringInput(($activity['activity_type'] === 'Discuss') ? $activity['discussion_title'] : $activity['document_title']); ?>.value, <?php echo (($activity['activity_type'] === 'Discuss') ? $activity['discussion_id'] : $activity['item_id']); ?>, "<?php echo $activity['time']; ?>");
+                if (parseInt(groupId) === <?php echo $activity->working_group_id; ?>) {
+                    <?php echo $activity->activity_type; ?>++;
+                    generateAndAppendRow($("#userprofile-activity-feed-table"), "<?php echo $activity->activity_type; ?>", <?php echo sanitizeStringInput($activity->item_title); ?>.value, <?php echo ($activity->item_id); ?>, "<?php echo $activity->timestamp_creation; ?>");
                 }
             <?php endforeach; ?>
 
@@ -348,7 +346,7 @@
 
         function redirectToProfileEditPage(){
             $('#edit-profile-btn').click(function(event){
-                var url = "<?php echo getFullInciteUrl() . '/users/edit/' . $_SESSION['Incite']['USER_DATA']['id']; ?>";
+                var url = "<?php echo getFullInciteUrl() . '/users/edit/' . $_SESSION['Incite']['USER_DATA']->id; ?>";
                 window.location.href = url;
             });
         };
@@ -566,7 +564,7 @@
                 <option id="default-group-selector-option" value="All groups" selected>All Groups</option>
                 
                 <?php foreach ((array)$this->groups as $group): ?>
-                    <option data-name="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"><?php echo (strlen($group['name']) > 30) ? substr($group['name'],0,27).'...' : $group['name']; ?></option>
+                    <option data-name="<?php echo $group->name; ?>" value="<?php echo $group->id; ?>"><?php echo (strlen($group->name) > 30) ? substr($group->name,0,27).'...' : $group->name; ?></option>
                 <?php endforeach; ?>
             </select>
             <table class="table" id="userprofile-activity-feed-table">
