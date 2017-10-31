@@ -157,7 +157,7 @@
 
             <div class="col-md-7">
                 <div id="tagging-container">
-                    <p class="header-step"><i>Step 1 of 3: Verify and expand existing tags</i></p>
+                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
@@ -228,7 +228,7 @@
                             <th>Not a tag?</th></tr>
                     </table>
                     <br>
-                    <p class="step"><i>Step 2 of 3: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                    <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
                     <table class="table" id="user-entity-table">
                         <tr>
                             <th>
@@ -278,31 +278,6 @@
                             </th>
                             <th>Not a tag?</th></tr>
                         <tr>
-                    </table>
-                    <p class="step"><i>Step 3 of 3: Based on the document on the left and its metadata, please answer the following questions.</i></p>
-                    <table class="table" id = "choice-table">
-                        <tr><th>Questions</th><th>Answers</th></tr>
-                        <tr><td>When was this document produced?</td><td><input type="text" id = "date-detail" placeholder="YYYY-MM-DD"></td></tr>
-                        <tr><td>Where was this document produced?</td><td><input type="text" id = "place-detail" placeholder="location"></td></tr>
-                        <tr><td>Based on your reading, what location does this document tell you most about?</td><td><input type="text" id = "location-detail" placeholder="City, State, or region"></td></tr>
-                        <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
-                            <td>
-                              <select id = "race-selector" class="form-control">
-                                  <option>What social group?</option>
-                                  <option>White Americans</option>
-                                  <option>African Americans</option>
-                                  <option>Foreigners</option>
-                                  <option>Abolitionists</option>
-                                  <option>Not specified</option>
-                              </select>
-                                <select id = "gender-selector" class="form-control">
-                                    <option>What gender?</option>
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                    <option>Not specified</option>
-                                </select>
-                            </td>
-                        </tr>
                     </table>
                     <button type="submit" class="btn btn-primary pull-right" id="confirm-button">Submit</button>
                     <form id="entity-form" method="post">
@@ -398,9 +373,8 @@
                 disableIfEmpty: true,
                 numberDisplayed: 1
             });
-            <?php foreach ($category_object as $id => $content) {
+            <?php foreach ($this->categories as $id => $content) {
                 echo "new_entity.find('.category-select').append(\"<option value='".$id."'>".$content["name"]."</option>\");";
-                //echo "new_entity.find('.category-select').append(\"<option value='".$category_object[$i]["id"]."'>".$category_object[$i]["name"]."</option>\");";
             }
             ?>
             new_entity.find('.category-select').multiselect({
@@ -753,86 +727,6 @@
                   }
                 });
               }
-            },
-            {
-                element: '#choice-table',
-                title: "Fill in the document context",
-                content: "Fill in information about the document’s context and the author’s perspective. ",
-                placement: "top",
-                onShow: function() {
-                  $('html, body').css({overflow: 'auto',height: 'auto'});//restore scrolling
-                },
-                onShown: function() {
-                  $('html, body').css({overflow: 'hidden',height: '150%'});//disable scrolling
-                  $("#work-view").css("background", "white");
-                  $("#work-view").css("z-index", "1101");
-                  var i = 0;
-                  $('#date-detail').on("input", function() {
-                      if (this.value == '1860-08-06') {
-                          i++;
-                      }
-                      if(i == 5) {
-                        choice_times++;
-    										if(choice_times == 1) {
-    											$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    											$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    										}
-    										setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                      }
-                    });
-                    $('#place-detail').on("input", function() {
-                        if (this.value == 'Germany-Berlin state-Berlin') {
-                            i++;
-                        }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                    $('#location-detail').change(function() {
-                      if (this.value == 'Prussia' || this.value == 'Berlin') {
-                          i++;
-                      }
-                      if(i == 5) {
-                        choice_times++;
-                        if(choice_times == 1) {
-                          $('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-                          $("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-                        }
-                        setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                      }
-                    });
-                    $('#race-selector').change(function() {
-										    if ($(this).val() == 'Not specified') {
-												    i++;
-										    }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                    $('#gender-selector').change(function() {
-										    if ($(this).val() == 'Not specified') {
-												    i++;
-										    }
-                        if(i == 5) {
-                          choice_times++;
-    											if(choice_times == 1) {
-    												$('<img id = "pic6" height = "100" width = "100" >').appendTo($("#step-7 .popover-content"));
-    												$("#pic6").attr('src', "<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/check.gif?"+ Math.random());
-    											}
-    											setTimeout(function(){$( "#pic6" ).remove();}, 3000);
-                        }
-                    });
-                }
             },
             {
                 element: '#comment-container',

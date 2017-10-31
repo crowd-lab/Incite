@@ -164,35 +164,18 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         } else {
             $_SESSION['incite']['message'] = 'Transcription successful! Tag this document now, or find another document to transcribe by clicking <a href="'.getFullInciteUrl().'/documents/transcribe">here</a>.';
         }
-        $itemID = $this->_getParam('id');
-        $ready_tag = 1;
-        $ready_connect = 0;
-        $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("SELECT `id` FROM `omeka_incite_available_list` WHERE `item_id` = ?");
-        $stmt->bind_param("i", $itemID );
-        $stmt->bind_result($id);
-        $stmt->execute();
-        $stmt->fetch();
-        $stmt->close();
-        $db->close();
-        if ($id != null) //the transcription is updated
-        {
-            $db = DB_Connect::connectDB();
-            $stmt1 = $db->prepare("UPDATE `omeka_incite_available_list` SET `ready_tag`=?,`ready_connect`=? WHERE `item_id` = $itemID");
-            $stmt1->bind_param("ii", $ready_tag, $ready_connect);
-            $stmt1->execute();
-            $stmt1->close();
-            $db->close();
+        $itemId = $this->_getParam('id');
+        $ready_to_tag = 1;
+        $ready_to_connect = 0;
+        
+        $status = $this->_helper->db->getTable('InciteItemTaskStatus')->findItemTaskStatusByItemId($itemId);
+        if (!isset($status)) { // the transcription is newly added
+            $status = new InciteItemTaskStatus;
+            $status->item_id = $itemId;
         }
-        else // the transcription is newly added
-        {
-            $db = DB_Connect::connectDB();
-            $stmt2 = $db->prepare("INSERT INTO omeka_incite_available_list VALUES (NULL, ?, ?, ?)");
-            $stmt2->bind_param("iii", $itemID, $ready_tag, $ready_connect);
-            $stmt2->execute();
-            $stmt2->close();
-            $db->close();
-        }
+        $status->ready_to_tag = $ready_to_tag;
+        $status->ready_to_connect = $ready_to_connect;
+        $status->save();
 
         if ($_POST['link'] == 1) {
             if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
@@ -314,6 +297,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 chdir($oldwd);
                 $this->view->entities = $ner_entity_table;
                 $this->view->transcription = $transformed_transcription;
+                $this->view->categories = $categories;
                 $this->_helper->viewRenderer('tagtutorial');
                 $this->view->doc_id = $this->_getParam('id');
                 return;
@@ -371,10 +355,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $tag_tagsubcategory->save();
             }
         }
-        $question_arr = json_decode($_POST["questions"], true);
-        for ($i = 0; $i < sizeof($question_arr); $i++) {
-            saveQuestions($tagged_trans_id, $i + 1, $question_arr[$i], 1);
-        }
         $_SESSION['Incite']['previous_task'] = 'tag';
 
 
@@ -383,15 +363,15 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         } else {
             $_SESSION['incite']['message'] = 'Tagging completed! Connect this document now, or find another document to tag by clicking <a href="'.getFullInciteUrl().'/documents/tag">here</a>.';
         }
-        $itemID = $this->_getParam('id');
-        $ready_tag = 0;
-        $ready_connect = 1;
-        $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("UPDATE `omeka_incite_available_list` SET `ready_tag`=?,`ready_connect`=? WHERE `item_id` = $itemID");
-        $stmt->bind_param("ii", $ready_tag, $ready_connect);
-        $stmt->execute();
-        $stmt->close();
-        $db->close();
+        $itemId = $this->_getParam('id');
+        $ready_to_tag = 0;
+        $ready_to_connect = 1;
+        
+        $status = $this->_helper->db->getTable('InciteItemTaskStatus')->findItemTaskStatusByItemId($itemId);
+        $status->ready_to_tag = $ready_to_tag;
+        $status->ready_to_connect = $ready_to_connect;
+        $status->save();
+    
         if ($_POST['link'] == 1) {
             if (isset($_POST['query_str']) && $_POST['query_str'] !== "") {
                 $this->redirect('/incite/documents/connect/'.$this->_getParam('id').'?'.$_POST['query_str']);
@@ -515,13 +495,13 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
     public function populateTagSearchResults() {
         if (isSearchQuerySpecifiedViaGet()) {
             $searched_item_ids = getSearchResultsViaGetQuery();
-            $table = $this->_helper->db->getTable('InciteTaggedTranscription');
+            $table = $this->_helper->db->getTable('InciteItemTaskStatus');
             $taggable_items = $table->findFirstKItemIdsToBeTagged();
             $searchedAndTaggableItems = array_intersect($searched_item_ids, $taggable_items);
             $item_ids = array_slice($searchedAndTaggableItems, 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
         } else {
-            $table = $this->_helper->db->getTable('InciteTaggedTranscription');
+            $table = $this->_helper->db->getTable('InciteItemTaskStatus');
             $taggable_items = $table->findFirstKItemIdsToBeTagged();
             $item_ids = array_slice($taggable_items, 0, MAXIMUM_SEARCH_RESULTS);
             $this->view->query_str = "";
@@ -566,25 +546,28 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $allSubjects = $table->findAllSubjects();
         $workingGroupId = getWorkingGroupID();
 
-        $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByTranscriptionId($itemId);
-            echo '<pre>';
+        $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByItemId($itemId);
         foreach ((array) $allSubjects as $subject) {
             $sub = "subject".$subject->id;
             $connection = new InciteItemsSubjects;
             $connection->item_id = $itemId;
             $connection->tagged_trans_id = $newest_tagged_trans->id;
-            $connection->subject_id = $subject->id;
             $connection->rating = $_POST[$sub];
             $connection->user_id = $userId;
+            $connection->subject_id = $subject->id;
             $connection->working_group_id = $workingGroupId;
             $connection->type = 1; //default value
             $connection->save();
         }
-        $db = DB_Connect::connectDB();
-        $stmt = $db->prepare("DELETE FROM `omeka_incite_available_list` WHERE `item_id` = $itemId");
-        $stmt->execute();
-        $stmt->close();
-        $db->close();
+
+        $explanation = new InciteSubjectRatingExplanation;
+        $explanation->item_id = $itemId;
+        $explanation->tagged_trans_id = $newest_tagged_trans->id;
+        $explanation->explanation = $_POST['reasoning'];
+        $explanation->save();
+
+        $status = $this->_helper->db->getTable('InciteItemTaskStatus')->findItemTaskStatusByItemId($itemId);
+        $status->delete();
         $_SESSION['Incite']['previous_task'] = 'connect';
 
 
@@ -615,7 +598,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      */
     public function populateDataForConnectTask() {
         $item_id = $this->_getParam('id');
-        $is_connectable_by_tags = true;
         $this->view->document_metadata = $this->_helper->db->find($item_id);
 
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
@@ -649,7 +631,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             //Gets the latest tagged transcription
-            $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByItemId($newest_trans->id);
+            $newest_tagged_trans = $this->_helper->db->getTable('InciteTaggedTranscription')->findNewestByTranscriptionId($newest_trans->id);
             if (isset($newest_tagged_trans)) {
                 $this->view->transcription =  migrateTaggedDocumentFromV1toV2($newest_tagged_trans->tagged_transcription);
                 $revisionHistory = $this->_helper->db->getTable('InciteItemsSubjects')->findKNewestWithUserInfoByItemId($item_id);
@@ -683,7 +665,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
      */
     public function populateConnectSearchResults() {
         $this->view->query_str = getSearchQuerySpecifiedViaGetAsString();
-        $table = $this->_helper->db->getTable('InciteItemsSubjects');
+        $table = $this->_helper->db->getTable('InciteItemTaskStatus');
         $connectable_items = $table->findFirstKItemIdsToBeConnected();
 
         if (isSearchQuerySpecifiedViaGet()) {
@@ -797,6 +779,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         $this->view->isTagged = $isTagged;
         $this->view->isConnected = $isConn;
         return array('isTranscribed' => $isTrans, 'isTagged' => $isTagged, 'isConnected' => $isConn);
+    }
+
+    public function testAction() {
+            $table = $this->_helper->db->getTable('InciteTaggedTranscription');
+            $taggable_items = $table->findFirstKItemIdsToBeTagged();
     }
 
 

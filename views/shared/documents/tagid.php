@@ -10,7 +10,6 @@
         <script type="text/javascript">
             var msgbox;
             var comment_type = 1;
-            var questions_array;
         </script>
     </head>
 
@@ -28,7 +27,7 @@
 
             <div class="col-md-7">
                 <div id="tagging-container">
-                    <p class="header-step"><i>Step 1 of 3: Verify and expand existing tags</i></p>
+                    <p class="header-step"><i>Step 1 of 2: Verify and expand existing tags</i></p>
                     <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                     <table class="table" id="entity-table">
                         <tr>
@@ -99,7 +98,7 @@
                             <th>Not a tag?</th></tr>
                     </table>
                     <br>
-                    <p class="step"><i>Step 2 of 3: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
+                    <p class="step"><i>Step 2 of 2: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</i></p>
                     <table class="table" id="user-entity-table">
                         <tr>
                             <th>
@@ -150,42 +149,6 @@
                             <th>Not a tag?</th></tr>
                         <tr>
                     </table>
-                    <p class="step"><i>Step 3 of 3: Based on the document on the left and its metadata, please answer the following questions.</i></p>
-                    <table class="table">
-                        <tr><th>Questions</th><th>Answers</th></tr>
-                        <tr><td>When was this document produced?</td><td><input type="text" id = "date-detail" placeholder="YYYY-MM-DD"></td></tr>
-                        <tr><td>Where was this document produced?</td><td><input type="text" id = "place-detail" placeholder="location"></td></tr>
-                        <tr><td>Based on your reading, what location does this document tell you most about?</td><td><input type="text" id = "location-detail" placeholder="City, State, or region"></td></tr>
-                        <tr><td style="vertical-align: middle;">Based your reading of the document, what period does this document tell you most about? (contextualize)</td>
-                            <td>
-                                <select id = "period-selector" class="form-control">
-                                    <option>What period?</option>
-                                    <option>Pre Civil war (year range, - 1861)</option>
-                                    <option>Civil war (year range, 1861 - 1865)</option>
-                                    <option>Post Civil war (year range, 1865 - )</option>
-                                    <option>Unclear</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr><td style="vertical-align: middle;">From whose perspectives (or say view points) was this document produced?</td>
-                            <td>
-                                <select id = "social_selector" class="form-control">
-                                    <option>What social group?</option>
-                                    <option>White Americans</option>
-                                    <option>African Americans</option>
-                                    <option>Foreigners</option>
-                                    <option>Abolitionists</option>
-                                    <option>Not specified</option>
-                                </select>
-                                <select id = "gender-selector" class="form-control">
-                                    <option>What gender?</option>
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                    <option>Not specified</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
 
                     <form id="entity-form" method="post">
                         <input id="entity-info" type="hidden" name="entities" />
@@ -193,7 +156,6 @@
                         <input id="trans-id" type="hidden" name="transcription_id" value="<?php echo $this->transcription_id; ?>" />
                         <input type="hidden" name="query_str" value="<?php echo (isset($this->query_str) ? $this->query_str : ""); ?>">
                         <input id="what_type" type="hidden" value="" name="link"> </input>
-                        <input id="question_arr" type="hidden" value="" name="questions"> </input>
                         <hr size=1 class="discussion-seperation-line">
                         <button type="submit" class="btn btn-primary" id="confirm-button-repeat">Submit & Continue Tag</button>
                         <button type="submit" class="btn btn-primary" id="confirm-button">Submit & Connect</button>
@@ -314,10 +276,6 @@
 
 
     $(document).ready(function () {
-        $("#comment-container").click(function(){
-          //createQuestionArray();
-          //console.log(questions_array);
-        });
         addExistingTags();
         migrateTaggedDocumentsFromV1toV2();
         set_tag_id_counter();
@@ -375,7 +333,6 @@
         });
 
         $('#confirm-button').on('click', function (e) {
-            createQuestionArray()
             if ($('.category-select option:selected[value=0]').length > 0) {
                 notifyOfErrorInForm('Tag category cannot be empty at Step 2 of 2.');
                 return;
@@ -415,7 +372,6 @@
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
             $('#what_type').val('1');
-            $('#question_arr').val(JSON.stringify(questions_array));
             $('#entity-form').submit();
 
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
@@ -461,7 +417,6 @@
             $('#entity-info').val(JSON.stringify(entities));
             $('#tagged-doc').val($('#transcribe_copy').html());
             $('#what_type').val('2');
-            $('#question_arr').val(questions_array);
             $('#entity-form').submit();
 
             //data, that is, JSON.stringify(entities) are ready to be submitted for processing
@@ -561,27 +516,6 @@
         ?>
     });
 
-    function createQuestionArray() {
-      var date = $('#date-detail').val();
-      if (date == "")
-        date = "You did not answer this question";
-      var location = $('#place-detail').val();
-      if (location == "")
-        location = "You did not answer this question";
-      var pointed_location = $('#location-detail').val();
-      if (pointed_location == "")
-        pointed_location = "You did not answer this question";
-      var period = $('#period-selector').val();
-      if (period == "What period?")
-        period = "You did not answer this question";
-      var social = $('#social_selector').val();
-      if (social == "What social group?")
-        social = "You did not answer this question";
-      var gender = $('#gender-selector').val();
-      if (gender == "What gender?")
-        gender = "You did not answer this question";
-      questions_array = {'1': date, '2': location, '3': pointed_location, '4': period, '5':social, '6': gender};
-    }
 
     function styleForEditing() {
         addRevisionHistoryListeners();
