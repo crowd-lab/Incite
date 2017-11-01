@@ -1,4 +1,4 @@
-# A Quick Guide of Incite Installation
+# A Quick Guide to Incite Installation
 
 Since Incite is a plug-in to [Omeka](http://omeka.org), the this quick guide will assume you already have some basic knowlege about Omeka and already have Omeka installed. If you want to know more about Incite and what it is capable, please visit [Incite's website](http://incite.cs.vt.edu). This guide focuses on the installation part.
 
