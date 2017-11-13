@@ -27,9 +27,9 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <p class="header-step">Background: Imagine you were a historian who is interested in the Depression and currently investigating a historical question, "<u><?php echo $_SESSION['study2']['pretest_q'];?></u>"</p>
+                    <p class="header-step">Background: Imagine you were a historian who is currently investigating a historical question, "<u><?php echo $_SESSION['study2']['pretest_q'];?></u>"</p>
                     <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
-                    <p class="header-step">Step <?php echo $task_seq; ?>b: Write your response below to the historical document and question.</p>
+                    <p class="header-step">Step <?php echo $task_seq; ?>b: Answer the question above using the historical document.</p>
                     <form id="interpretation-form" method="post">
                         <textarea id="response" style="width:100%;" name="response" rows="10" placeholder="Your response here."></textarea>
                         <input type="hidden" id="start" name="start" value="">

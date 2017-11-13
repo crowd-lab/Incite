@@ -413,11 +413,17 @@ a.disabled {
 <script>
 
 //window.onbeforeunload = function() { return "You work will be lost and progress may not be recorded correctly!"; };
+<?php 
+if (isset($_SESSION['study2'])) {
+?>
 history.pushState(null, null, document.URL);
 window.addEventListener('popstate', function () {
     alert('Please do not use back button because your work may be lost!');
     history.pushState(null, null, document.URL);
 });
+<?php 
+}
+?>
 function getNow() {
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -538,7 +544,9 @@ if (isset($_GET['time'])) {
             }
         }
         function updateAMT() {
+            <?php if (isset($_SESSION['study2']['assignment_id'])): ?>
             $.post( "https://crowd.cs.vt.edu/m4jexp/wfexp/incite/ajax/updateamt", { asgn_id: "<?php echo $_SESSION['study2']['assignment_id']; ?>" } );
+            <?php endif; ?>
         }
         
     
@@ -546,9 +554,12 @@ $(document).ready(function () {
 
     setInterval(updateAMT, 10000);
 
+<?php if (isset($_SESSION['study2'])):  ?>
+
     window.onbeforeunload = function() {
         return "If you leave the page now, your work may be lost!";
     }
+<?php endif; ?>
 
 
     $("a#forgotpw").bind("click", function() {

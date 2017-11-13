@@ -36,7 +36,7 @@
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Please write a summary of the historical document on the left. It should be no more than <u>3</u> sentences and shouldn't change the meaning of the document.</p>
                                         <textarea id="summary" style="width:100%;" name="summary" rows="5" placeholder="Your shortened text here"></textarea>
                                         <br>
                                         <br>

@@ -36,7 +36,7 @@
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Please write a summary of the historical document on the left. It should be no more than <u>3</u> sentences and shouldn't change the meaning of the document.</p>
                                         <textarea id="summary" style="width:100%;" name="summary" rows="5" placeholder="Your shortened text here"></textarea>
                                         <br>
                                         <br>
@@ -108,7 +108,7 @@
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
+                                        <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to think like a historian to analyze the document on the left and help a real historian answer the question below.</p>
                                         <p class="header-step">Historical Question: <u><?php echo $_SESSION['study2']['work_q']; ?></u></p>
                                         <p class="header-step">Historical Thinking: To think like a historian, the first step is to <u>summarize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">Q1: What type of historical document is the source? (E.g., speech, letter, newspaper, ...)</p>
@@ -133,12 +133,12 @@
                                 </div>
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step">Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</p>
-                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Please revise your summary to reflect your answers to the 4 questions in Phase 2.</p>
+                                        <p class="header-step">Based on your answers from Phase 2, revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>a: Make sure your summary includes your answers to the 4 questions in Phase 2.</p>
                                         <textarea id="revsummary" style="width:100%;" name="revsummary" rows="6"></textarea>
                                         <br>
                                         <br>
-                                        <p class="header-step">Step <?php echo $task_seq; ?>b: Please revise the ratings of the tones to reflect your answers to the 4 questions in Phase 2.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>b: Make sure your ratings of the tones are consistent with your answers to the 4 questions in Phase 2.</p>
                                         <table class="table">
                                             <thead>
                                                 <th>Tone</th>

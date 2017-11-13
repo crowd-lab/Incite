@@ -80,6 +80,14 @@ include(dirname(__FILE__).'/../common/header.php');
 
 </style>
 
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 <div id="homepage-content" style="margin-top: 25px; margin-left: 15%; margin-right:15%; margin-bottom: 25px;">
     <div id="homepage-summary" style="margin-bottom: 75px">
@@ -135,29 +143,38 @@ include(dirname(__FILE__).'/../common/header.php');
         </a>
     </div> <!-- homepage-carousel -->
     <br>
-    <div id="homepage-details" style="margin-top: 50px;">
-        <h3 style="color: #8BB7C8;">WE ARE UNCOVERING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
-        <div style="margin-left: 140px;">
-            <div style="float: right; width:100%;"><p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p></div>
-            <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="margin-right: 20px; max-width: 120px; float: left;"></div>
-            <div style="clear:both"></div>
+    <div id="homepage-details" style="margin-top: 30px;">
+        <div id="twitter-tweets" style="float: right; width:22%; margin-bottom: -250px;">
+            <a href="https://twitter.com/July4CivilWar" class="twitter-follow-button" data-show-count="false">Follow @July4CivilWar</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <a class="twitter-timeline" data-width="100%" data-height="300" data-theme="light" data-link-color="#2B7BB9" href="https://twitter.com/July4CivilWar">Tweets by July4CivilWar</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <div style="border: 1px solid #dddddd; margin-bottom: 5px;"></div>
+            <div class="fb-like" data-href="https://www.facebook.com/VCCWS/" data-width="275" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+
         </div>
-        <br>
-        <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
-        <div style="margin-left: 140px;">
-            <div style="float: right; width:100%;">
-                <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in for <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can:
-                    <ul style="margin-left: -10px;">
-                        <li> <b>transcribe</b> digitized documents to make them searchable;</li>
-                        <li> <b>tag</b> people, locations, organizations and events with help from natural language processing tools;</li>
-                        <li> <b>connect</b> documents to high-level concepts of interest; and </li>
-                        <li> <b>discuss</b> their discoveries in context.</li>
-                    </ul>
-                </p>
+        <div id="homepage-introduction" style="width: 75%;">
+            <h3 style="color: #8BB7C8;">WE ARE UNCOVERING AMERICAN HISTORY ONE DOCUMENT AT A TIME</h3>
+            <div style="margin-left: 140px;">
+                <div style="float: right; width:100%;"><p style="">The long crisis of the Civil War, stretching from the 1840s to the 1870s, forced Americans to confront difficult questions about the meaning and the boundaries of their nation. What did it mean to be an American? Who was included and excluded? Where did the nation's borders lie? Did those words "all men are created equal" apply to southerners as well as northerners, black as well as white Americans, women as well as men? How should Americans commemorate their nation's founding when that nation appeared to be falling apart? But it was on one particular day each year, July 4th, that they left the most explicit evidence of their views. In newspapers and speeches, in personal diaries and letters to their friends and family, Americans gave voice to typically unspoken beliefs about national identity.</p></div>
+                <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/doc-icon.jpg" style="margin-right: 20px; max-width: 120px; float: left;"></div>
+                <div style="clear:both"></div>
             </div>
-            <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;"></div>
-            <div style="clear:both"></div>
-        </div>
+            <br>
+            <h3 style="color: #8BB7C8;" style="clear: left;">POWERED BY INCITE</h3>
+            <div style="margin-left: 140px;">
+                <div style="float: right; width:100%;">
+                    <p>Incite is a free, open-source tool for crowdsourced exploration of a document archive. It is a plug-in for <a href="http://www.omeka.org" target="_blank">Omeka</a>, a popular online publishing platform used by libraries, museums, and archives around the world. With Incite, users can:
+                        <ul style="margin-left: -10px;">
+                            <li> <b>transcribe</b> digitized documents to make them searchable;</li>
+                            <li> <b>tag</b> people, locations, organizations and events with help from natural language processing tools;</li>
+                            <li> <b>connect</b> documents to high-level concepts of interest; and </li>
+                            <li> <b>discuss</b> their discoveries in context.</li>
+                        </ul>
+                    </p>
+                </div>
+                <div style="max-width: 120px; float: left; margin-left: -140px;"><img src="<?php echo getFullOmekaUrl(); ?>/plugins/Incite/views/shared/images/m4j-brand-icon.png" style="float: left; margin-right: 20px; max-width: 120px;"></div>
+                <div style="clear:both"></div>
+            </div>
+        </div>   <!-- homepage-introduction -->
     </div>   <!-- homepage-details -->
 </div> <!-- homepage-content -->
 

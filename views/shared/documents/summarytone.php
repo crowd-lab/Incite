@@ -37,7 +37,7 @@
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Step 1 of 3: Without changing the meaning of the text on the left, please shorten the text to no more than <u>3</u> sentences and place your shortened text below.</i></p>
+                                        <p class="header-step"><i>Step 1 of 3: Please write a summary of the historical document on the left. It should be no more than <u>3</u> sentences and shouldn't change the meaning of the document.</i></p>
                                         <textarea id="summary" style="width:100%;" name="summary" rows="5" placeholder="Your shortened text here"></textarea>
                                         <p class="header-step"><i>Step 2 of 3: Please rate how much each of the following tones reflects the author's attitude towards the subject.</i></p>
                                         <table class="table">

@@ -164,7 +164,7 @@ $( function () {
             <div id="learning-form">
                 <div style="padding: 15px;">
                     <div class="form-group">
-                      <label for="example-text-input" class="col-form-label">L1: How much do you think the process help guide you analyze the historical document?</label>
+                      <label for="example-text-input" class="col-form-label">L1: How much help did the system give you in analyzing the document?</label>
                       <div class="col-xs-10">
                         <select name="amountlearned" class="form-control" id="amountlearned">
                             <option value="" selected></option>
@@ -176,13 +176,13 @@ $( function () {
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="example-text-input" class="col-form-label">L2: Please specify what you learned through the HIT if any.</label>
+                      <label for="example-text-input" class="col-form-label">L2: How much did you learn from analyzing the document?</label>
                       <div class="col-xs-10">
                         <textarea name="learned" class="form-control" id="learned" rows="4"></textarea>
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="example-text-input" class="col-form-label">L3: How fun or interesting do you think about the HIT?</label>
+                      <label for="example-text-input" class="col-form-label">L3: How much fun did you have analyzing the document?</label>
                       <div class="col-xs-10">
                         <select name="fun" class="form-control" id="fun">
                             <option value="" selected></option>
@@ -278,7 +278,7 @@ $( function () {
             <div id="feedback-form">
                 <div style="padding: 15px;">
                     <div class="form-group">
-                      <label for="example-text-input" class="col-form-label">We would like to know what you think about this study. Are there any confusions? Any improvements we can make? Or other thoughts? Please provide your feedback and comments below.</label>
+                      <label for="example-text-input" class="col-form-label">Please use the box below to give feedback or comments on the task, such as any confusions or improvements.</label>
                       <div class="col-xs-10">
                         <textarea name="feedback" class="form-control" id="feedback" rows="6"></textarea>
                       </div>
