@@ -124,6 +124,16 @@ function isAnyTrialAvailable()
     }
 }
 
+function setDocSeq($trial_id, $doc_seq)
+{
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("UPDATE `study22` SET doc_seq = ? WHERE `id` = ?");
+    $stmt->bind_param("si", $doc_seq, $trial_id);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+}
+
 function hasParticipated($worker_id)
 {
     $db = DB_Connect::connectDB();
@@ -381,6 +391,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $_SESSION['study2']['work_q'] = $test_questions[$test_docs[$test_seq[1]]];
                     $_SESSION['study2']['posttest_doc'] = $test_docs[$test_seq[2]];
                     $_SESSION['study2']['posttest_q'] = $test_questions[$test_docs[$test_seq[2]]];
+                    $doc_seq = $test_docs[$test_seq[0]]."-".$test_docs[$test_seq[1]]."-".$test_docs[$test_seq[2]];
+                    setDocSeq($trial['trial_id'], $doc_seq);
                 }
                 //AMT stuff
                 $_SESSION['study2']['assignment_id'] = $assignment_id;
