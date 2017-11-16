@@ -171,7 +171,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Learn Historical Thinking</a>
+                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Learn Historical Thinking (Contextualizing)</a>
                                     </h4>
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
