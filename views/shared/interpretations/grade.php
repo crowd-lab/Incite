@@ -5,6 +5,9 @@ include(dirname(__FILE__).'/../common/header.php');
 
     <div style="margin-top: 20px;" class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
+            <div class="panel-heading" style="text-align: center;">
+                <h3 class="">You are logged in as <?php echo $_SESSION['Incite']['grader']['name']; ?> (<a href="<?php echo getFullInciteUrl()."/interpretations/logout/"; ?>">logout</a>)</h3>
+            </div>
             <div class="panel-heading">
                 <h3 class="panel-title">Ungraded</h3>
             </div>
@@ -15,7 +18,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <tr><td><?php echo $interpretation['response']; ?></td><td><a href="<?php echo getFullInciteUrl()."/interpretations/grade/"; ?><?php echo $interpretation['id']; ?>">Grade Now</a></td></tr>
 <?php endforeach; ?>
 <?php if (count($this->interpretations) == 0): ?>
-                <tr><td>No graded responses!</td><td></td></tr>
+                <tr><td>No ungraded responses!</td><td></td></tr>
 <?php endif; ?>
                 </tbody>
             </table>

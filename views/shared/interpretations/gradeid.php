@@ -52,7 +52,7 @@ include(dirname(__FILE__).'/../common/header.php');
                 <div id="rubric" class="tab-pane fade in active">
                     Summarizing (1 point each) 
                     <ol>
-                        <li> Does the response indicate the subject of the source? </li>
+                        <li>Does the response indicate the subject of the source? </li>
                         <li>Does the response indicate the audience for the source? </li>
                         <li>Does the response indicate the author of the source? </li>
                         <li>Does the response include specific details from the source? </li>
@@ -105,72 +105,106 @@ include(dirname(__FILE__).'/../common/header.php');
                         <td>
                             <form method="post">
                                 <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-5 col-form-label">Summarizing Score:</label>
-                                    <div class="col-sm-7">
-                                        <label class="radio-inline"><input type="radio" name="ss" value="0">0</label>
-                                        <label class="radio-inline"><input type="radio" name="ss" value="1">1</label>
-                                        <label class="radio-inline"><input type="radio" name="ss" value="2">2</label>
-                                        <label class="radio-inline"><input type="radio" name="ss" value="3">3</label>
-                                        <label class="radio-inline"><input type="radio" name="ss" value="4">4</label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="or">Reasoning of Grading (Summarizing):</label>
-                                    <textarea class="form-control" rows="2" id="sr" name="sr"></textarea>
+                                    <label for="staticEmail" class="col-sm-12 col-form-label" style="text-align: center;">Summarizing</label>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-5 col-form-label">Contextualizing Score:</label>
-                                    <div class="col-sm-7">
-                                        <label class="radio-inline"><input type="radio" name="cs" value="0">0</label>
-                                        <label class="radio-inline"><input type="radio" name="cs" value="1">1</label>
-                                        <label class="radio-inline"><input type="radio" name="cs" value="2">2</label>
-                                        <label class="radio-inline"><input type="radio" name="cs" value="3">3</label>
-                                        <label class="radio-inline"><input type="radio" name="cs" value="4">4</label>
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate the subject of the source?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="s1" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="s1" value="1">Yes</label>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="or">Reasoning of Grading (Contextualizing):</label>
-                                    <textarea class="form-control" rows="2" id="cr" name="cr"></textarea>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-5 col-form-label">Inferring Score:</label>
-                                    <div class="col-sm-7">
-                                        <label class="radio-inline"><input type="radio" name="is" value="0">0</label>
-                                        <label class="radio-inline"><input type="radio" name="is" value="1">1</label>
-                                        <label class="radio-inline"><input type="radio" name="is" value="2">2</label>
-                                        <label class="radio-inline"><input type="radio" name="is" value="3">3</label>
-                                        <label class="radio-inline"><input type="radio" name="is" value="4">4</label>
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate the audience for the source?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="s2" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="s2" value="1">Yes</label>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="or">Reasoning of Grading (Inferring):</label>
-                                    <textarea class="form-control" rows="2" id="ir" name="ir"></textarea>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-5 col-form-label">Monitoring Score:</label>
-                                    <div class="col-sm-7">
-                                        <label class="radio-inline"><input type="radio" name="ms" value="0">0</label>
-                                        <label class="radio-inline"><input type="radio" name="ms" value="1">1</label>
-                                        <label class="radio-inline"><input type="radio" name="ms" value="2">2</label>
-                                        <label class="radio-inline"><input type="radio" name="ms" value="3">3</label>
-                                        <label class="radio-inline"><input type="radio" name="ms" value="4">4</label>
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate the author of the source?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="s3" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="s3" value="1">Yes</label>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="or">Reasoning of Grading (Inferring):</label>
-                                    <textarea class="form-control" rows="2" id="mr" name="mr"></textarea>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-5 col-form-label">Overall Score:</label>
-                                    <div class="col-sm-7">
-                                        <span id="os">0</span>
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response include specific details from the source?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="s4" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="s4" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-12 col-form-label" style="text-align: center;">Contextualizing</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate when the source was produced?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="c1" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="c1" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate where the source was produced?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="c2" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="c2" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate why the source was produced?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="c3" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="c3" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate the immediate or broader context?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="c4" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="c4" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-12 col-form-label" style="text-align: center;">Inferring</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response include explicit and/or implicit inferences?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="i1" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="i1" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response include inferences based on omissions?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="i2" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="i2" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-12 col-form-label" style="text-align: center;">Monitoring</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response indicate the need for information beyond the source?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="m1" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="m1" value="1">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="staticEmail" class="col-sm-9 col-form-label">Does the response evaluate the usefulness or significance of the source?</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline"><input type="radio" name="m2" value="0">No</label>
+                                        <label class="radio-inline"><input type="radio" name="m2" value="1">Yes</label>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="or">Overall Comment:</label>
-                                    <textarea class="form-control" rows="2" id="or" name="or"></textarea>
+                                    <label for="or">Grading reasoning and/or comment:</label>
+                                    <textarea id="reasoning" class="form-control" rows="4" id="or" name="or"></textarea>
                                 </div>
-                                <button type="submit">Submit</button>
+                                <button id="submit-button" class="btn btn-primary" type="button">Submit</button>
                             </form>
                         </td>
                     </tr>
@@ -186,28 +220,18 @@ include(dirname(__FILE__).'/../common/header.php');
         return true;
     }
 
-    function updateOverallScore() {
-        var ss = 0, cs = 0, is = 0, ms = 0;
-        if ($('input[name=ss]:checked').length != 0) {
-            ss = parseInt($('input[name=ss]:checked').val());
-        }
-        if ($('input[name=cs]:checked').length != 0) {
-            cs = parseInt($('input[name=cs]:checked').val());
-        }
-        if ($('input[name=is]:checked').length != 0) {
-            is = parseInt($('input[name=is]:checked').val());
-        }
-        if ($('input[name=ms]:checked').length != 0) {
-            ms = parseInt($('input[name=ms]:checked').val());
-        }
-        $('#os').text(ss+cs+is+ms);
-
-    }
 
     $(document).ready(function () {
-
-        $('input:radio').on('click', function (e) {
-            updateOverallScore();
+        $('#submit-button').on('click', function (e) {
+            if ($('input:radio:checked').length < 12) {
+                alert('You need to select No/Yes for all question!');
+                return;
+            }
+            if ($('#reasoning').val() == "") {
+                alert('You need to provide reasoning or comment for your grading');
+                return;
+            }
+            $('form').submit();
         });
 
 

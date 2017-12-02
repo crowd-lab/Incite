@@ -45,11 +45,12 @@ function check_input () {
             });
             return false;
     } 
-    controls = $('#learning-form .form-control');
+    //controls = $('#learning-form .form-control');
+    controls = [$('input[name=sys_help]:checked'), $('input[name=learned]:checked'), $('input[name=fun]:checked')];
     for (var i = 0; i < controls.length; i++) {
-        if ($(controls[i]).val() === "") {
+        if (controls[i].length == 0) {
             notif({
-              msg: '<b>Error: </b> "'+$(controls[i]).parent().parent().find('label').text().substring(0,2)+'" is not answered yet',
+              msg: '<b>Error: </b> "L'+(i+1)+'" is not specified yet',
               type: "error"
             });
             return false;
@@ -86,7 +87,7 @@ function generate_response() {
     $('#demographics-form .form-control').each(function(idx) {
         response['demographics'][this.name] = $(this).val();
     });
-    $('#learning-form .form-control').each(function(idx) {
+    $('#learning-form input[type=radio]:checked').each(function(idx) {
         response['learning'][this.name] = $(this).val();
     });
     $('#tlx-form input[type=radio]:checked').each(function(idx) {
@@ -164,34 +165,40 @@ $( function () {
             <div id="learning-form">
                 <div style="padding: 15px;">
                     <div class="form-group">
-                      <label for="example-text-input" class="col-form-label">L1: How much help did the system give you in analyzing the document?</label>
-                      <div class="col-xs-10">
-                        <select name="amountlearned" class="form-control" id="amountlearned">
-                            <option value="" selected></option>
-                            <option value="4">Strongly</option>
-                            <option value="3">Moderately</option>
-                            <option value="2">Weakly</option>
-                            <option value="1">Not at all</option>
-                        </select>
-                      </div>
+                        <div>
+                            <div><label>L1: How much help did the system give you in analyzing the document?</label></div>
+                            <label class="radio-inline"><input type="radio" name="sys_help" value="1">1 (very little)</label>
+                            <label class="radio-inline"><input type="radio" name="sys_help" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="sys_help" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="sys_help" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="sys_help" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="sys_help" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="sys_help" value="7">7 (very much)</label>
+                        </div>
                     </div>
                     <div class="form-group">
-                      <label for="example-text-input" class="col-form-label">L2: How much did you learn from analyzing the document?</label>
-                      <div class="col-xs-10">
-                        <textarea name="learned" class="form-control" id="learned" rows="4"></textarea>
-                      </div>
+                        <div>
+                            <div><label>L2: How much did you learn from analyzing the document?</label></div>
+                            <label class="radio-inline"><input type="radio" name="learned" value="1">1 (very little)</label>
+                            <label class="radio-inline"><input type="radio" name="learned" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="learned" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="learned" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="learned" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="learned" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="learned" value="7">7 (very much)</label>
+                        </div>
                     </div>
                     <div class="form-group">
-                      <label for="example-text-input" class="col-form-label">L3: How much fun did you have analyzing the document?</label>
-                      <div class="col-xs-10">
-                        <select name="fun" class="form-control" id="fun">
-                            <option value="" selected></option>
-                            <option value="4">Strongly</option>
-                            <option value="3">Moderately</option>
-                            <option value="2">Weakly</option>
-                            <option value="1">Not at all</option>
-                        </select>
-                      </div>
+                        <div>
+                            <div><label>L3: How much fun did you have analyzing the document?</label></div>
+                            <label class="radio-inline"><input type="radio" name="fun" value="1">1 (very little)</label>
+                            <label class="radio-inline"><input type="radio" name="fun" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="fun" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="fun" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="fun" value="5">5</label>
+                            <label class="radio-inline"><input type="radio" name="fun" value="6">6</label>
+                            <label class="radio-inline"><input type="radio" name="fun" value="7">7 (very much)</label>
+                        </div>
                     </div>
                 </div>
             </div>

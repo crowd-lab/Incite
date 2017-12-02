@@ -9,8 +9,9 @@ function get_graders() {
     $graders = array();
 
     $graders['interpretation'] = array(
-        'Robert' => 'roberthisinterpretation',
-        'Michael' => 'michaelhisinterpretation'
+        'Robert' => 'fj892q3fiwo@#fask',
+        'Michael' => '3829fla@fa932#$al',
+        'Nai-Ching' => 'fjaw#!afj9823rADF'
     );
 
     $graders['summary'] = array(

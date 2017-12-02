@@ -30,13 +30,13 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                         <a data-toggle="collapse" href="#phase1-panel" id="phase1-link">Phase 1: Connect</a>
+                                         <a data-toggle="collapse" href="#phase1-panel" id="phase1-link">Step <?php echo $task_seq; ?>.1: Connect</a>
                                     </h4>
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <p class="header-step">
-                                            Step <?php echo $task_seq; ?>.1a: Look through the themes and rate how useful the historical document is to each of the themes.
+                                            Step <?php echo $task_seq; ?>.1a: Look through the themes and rate how relevant the historical document is to each of the themes. You can mouse over each theme to see its definition.
                                         </p>
                                         <table class="table">
                                             <thead>
@@ -57,7 +57,7 @@
                                         <?php endforeach; ?>
                                         </table>
                                         <p class="header-step">
-                                            Step <?php echo $task_seq; ?>.1b: Please provide your reasoning for your above choices.</i>
+                                            Step <?php echo $task_seq; ?>.1b: Please provide your reasoning for the most relevant themes.</i>
                                         </p>
                                         <textarea id="subjectreasoning" style="width:100%;" name="reasoning" rows="5"></textarea>
                                         <br>
@@ -71,14 +71,14 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Learn Historical Thinking (Inferring and Monitoring)</a>
+                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Step <?php echo $task_seq; ?>.2: Learn Historical Thinking (Inferring and Monitoring)</a>
                                     </h4>
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
-                                        <p class="header-step">Historical Question: <u><?php echo $_SESSION['study2']['work_q']; ?></u></p>
-                                        <p class="header-step">Historical Thinking: To think like a historian, the third and fourth steps are to <u>infer</u> and <u>monitor</u> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</p>
+                                        <p class="header-step"><b>Background</b>: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
+                                        <p class="header-step"><b>Historical Question</b>: <i><?php echo $_SESSION['study2']['work_q']; ?></i></p>
+                                        <p class="header-step"><b>Historical Thinking</b>: To think like a historian, the third and fourth steps are to <i>infer</i> and <i>monitor</i> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">Q1: What interpretations, inferences, perspectives or points of view may be drawn from or indicated by the source?</p>
                                         <textarea style="width:100%;" id="iq2" name="iq2" rows="3"></textarea>
                                         <p class="header-step">Q2: What additional evidence beyond the source is necessary to answer the historical question?</p>
@@ -96,14 +96,14 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                         <a data-toggle="collapse" href="#phase3-panel" id="phase3-link">Phase 3: Revise</a>
+                                         <a data-toggle="collapse" href="#phase3-panel" id="phase3-link">Step <?php echo $task_seq; ?>.3: Revise</a>
                                     </h4>
                                 </div>
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step"><i>Based on what you learned from Phase 2, please revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</i></p>
+                                        <p class="header-step">Based on what you learned from Step <?php echo $task_seq; ?>.2, please revise your responses from Step <?php echo $task_seq; ?>.1. Your previous responses have been copied here and you can see your answers in Step <?php echo $task_seq; ?>.2 above.</p>
                                         <p class="header-step">
-                                            Step <?php echo $task_seq; ?>.3a: Look through the themes and rate how useful the historical document is to each of the themes.
+                                            Step <?php echo $task_seq; ?>.3a: Look through the themes and rate how relevant the historical document is to each of the themes.
                                         </p>
                                         <table class="table">
                                             <thead>
@@ -329,10 +329,11 @@
             $('#phase2-button').on('click', function(e) {
                 if (check_input_condition()) {
                     condition['end'] = getNow();
-                    $('#phase2-panel').collapse('hide');
+                    //$('#phase2-panel').collapse('hide');
                     $('#phase3-panel-group').show();
                     $('#phase3-panel').collapse('show');
-                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    //$("html, body").animate({ scrollTop: 0 }, "slow");
+                    $("html, body").animate({ scrollTop: $('#phase3-panel').position().top }, "slow");
                     $('#phase2-button').hide();
                     $('#revsummary').val($('#summary').val());
                     $('#revsubjectreasoning').val($('#subjectreasoning').val());

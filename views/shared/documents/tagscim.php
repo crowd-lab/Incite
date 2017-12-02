@@ -31,7 +31,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                         <a data-toggle="collapse" href="#phase1-panel" id="phase1-link">Phase 1: Tag</a>
+                                         <a data-toggle="collapse" href="#phase1-panel" id="phase1-link">Step <?php echo $task_seq; ?>.1: Tag</a>
                                     </h4>
                                 </div>
                                 <div id="phase1-panel" class="panel-collapse collapse">
@@ -108,7 +108,7 @@
                                                 <th>Not a tag?</th></tr>
                                         </table>
                                         <br>
-                                        <p class="header-step">Step <?php echo $task_seq; ?>.1b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.1b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags.</p>
                                         <table class="table" id="user-entity-table">
                                             <tr>
                                                 <th>
@@ -171,14 +171,14 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Phase 2: Learn Historical Thinking (Contextualizing)</a>
+                                        <a data-toggle="collapse" href="#phase2-panel" id="phase2-link">Step <?php echo $task_seq; ?>.2: Learn Historical Thinking (Contextualizing)</a>
                                     </h4>
                                 </div>
                                 <div id="phase2-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step">Background: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to think like a historian to analyze the document on the left and help a real historian answer the question below.</p>
-                                        <p class="header-step">Historical Question: <u><?php echo $_SESSION['study2']['work_q']; ?></u></p>
-                                        <p class="header-step">Historical Thinking: To think like a historian, the second step is to <u>contextualize</u> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
+                                        <p class="header-step"><b>Background</b>: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to think like a historian to analyze the document on the left and help a real historian answer the question below.</p>
+                                        <p class="header-step"><b>Historical Question</b>: <i><?php echo $_SESSION['study2']['work_q']; ?></i></p>
+                                        <p class="header-step"><b>Historical Thinking</b>: To think like a historian, the second step is to <i>contextualize</i> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">Q1: When and where was the source produced?</p>
                                         <textarea style="width:100%;" id="cq1" name="cq1" rows="3"></textarea>
                                         <p class="header-step">Q2: Why was the source produced?</p>
@@ -196,19 +196,19 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                         <a data-toggle="collapse" href="#phase3-panel" id="phase3-link">Phase 3: Revise</a>
+                                         <a data-toggle="collapse" href="#phase3-panel" id="phase3-link">Step <?php echo $task_seq; ?>.3: Revise</a>
                                     </h4>
                                 </div>
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p class="header-step">Based on your answers from Phase 2, revise your responses from Phase 1. Your previous responses have been copied here and you may go back to see your answers in Phase 2.</p>
+                                        <p class="header-step">Based on your answers from Step <?php echo $task_seq; ?>.2, revise your responses from Step <?php echo $task_seq; ?>.1. Your previous tags have been copied here and you can see your answers in Step <?php echo $task_seq; ?>.2 above.</p>
                                         <p class="header-step">Instruction: A tag is an object or event in the world like a place or person. It should uniquely refer to an object or event by its proper name (Hillary Clinton), acronym (IBM), nickname (Bob), abbreviation (Minn.) or description for the event (Oration; see the event category for more event description). If you have questions, you can mouseover <span class="glyphicon glyphicon-info-sign step-instruction-glyphicon"></span> to get more information.</p>
                                         <p class="header-step">Step <?php echo $task_seq; ?>.3a: Verify tags. Add subcategories and details if they are missing. If it's not a tag, delete it.</p>
                                         <a id="view-revision-history-link" style="display: none;">View Revision History...  </a>
                                         <table class="table" id="reventity-table">
                                         </table>
                                         <br>
-                                        <p class="header-step">Step <?php echo $task_seq; ?>.3b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.3b: Add missing tags by highlighting words in the transcription on the left. You may skip this step if you do not see any missing tags.</p>
                                         <table class="table" id="revuser-entity-table">
                                         </table>
                     <form id="tag-form" method="post">
@@ -599,10 +599,11 @@
         $('#phase2-button').on('click', function(e) {
             if (check_input_condition()) {
                 condition['end'] = getNow();
-                $('#phase2-panel').collapse('hide');
+                //$('#phase2-panel').collapse('hide');
                 $('#phase3-panel-group').show();
                 $('#phase3-panel').collapse('show');
-                $("html, body").animate({ scrollTop: 0 }, "slow");
+                //$("html, body").animate({ scrollTop: 0 }, "slow");
+                $("html, body").animate({ scrollTop: $('#phase3-panel').position().top }, "slow");
                 $('#phase2-button').hide();
                 $('#reventity-table').replaceWith($('#entity-table'));
                 $('#revuser-entity-table').replaceWith($('#user-entity-table'));

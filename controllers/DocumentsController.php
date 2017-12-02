@@ -212,6 +212,41 @@ function completeStudy($id) {
     $stmt->execute();
     $stmt->close();
     $db->close();
+
+    //for graders: start
+    //get pretest and post data
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("Select pretest_response, posttest_response from study22 where id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->bind_result($pretest, $posttest);
+    $stmt->execute();
+    $result = $stmt->fetch();
+    $stmt->close();
+    $db->close();
+    if ($result == null) {
+        //failed!
+        return;
+    }
+
+    //insert pretest
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("INSERT INTO study22_interpretations (trial_id, item_id, is_pretest, response) VALUES (?, ?, ?, ?)");
+    $item_id = isset($_SESSION['study2']['pretest_doc']) ? $_SESSION['study2']['pretest_doc'] : 0;
+    $is_pretest = 1;
+    $stmt->bind_param("iiis",$id, $item_id, $is_pretest, $pretest);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+    //insert posttest
+    $db = DB_Connect::connectDB();
+    $stmt = $db->prepare("INSERT INTO study22_interpretations (trial_id, item_id, is_pretest, response) VALUES (?, ?, ?, ?)");
+    $item_id = isset($_SESSION['study2']['posttest_doc']) ? $_SESSION['study2']['posttest_doc'] : 0;
+    $is_pretest = 0;
+    $stmt->bind_param("iiis",$id, $item_id, $is_pretest, $posttest);
+    $stmt->execute();
+    $stmt->close();
+    $db->close();
+    //for graders: end
 }
 
 function urlGenerator($task_type)
@@ -325,7 +360,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         //Check if there is task available. If not, redirect to a page to notify the user.
         $isAnyTrialAvailable = isAnyTrialAvailable();
         //testing so we assuming there is trial available
-        $isAnyTrialAvailable = true;
+        //$isAnyTrialAvailable = true;
         if (!$isAnyTrialAvailable)  {
             $this->_helper->viewRenderer('taskless');
             return;
@@ -355,11 +390,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             $trial = getNextTrial($assignment_id, $worker_id);
             $test_seq = array(0,1,2,3,4);
             $test_docs = array(1125, 1126, 1127, 1128, 1129);
-            $test_questions = array(1125=>"What was the life of a child like during the Depression?",
-                                    1126=>"What was the role of spies during the American Revolutionary War",
-                                    1127=>"What was life like in the artillery during the Civil War?",
-                                    1128=>"What were the conditions of life in farming communities on the great plains during the early 20th century?",
-                                    1129=>"What were nineteenth century's views on women's rights?");
+            $test_questions = array(1125=>"What does this source tell us about what the life of a boy was like during the Depression?",
+                                    1126=>"What does this source tell us about what the role of spies was like during the American Revolutionary War",
+                                    1127=>"What does this source tell us about the life in the artillery was like during the Civil War?",
+                                    1128=>"What does this source reveal about the conditions of life in farming communities on the great plains during the early 20th century?",
+                                    1129=>"What does this source reveal about nineteenth century views on women's rights?");
             shuffle($test_seq);
             //testing with a particular technique: baseline, scim, shepherd, rvd (review vs. doing)
             if (isset($_GET['crowdtesting'])) {
@@ -379,6 +414,8 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $_SESSION['study2']['posttest_doc'] = $_GET['posttestdoc'];
                     $_SESSION['study2']['posttest_q'] = $test_questions[$_GET['posttestdoc']];
                 }
+                $doc_seq = $_GET['pretestdoc']."-".$_GET['workdoc']."-".$_GET['posttestdoc'];
+                setDocSeq($trial['trial_id'], $doc_seq);
             }
             if ($trial != null) {
                 //Initialization
