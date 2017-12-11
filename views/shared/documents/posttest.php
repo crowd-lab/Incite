@@ -27,9 +27,9 @@
             <div class="col-md-7">
                 <div id="tagging-container">
                     <br>
-                    <p class="header-step">After three analyzing tasks, you now might have a better idea how to analyze a historical document. Now, again imagine you were a historian who is currently investigating a historical question, "<u><?php echo $_SESSION['study2']['posttest_q']; ?></u>"</p>
+                    <p class="header-step">After the previous analyzing task, you now might have a better idea how to analyze a historical document. Now, again imagine you were a historian who is currently investigating a historical question, "<u><?php echo $_SESSION['study2']['posttest_q']; ?></u>"</p>
                     <p class="header-step">Step <?php echo $task_seq; ?>a: Read the related historical document on the left.</p>
-                    <p class="header-step">Step <?php echo $task_seq; ?>b: Answer the question above using the historical document. Remember, you should apply all historical thinking techniques you learned in the previous analyzing tasks and think like a historian.</p>
+                    <p class="header-step">Step <?php echo $task_seq; ?>b: Answer the question above using the historical document. Remember, you should apply all historical thinking techniques you learned in the previous analyzing task and think like a historian.</p>
                     <form id="interpretation-form" method="post">
                         <textarea id="response" style="width:100%;" name="response" rows="10"></textarea>
                         <input type="hidden" id="start" name="start" value="">

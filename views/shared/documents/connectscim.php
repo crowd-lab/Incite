@@ -78,13 +78,13 @@
                                     <div class="panel-body">
                                         <p class="header-step"><b>Background</b>: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to analyze a historical document to help the historian investigate the below historical question by thinking like a historian.</p>
                                         <p class="header-step"><b>Historical Question</b>: <i><?php echo $_SESSION['study2']['work_q']; ?></i></p>
-                                        <p class="header-step"><b>Historical Thinking</b>: To think like a historian, the third and fourth steps are to <i>infer</i> and <i>monitor</i> a historical document by identifying answers to some key inferential and monitoring questions. Please read the text on the left and provide your answer to each of the questions below.</p>
+                                        <p class="header-step"><b>Historical Thinking</b>: To think like a historian, the third and fourth steps are to <i>infer</i> and <i>monitor</i> a historical document by identifying answers to some key inferential and monitoring questions. All these answers should be integrated into the final answer to the given historical question. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">Q1: What interpretations, inferences, perspectives or points of view may be drawn from or indicated by the source?</p>
                                         <textarea style="width:100%;" id="iq2" name="iq2" rows="3"></textarea>
-                                        <p class="header-step">Q2: What additional evidence beyond the source is necessary to answer the historical question?</p>
+                                        <p class="header-step">Q2: What inverences may be drawn from absences or omissions in the source?</p>
+                                        <textarea style="width:100%;" id="iq4" name="iq4" rows="3"></textarea>
+                                        <p class="header-step">Q3: What additional evidence beyond the source is necessary to answer the historical question?</p>
                                         <textarea style="width:100%;" id="mq1" name="mq1" rows="3"></textarea>
-                                        <p class="header-step">Q3: What ideas, images, or terms need further defining from the source?</p>
-                                        <textarea style="width:100%;" id="mq2" name="mq2" rows="3"></textarea>
                                         <p class="header-step">Q4: How useful or siginficant is the source for its intended purpose in answering the historical question?</p>
                                         <textarea style="width:100%;" id="mq3" name="mq3" rows="3"></textarea>
                                         <button type="button" class="btn btn-primary pull-right" id="phase2-button">Next</button>

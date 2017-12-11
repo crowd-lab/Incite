@@ -154,8 +154,8 @@ function hasParticipated($worker_id)
 function getNextTrial($assignment_id, $worker_id)
 {
     $db = DB_Connect::connectDB();
-    $stmt = $db->prepare("SELECT `id`, `technique` FROM `study22` WHERE `is_completed` = 0 LIMIT 1");
-    $stmt->bind_result($trial_id, $technique);
+    $stmt = $db->prepare("SELECT `id`, `technique`, `task_type` FROM `study22` WHERE `is_completed` = 0 LIMIT 1");
+    $stmt->bind_result($trial_id, $technique, $task_type);
     $stmt->execute();
     $result = $stmt->fetch();
     $stmt->close();
@@ -168,7 +168,7 @@ function getNextTrial($assignment_id, $worker_id)
         $stmt->execute();
         $stmt->close();
         $db->close();
-        return array('trial_id' => $trial_id, 'technique' => $technique);
+        return array('trial_id' => $trial_id, 'technique' => $technique, 'task_type' => $task_type);
     } else {
         return null;
     }
@@ -438,7 +438,9 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['study2']['technique'] = $trial['technique'];
                 $_SESSION['study2']['task_seq'] = 0;
                 //0: presurvey, 1: pretest, 5: posttest, 6: postsurvey, 7: complete 
-                $_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator(2), urlGenerator(3), urlGenerator(4), urlGenerator(5), urlGenerator(6), urlGenerator(7));
+                //$_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator(2), urlGenerator(3), urlGenerator(4), urlGenerator(5), urlGenerator(6), urlGenerator(7));
+                $task_type_2_num = array('summarytone' => 2, 'tag' => 3, 'connect' => 4);
+                $_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator($task_type_2_num[$trial['task_type']]), urlGenerator(5), urlGenerator(6), urlGenerator(7));
                 $_SESSION['study2']['num_tasks'] = count($_SESSION['study2']['urls'])-1;
 
                 //All set. Redirec the user to the first task!
@@ -844,6 +846,106 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             public function completeAction() {
+            }
+            public function expresultsAction() {
+        $simple_questions = array('s1_3+s2_3+s3_3+s4_3', 'c1_3+c2_3+c3_3+c4_3', 'i1_3+i2_3+m1_3+m2_3');
+        $techniques = array("baseline", "scim");
+        $task_types = array("summarytone", "tag", "connect");
+        $is_pretests = array(0, 1);
+        $simple_results = array();
+        foreach ($techniques as $technique) {
+            if (!in_array($technique, $simple_results)) {
+                $simple_results[$technique] = array();
+            }
+            foreach ($task_types as $task_type) {
+                if (!in_array($task_type, $simple_results[$technique])) {
+                    $simple_results[$technique][$task_type] = array();
+                }
+                foreach ($is_pretests as $is_pretest) {
+                    if (!in_array($is_pretest, $simple_results[$technique][$task_type])) {
+                        $simple_results[$technique][$task_type][$is_pretest] = array();
+                    }
+                    foreach ($simple_questions as $question) {
+                        if (!in_array($question, $simple_results[$technique][$task_type][$is_pretest])) {
+                            $simple_results[$technique][$task_type][$is_pretest][$question] = array();
+                        }
+                        $db = DB_Connect::connectDB();
+                        $query = "SELECT avg(".$question.") as mean, max(".$question.") as 'max', min(".$question.") as 'min', COUNT(".$question.") as 'counts' FROM study22 inner join study22_interpretations on study22_interpretations.trial_id = study22.id where technique = ? and task_type = ? and is_pretest = ? and study22.id > 60";
+                        $stmt = $db->prepare($query);
+                        $stmt->bind_param("ssi", $technique, $task_type, $is_pretest);
+                        $stmt->bind_result($mean, $max, $min, $counts);
+                        $stmt->execute();
+                        $stmt->fetch();
+
+                        $simple_results[$technique][$task_type][$is_pretest][$question]['mean'] = $mean;
+                        $simple_results[$technique][$task_type][$is_pretest][$question]['min'] = $min;
+                        $simple_results[$technique][$task_type][$is_pretest][$question]['max'] = $max;
+                        $simple_results[$technique][$task_type][$is_pretest][$question]['counts'] = $counts;
+                        $stmt->close();
+                        $db->close();
+                    }
+                }
+            }
+        }
+        $questions = array('s1', 's2', 's3', 's4', 'c1', 'c2', 'c3', 'c4', 'i1', 'i2', 'm1', 'm2');
+        $techniques = array("baseline", "scim");
+        $task_types = array("summarytone", "tag", "connect");
+        $is_pretests = array(0, 1);
+        $results = array();
+        foreach ($techniques as $technique) {
+            if (!in_array($technique, $results)) {
+                $results[$technique] = array();
+            }
+            foreach ($task_types as $task_type) {
+                if (!in_array($task_type, $results[$technique])) {
+                    $results[$technique][$task_type] = array();
+                }
+                foreach ($is_pretests as $is_pretest) {
+                    if (!in_array($is_pretest, $results[$technique][$task_type])) {
+                        $results[$technique][$task_type][$is_pretest] = array();
+                    }
+                    foreach ($questions as $question) {
+                        if (!in_array($question, $results[$technique][$task_type][$is_pretest])) {
+                            $results[$technique][$task_type][$is_pretest][$question] = array();
+                        }
+                        $db = DB_Connect::connectDB();
+                        $query = "SELECT avg(".$question."_3) as mean, max(".$question."_3) as 'max', min(".$question."_3) as 'min', COUNT(".$question."_3) as 'counts' FROM study22 inner join study22_interpretations on study22_interpretations.trial_id = study22.id where technique = ? and task_type = ? and is_pretest = ? and study22.id > 60";
+                        $stmt = $db->prepare($query);
+                        $stmt->bind_param("ssi", $technique, $task_type, $is_pretest);
+                        $stmt->bind_result($mean, $max, $min, $counts);
+                        $stmt->execute();
+                        $stmt->fetch();
+
+                        $results[$technique][$task_type][$is_pretest][$question]['mean'] = $mean;
+                        $results[$technique][$task_type][$is_pretest][$question]['min'] = $min;
+                        $results[$technique][$task_type][$is_pretest][$question]['max'] = $max;
+                        $results[$technique][$task_type][$is_pretest][$question]['counts'] = $counts;
+                        $stmt->close();
+                        $db->close();
+                    }
+                }
+            }
+        }
+        $this->view->results = $results;
+        $this->view->task_types = $task_types;
+        $this->view->questions = $questions;
+        $this->view->is_pretests = $is_pretests;
+        $this->view->techniques = $techniques;
+        $this->view->simple_results = $simple_results;
+            }
+            public function compensationAction() {
+                $target_worker_id = "AKVDY8OXNMQED";
+                if (isset($_GET['workerId'])) {
+                    $worker_id = $_GET['workerId']; 
+                }
+                if (isset($_GET['assignmentId'])) {
+                    $this->view->assignment_id = $_GET['assignmentId'];
+                }
+                if (isset($worker_id) && ($worker_id == $target_worker_id || $worker_id == "A16EXBM93YU3R9")) { //or self
+                    $this->view->assignment_id = $_GET['assignmentId'];
+                } else {
+                    $this->view->assignment_id = "";
+                }
             }
             public function complete2Action() {
             }

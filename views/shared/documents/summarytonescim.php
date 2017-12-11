@@ -110,7 +110,7 @@
                                     <div class="panel-body">
                                         <p class="header-step"><b>Background</b>: With some historical question of interest in mind, a historian analyzes and investigates historical documents to find answers to those questions. You are now asked to think like a historian to analyze the document on the left and help a real historian answer the question below.</p>
                                         <p class="header-step"><b>Historical Question</b>: <i><?php echo $_SESSION['study2']['work_q']; ?></i></p>
-                                        <p class="header-step"><b>Historical Thinking</b>: To think like a historian, the first step is to <i>summarize</i> a historical document by identifying answers to some key questions. Please read the text on the left and provide your answer to each of the questions below.</p>
+                                        <p class="header-step"><b>Historical Thinking</b>: To think and analyzing like a historian, the first step is to <i>summarize</i> a historical document by identifying answers to some key questions. All these answers should be integrated into the final answer to the given historical question. Please read the text on the left and provide your answer to each of the questions below.</p>
                                         <p class="header-step">Q1: What type of historical document is the source? (E.g., speech, letter, newspaper, ...)</p>
                                         <textarea style="width:100%;" name="sq1" rows="3" id="sq1"></textarea>
                                         <p class="header-step">Q2: What specific information, details and/or perspectives does the source provide?</p>
@@ -134,7 +134,7 @@
                                 <div id="phase3-panel" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <p class="header-step">Based on your answers from  Step <?php echo $task_seq; ?>.2, revise your responses from Step <?php echo $task_seq; ?>.1. Your previous responses have been copied here and you can see your answers in Step <?php echo $task_seq; ?>.2 above.</p>
-                                        <p class="header-step">Step <?php echo $task_seq; ?>.3a: Make sure your summary integrates your answers to the 4 questions in Step <?php echo $task_seq; ?>.2.</p>
+                                        <p class="header-step">Step <?php echo $task_seq; ?>.3a: Make sure your summary integrates your answers to the 4 questions in Step <?php echo $task_seq; ?>.2 so that your response will be more like a historian.</p>
                                         <textarea id="revsummary" style="width:100%;" name="revsummary" rows="6"></textarea>
                                         <br>
                                         <br>
