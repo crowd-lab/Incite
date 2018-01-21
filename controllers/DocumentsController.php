@@ -358,12 +358,14 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
         }
 
         //Check if there is task available. If not, redirect to a page to notify the user.
-        $isAnyTrialAvailable = isAnyTrialAvailable();
-        //testing so we assuming there is trial available
-        //$isAnyTrialAvailable = true;
-        if (!$isAnyTrialAvailable)  {
-            $this->_helper->viewRenderer('taskless');
-            return;
+        if (!isset($_GET['crowdtesting'])) {
+            $isAnyTrialAvailable = isAnyTrialAvailable();
+            //testing so we assuming there is trial available
+            //$isAnyTrialAvailable = true;
+            if (!$isAnyTrialAvailable)  {
+                $this->_helper->viewRenderer('taskless');
+                return;
+            }
         }
 
         //Get an available task. Default: AMT
@@ -398,9 +400,12 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             shuffle($test_seq);
             //testing with a particular technique: baseline, scim, shepherd, rvd (review vs. doing)
             if (isset($_GET['crowdtesting'])) {
-                $trial = array('trial_id' => 1, 'technique' => 'baseline');
+                $trial = array('trial_id' => 1, 'technique' => 'baseline', 'task_type' => 'summarytone');
                 if (isset($_GET['condition'])) {
                     $trial['technique'] = $_GET['condition'];
+                }
+                if (isset($_GET['task_type'])) {
+                    $trial['task_type'] = $_GET['task_type'];
                 }
                 if (isset($_GET['pretestdoc'])) {
                     $_SESSION['study2']['pretest_doc'] = $_GET['pretestdoc'];
@@ -437,10 +442,11 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                 $_SESSION['study2']['id'] = $trial['trial_id'];
                 $_SESSION['study2']['technique'] = $trial['technique'];
                 $_SESSION['study2']['task_seq'] = 0;
-                //0: presurvey, 1: pretest, 5: posttest, 6: postsurvey, 7: complete 
+                //0: presurvey, 1: pretest, 2: summarytone, 3: tag, 4: connect 5: posttest, 6: postsurvey, 7: complete 
                 //$_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator(2), urlGenerator(3), urlGenerator(4), urlGenerator(5), urlGenerator(6), urlGenerator(7));
                 $task_type_2_num = array('summarytone' => 2, 'tag' => 3, 'connect' => 4);
-                $_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator($task_type_2_num[$trial['task_type']]), urlGenerator(5), urlGenerator(6), urlGenerator(7));
+                //$_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator($task_type_2_num[$trial['task_type']]), urlGenerator(5), urlGenerator(6), urlGenerator(7));
+                $_SESSION['study2']['urls'] = array(urlGenerator(1), urlGenerator($task_type_2_num[$trial['task_type']]), urlGenerator(5), urlGenerator(7));
                 $_SESSION['study2']['num_tasks'] = count($_SESSION['study2']['urls'])-1;
 
                 //All set. Redirec the user to the first task!
@@ -835,7 +841,6 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
                     $content['response'] = $_POST['response'];
                     $content['end'] = $_POST['end'];
                     completeTests($_SESSION['study2']['id'], "postsurvey", $content);
-                    completeStudy($_SESSION['study2']['id']);
 
                     //All set. Move to next task!
                     $_SESSION['study2']['task_seq']++;
@@ -846,6 +851,7 @@ class Incite_DocumentsController extends Omeka_Controller_AbstractActionControll
             }
 
             public function completeAction() {
+                    completeStudy($_SESSION['study2']['id']);
             }
             public function expresultsAction() {
         $simple_questions = array('s1_3+s2_3+s3_3+s4_3', 'c1_3+c2_3+c3_3+c4_3', 'i1_3+i2_3+m1_3+m2_3');
